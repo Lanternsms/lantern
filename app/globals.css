@@ -1,26 +1,28 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --color-primary: #182350;
+  --color-primary-hover: #26346e;
+  --color-sidebar: #131c40;
+  --color-sidebar-active: #232f5e;
+  --color-accent: #b9915e;
+  --color-accent-hover: #a3804f;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-text-on-primary: #ffffff;
+  --color-text-on-accent: #182350;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+  --color-surface: #ffffff;
+  --color-surface-muted: #f8f9fb;
+  --color-border: #e5e7eb;
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  --color-text-primary: #1f2430;
+  --color-text-secondary: #6b7280;
+  --color-text-muted: #9ca3af;
+
+  --color-success-bg: #dcfce7;
+  --color-success-text: #16a34a;
+  --color-danger-bg: #fee2e2;
+  --color-danger-text: #dc2626;
+
+  --font-questrial: var(--font-questrial), sans-serif;
 }
