@@ -8,9 +8,12 @@ import { Camera } from 'lucide-react'
 export default async function NewStudentPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>
+  searchParams: Promise<{ error?: string; classId?: string; armId?: string }>
 }) {
-  const { error } = await searchParams
+  const { error, classId: lockedClassId, armId: lockedArmId } = await searchParams
+  const cameFromMyClass = Boolean(lockedClassId)
+  const backHref = cameFromMyClass ? '/dashboard/my-class' : '/dashboard/students'
+  const backLabel = cameFromMyClass ? 'My Class' : 'Students'
   const supabase = await createClient()
 
   const { data: classes } = await supabase.from('classes').select('id, name').order('name')
@@ -35,10 +38,15 @@ export default async function NewStudentPage({
     .eq('entity_type', 'guardian')
     .order('sort_order')
 
+  const { data: existingGuardians } = await supabase
+    .from('guardians')
+    .select('id, first_name, last_name, phone, relationship')
+    .order('first_name')
+
   return (
     <div className="px-8 py-8 max-w-3xl">
       <p className="text-sm text-text-secondary mb-1">
-        <Link href="/dashboard/students" className="hover:text-primary">Students</Link> / Add Student
+        <Link href={backHref} className="hover:text-primary">{backLabel}</Link> / Add Student
       </p>
       <h1 className="text-xl font-semibold text-text-primary mb-1">Add Student</h1>
       <p className="text-sm text-text-secondary mb-6">Create a new student record and add them to your school.</p>
@@ -51,6 +59,7 @@ export default async function NewStudentPage({
 
       <form action={createStudent} className="space-y-6">
         {session && <input type="hidden" name="session_id" value={session.id} />}
+        <input type="hidden" name="from" value={cameFromMyClass ? 'my-class' : ''} />
 
         <section className="bg-surface border border-border rounded-xl p-6">
           <h2 className="text-sm font-semibold text-text-primary mb-4">Personal Information</h2>
@@ -107,7 +116,10 @@ export default async function NewStudentPage({
         <section className="bg-surface border border-border rounded-xl p-6">
           <h2 className="text-sm font-semibold text-text-primary">Guardian Information</h2>
           <p className="text-xs text-text-secondary mb-4">At least one guardian is required.</p>
-          <GuardianRepeater customFieldDefs={guardianCustomFields ?? []} />
+          <GuardianRepeater
+            customFieldDefs={guardianCustomFields ?? []}
+            existingGuardians={existingGuardians ?? []}
+          />
         </section>
 
         <section className="bg-surface border border-border rounded-xl p-6">
@@ -121,20 +133,41 @@ export default async function NewStudentPage({
                 className="w-full rounded-lg border border-border px-3 py-2 text-sm bg-surface-muted text-text-muted cursor-not-allowed"
               />
             </div>
-            <div>
-              <label className="block text-sm text-text-secondary mb-1.5">Class <span className="text-danger-text">*</span></label>
-              <select name="class_id" required className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
-                <option value="">Select class</option>
-                {classes?.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm text-text-secondary mb-1.5">Arm</label>
-              <select name="arm_id" className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
-                <option value="">Select arm</option>
-                {arms?.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-              </select>
-            </div>
+            {lockedClassId ? (
+              <>
+                <div>
+                  <label className="block text-sm text-text-secondary mb-1.5">Class</label>
+                  <div className="w-full rounded-lg border border-border px-3 py-2 text-sm bg-surface-muted text-text-muted">
+                    {classes?.find((c) => c.id === lockedClassId)?.name}
+                  </div>
+                  <input type="hidden" name="class_id" value={lockedClassId} />
+                </div>
+                <div>
+                  <label className="block text-sm text-text-secondary mb-1.5">Arm</label>
+                  <div className="w-full rounded-lg border border-border px-3 py-2 text-sm bg-surface-muted text-text-muted">
+                    {arms?.find((a) => a.id === lockedArmId)?.name ?? '—'}
+                  </div>
+                  <input type="hidden" name="arm_id" value={lockedArmId ?? ''} />
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <label className="block text-sm text-text-secondary mb-1.5">Class <span className="text-danger-text">*</span></label>
+                  <select name="class_id" required className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                    <option value="">Select class</option>
+                    {classes?.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm text-text-secondary mb-1.5">Arm</label>
+                  <select name="arm_id" className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                    <option value="">Select arm</option>
+                    {arms?.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                  </select>
+                </div>
+              </>
+            )}
             <div>
               <label className="block text-sm text-text-secondary mb-1.5">Admission Number <span className="text-danger-text">*</span></label>
               <input name="admission_no" required placeholder="e.g. GSS/2025/0142" className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
@@ -159,7 +192,7 @@ export default async function NewStudentPage({
         <div className="flex items-center justify-between">
           <p className="text-xs text-text-muted">Fields marked * are required</p>
           <div className="flex gap-3">
-            <Link href="/dashboard/students" className="text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-surface-muted transition-colors">
+            <Link href={backHref} className="text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-surface-muted transition-colors">
               Cancel
             </Link>
             <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">

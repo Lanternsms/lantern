@@ -3,28 +3,32 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { TabView } from '@/components/tab-view'
 import { makePrimaryContact } from '@/app/dashboard/guardians/actions'
+import { buildReportCard } from '@/lib/report-card'
+import {
+  inviteStudentPortalAccess,
+  linkStudentProfile,
+  revokeStudentPortalAccess,
+} from './actions'
+import { getLinkableProfiles } from '@/lib/staff'
 
 export default async function StudentDetailPage({
   params,
   searchParams,
 }: {
   params: Promise<{ id: string }>
-  searchParams: Promise<{ from?: string; guardianId?: string }>
+  searchParams?: Promise<{ from?: string; guardianId?: string }>
 }) {
   const { id } = await params
-  const { from, guardianId } = await searchParams
+  const resolvedSearchParams = searchParams ? await searchParams : {}
+  const { from, guardianId } = resolvedSearchParams
   const supabase = await createClient()
 
   const { data: student, error } = await supabase
     .from('students')
-    .select('id, admission_no, first_name, last_name, date_of_birth, gender, status')
+    .select('id, admission_no, first_name, last_name, date_of_birth, gender, status, profile_id, school_id')
     .eq('id', id)
     .single()
 
-  // A missing row here means either the student doesn't exist, or RLS
-  // correctly filtered it out (e.g. a teacher trying to view a student
-  // outside their class scope) — both cases should look identical to the
-  // user, which is exactly what notFound() gives us
   if (error || !student) notFound()
 
   const { data: enrolments } = await supabase
@@ -59,6 +63,102 @@ export default async function StudentDetailPage({
 
   const initials = `${student.first_name[0]}${student.last_name[0]}`
   const isActive = student.status === 'active'
+
+  // Portal Access
+  let linkedProfile: { id: string; first_name: string; last_name: string } | null = null
+  if (student.profile_id) {
+    const { data } = await supabase
+      .from('profiles')
+      .select('id, first_name, last_name')
+      .eq('id', student.profile_id)
+      .single()
+    linkedProfile = data
+  }
+  const linkableProfiles = student.profile_id
+    ? []
+    : await getLinkableProfiles(supabase, student.school_id)
+
+  const { data: assignableRoles } = student.profile_id
+    ? { data: [] }
+    : await supabase
+        .from('roles')
+        .select('id, name')
+        .eq('school_id', student.school_id)
+        .order('name')
+
+  const portalAccessContent = (
+    <div className="bg-surface border border-border rounded-xl p-5">
+      <h3 className="text-sm font-medium text-text-primary mb-3">Portal Access</h3>
+
+      {linkedProfile ? (
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-text-secondary">
+            Linked to{' '}
+            <span className="text-text-primary font-medium">
+              {linkedProfile.first_name} {linkedProfile.last_name}
+            </span>
+            's login.
+          </p>
+          <form action={revokeStudentPortalAccess.bind(null, student.id)}>
+            <button type="submit" className="text-xs text-red-600 hover:text-red-700">
+              Revoke
+            </button>
+          </form>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          <form action={inviteStudentPortalAccess.bind(null, student.id)} className="space-y-2">
+            <div className="flex gap-2">
+              <input
+                type="email"
+                name="email"
+                required
+                placeholder="student's email address"
+                className="flex-1 rounded-lg border border-border px-3 py-2 text-sm"
+              />
+            </div>
+            <div className="flex gap-2">
+              <select name="roleId" required className="flex-1 rounded-lg border border-border px-3 py-2 text-sm">
+                <option value="">Select a role…</option>
+                {assignableRoles?.map((r) => (
+                  <option key={r.id} value={r.id}>{r.name}</option>
+                ))}
+              </select>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-primary-hover"
+              >
+                Invite
+              </button>
+            </div>
+          </form>
+
+          {linkableProfiles.length > 0 && (
+            <form action={linkStudentProfile.bind(null, student.id)} className="flex gap-2">
+              <select
+                name="profileId"
+                required
+                className="flex-1 rounded-lg border border-border px-3 py-2 text-sm"
+              >
+                <option value="">Or link an existing login…</option>
+                {linkableProfiles.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.first_name} {p.last_name}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="submit"
+                className="px-4 py-2 border border-border rounded-lg text-sm hover:bg-background"
+              >
+                Link
+              </button>
+            </form>
+          )}
+        </div>
+      )}
+    </div>
+  )
 
   const overviewContent = (
     <div className="space-y-6">
@@ -160,8 +260,61 @@ export default async function StudentDetailPage({
           </div>
         </section>
       )}
+
+      {portalAccessContent}
     </div>
   )
+
+  // Results tab — now wired to real published data instead of a placeholder
+  let resultsContent: React.ReactNode
+  const { data: { user } } = await supabase.auth.getUser()
+  const { data: profile } = await supabase.from('profiles').select('school_id').eq('id', user!.id).single()
+
+  if (!profile) {
+    resultsContent = <p className="text-sm text-text-secondary">Unable to load results right now.</p>
+  } else {
+    const { data: currentTerm } = await supabase
+      .from('terms')
+      .select('id')
+      .eq('school_id', profile.school_id)
+      .eq('is_current', true)
+      .maybeSingle()
+
+    if (!currentTerm) {
+      resultsContent = <p className="text-sm text-text-secondary">No current term is set for your school.</p>
+    } else {
+      const card = await buildReportCard(supabase, profile.school_id, id, currentTerm.id, false)
+
+      resultsContent = !card || card.subjects.length === 0 ? (
+        <p className="text-sm text-text-secondary">No published results for the current term yet.</p>
+      ) : (
+        <div className="bg-surface border border-border rounded-xl p-5">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-medium text-text-primary">{card.term.name} Summary</h3>
+            <Link href={`/dashboard/students/${id}/report-card`} className="text-xs text-primary hover:text-primary-hover">
+              View full report card →
+            </Link>
+          </div>
+          <div className="grid grid-cols-3 gap-y-3 text-sm">
+            <div>
+              <p className="text-text-secondary text-xs mb-0.5">Overall Average</p>
+              <p className="text-text-primary font-medium">{card.overallAverage}</p>
+            </div>
+            <div>
+              <p className="text-text-secondary text-xs mb-0.5">Overall Total</p>
+              <p className="text-text-primary font-medium">{card.overallTotal}</p>
+            </div>
+            {card.rankingEnabled && card.rank && (
+              <div>
+                <p className="text-text-secondary text-xs mb-0.5">Class Position</p>
+                <p className="text-text-primary font-medium">{card.rank} of {card.classSize}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )
+    }
+  }
 
   const placeholder = (label: string) => (
     <p className="text-sm text-text-secondary">
@@ -172,10 +325,20 @@ export default async function StudentDetailPage({
   return (
     <div className="px-8 py-8">
       <Link
-        href={from === 'guardian' && guardianId ? `/dashboard/guardians/${guardianId}` : '/dashboard/students'}
+        href={
+          from === 'my-class'
+            ? '/dashboard/my-class'
+            : from === 'guardian' && guardianId
+            ? `/dashboard/guardians/${guardianId}`
+            : '/dashboard/students'
+        }
         className="text-sm text-primary hover:text-primary-hover"
       >
-        {from === 'guardian' && guardianId ? '← Back to guardian' : '← Back to students'}
+        {from === 'my-class'
+          ? '← Back to my class'
+          : from === 'guardian' && guardianId
+          ? '← Back to guardian'
+          : '← Back to students'}
       </Link>
 
       <div className="flex items-center justify-between mt-4 mb-6">
@@ -199,7 +362,7 @@ export default async function StudentDetailPage({
           </div>
         </div>
         <Link
-          href={`/dashboard/students/${id}/edit`}
+          href={`/dashboard/students/${id}/edit${from ? `?from=${from}` : ''}`}
           className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors"
         >
           Edit Student
@@ -209,7 +372,7 @@ export default async function StudentDetailPage({
       <TabView
         tabs={[
           { id: 'overview', label: 'Overview', content: overviewContent },
-          { id: 'results', label: 'Results', content: placeholder('Results') },
+          { id: 'results', label: 'Results', content: resultsContent },
           { id: 'attendance', label: 'Attendance', content: placeholder('Attendance') },
           { id: 'fees', label: 'Fees', content: placeholder('Fees') },
         ]}

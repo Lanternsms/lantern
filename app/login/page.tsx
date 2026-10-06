@@ -11,13 +11,6 @@ export default async function LoginPage({
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4 relative">
-      <Link
-        href="/signup"
-        className="absolute top-6 right-6 text-sm text-text-primary border border-border rounded-full px-4 py-1.5 hover:bg-surface-muted transition-colors"
-      >
-        Create Account
-      </Link>
-
       <div className="w-full max-w-sm">
         <h1 className="text-2xl font-questrial text-primary mb-8">Log in to your account</h1>
 

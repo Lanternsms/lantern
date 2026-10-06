@@ -16,19 +16,19 @@ export async function createSession(formData: FormData) {
   const supabase = await createClient()
   const schoolId = await getSchoolId(supabase)
 
-  const { error } = await supabase.from('academic_sessions').insert({
+  const { data: newSession, error } = await supabase.from('academic_sessions').insert({
     school_id: schoolId,
     name: formData.get('name') as string,
     start_date: formData.get('start_date') as string,
     end_date: formData.get('end_date') as string,
-  })
+  }).select('id').single()
 
-  if (error) {
-    redirect(`/dashboard/academics/sessions/new?error=${encodeURIComponent(error.message)}`)
+  if (error || !newSession) {
+    redirect(`/dashboard/academics/sessions/new?error=${encodeURIComponent(error?.message ?? 'Failed to create session')}`)
   }
 
   revalidatePath('/dashboard/academics/sessions')
-  redirect('/dashboard/academics/sessions')
+  redirect(`/dashboard/academics/sessions/${newSession.id}`)
 }
 
 export async function updateSession(sessionId: string, formData: FormData) {

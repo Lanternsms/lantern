@@ -4,9 +4,11 @@ import { CheckCircle2 } from 'lucide-react'
 export default async function StudentAddedSuccessPage({
   searchParams,
 }: {
-  searchParams: Promise<{ id?: string; name?: string; class?: string }>
+  searchParams: Promise<{ id?: string; name?: string; class?: string; from?: string }>
 }) {
-  const { id, name, class: classLabel } = await searchParams
+  const { id, name, class: classLabel, from } = await searchParams
+  const backHref = from === 'my-class' ? '/dashboard/my-class' : '/dashboard/students'
+  const backLabel = from === 'my-class' ? 'Back to My Class' : 'Back to Students'
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4">
@@ -25,17 +27,17 @@ export default async function StudentAddedSuccessPage({
         <div className="flex items-center justify-center gap-3">
           {id && (
             <Link
-              href={`/dashboard/students/${id}`}
+              href={`/dashboard/students/${id}${from ? `?from=${from}` : ''}`}
               className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors"
             >
               View Student
             </Link>
           )}
           <Link
-            href="/dashboard/students"
+            href={backHref}
             className="text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-surface-muted transition-colors"
           >
-            Back to Students
+            {backLabel}
           </Link>
         </div>
       </div>

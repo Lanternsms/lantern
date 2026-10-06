@@ -11,10 +11,10 @@ export default async function EditStudentPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>
-  searchParams: Promise<{ error?: string }>
+  searchParams: Promise<{ error?: string; from?: string }>
 }) {
   const { id } = await params
-  const { error } = await searchParams
+  const { error, from } = await searchParams
   const supabase = await createClient()
 
   const { data: student, error: fetchError } = await supabase
@@ -95,7 +95,7 @@ export default async function EditStudentPage({
   return (
     <div className="px-8 py-8 max-w-3xl">
       <p className="text-sm text-text-secondary mb-1">
-        <Link href={`/dashboard/students/${id}`} className="hover:text-primary">{student.first_name} {student.last_name}</Link> / Edit
+        <Link href={`/dashboard/students/${id}${from ? `?from=${from}` : ''}`} className="hover:text-primary">{student.first_name} {student.last_name}</Link> / Edit
       </p>
       <h1 className="text-xl font-semibold text-text-primary mb-1">Edit Student</h1>
       <p className="text-sm text-text-secondary mb-6">Update this student&apos;s record.</p>
@@ -105,6 +105,7 @@ export default async function EditStudentPage({
       )}
 
       <form action={updateStudentWithId} className="space-y-6">
+        <input type="hidden" name="from" value={from ?? ''} />
         <section className="bg-surface border border-border rounded-xl p-6">
           <h2 className="text-sm font-semibold text-text-primary mb-4">Personal Information</h2>
 
@@ -212,7 +213,7 @@ export default async function EditStudentPage({
         <div className="flex items-center justify-between">
           <p className="text-xs text-text-muted">Fields marked * are required</p>
           <div className="flex gap-3">
-            <Link href={`/dashboard/students/${id}`} className="text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-surface-muted transition-colors">
+            <Link href={`/dashboard/students/${id}${from ? `?from=${from}` : ''}`} className="text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-surface-muted transition-colors">
               Cancel
             </Link>
             <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">

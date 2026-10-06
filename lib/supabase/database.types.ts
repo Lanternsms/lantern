@@ -1408,8 +1408,12 @@ export type Database = {
         Row: {
           created_at: string
           department_id: string | null
+          email: string | null
           employment_date: string | null
+          first_name: string
           id: string
+          last_name: string
+          phone: string | null
           profile_id: string | null
           qualification: string | null
           school_id: string
@@ -1419,8 +1423,12 @@ export type Database = {
         Insert: {
           created_at?: string
           department_id?: string | null
+          email?: string | null
           employment_date?: string | null
+          first_name?: string
           id?: string
+          last_name?: string
+          phone?: string | null
           profile_id?: string | null
           qualification?: string | null
           school_id: string
@@ -1430,8 +1438,12 @@ export type Database = {
         Update: {
           created_at?: string
           department_id?: string | null
+          email?: string | null
           employment_date?: string | null
+          first_name?: string
           id?: string
+          last_name?: string
+          phone?: string | null
           profile_id?: string | null
           qualification?: string | null
           school_id?: string
@@ -2004,6 +2016,13 @@ export type Database = {
     }
     Functions: {
       auth_school_id: { Args: never; Returns: string }
+      get_my_rank: {
+        Args: { p_term_id: string }
+        Returns: {
+          rank: number
+          out_of: number
+        }[]
+      }
       has_permission: { Args: { perm_code: string }; Returns: boolean }
       in_teacher_scope: {
         Args: { check_arm_id: string; check_class_id: string }

@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { createArm, deleteArm, deleteClass } from '@/app/dashboard/academics/classes/actions'
 import { assignSubjectToClass, updateClassSubjectTeacher, removeSubjectFromClass } from '@/app/dashboard/academics/subjects/actions'
+import { assignFormTeacher } from './actions'
 import { TeacherSelect } from '@/components/teacher-select'
+import { getAssignableStaff } from '@/lib/staff'
 import Link from 'next/link'
 import { Pencil, Trash2 } from 'lucide-react'
 
@@ -19,7 +21,7 @@ export default async function ClassDetailPage({
 
   const { data: cls, error: fetchError } = await supabase
     .from('classes')
-    .select('id, name, level, departments(name)')
+    .select('id, name, level, school_id, departments(name)')
     .eq('id', id)
     .single()
 
@@ -52,18 +54,28 @@ export default async function ClassDetailPage({
     .select('id, name')
     .order('name')
 
-  // Only staff/teachers who already have portal login access (a linked
-  // profile) can be assigned here — someone added purely as a staff
-  // record with no login yet has no profile_id to reference.
-  const { data: teacherProfiles } = await supabase
-    .from('user_roles')
-    .select('profiles(id, first_name, last_name)')
-    .eq('role_id', (await supabase.from('roles').select('id').eq('name', 'teacher').is('school_id', null).single()).data?.id)
+  // The single source of truth for assignable teachers sourced from staff
+  const teacherOptions = await getAssignableStaff(supabase, cls.school_id)
 
   const { count: studentCount } = await supabase
     .from('enrolments')
     .select('id', { count: 'exact', head: true })
     .eq('class_id', id)
+
+  // Form teacher assignments: one per arm (or one at class level if no arms)
+  const armIds: (string | null)[] = arms && arms.length > 0 ? arms.map((a) => a.id) : [null]
+  const formTeacherMap = new Map<string | null, string>()
+  if (session) {
+    const { data: ftRows } = await supabase
+      .from('teacher_class_assignments')
+      .select('arm_id, teacher_id')
+      .eq('class_id', id)
+      .eq('session_id', session.id)
+      .eq('role', 'form_teacher')
+    for (const row of ftRows ?? []) {
+      formTeacherMap.set(row.arm_id ?? null, row.teacher_id)
+    }
+  }
 
   return (
     <div className="px-8 py-8 max-w-2xl">
@@ -137,6 +149,46 @@ export default async function ClassDetailPage({
         </form>
       </section>
 
+      {session && (
+        <section className="bg-surface border border-border rounded-xl p-5 mt-6">
+          <h3 className="text-sm font-medium text-text-primary mb-4">Form Teacher</h3>
+          <div className="space-y-3">
+            {armIds.map((armId) => {
+              const arm = arms?.find((a) => a.id === armId)
+              const currentTeacherId = formTeacherMap.get(armId) ?? ''
+              return (
+                <div key={armId ?? '__none__'}>
+                  {arm && (
+                    <p className="text-xs text-text-secondary mb-1.5">{cls.name} {arm.name}</p>
+                  )}
+                  <form
+                    action={assignFormTeacher.bind(null, id, armId)}
+                    className="flex gap-2"
+                  >
+                    <select
+                      name="teacherId"
+                      defaultValue={currentTeacherId}
+                      className="flex-1 rounded-lg border border-border px-3 py-2 text-sm"
+                    >
+                      <option value="">No form teacher</option>
+                      {teacherOptions.map((t) => (
+                        <option key={t.value} value={t.value}>{t.label}</option>
+                      ))}
+                    </select>
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-primary-hover"
+                    >
+                      Save
+                    </button>
+                  </form>
+                </div>
+              )
+            })}
+          </div>
+        </section>
+      )}
+
       <section className="bg-surface border border-border rounded-xl p-5 mt-6">
         <h3 className="text-sm font-medium text-text-primary mb-4">Subjects</h3>
 
@@ -159,7 +211,7 @@ export default async function ClassDetailPage({
                     <TeacherSelect
                       name="teacher_id"
                       defaultValue={cs.teacher_id ?? ''}
-                      teachers={(teacherProfiles ?? []).map((tp) => tp.profiles).filter((p): p is NonNullable<typeof p> => p !== null)}
+                      teachers={teacherOptions}
                       autoSubmit
                     />
                   </form>
@@ -191,7 +243,7 @@ export default async function ClassDetailPage({
             </select>
             <TeacherSelect
               name="teacher_id"
-              teachers={(teacherProfiles ?? []).map((tp) => tp.profiles).filter((p): p is NonNullable<typeof p> => p !== null)}
+              teachers={teacherOptions}
             />
             <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors whitespace-nowrap">
               Add Subject

@@ -1,5 +1,8 @@
 import Link from 'next/link'
-import { CalendarRange, Layers, BookMarked, Building2, GraduationCap, ClipboardList, SlidersHorizontal, CalendarCheck, ListPlus } from 'lucide-react'
+import {
+  CalendarRange, Layers, BookMarked, Building2, GraduationCap,
+  ClipboardList, SlidersHorizontal, CalendarCheck, ListPlus, GitBranch,
+} from 'lucide-react'
 
 export default function AcademicsPage() {
   const sections = [
@@ -10,6 +13,7 @@ export default function AcademicsPage() {
     { href: '/dashboard/academics/grading', icon: GraduationCap, title: 'Grading Scales', description: 'Define how scores map to grades, and set your default scale.' },
     { href: '/dashboard/academics/assessments', icon: ClipboardList, title: 'Assessment Types', description: 'Define CA/exam types and their weight toward the final score.' },
     { href: '/dashboard/academics/results-config', icon: SlidersHorizontal, title: 'Result Rules', description: 'Control ranking behavior and who can see it.' },
+    { href: '/dashboard/academics/workflow', icon: GitBranch, title: 'Approval Workflow', description: 'Define who reviews and approves results before they are published.' },
     { href: '/dashboard/academics/attendance-statuses', icon: CalendarCheck, title: 'Attendance Categories', description: 'Define attendance status options beyond Present/Absent.' },
     { href: '/dashboard/academics/custom-fields', icon: ListPlus, title: 'Custom Fields', description: 'Add extra fields to student, staff, or guardian records.' },
   ]

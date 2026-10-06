@@ -4,28 +4,19 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { signOut } from '@/app/auth/actions'
 
-const navItems = [
-  { label: 'Dashboard', href: '/dashboard' },
-  { label: 'Students', href: '/dashboard/students' },
-  { label: 'Staff', href: '/dashboard/staff' },
-  { label: 'Academics', href: '/dashboard/academics' },
-  { label: 'Roles & Permissions', href: '/dashboard/roles' },
-  { label: 'Timetable', href: '/dashboard/timetable' },
-  { label: 'Results', href: '/dashboard/results' },
-  { label: 'Attendance', href: '/dashboard/attendance' },
-  { label: 'Fees & Payments', href: '/dashboard/fees' },
-  { label: 'Communication', href: '/dashboard/communication' },
-]
+
 
 export function DashboardShell({
   firstName,
   lastName,
   schoolName,
+  navItems,
   children,
 }: {
   firstName: string
   lastName: string
   schoolName: string
+  navItems: { label: string; href: string }[]
   children: React.ReactNode
 }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -64,7 +55,7 @@ export function DashboardShell({
           </button>
         </div>
 
-        <nav className="flex-1 px-3 py-4 space-y-1">
+        <nav className="flex-1 min-h-0 overflow-y-auto sidebar-scrollbar px-3 py-4 space-y-1">
           {navItems.map((item) => (
             <Link
               key={item.href}

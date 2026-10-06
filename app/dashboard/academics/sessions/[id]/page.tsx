@@ -100,7 +100,15 @@ export default async function SessionDetailPage({
           </table>
         </div>
       ) : (
-        <p className="text-sm text-text-secondary">No terms added yet for this session.</p>
+        <div className="bg-surface border border-border border-dashed rounded-xl p-8 text-center">
+          <p className="text-sm text-text-secondary mb-3">No terms added yet for this session.</p>
+          <Link
+            href={`/dashboard/academics/sessions/${id}/terms/new`}
+            className="inline-flex items-center text-sm font-medium text-white bg-primary hover:bg-primary-hover px-4 py-2 rounded-lg transition-colors"
+          >
+            + Add First Term
+          </Link>
+        </div>
       )}
     </div>
   )

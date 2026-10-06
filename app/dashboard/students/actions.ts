@@ -1,5 +1,6 @@
 'use server'
 
+import { randomUUID } from 'crypto'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
@@ -39,10 +40,14 @@ export async function createStudent(formData: FormData) {
   if (!profile) redirect('/login')
   const schoolId = profile.school_id
   const sessionId = formData.get('session_id') as string
+  const from = (formData.get('from') as string) || ''
 
-  const { data: student, error } = await supabase
+  const studentId = randomUUID()
+
+  const { error } = await supabase
     .from('students')
     .insert({
+      id: studentId,
       school_id: schoolId,
       admission_no: formData.get('admission_no') as string,
       first_name: formData.get('first_name') as string,
@@ -52,11 +57,11 @@ export async function createStudent(formData: FormData) {
       gender: (formData.get('gender') as string) || null,
       residential_address: (formData.get('residential_address') as string) || null,
     })
-    .select('id')
-    .single()
 
-  if (error || !student) {
-    redirect(`/dashboard/students/new?error=${encodeURIComponent(error?.message ?? 'Failed to create student')}`)
+  if (error) {
+    redirect(`/dashboard/students/new?error=${encodeURIComponent(
+      `${error.message} | user=${user.id} school=${schoolId}`
+    )}`)
   }
 
   const classId = formData.get('class_id') as string
@@ -65,42 +70,39 @@ export async function createStudent(formData: FormData) {
 
   await supabase.from('enrolments').insert({
     school_id: schoolId,
-    student_id: student.id,
+    student_id: studentId,
     session_id: sessionId,
     class_id: classId,
     arm_id: armId || null,
     enrolment_date: enrolmentDate,
   })
 
+  const existingGuardianIds = formData.getAll('guardian_existing_id') as string[]
   const names = formData.getAll('guardian_full_name') as string[]
   const relationships = formData.getAll('guardian_relationship') as string[]
   const phones = formData.getAll('guardian_phone') as string[]
   const emails = formData.getAll('guardian_email') as string[]
   const addresses = formData.getAll('guardian_address') as string[]
 
-  for (let i = 0; i < names.length; i++) {
-    if (!names[i]?.trim()) continue
-    const [first, ...rest] = names[i].trim().split(' ')
-    const last = rest.join(' ') || first
+  // existingGuardianIds, names, relationships etc. are parallel arrays —
+  // one element per guardian slot rendered by GuardianRepeater.
+  // A slot in "link existing" mode has a non-empty existingGuardianIds[i]
+  // and empty names[i]; a slot in "add new" mode is the reverse.
+  const slotCount = Math.max(existingGuardianIds.length, names.length)
 
-    const guardianId = await findOrCreateGuardian(supabase, schoolId, {
-      first_name: first,
-      last_name: last,
-      relationship: relationships[i] || null,
-      phone: phones[i] || null,
-      email: emails[i] || null,
-      address: addresses[i] || null,
-    })
+  for (let i = 0; i < slotCount; i++) {
+    const existingId = existingGuardianIds[i]?.trim()
 
-    if (guardianId) {
+    if (existingId) {
+      // Link an existing guardian directly — no duplicate record created.
       await supabase.from('student_guardians').insert({
-        student_id: student.id,
-        guardian_id: guardianId,
+        student_id: studentId,
+        guardian_id: existingId,
         is_primary_contact: i === 0,
       })
+      continue
     }
 
-      for (let i = 0; i < names.length; i++) {
     if (!names[i]?.trim()) continue
     const [first, ...rest] = names[i].trim().split(' ')
     const last = rest.join(' ') || first
@@ -116,16 +118,15 @@ export async function createStudent(formData: FormData) {
 
     if (guardianId) {
       await supabase.from('student_guardians').insert({
-        student_id: student.id,
+        student_id: studentId,
         guardian_id: guardianId,
         is_primary_contact: i === 0,
       })
       await saveGuardianCustomFieldsAtIndex(supabase, schoolId, guardianId, formData, i)
     }
   }
-  }
 
-  await saveCustomFields(supabase, schoolId, student.id, formData)
+  await saveCustomFields(supabase, schoolId, studentId, formData)
 
   const { data: classRow } = await supabase.from('classes').select('name').eq('id', classId).single()
   const { data: armRow } = armId
@@ -135,7 +136,11 @@ export async function createStudent(formData: FormData) {
   const fullName = `${formData.get('first_name')} ${formData.get('last_name')}`
 
   revalidatePath('/dashboard/students')
-  redirect(`/dashboard/students/success?id=${student.id}&name=${encodeURIComponent(fullName)}&class=${encodeURIComponent(classLabel)}`)
+  if (from === 'my-class') revalidatePath('/dashboard/my-class')
+
+  redirect(
+    `/dashboard/students/success?id=${studentId}&name=${encodeURIComponent(fullName)}&class=${encodeURIComponent(classLabel)}${from ? `&from=${from}` : ''}`
+  )
 }
 
 export async function updateStudent(studentId: string, formData: FormData) {
@@ -267,8 +272,9 @@ export async function updateStudent(studentId: string, formData: FormData) {
 
   await saveCustomFields(supabase, schoolId, studentId, formData)
 
+  const from = formData.get('from') as string
   revalidatePath(`/dashboard/students/${studentId}`)
-  redirect(`/dashboard/students/${studentId}`)
+  redirect(`/dashboard/students/${studentId}${from ? `?from=${from}` : ''}`)
 }
 
 async function saveGuardianCustomFieldsAtIndex(

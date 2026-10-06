@@ -1,7 +1,8 @@
-import { supabase } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 
 export default async function Home() {
+  const supabase = createClient()
   const { data, error } = await supabase.from('permissions').select('code')
 
   return (

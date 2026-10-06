@@ -2,6 +2,12 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { User, Users, FileText, Pencil } from 'lucide-react'
+import {
+  inviteGuardianPortalAccess,
+  linkGuardianProfile,
+  revokeGuardianPortalAccess,
+} from './actions'
+import { getLinkableProfiles } from '@/lib/staff'
 
 export default async function GuardianDetailPage({
   params,
@@ -13,7 +19,7 @@ export default async function GuardianDetailPage({
 
   const { data: guardian, error } = await supabase
     .from('guardians')
-    .select('id, first_name, last_name, relationship, phone, email, address')
+    .select('id, first_name, last_name, relationship, phone, email, address, school_id, profile_id')
     .eq('id', id)
     .single()
 
@@ -38,6 +44,103 @@ export default async function GuardianDetailPage({
   const valueByDefId = new Map((fieldValues ?? []).map((v) => [v.definition_id, v.value]))
 
   const initials = `${guardian.first_name[0]}${guardian.last_name[0]}`
+
+  // Portal Access
+  let linkedProfile: { id: string; first_name: string; last_name: string } | null = null
+  if (guardian.profile_id) {
+    const { data } = await supabase
+      .from('profiles')
+      .select('id, first_name, last_name')
+      .eq('id', guardian.profile_id)
+      .single()
+    linkedProfile = data
+  }
+  const linkableProfiles = guardian.profile_id
+    ? []
+    : await getLinkableProfiles(supabase, guardian.school_id)
+
+  const { data: assignableRoles } = guardian.profile_id
+    ? { data: [] }
+    : await supabase
+        .from('roles')
+        .select('id, name')
+        .eq('school_id', guardian.school_id)
+        .order('name')
+
+  const portalAccessContent = (
+    <div className="bg-surface border border-border rounded-xl p-5">
+      <h3 className="text-sm font-medium text-text-primary mb-3">Portal Access</h3>
+
+      {linkedProfile ? (
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-text-secondary">
+            Linked to{' '}
+            <span className="text-text-primary font-medium">
+              {linkedProfile.first_name} {linkedProfile.last_name}
+            </span>
+            's login.
+          </p>
+          <form action={revokeGuardianPortalAccess.bind(null, guardian.id)}>
+            <button type="submit" className="text-xs text-red-600 hover:text-red-700">
+              Revoke
+            </button>
+          </form>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          <form action={inviteGuardianPortalAccess.bind(null, guardian.id)} className="space-y-2">
+            <div className="flex gap-2">
+              <input
+                type="email"
+                name="email"
+                required
+                defaultValue={guardian.email ?? ''}
+                placeholder="guardian's email address"
+                className="flex-1 rounded-lg border border-border px-3 py-2 text-sm"
+              />
+            </div>
+            <div className="flex gap-2">
+              <select name="roleId" required className="flex-1 rounded-lg border border-border px-3 py-2 text-sm">
+                <option value="">Select a role…</option>
+                {assignableRoles?.map((r) => (
+                  <option key={r.id} value={r.id}>{r.name}</option>
+                ))}
+              </select>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-primary-hover"
+              >
+                Invite
+              </button>
+            </div>
+          </form>
+
+          {linkableProfiles.length > 0 && (
+            <form action={linkGuardianProfile.bind(null, guardian.id)} className="flex gap-2">
+              <select
+                name="profileId"
+                required
+                className="flex-1 rounded-lg border border-border px-3 py-2 text-sm"
+              >
+                <option value="">Or link an existing login…</option>
+                {linkableProfiles.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.first_name} {p.last_name}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="submit"
+                className="px-4 py-2 border border-border rounded-lg text-sm hover:bg-background"
+              >
+                Link
+              </button>
+            </form>
+          )}
+        </div>
+      )}
+    </div>
+  )
 
   return (
     <div className="px-8 py-8 max-w-2xl">
@@ -136,6 +239,8 @@ export default async function GuardianDetailPage({
             <p className="text-sm text-text-muted">Not linked to any students yet.</p>
           )}
         </section>
+
+        {portalAccessContent}
       </div>
     </div>
   )
