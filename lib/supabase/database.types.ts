@@ -168,30 +168,36 @@ export type Database = {
           class_id: string
           date: string
           id: string
+          marked_at: string
           marked_by: string | null
           school_id: string
           status_id: string
           student_id: string
+          subject_id: string | null
         }
         Insert: {
           arm_id?: string | null
           class_id: string
           date: string
           id?: string
+          marked_at?: string
           marked_by?: string | null
           school_id: string
           status_id: string
           student_id: string
+          subject_id?: string | null
         }
         Update: {
           arm_id?: string | null
           class_id?: string
           date?: string
           id?: string
+          marked_at?: string
           marked_by?: string | null
           school_id?: string
           status_id?: string
           student_id?: string
+          subject_id?: string | null
         }
         Relationships: [
           {
@@ -234,6 +240,13 @@ export type Database = {
             columns: ["student_id"]
             isOneToOne: false
             referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
             referencedColumns: ["id"]
           },
         ]

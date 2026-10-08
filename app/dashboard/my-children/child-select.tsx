@@ -1,5 +1,7 @@
 'use client'
 
+import { useRouter, useSearchParams } from 'next/navigation'
+
 export function ChildSelect({
   children,
   selectedStudentId,
@@ -7,22 +9,59 @@ export function ChildSelect({
   children: { id: string; first_name: string; last_name: string; admission_no: string }[]
   selectedStudentId: string
 }) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
   if (children.length <= 1) return null
 
+  function handleChange(childId: string) {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('child', childId)
+    router.push(`/dashboard/my-children?${params.toString()}`)
+  }
+
   return (
-    <form method="get" className="flex items-center gap-2">
-      <select
-        name="child"
-        defaultValue={selectedStudentId}
-        onChange={(e) => e.currentTarget.form?.requestSubmit()}
-        className="rounded-lg border border-border px-3 py-1.5 text-sm"
-      >
-        {children.map((c) => (
-          <option key={c.id} value={c.id}>
-            {c.first_name} {c.last_name} &middot; {c.admission_no}
-          </option>
-        ))}
-      </select>
-    </form>
+    <select
+      value={selectedStudentId}
+      onChange={(e) => handleChange(e.target.value)}
+      className="rounded-lg border border-border px-3 py-1.5 text-sm bg-surface text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
+    >
+      {children.map((c) => (
+        <option key={c.id} value={c.id}>
+          {c.first_name} {c.last_name} &middot; {c.admission_no}
+        </option>
+      ))}
+    </select>
+  )
+}
+
+export function ChildrenTermSelect({
+  terms,
+  selectedTermId,
+}: {
+  terms: { id: string; name: string; academic_sessions: { name: string } | null }[]
+  selectedTermId: string
+}) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  function handleChange(termId: string) {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('term', termId)
+    router.push(`/dashboard/my-children?${params.toString()}`)
+  }
+
+  return (
+    <select
+      value={selectedTermId}
+      onChange={(e) => handleChange(e.target.value)}
+      className="rounded-lg border border-border px-3 py-1.5 text-sm bg-surface text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
+    >
+      {terms.map((t) => (
+        <option key={t.id} value={t.id}>
+          {t.academic_sessions?.name ? `${t.academic_sessions.name} · ` : ''}{t.name}
+        </option>
+      ))}
+    </select>
   )
 }

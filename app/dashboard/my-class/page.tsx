@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import Link from 'next/link'
 
 export default async function MyClassPage() {
@@ -44,9 +45,13 @@ export default async function MyClassPage() {
     )
   }
 
+  const admin = createAdminClient()
+
   const sections = await Promise.all(
     myAssignments.map(async (a) => {
-      let q = supabase
+      // Use admin client so the RLS policy on the `students` table does not
+      // block the join — teachers don't have blanket SELECT on students.
+      let q = admin
         .from('enrolments')
         .select('student_id, students(id, first_name, last_name, admission_no, status)')
         .eq('class_id', a.class_id)
