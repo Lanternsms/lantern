@@ -26,12 +26,15 @@ const ALL_NAV_ITEMS: NavItem[] = [
   { label: 'My Children',       href: '/dashboard/my-children',   scope: 'guardian' },
   { label: 'Users',             href: '/dashboard/users',         permission: ['users.invite', 'users.edit', 'users.view_all'] },
   { label: 'Attendance', href: '/dashboard/attendance', permission: ['attendance.manage', 'attendance.view_all'] },
-{ label: 'Mark Attendance', href: '/dashboard/attendance', scope: 'teacher' },
-{ label: 'Attendance Categories', href: '/dashboard/attendance/settings', permission: 'settings.manage' },
+  { label: 'Mark Attendance', href: '/dashboard/attendance', scope: 'teacher' },
+  { label: 'Attendance Categories', href: '/dashboard/attendance/settings', permission: 'settings.manage' },
+  { label: 'Fee Structures', href: '/dashboard/fees/structures', permission: 'fees.manage' },
+  { label: 'Record Payment', href: '/dashboard/fees/record', permission: 'fees.manage' },
+{ label: 'My Payments', href: '/dashboard/payments', scope: 'student' },
+{ label: 'Payments', href: '/dashboard/payments', scope: 'guardian' },
   // Items with no gate are visible to all authenticated users
   { label: 'Announcements',     href: '/dashboard/announcements' },
   { label: 'Documents',         href: '/dashboard/documents' },
-  { label: 'Fees & Payments',   href: '/dashboard/fees' },
   { label: 'Communication',     href: '/dashboard/communication' },
 ]
 
