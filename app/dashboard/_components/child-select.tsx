@@ -17,7 +17,7 @@ export function ChildSelect({
   function handleChange(childId: string) {
     const params = new URLSearchParams(searchParams.toString())
     params.set('child', childId)
-    router.push(`/dashboard/my-children?${params.toString()}`)
+    router.push(`/dashboard?${params.toString()}`)
   }
 
   return (
@@ -48,7 +48,7 @@ export function ChildrenTermSelect({
   function handleChange(termId: string) {
     const params = new URLSearchParams(searchParams.toString())
     params.set('term', termId)
-    router.push(`/dashboard/my-children?${params.toString()}`)
+    router.push(`/dashboard?${params.toString()}`)
   }
 
   return (

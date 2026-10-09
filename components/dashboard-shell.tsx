@@ -4,18 +4,18 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { signOut } from '@/app/auth/actions'
 
-
-
 export function DashboardShell({
   firstName,
   lastName,
   schoolName,
+  logoUrl,
   navItems,
   children,
 }: {
   firstName: string
   lastName: string
   schoolName: string
+  logoUrl: string | null
   navItems: { label: string; href: string }[]
   children: React.ReactNode
 }) {
@@ -37,12 +37,17 @@ export function DashboardShell({
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex items-center justify-between px-5 py-5 border-b border-white/10">
-          <span className="text-white font-semibold text-lg">Lantern</span>
+        <div className="flex items-center justify-between px-5 py-5 border-b border-text-on-sidebar/10">
+          {logoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={logoUrl} alt={schoolName} className="h-8 max-w-[160px] w-auto object-contain" />
+          ) : (
+            <span className="text-text-on-sidebar font-semibold text-lg">Lantern</span>
+          )}
           <button
             onClick={() => setIsOpen(false)}
             aria-label="Close menu"
-            className="text-white/70 hover:text-white transition-colors"
+            className="text-text-on-sidebar/70 hover:text-text-on-sidebar transition-colors"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path
@@ -61,26 +66,26 @@ export function DashboardShell({
               key={item.href}
               href={item.href}
               onClick={() => setIsOpen(false)}
-              className="block rounded-lg px-3 py-2 text-sm text-white/70 hover:text-white hover:bg-sidebar-active transition-colors"
+              className="block rounded-lg px-3 py-2 text-sm text-text-on-sidebar/70 hover:text-text-on-sidebar hover:bg-sidebar-active transition-colors"
             >
               {item.label}
             </Link>
           ))}
         </nav>
 
-        <div className="px-3 py-4 border-t border-white/10 space-y-1">
+        <div className="px-3 py-4 border-t border-text-on-sidebar/10 space-y-1">
           <Link
             href="/dashboard/help"
-            className="block rounded-lg px-3 py-2 text-sm text-white/70 hover:text-white hover:bg-sidebar-active transition-colors"
+            className="block rounded-lg px-3 py-2 text-sm text-text-on-sidebar/70 hover:text-text-on-sidebar hover:bg-sidebar-active transition-colors"
           >
             Help & Support
           </Link>
           <div className="flex items-center justify-between px-3 py-2">
-            <p className="text-sm text-white font-medium">{firstName} {lastName}</p>
+            <p className="text-sm text-text-on-sidebar font-medium">{firstName} {lastName}</p>
             <form action={signOut}>
               <button
                 type="submit"
-                className="text-xs text-white/50 hover:text-white transition-colors"
+                className="text-xs text-text-on-sidebar/50 hover:text-text-on-sidebar transition-colors"
               >
                 Log out
               </button>
