@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { GuardianDashboard } from './_components/guardian-dashboard'
+import { SetupChecklist } from './_components/setup-checklist'
 
 export default async function DashboardPage({
   searchParams,
@@ -32,6 +33,7 @@ export default async function DashboardPage({
 
   return (
     <div className="px-8 py-8">
+      <SetupChecklist />
       <h1 className="text-xl font-semibold text-text-primary">
         Welcome, {profile?.first_name}
       </h1>

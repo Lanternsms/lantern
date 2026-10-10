@@ -46,8 +46,13 @@ export default async function DashboardLayout({
   children: React.ReactNode
 }) {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  if (!user) {
+    // If getUser() came back with an error, a session existed but its
+    // refresh token is invalid/expired — distinct from never having
+    // logged in at all, which returns null with no error.
+    redirect(authError ? '/session-expired' : '/login')
+  }
 
   const [profile, school, ctx] = await Promise.all([
     supabase.from('profiles').select('first_name, last_name').eq('id', user.id).single(),

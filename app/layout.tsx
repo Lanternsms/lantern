@@ -1,5 +1,6 @@
 import { Questrial } from 'next/font/google'
 import './globals.css'
+import { OfflineBanner } from '@/components/offline-banner'
 
 const questrial = Questrial({
   weight: '400',
@@ -14,7 +15,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={questrial.variable}>
-      <body>{children}</body>
+      <body>
+        <OfflineBanner />
+        {children}
+      </body>
     </html>
   )
 }

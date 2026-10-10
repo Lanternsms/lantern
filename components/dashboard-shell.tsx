@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { signOut } from '@/app/auth/actions'
+import { GlobalSearch } from '@/components/global-search'
 
 export function DashboardShell({
   firstName,
@@ -23,7 +24,6 @@ export function DashboardShell({
 
   return (
     <div className="min-h-screen bg-surface-muted">
-      {/* Backdrop */}
       <div
         onClick={() => setIsOpen(false)}
         className={`fixed inset-0 bg-black/30 z-30 transition-opacity duration-300 ${
@@ -31,7 +31,6 @@ export function DashboardShell({
         }`}
       />
 
-      {/* Sidebar */}
       <aside
         className={`fixed top-0 left-0 h-full w-60 bg-sidebar flex flex-col z-40 transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
@@ -53,12 +52,7 @@ export function DashboardShell({
             className="absolute right-5 top-5 text-text-on-sidebar/70 hover:text-text-on-sidebar transition-colors"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path
-                d="M15 5L5 15M5 5l10 10"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
+              <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
           </button>
         </div>
@@ -86,10 +80,7 @@ export function DashboardShell({
           <div className="flex items-center justify-between px-3 py-2">
             <p className="text-sm text-text-on-sidebar font-medium">{firstName} {lastName}</p>
             <form action={signOut}>
-              <button
-                type="submit"
-                className="text-xs text-text-on-sidebar/50 hover:text-text-on-sidebar transition-colors"
-              >
+              <button type="submit" className="text-xs text-text-on-sidebar/50 hover:text-text-on-sidebar transition-colors">
                 Log out
               </button>
             </form>
@@ -97,20 +88,10 @@ export function DashboardShell({
         </div>
       </aside>
 
-      {/* Top bar — hamburger opens the sidebar */}
       <header className="h-14 bg-surface border-b border-border flex items-center gap-4 px-6">
-        <button
-          onClick={() => setIsOpen(true)}
-          aria-label="Open menu"
-          className="text-text-primary cursor-pointer"
-        >
+        <button onClick={() => setIsOpen(true)} aria-label="Open menu" className="text-text-primary cursor-pointer">
           <svg width="22" height="16" viewBox="0 0 22 16" fill="none">
-            <path
-              d="M0 1h22M0 8h22M0 15h22"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
+            <path d="M0 1h22M0 8h22M0 15h22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
         </button>
 
@@ -120,6 +101,10 @@ export function DashboardShell({
             <img src={logoUrl} alt="" className="h-6 w-6 rounded object-contain shrink-0" />
           )}
           <span className="text-sm font-medium text-text-primary truncate">{schoolName}</span>
+        </div>
+
+        <div className="ml-auto">
+          <GlobalSearch />
         </div>
       </header>
 
