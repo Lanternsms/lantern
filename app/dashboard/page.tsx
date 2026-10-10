@@ -4,6 +4,9 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { GuardianDashboard } from './_components/guardian-dashboard'
 import { SetupChecklist } from './_components/setup-checklist'
+import { getMyAccessContext } from '@/lib/permissions'
+import { AdminDashboard } from './_components/admin-dashboard'
+import { RoleAwareDashboard } from './_components/role-aware-dashboard'
 
 export default async function DashboardPage({
   searchParams,
@@ -25,18 +28,9 @@ export default async function DashboardPage({
     return <GuardianDashboard guardianRow={guardianRow} searchParams={sp} />
   }
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('first_name')
-    .eq('id', user.id)
-    .single()
-
-  return (
-    <div className="px-8 py-8">
-      <SetupChecklist />
-      <h1 className="text-xl font-semibold text-text-primary">
-        Welcome, {profile?.first_name}
-      </h1>
-    </div>
-  )
+  const ctx = await getMyAccessContext(supabase)
+  if (ctx.permissions.has('school.manage')) {
+    return <AdminDashboard />
+  }
+  return <RoleAwareDashboard />
 }
