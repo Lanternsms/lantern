@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
+import { logSchoolAction } from '@/lib/audit/log-school-actions'
 
 async function getContext(supabase: Awaited<ReturnType<typeof createClient>>) {
   const { data: { user } } = await supabase.auth.getUser()
@@ -134,6 +135,9 @@ export async function saveScores(classSubjectId: string, formData: FormData) {
   }
 
   revalidatePath(`/dashboard/gradebook/${classSubjectId}`)
+  await logSchoolAction('scores_saved', {
+    metadata: { classSubjectId, batchId: batch.id, termId },
+  })
   redirect(`/dashboard/gradebook/${classSubjectId}?saved=1`)
 }
 
@@ -218,6 +222,10 @@ export async function submitForApproval(classSubjectId: string) {
     .from('result_batches')
     .update({ status: 'in_review', current_stage_id: firstStage.id, submitted_at: new Date().toISOString() })
     .eq('id', batch.id)
+
+  await logSchoolAction('batch_submitted_for_approval', {
+    metadata: { classSubjectId, batchId: batch.id, termId },
+  })
 
   revalidatePath(`/dashboard/gradebook/${classSubjectId}`)
   redirect(`/dashboard/gradebook/${classSubjectId}?submitted=1`)

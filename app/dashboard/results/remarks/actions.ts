@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { logSchoolAction } from '@/lib/audit/log-school-actions'
 
 export async function saveClassTeacherRemark(
   termId: string,
@@ -18,6 +19,7 @@ export async function saveClassTeacherRemark(
   })
 
   if (error) throw new Error(error.message)
+  await logSchoolAction('class_teacher_remark_saved', { metadata: { studentId, termId } })
   revalidatePath('/dashboard/results/remarks')
 }
 
@@ -36,5 +38,6 @@ export async function savePrincipalRemark(
   })
 
   if (error) throw new Error(error.message)
+  await logSchoolAction('principal_remark_saved', { metadata: { studentId, termId } })
   revalidatePath('/dashboard/results/remarks')
 }

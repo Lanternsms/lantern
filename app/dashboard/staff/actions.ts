@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
+import { logSchoolAction } from '@/lib/audit/log-school-actions'
 
 async function getSchoolId(supabase: Awaited<ReturnType<typeof createClient>>) {
   const { data: { user } } = await supabase.auth.getUser()
@@ -64,6 +65,14 @@ export async function createStaff(formData: FormData) {
 
   await saveCustomFields(supabase, schoolId, staff.id, formData)
 
+  await logSchoolAction('staff_created', {
+    metadata: {
+      staffId: staff.id,
+      staffNo: formData.get('staff_no'),
+      name: `${formData.get('first_name')} ${formData.get('last_name')}`.trim(),
+    },
+  })
+
   revalidatePath('/dashboard/staff')
   redirect(`/dashboard/staff/${staff.id}`)
 }
@@ -91,6 +100,14 @@ export async function updateStaff(staffId: string, formData: FormData) {
   }
 
   await saveCustomFields(supabase, schoolId, staffId, formData)
+
+  await logSchoolAction('staff_updated', {
+    metadata: {
+      staffId,
+      name: `${formData.get('first_name')} ${formData.get('last_name')}`.trim(),
+      status: formData.get('status'),
+    },
+  })
 
   revalidatePath(`/dashboard/staff/${staffId}`)
   redirect(`/dashboard/staff/${staffId}`)

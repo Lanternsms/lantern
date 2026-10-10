@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { logSchoolAction } from '@/lib/audit/log-school-actions'
 
 export async function saveAttendance(params: {
   classId: string
@@ -40,6 +41,15 @@ export async function saveAttendance(params: {
 
   if (error) return { error: error.message }
 
+  await logSchoolAction('attendance_marked', {
+    metadata: {
+      classId: params.classId,
+      date: params.date,
+      subjectId: params.subjectId,
+      studentCount: params.marks.length,
+    },
+  })
+
   revalidatePath('/dashboard/attendance')
   return { success: true }
 }
@@ -66,11 +76,13 @@ export async function saveAttendanceStatus(formData: FormData) {
       .update({ code, label, counts_as_present: countsAsPresent })
       .eq('id', id)
     if (error) return { error: error.message }
+    await logSchoolAction('attendance_status_updated', { metadata: { id, code, label } })
   } else {
     const { error } = await supabase
       .from('attendance_statuses')
       .insert({ school_id: profile.school_id, code, label, counts_as_present: countsAsPresent })
     if (error) return { error: error.message }
+    await logSchoolAction('attendance_status_created', { metadata: { code, label } })
   }
 
   revalidatePath('/dashboard/attendance/settings')
@@ -83,6 +95,7 @@ export async function deleteAttendanceStatus(id: string) {
   // the delete rather than silently orphaning history — surfaced as error.message.
   const { error } = await supabase.from('attendance_statuses').delete().eq('id', id)
   if (error) return { error: error.message }
+  await logSchoolAction('attendance_status_deleted', { metadata: { id } })
   revalidatePath('/dashboard/attendance/settings')
   return { success: true }
 }

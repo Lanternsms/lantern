@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
+import { logSchoolAction } from '@/lib/audit/log-school-actions'
 
 async function getSchoolId(supabase: Awaited<ReturnType<typeof createClient>>) {
   const { data: { user } } = await supabase.auth.getUser()
@@ -47,6 +48,15 @@ export async function inviteUser(formData: FormData) {
   }
 
   await admin.from('user_roles').insert({ user_id: invited.user.id, role_id: roleId, school_id: schoolId })
+
+  await logSchoolAction('user_invited', {
+    metadata: {
+      invitedUserId: invited.user.id,
+      email,
+      name: `${firstName} ${lastName}`.trim(),
+      roleId,
+    },
+  })
 
   revalidatePath('/dashboard/users')
   redirect('/dashboard/users')

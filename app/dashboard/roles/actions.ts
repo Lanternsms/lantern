@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
+import { logSchoolAction } from '@/lib/audit/log-school-actions'
 
 async function getSchoolId(supabase: Awaited<ReturnType<typeof createClient>>) {
   const { data: { user } } = await supabase.auth.getUser()
@@ -34,6 +35,7 @@ export async function createRole(formData: FormData) {
   }
 
   revalidatePath('/dashboard/roles')
+  await logSchoolAction('role_created', { metadata: { roleId: role.id, name: formData.get('name') } })
   redirect(`/dashboard/roles/${role.id}`)
 }
 
@@ -54,6 +56,7 @@ export async function updateRole(roleId: string, formData: FormData) {
 
   revalidatePath('/dashboard/roles')
   revalidatePath(`/dashboard/roles/${roleId}`)
+  await logSchoolAction('role_updated', { metadata: { roleId, name: formData.get('name') } })
 }
 
 export async function deleteRole(formData: FormData) {
@@ -79,6 +82,7 @@ export async function deleteRole(formData: FormData) {
   }
 
   revalidatePath('/dashboard/roles')
+  await logSchoolAction('role_deleted', { metadata: { roleId } })
   redirect('/dashboard/roles')
 }
 
@@ -88,6 +92,7 @@ export async function grantPermission(formData: FormData) {
   const permissionId = formData.get('permission_id') as string
 
   await supabase.from('role_permissions').insert({ role_id: roleId, permission_id: permissionId })
+  await logSchoolAction('role_permission_granted', { metadata: { roleId, permissionId } })
   revalidatePath(`/dashboard/roles/${roleId}`)
 }
 
@@ -97,5 +102,6 @@ export async function revokePermission(formData: FormData) {
   const permissionId = formData.get('permission_id') as string
 
   await supabase.from('role_permissions').delete().eq('role_id', roleId).eq('permission_id', permissionId)
+  await logSchoolAction('role_permission_revoked', { metadata: { roleId, permissionId } })
   revalidatePath(`/dashboard/roles/${roleId}`)
 }

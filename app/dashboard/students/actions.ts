@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { findOrCreateGuardian } from '@/app/dashboard/guardians/actions'
+import { logSchoolAction } from '@/lib/audit/log-school-actions'
 
 async function saveCustomFields(
   supabase: Awaited<ReturnType<typeof createClient>>,
@@ -137,6 +138,15 @@ export async function createStudent(formData: FormData) {
 
   revalidatePath('/dashboard/students')
   if (from === 'my-class') revalidatePath('/dashboard/my-class')
+
+  await logSchoolAction('student_created', {
+    metadata: {
+      studentId,
+      admissionNo: formData.get('admission_no'),
+      name: `${formData.get('first_name')} ${formData.get('last_name')}`.trim(),
+      classLabel,
+    },
+  })
 
   redirect(
     `/dashboard/students/success?id=${studentId}&name=${encodeURIComponent(fullName)}&class=${encodeURIComponent(classLabel)}${from ? `&from=${from}` : ''}`
@@ -271,6 +281,14 @@ export async function updateStudent(studentId: string, formData: FormData) {
   }
 
   await saveCustomFields(supabase, schoolId, studentId, formData)
+
+  await logSchoolAction('student_updated', {
+    metadata: {
+      studentId,
+      name: `${formData.get('first_name')} ${formData.get('last_name')}`.trim(),
+      status: formData.get('status'),
+    },
+  })
 
   const from = formData.get('from') as string
   revalidatePath(`/dashboard/students/${studentId}`)
@@ -415,5 +433,8 @@ export async function bulkImportStudents(rows: BulkImportRow[]): Promise<BulkImp
   }
 
   revalidatePath('/dashboard/students')
+  if (successCount > 0) {
+    await logSchoolAction('students_bulk_imported', { metadata: { successCount, errorCount: errors.length } })
+  }
   return { successCount, errors }
 }

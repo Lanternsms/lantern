@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { randomUUID } from 'crypto'
+import { logSchoolAction } from '@/lib/audit/log-school-actions'
 
 export async function saveFeeStructure(formData: FormData) {
   const supabase = await createClient()
@@ -29,11 +30,13 @@ export async function saveFeeStructure(formData: FormData) {
       .update({ name, amount, session_id: sessionId, term_id: termId, class_id: classId })
       .eq('id', id)
     if (error) return { error: error.message }
+    await logSchoolAction('fee_structure_updated', { metadata: { id, name, amount } })
   } else {
     const { error } = await supabase
       .from('fee_structures')
       .insert({ school_id: profile.school_id, name, amount, session_id: sessionId, term_id: termId, class_id: classId })
     if (error) return { error: error.message }
+    await logSchoolAction('fee_structure_created', { metadata: { name, amount } })
   }
 
   revalidatePath('/dashboard/fees/structures')
@@ -46,6 +49,7 @@ export async function deleteFeeStructure(id: string) {
   // loudly if payments already reference it, rather than orphaning history.
   const { error } = await supabase.from('fee_structures').delete().eq('id', id)
   if (error) return { error: error.message }
+  await logSchoolAction('fee_structure_deleted', { metadata: { id } })
   revalidatePath('/dashboard/fees/structures')
   return { success: true }
 }
@@ -97,6 +101,16 @@ export async function recordPayment(params: {
   })
 
   if (error) return { error: error.message }
+
+  await logSchoolAction('payment_recorded', {
+    metadata: {
+      paymentId,
+      studentId: params.studentId,
+      feeStructureId: params.feeStructureId,
+      amountPaid: feeStructure.amount,
+      paymentMethod: params.paymentMethod,
+    },
+  })
 
   revalidatePath('/dashboard/fees/record')
   return { success: true, paymentId }

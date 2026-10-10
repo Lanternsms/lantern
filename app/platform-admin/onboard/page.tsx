@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { hasValidPlatformAdminSession } from '@/lib/platform-admin/auth'
 import { lockPlatformAdmin } from '../actions'
 import { OnboardForm } from './onboard-form'
+import { PlatformAdminNav } from '../_components/platform-admin-nav'
 
 export default async function OnboardPage() {
   if (!(await hasValidPlatformAdminSession())) {
@@ -22,6 +23,7 @@ export default async function OnboardPage() {
             <button type="submit" className="text-xs text-text-secondary hover:text-text-primary">Lock</button>
           </form>
         </div>
+        <PlatformAdminNav active="onboard" />
         <OnboardForm />
       </div>
     </div>

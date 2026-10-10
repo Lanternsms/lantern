@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
+import { logSchoolAction } from '@/lib/audit/log-school-actions'
 
 export async function decideBatch(batchId: string, formData: FormData) {
   const supabase = await createClient()
@@ -75,6 +76,7 @@ export async function decideBatch(batchId: string, formData: FormData) {
     if (updateError) {
       redirect(`/dashboard/approvals/${batchId}?error=${encodeURIComponent('Could not return this batch: ' + updateError.message)}`)
     }
+    await logSchoolAction('batch_returned_to_teacher', { metadata: { batchId, comment } })
   } else if (action === 'approve') {
     if (stage?.is_final) {
       // Use admin client: publishing sets status='published' which the RLS
@@ -87,6 +89,7 @@ export async function decideBatch(batchId: string, formData: FormData) {
       if (updateError) {
         redirect(`/dashboard/approvals/${batchId}?error=${encodeURIComponent('Could not publish this batch: ' + updateError.message)}`)
       }
+      await logSchoolAction('batch_published', { metadata: { batchId, comment } })
     } else {
       // Picks the NEXT HIGHER sequence_order that actually exists,
       // instead of assuming current + 1 — safe even if stage numbers
@@ -115,6 +118,7 @@ export async function decideBatch(batchId: string, formData: FormData) {
       if (updateError) {
         redirect(`/dashboard/approvals/${batchId}?error=${encodeURIComponent('Could not advance this batch: ' + updateError.message)}`)
       }
+      await logSchoolAction('batch_advanced_to_next_stage', { metadata: { batchId, nextStageId: nextStage!.id } })
     }
   }
 

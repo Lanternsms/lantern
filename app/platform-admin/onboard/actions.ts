@@ -2,6 +2,7 @@
 
 import { createAdminClient } from '@/lib/supabase/admin'
 import { hasValidPlatformAdminSession } from '@/lib/platform-admin/auth'
+import { logPlatformAction } from '@/lib/platform-admin/audit'
 
 function slugify(input: string) {
     return input.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
@@ -45,16 +46,29 @@ export async function createSchool(formData: FormData) {
         return { error: `Couldn't create school: ${schoolError?.message ?? 'unknown error'} (slug may already be taken)` }
     }
 
-    async function rollback(createdUserId?: string) {
+    async function rollback(step: string, createdUserId?: string) {
         await admin.from('schools').delete().eq('id', school!.id)
         if (createdUserId) await admin.auth.admin.deleteUser(createdUserId)
+        await logPlatformAction('school_onboard_rolled_back', {
+            schoolId: school!.id,
+            metadata: { step, schoolName, slug, adminEmail },
+        })
+    }
+
+    // Seed a default subscription row now — if anything below fails, the
+    // cascade on platform_subscriptions.school_id cleans this up along
+    // with the school row, so there's nothing extra to roll back here.
+    const { error: subError } = await admin.from('platform_subscriptions').insert({ school_id: school.id })
+    if (subError) {
+        await rollback('seed_subscription')
+        return { error: `Couldn't set up billing record: ${subError.message}` }
     }
 
     const { data: invited, error: inviteError } = await admin.auth.admin.inviteUserByEmail(adminEmail, {
         redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/accept-invite`,
     })
     if (inviteError || !invited?.user) {
-        await rollback()
+        await rollback('invite_admin')
         return { error: `Couldn't invite admin: ${inviteError?.message ?? 'unknown error'}` }
     }
     const newUserId = invited.user.id
@@ -66,7 +80,7 @@ export async function createSchool(formData: FormData) {
         last_name: adminLastName,
     })
     if (profileError) {
-        await rollback(newUserId)
+        await rollback('create_profile', newUserId)
         return { error: `Couldn't create profile: ${profileError.message}` }
     }
 
@@ -77,7 +91,7 @@ export async function createSchool(formData: FormData) {
         .eq('name', 'admin')
         .single()
     if (roleError || !adminRole) {
-        await rollback(newUserId)
+        await rollback('find_admin_role', newUserId)
         return { error: `Couldn't find the system admin role: ${roleError?.message ?? 'not found — check the roles table'}` }
     }
 
@@ -87,7 +101,7 @@ export async function createSchool(formData: FormData) {
         school_id: school.id,
     })
     if (userRoleError) {
-        await rollback(newUserId)
+        await rollback('assign_admin_role', newUserId)
         return { error: `Couldn't assign admin role: ${userRoleError.message}` }
     }
 
@@ -97,7 +111,7 @@ export async function createSchool(formData: FormData) {
         .select('id')
         .single()
     if (sessionErr || !session) {
-        await rollback(newUserId)
+        await rollback('create_session', newUserId)
         return { error: `Couldn't create academic session: ${sessionErr?.message ?? 'unknown error'}` }
     }
 
@@ -110,7 +124,7 @@ export async function createSchool(formData: FormData) {
         is_current: true,
     })
     if (termErr) {
-        await rollback(newUserId)
+        await rollback('create_term', newUserId)
         return { error: `Couldn't create term: ${termErr.message}` }
     }
 
@@ -121,9 +135,14 @@ export async function createSchool(formData: FormData) {
         { school_id: school.id, code: 'excused', label: 'Excused', counts_as_present: false },
     ])
     if (statusErr) {
-        await rollback(newUserId)
+        await rollback('seed_attendance_statuses', newUserId)
         return { error: `Couldn't seed attendance categories: ${statusErr.message}` }
     }
+
+    await logPlatformAction('school_onboarded', {
+        schoolId: school.id,
+        metadata: { schoolName, slug: school.slug, adminEmail, adminFirstName, adminLastName, sessionName },
+    })
 
     return { success: true, schoolId: school.id, slug: school.slug, adminEmail }
 }

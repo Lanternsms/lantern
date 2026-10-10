@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { logSchoolAction } from '@/lib/audit/log-school-actions'
 
 export async function saveBranding(formData: FormData) {
   const supabase = await createClient()
@@ -61,6 +62,8 @@ export async function saveBranding(formData: FormData) {
     return { error: "Couldn't save — you may not have permission to edit school settings." }
   }
 
+  await logSchoolAction('branding_updated', { metadata: { theme, logoChanged: Boolean(logo_url) } })
+
   revalidatePath('/', 'layout')
   return { success: true }
 }
@@ -83,9 +86,6 @@ export async function removeLogo() {
     .eq('id', profile.school_id)
     .single()
 
-  // Best-effort: remove the file from storage if we can tell where it lives.
-  // Even if this fails (e.g. already gone), we still clear logo_url below
-  // so the sidebar falls back to the "Lantern" text.
   if (school?.logo_url) {
     const marker = '/school-logos/'
     const idx = school.logo_url.indexOf(marker)
@@ -105,6 +105,8 @@ export async function removeLogo() {
   if (updateError) {
     return { error: "Couldn't remove logo — you may not have permission to edit school settings." }
   }
+
+  await logSchoolAction('logo_removed')
 
   revalidatePath('/', 'layout')
   return { success: true }

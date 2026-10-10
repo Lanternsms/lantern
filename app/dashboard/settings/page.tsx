@@ -6,6 +6,8 @@ export default function SettingsHubPage() {
   const sections = [
     { href: '/dashboard/settings/branding', title: 'Branding & Theme', description: "Logo, colors, and how your school's portal looks." },
     { href: '/dashboard/attendance/settings', title: 'Attendance Categories', description: 'Configure the attendance status options teachers can mark.' },
+    { href: '/dashboard/settings/billing', title: 'Billing', description: 'Manage your subscription and billing information.' },
+    { href: '/dashboard/settings/audit-log', title: 'Audit-Log', description: 'View a log of all actions taken in the portal.'}
   ]
 
   return (
