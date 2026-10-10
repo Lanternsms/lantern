@@ -64,3 +64,48 @@ export async function saveBranding(formData: FormData) {
   revalidatePath('/', 'layout')
   return { success: true }
 }
+
+export async function removeLogo() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not signed in.' }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('school_id')
+    .eq('id', user.id)
+    .single()
+  if (!profile) return { error: 'Profile not found.' }
+
+  const { data: school } = await supabase
+    .from('schools')
+    .select('logo_url')
+    .eq('id', profile.school_id)
+    .single()
+
+  // Best-effort: remove the file from storage if we can tell where it lives.
+  // Even if this fails (e.g. already gone), we still clear logo_url below
+  // so the sidebar falls back to the "Lantern" text.
+  if (school?.logo_url) {
+    const marker = '/school-logos/'
+    const idx = school.logo_url.indexOf(marker)
+    if (idx !== -1) {
+      const path = school.logo_url.slice(idx + marker.length)
+      await supabase.storage.from('school-logos').remove([path])
+    }
+  }
+
+  const { error: updateError } = await supabase
+    .from('schools')
+    .update({ logo_url: null })
+    .eq('id', profile.school_id)
+    .select()
+    .single()
+
+  if (updateError) {
+    return { error: "Couldn't remove logo — you may not have permission to edit school settings." }
+  }
+
+  revalidatePath('/', 'layout')
+  return { success: true }
+}

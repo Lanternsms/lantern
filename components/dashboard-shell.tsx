@@ -37,17 +37,20 @@ export function DashboardShell({
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex items-center justify-between px-5 py-5 border-b border-text-on-sidebar/10">
+        <div className="relative flex flex-col items-center justify-center gap-1 px-5 py-5 border-b border-text-on-sidebar/10">
           {logoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={logoUrl} alt={schoolName} className="h-8 max-w-[160px] w-auto object-contain" />
           ) : (
             <span className="text-text-on-sidebar font-semibold text-lg">Lantern</span>
           )}
+          <span className="text-text-on-sidebar/80 text-xs font-medium text-center truncate max-w-[180px]">
+            {schoolName}
+          </span>
           <button
             onClick={() => setIsOpen(false)}
             aria-label="Close menu"
-            className="text-text-on-sidebar/70 hover:text-text-on-sidebar transition-colors"
+            className="absolute right-5 top-5 text-text-on-sidebar/70 hover:text-text-on-sidebar transition-colors"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path
@@ -111,7 +114,13 @@ export function DashboardShell({
           </svg>
         </button>
 
-        <span className="text-sm font-medium text-text-primary">{schoolName}</span>
+        <div className="flex items-center gap-2 min-w-0">
+          {logoUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={logoUrl} alt="" className="h-6 w-6 rounded object-contain shrink-0" />
+          )}
+          <span className="text-sm font-medium text-text-primary truncate">{schoolName}</span>
+        </div>
       </header>
 
       <main>{children}</main>

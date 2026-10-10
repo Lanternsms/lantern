@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState, useTransition } from 'react'
 import { contrastRatio, darken, isValidHex, suggestTextColor } from '@/lib/theme/color-utils'
-import { saveBranding } from './actions'
+import { saveBranding, removeLogo } from './actions'
 
 type Theme = {
   primary?: string
@@ -107,6 +107,7 @@ export function BrandingEditor({
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [isPending, startTransition] = useTransition()
+  const [isRemovingLogo, startRemoveLogoTransition] = useTransition()
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   const suggestedOnPrimary = useMemo(() => suggestTextColor(primary), [primary])
@@ -118,6 +119,34 @@ export function BrandingEditor({
     if (!file) return
     setLogoFile(file)
     setLogoPreview(URL.createObjectURL(file))
+  }
+
+  function handleRemoveLogo() {
+    // An unsaved selection in the file picker — just discard it locally,
+    // no need to touch the server or the already-saved logo (if any).
+    if (logoFile) {
+      setLogoFile(null)
+      setLogoPreview(initialLogoUrl)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+      return
+    }
+
+    if (!initialLogoUrl) return
+    const confirmed = window.confirm(
+      'Remove your school\'s logo? The sidebar will show the "Lantern" text instead until you upload a new one.'
+    )
+    if (!confirmed) return
+
+    setMessage(null)
+    startRemoveLogoTransition(async () => {
+      const result = await removeLogo()
+      if (result?.error) {
+        setMessage({ type: 'error', text: result.error })
+      } else {
+        setLogoPreview(null)
+        setMessage({ type: 'success', text: 'Logo removed — showing the default "Lantern" text until you upload a new one.' })
+      }
+    })
   }
 
   function handleReset() {
@@ -170,13 +199,26 @@ export function BrandingEditor({
                 <span className="text-xs text-text-secondary">No logo</span>
               )}
             </div>
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="text-sm font-medium text-primary hover:underline"
-            >
-              Upload new logo
-            </button>
+            <div className="flex flex-col items-start gap-1">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isRemovingLogo}
+                className="text-sm font-medium text-primary hover:underline disabled:opacity-60"
+              >
+                Upload new logo
+              </button>
+              {logoPreview && (
+                <button
+                  type="button"
+                  onClick={handleRemoveLogo}
+                  disabled={isRemovingLogo || isPending}
+                  className="text-sm font-medium text-red-600 hover:underline disabled:opacity-60"
+                >
+                  {isRemovingLogo ? 'Removing…' : 'Remove logo'}
+                </button>
+              )}
+            </div>
             <input
               ref={fileInputRef}
               type="file"
@@ -215,72 +257,71 @@ export function BrandingEditor({
         </div>
       </div>
 
-
       {/* LIVE PREVIEW */}
       <div className="space-y-2">
         <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wider">Live Preview</h3>
         <div className="border border-border rounded-xl overflow-hidden shadow-xs">
-          {/* Top bar — matches the real app: neutral surface, hamburger + school name only, no logo here */}
-          <div className="h-11 bg-white border-b border-border flex items-center gap-3 px-4">
-            <svg width="18" height="13" viewBox="0 0 22 16" fill="none">
-              <path d="M0 1h22M0 8h22M0 15h22" stroke="#1f2430" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-            <span className="text-xs font-medium" style={{ color: '#1f2430' }}>{schoolName}</span>
-          </div>
-
-          <div className="flex h-64">
-            {/* Sidebar — matches the real app: logo (or "Lantern" fallback) in the header, plain nav links below */}
-            <div className="w-40 shrink-0 flex flex-col" style={{ backgroundColor: sidebar }}>
-              <div className="flex items-center px-3 py-3" style={{ borderBottom: `1px solid ${textOnSidebar}1A` }}>
+          <div className="flex h-72">
+            <div className="w-40 shrink-0 p-3 space-y-2" style={{ backgroundColor: sidebar }}>
+              <div className="flex flex-col items-center justify-center gap-1 mb-4">
                 {logoPreview ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={logoPreview} alt={schoolName} className="h-5 max-w-[100px] object-contain" />
+                  <img src={logoPreview} alt="Logo" className="h-6 max-w-[120px] w-auto object-contain" />
                 ) : (
-                  <span className="text-sm font-semibold" style={{ color: textOnSidebar }}>Lantern</span>
+                  <span className="text-xs font-semibold" style={{ color: textOnSidebar }}>Lantern</span>
                 )}
+                <span
+                  className="text-[10px] font-medium text-center truncate max-w-[110px]"
+                  style={{ color: textOnSidebar, opacity: 0.8 }}
+                >
+                  {schoolName}
+                </span>
               </div>
-              <div className="px-2 py-2 space-y-0.5">
-                {['Dashboard', 'Students', 'Attendance', 'Fees'].map((item, i) => (
-                  <div
-                    key={item}
-                    className="text-xs px-2.5 py-1.5 rounded-md"
-                    style={{
-                      backgroundColor: i === 1 ? sidebarActive : 'transparent',
-                      color: textOnSidebar,
-                      opacity: i === 1 ? 1 : 0.7,
-                    }}
-                  >
-                    {item}
-                  </div>
-                ))}
-              </div>
+              {['Dashboard', 'Students', 'Attendance', 'Fees'].map((item, i) => (
+                <div
+                  key={item}
+                  className="text-xs px-2.5 py-1.5 rounded-md"
+                  style={{ backgroundColor: i === 0 ? sidebarActive : 'transparent', color: textOnSidebar, opacity: i === 0 ? 1 : 0.75 }}
+                >
+                  {item}
+                </div>
+              ))}
             </div>
 
-            <div className="flex-1 bg-surface-muted/30 p-4 space-y-3">
-              <div className="bg-surface border border-border rounded-lg p-3 shadow-xs">
-                <p className="text-xs text-text-secondary mb-2">Sample card</p>
-                <div className="flex items-center gap-2">
-                  <button className="text-xs font-medium px-3 py-1.5 rounded-lg" style={{ backgroundColor: primary, color: textOnPrimary }}>
-                    Primary Button
-                  </button>
-                  <button className="text-xs font-medium px-3 py-1.5 rounded-lg" style={{ backgroundColor: primaryHover, color: textOnPrimary }}>
-                    Hover state
-                  </button>
-                  <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: accent, color: textOnAccent }}>
-                    Accent badge
-                  </span>
-                </div>
+            <div className="flex-1 flex flex-col min-w-0">
+              <div className="h-9 bg-surface border-b border-border flex items-center gap-2 px-4 shrink-0">
+                {logoPreview && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={logoPreview} alt="" className="h-5 w-5 rounded object-contain shrink-0" />
+                )}
+                <span className="text-xs font-medium text-text-primary truncate">{schoolName}</span>
               </div>
+              <div className="flex-1 bg-surface-muted/30 p-4 space-y-3 overflow-hidden">
+                <div className="bg-surface border border-border rounded-lg p-3 shadow-xs">
+                  <p className="text-xs text-text-secondary mb-2">Sample card</p>
+                  <div className="flex items-center gap-2">
+                    <button className="text-xs font-medium px-3 py-1.5 rounded-lg" style={{ backgroundColor: primary, color: textOnPrimary }}>
+                      Primary Button
+                    </button>
+                    <button className="text-xs font-medium px-3 py-1.5 rounded-lg" style={{ backgroundColor: primaryHover, color: textOnPrimary }}>
+                      Hover state
+                    </button>
+                    <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: accent, color: textOnAccent }}>
+                      Accent badge
+                    </span>
+                  </div>
+                </div>
 
-              <div className="bg-surface border border-border rounded-lg p-3 shadow-xs">
-                <p className="text-xs text-text-secondary">Body text stays neutral — only brand elements change.</p>
-                <p className="text-sm font-medium mt-1" style={{ color: primary }}>A link or heading in your primary color</p>
+                <div className="bg-surface border border-border rounded-lg p-3 shadow-xs">
+                  <p className="text-xs text-text-secondary">Body text stays neutral — only brand elements change.</p>
+                  <p className="text-sm font-medium mt-1" style={{ color: primary }}>A link or heading in your primary color</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
         <p className="text-[11px] text-text-secondary">
-          Matches the real layout: top bar shows your school name only; the logo and colors apply to the sidebar menu.
+          Updates instantly as you pick colors. Nothing applies for other users until you save.
         </p>
       </div>
     </div>

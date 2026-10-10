@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { darken } from '@/lib/theme/color-utils'
+import { darken, deriveNeutralRamp } from '@/lib/theme/color-utils'
 
 export async function ThemeStyle() {
   const supabase = await createClient()
@@ -24,6 +24,8 @@ export async function ThemeStyle() {
   const sidebar = theme.sidebar || '#131c40'
   const accent = theme.accent || '#b9915e'
 
+  const neutrals = deriveNeutralRamp(primary)
+
   const css = `:root {
     --color-primary: ${primary};
     --color-primary-hover: ${darken(primary, 0.15)};
@@ -34,6 +36,13 @@ export async function ThemeStyle() {
     --color-text-on-primary: ${theme.text_on_primary || '#ffffff'};
     --color-text-on-sidebar: ${theme.text_on_sidebar || '#ffffff'};
     --color-text-on-accent: ${theme.text_on_accent || '#182350'};
+
+    --color-surface: ${neutrals.surface};
+    --color-surface-muted: ${neutrals.surfaceMuted};
+    --color-border: ${neutrals.border};
+    --color-text-primary: ${neutrals.textPrimary};
+    --color-text-secondary: ${neutrals.textSecondary};
+    --color-text-muted: ${neutrals.textMuted};
   }`
 
   return <style dangerouslySetInnerHTML={{ __html: css }} />
