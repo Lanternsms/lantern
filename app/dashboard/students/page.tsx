@@ -43,7 +43,7 @@ export default async function StudentsPage({
   let query = supabase
     .from('students')
     .select(
-      `id, admission_no, first_name, last_name, status,
+      `id, admission_no, first_name, last_name, status, photo_url,
        enrolments!inner ( class_id, arm_id, classes ( name ), arms ( name ) )`,
       { count: 'exact' }
     )
@@ -146,9 +146,18 @@ export default async function StudentsPage({
                     <tr key={s.id} className="border-b border-border last:border-0 hover:bg-surface-muted">
                       <td className="px-4 py-3">
                         <Link href={`/dashboard/students/${s.id}`} className="flex items-center gap-3">
-                          <span className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${avatarColor(s.first_name)}`}>
-                            {initials}
-                          </span>
+                          {s.photo_url ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={s.photo_url}
+                              alt={`${s.first_name} ${s.last_name}`}
+                              className="w-8 h-8 rounded-full object-cover border border-border shrink-0"
+                            />
+                          ) : (
+                            <span className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium shrink-0 ${avatarColor(s.first_name)}`}>
+                              {initials}
+                            </span>
+                          )}
                           <span className="text-text-primary font-medium">{s.first_name} {s.last_name}</span>
                         </Link>
                       </td>

@@ -3,8 +3,8 @@ import { notFound } from 'next/navigation'
 import { updateStudent } from '@/app/dashboard/students/actions'
 import { CustomFieldInputs } from '@/components/custom-fields'
 import { GuardianEditRepeater } from '@/components/guardian-edit-repeater'
+import { StudentPhotoUploader } from '@/components/student-photo-uploader'
 import Link from 'next/link'
-import { Camera } from 'lucide-react'
 
 export default async function EditStudentPage({
   params,
@@ -19,7 +19,7 @@ export default async function EditStudentPage({
 
   const { data: student, error: fetchError } = await supabase
     .from('students')
-    .select('id, admission_no, first_name, middle_name, last_name, date_of_birth, gender, residential_address, status')
+    .select('id, admission_no, first_name, middle_name, last_name, date_of_birth, gender, residential_address, status, photo_url')
     .eq('id', id)
     .single()
 
@@ -109,17 +109,7 @@ export default async function EditStudentPage({
         <section className="bg-surface border border-border rounded-xl p-6">
           <h2 className="text-sm font-semibold text-text-primary mb-4">Personal Information</h2>
 
-          <div className="mb-5">
-            <label className="block text-sm text-text-secondary mb-2">Student Photo</label>
-            <div className="border border-dashed border-border rounded-xl py-8 flex flex-col items-center gap-2 text-center">
-              <Camera size={22} className="text-text-muted" />
-              <p className="text-sm text-text-secondary">Upload a clear profile photo</p>
-              <p className="text-xs text-text-muted">Click or drag and drop · JPG, PNG up to 5MB</p>
-              <button type="button" disabled title="Photo upload isn't wired up yet" className="mt-1 text-sm text-white bg-primary/50 rounded-lg px-4 py-2 cursor-not-allowed">
-                Upload photo
-              </button>
-            </div>
-          </div>
+          <StudentPhotoUploader initialPhotoUrl={student.photo_url} />
 
           <div className="grid grid-cols-2 gap-4">
             <div>

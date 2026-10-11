@@ -6,7 +6,7 @@ export function ChildSelect({
   children,
   selectedStudentId,
 }: {
-  children: { id: string; first_name: string; last_name: string; admission_no: string }[]
+  children: { id: string; first_name: string; last_name: string; admission_no: string; photo_url?: string | null }[]
   selectedStudentId: string
 }) {
   const router = useRouter()
@@ -21,17 +21,37 @@ export function ChildSelect({
   }
 
   return (
-    <select
-      value={selectedStudentId}
-      onChange={(e) => handleChange(e.target.value)}
-      className="rounded-lg border border-border px-3 py-1.5 text-sm bg-surface text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
-    >
-      {children.map((c) => (
-        <option key={c.id} value={c.id}>
-          {c.first_name} {c.last_name} &middot; {c.admission_no}
-        </option>
-      ))}
-    </select>
+    <div className="flex flex-wrap items-center gap-1.5 p-1 bg-surface-muted/60 border border-border rounded-xl">
+      {children.map((c) => {
+        const isSelected = c.id === selectedStudentId
+        return (
+          <button
+            key={c.id}
+            type="button"
+            onClick={() => handleChange(c.id)}
+            className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              isSelected
+                ? 'bg-surface shadow-xs text-text-primary border border-border'
+                : 'text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent'
+            }`}
+          >
+            {c.photo_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={c.photo_url}
+                alt={c.first_name}
+                className="w-5 h-5 rounded-full object-cover shrink-0 border border-border"
+              />
+            ) : (
+              <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[10px] flex items-center justify-center font-bold shrink-0">
+                {c.first_name[0]}{c.last_name[0]}
+              </span>
+            )}
+            <span>{c.first_name} {c.last_name}</span>
+          </button>
+        )
+      })}
+    </div>
   )
 }
 

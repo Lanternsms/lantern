@@ -2,8 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { createStudent } from '@/app/dashboard/students/actions'
 import { CustomFieldInputs } from '@/components/custom-fields'
 import { GuardianRepeater } from '@/components/guardian-repeater'
+import { StudentPhotoUploader } from '@/components/student-photo-uploader'
 import Link from 'next/link'
-import { Camera } from 'lucide-react'
 
 export default async function NewStudentPage({
   searchParams,
@@ -64,22 +64,7 @@ export default async function NewStudentPage({
         <section className="bg-surface border border-border rounded-xl p-6">
           <h2 className="text-sm font-semibold text-text-primary mb-4">Personal Information</h2>
 
-          <div className="mb-5">
-            <label className="block text-sm text-text-secondary mb-2">Student Photo</label>
-            <div className="border border-dashed border-border rounded-xl py-8 flex flex-col items-center gap-2 text-center">
-              <Camera size={22} className="text-text-muted" />
-              <p className="text-sm text-text-secondary">Upload a clear profile photo</p>
-              <p className="text-xs text-text-muted">Click or drag and drop · JPG, PNG up to 5MB</p>
-              <button
-                type="button"
-                disabled
-                title="Photo upload isn't wired up yet"
-                className="mt-1 text-sm text-white bg-primary/50 rounded-lg px-4 py-2 cursor-not-allowed"
-              >
-                Upload photo
-              </button>
-            </div>
-          </div>
+          <StudentPhotoUploader />
 
           <div className="grid grid-cols-2 gap-4">
             <div>

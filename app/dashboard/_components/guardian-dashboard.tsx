@@ -28,11 +28,11 @@ export async function GuardianDashboard({
 
   const { data: links } = await supabase
     .from('student_guardians')
-    .select('students(id, first_name, last_name, admission_no, school_id)')
+    .select('students(id, first_name, last_name, admission_no, school_id, photo_url)')
     .eq('guardian_id', guardianRow.id)
 
   const myChildren = (links ?? [])
-    .map((l) => l.students as { id: string; first_name: string; last_name: string; admission_no: string; school_id: string } | null)
+    .map((l) => l.students as { id: string; first_name: string; last_name: string; admission_no: string; school_id: string; photo_url: string | null } | null)
     .filter((s): s is NonNullable<typeof s> => s !== null)
 
   const { child: childParam, term: termParam, tab: tabParam, attScope: attScopeParam } = searchParams
@@ -284,10 +284,19 @@ export async function GuardianDashboard({
       <div className="bg-surface border border-border rounded-xl p-5 shadow-xs">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center text-base">
-                {selectedChild?.first_name?.[0]}{selectedChild?.last_name?.[0]}
-              </div>
+            <div className="flex items-center gap-3.5">
+              {selectedChild?.photo_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={selectedChild.photo_url}
+                  alt={`${selectedChild.first_name} ${selectedChild.last_name}`}
+                  className="w-14 h-14 rounded-full object-cover border-2 border-border shadow-xs shrink-0"
+                />
+              ) : (
+                <div className="w-14 h-14 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center text-lg shrink-0">
+                  {selectedChild?.first_name?.[0]}{selectedChild?.last_name?.[0]}
+                </div>
+              )}
               <div>
                 <h2 className="text-lg font-bold text-text-primary">
                   {selectedChild?.first_name} {selectedChild?.last_name}

@@ -2,6 +2,7 @@
 
 import { randomUUID } from 'crypto'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { findOrCreateGuardian } from '@/app/dashboard/guardians/actions'
@@ -43,6 +44,20 @@ export async function createStudent(formData: FormData) {
   const sessionId = formData.get('session_id') as string
   const from = (formData.get('from') as string) || ''
 
+  // Validate photo up front — before creating anything — so a bad file
+  // never leaves behind a student record with no photo to show for it.
+  const photo = formData.get('photo') as File | null
+  const hasPhoto = Boolean(photo && photo.size > 0)
+  if (hasPhoto && photo) {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
+    if (!allowedTypes.includes(photo.type)) {
+      redirect(`/dashboard/students/new?error=${encodeURIComponent('Photo must be a JPG, PNG, or WebP file.')}`)
+    }
+    if (photo.size > 5 * 1024 * 1024) {
+      redirect(`/dashboard/students/new?error=${encodeURIComponent('Photo must be under 5MB.')}`)
+    }
+  }
+
   const studentId = randomUUID()
 
   const { error } = await supabase
@@ -63,6 +78,28 @@ export async function createStudent(formData: FormData) {
     redirect(`/dashboard/students/new?error=${encodeURIComponent(
       `${error.message} | user=${user.id} school=${schoolId}`
     )}`)
+  }
+
+  // Photo upload — best-effort. Uses admin client so storage RLS won't block it.
+  if (hasPhoto && photo) {
+    try {
+      const ext = photo.name.split('.').pop() || 'jpg'
+      const path = `${schoolId}/${studentId}/photo-${Date.now()}.${ext}`
+      const admin = createAdminClient()
+      const arrayBuffer = await photo.arrayBuffer()
+      const { error: uploadError } = await admin.storage
+        .from('student-photos')
+        .upload(path, Buffer.from(arrayBuffer), { upsert: true, contentType: photo.type })
+
+      if (!uploadError) {
+        const { data: publicUrlData } = admin.storage.from('student-photos').getPublicUrl(path)
+        await admin.from('students').update({ photo_url: publicUrlData.publicUrl }).eq('id', studentId)
+      } else {
+        console.error('Student photo upload failed:', uploadError.message)
+      }
+    } catch (photoErr) {
+      console.error('Error during photo upload:', photoErr)
+    }
   }
 
   const classId = formData.get('class_id') as string
@@ -162,6 +199,20 @@ export async function updateStudent(studentId: string, formData: FormData) {
   if (!profile) redirect('/login')
   const schoolId = profile.school_id
 
+  const photo = formData.get('photo') as File | null
+  const removePhoto = formData.get('remove_photo') === 'true'
+  const hasPhoto = Boolean(photo && photo.size > 0)
+
+  if (hasPhoto && photo) {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
+    if (!allowedTypes.includes(photo.type)) {
+      redirect(`/dashboard/students/${studentId}/edit?error=${encodeURIComponent('Photo must be a JPG, PNG, or WebP file.')}`)
+    }
+    if (photo.size > 5 * 1024 * 1024) {
+      redirect(`/dashboard/students/${studentId}/edit?error=${encodeURIComponent('Photo must be under 5MB.')}`)
+    }
+  }
+
   const { error } = await supabase
     .from('students')
     .update({
@@ -177,6 +228,34 @@ export async function updateStudent(studentId: string, formData: FormData) {
 
   if (error) {
     redirect(`/dashboard/students/${studentId}/edit?error=${encodeURIComponent(error.message)}`)
+  }
+
+  if (hasPhoto && photo) {
+    try {
+      const ext = photo.name.split('.').pop() || 'jpg'
+      const path = `${schoolId}/${studentId}/photo-${Date.now()}.${ext}`
+      const admin = createAdminClient()
+      const arrayBuffer = await photo.arrayBuffer()
+      const { error: uploadError } = await admin.storage
+        .from('student-photos')
+        .upload(path, Buffer.from(arrayBuffer), { upsert: true, contentType: photo.type })
+
+      if (!uploadError) {
+        const { data: publicUrlData } = admin.storage.from('student-photos').getPublicUrl(path)
+        await admin.from('students').update({ photo_url: publicUrlData.publicUrl }).eq('id', studentId)
+      } else {
+        console.error('Student photo update failed:', uploadError.message)
+      }
+    } catch (photoErr) {
+      console.error('Error during student photo update:', photoErr)
+    }
+  } else if (removePhoto) {
+    try {
+      const admin = createAdminClient()
+      await admin.from('students').update({ photo_url: null }).eq('id', studentId)
+    } catch (removeErr) {
+      console.error('Error removing student photo:', removeErr)
+    }
   }
 
   const { data: session } = await supabase
@@ -223,36 +302,6 @@ export async function updateStudent(studentId: string, formData: FormData) {
           address: addresses[i] || null,
         })
         .eq('id', guardianIds[i])
-    } else {
-      const guardianId = await findOrCreateGuardian(supabase, schoolId, {
-        first_name: first,
-        last_name: last,
-        relationship: relationships[i] || null,
-        phone: phones[i] || null,
-        email: emails[i] || null,
-        address: addresses[i] || null,
-      })
-      if (guardianId) {
-        await supabase.from('student_guardians').insert({ student_id: studentId, guardian_id: guardianId })
-      }
-    }
-      for (let i = 0; i < names.length; i++) {
-    if (!names[i]?.trim()) continue
-    const [first, ...rest] = names[i].trim().split(' ')
-    const last = rest.join(' ') || first
-
-    if (guardianIds[i]) {
-      await supabase
-        .from('guardians')
-        .update({
-          first_name: first,
-          last_name: last,
-          relationship: relationships[i] || null,
-          phone: phones[i] || null,
-          email: emails[i] || null,
-          address: addresses[i] || null,
-        })
-        .eq('id', guardianIds[i])
       await saveGuardianCustomFieldsAtIndex(supabase, schoolId, guardianIds[i], formData, i)
     } else {
       const guardianId = await findOrCreateGuardian(supabase, schoolId, {
@@ -268,8 +317,6 @@ export async function updateStudent(studentId: string, formData: FormData) {
         await saveGuardianCustomFieldsAtIndex(supabase, schoolId, guardianId, formData, i)
       }
     }
-  }
-
   }
 
   // Removing a guardian here only deletes the LINK to this student —

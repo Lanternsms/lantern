@@ -26,7 +26,7 @@ export default async function StudentDetailPage({
 
   const { data: student, error } = await supabase
     .from('students')
-    .select('id, admission_no, first_name, last_name, date_of_birth, gender, status, profile_id, school_id')
+    .select('id, admission_no, first_name, last_name, date_of_birth, gender, status, profile_id, school_id, photo_url')
     .eq('id', id)
     .single()
 
@@ -82,10 +82,10 @@ export default async function StudentDetailPage({
   const { data: assignableRoles } = student.profile_id
     ? { data: [] }
     : await supabase
-        .from('roles')
-        .select('id, name')
-        .eq('school_id', student.school_id)
-        .order('name')
+      .from('roles')
+      .select('id, name')
+      .eq('school_id', student.school_id)
+      .order('name')
 
   const portalAccessContent = (
     <div className="bg-surface border border-border rounded-xl p-5">
@@ -98,7 +98,7 @@ export default async function StudentDetailPage({
             <span className="text-text-primary font-medium">
               {linkedProfile.first_name} {linkedProfile.last_name}
             </span>
-            's login.
+            &apos;s login.
           </p>
           <form action={revokeStudentPortalAccess.bind(null, student.id)}>
             <button type="submit" className="text-xs text-red-600 hover:text-red-700">
@@ -317,8 +317,7 @@ export default async function StudentDetailPage({
     }
   }
 
-  // Attendance Tab
-  let attendanceContent: React.ReactNode
+
   const admin = createAdminClient()
   const { data: attendanceRecords } = await admin
     .from('attendance')
@@ -350,7 +349,8 @@ export default async function StudentDetailPage({
     return 'bg-blue-50 text-blue-700 border-blue-200'
   }
 
-  attendanceContent = (
+  // Attendance Tab
+  const attendanceContent = (
     <div className="space-y-6">
       <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -381,11 +381,10 @@ export default async function StudentDetailPage({
             <div className="text-xl font-bold text-text-primary mt-1 flex items-baseline gap-2">
               {attendanceRate !== null ? `${attendanceRate}%` : '—'}
               {attendanceRate !== null && (
-                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${
-                  attendanceRate >= 90 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                  attendanceRate >= 75 ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                  'bg-red-50 text-red-700 border-red-200'
-                }`}>
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${attendanceRate >= 90 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                    attendanceRate >= 75 ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                      'bg-red-50 text-red-700 border-red-200'
+                  }`}>
                   {attendanceRate >= 90 ? 'Excellent' : attendanceRate >= 75 ? 'Good' : 'Low'}
                 </span>
               )}
@@ -453,9 +452,8 @@ export default async function StudentDetailPage({
                         {time}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium ${
-                          row.subjects ? 'bg-primary/10 text-primary border border-primary/20' : 'text-text-secondary bg-surface-muted border border-border'
-                        }`}>
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium ${row.subjects ? 'bg-primary/10 text-primary border border-primary/20' : 'text-text-secondary bg-surface-muted border border-border'
+                          }`}>
                           {subjectName}
                         </span>
                       </td>
@@ -478,8 +476,7 @@ export default async function StudentDetailPage({
     </div>
   )
 
-  // Fees Tab
-  let feesContent: React.ReactNode
+
   const { data: currentSession } = await supabase
     .from('academic_sessions')
     .select('id, name')
@@ -492,7 +489,16 @@ export default async function StudentDetailPage({
     .eq('is_current', true)
     .maybeSingle()
 
-  let applicableFees: any[] = []
+  let applicableFees: Array<{
+    id: string
+    name: string
+    amount: number
+    session_id: string
+    term_id: string | null
+    class_id: string | null
+    terms?: { name: string } | null
+    classes?: { name: string } | null
+  }> = []
   if (currentSession) {
     let feeQuery = supabase
       .from('fee_structures')
@@ -534,7 +540,8 @@ export default async function StudentDetailPage({
     online: 'Online',
   }
 
-  feesContent = (
+  // Fees Tab
+  const feesContent = (
     <div className="space-y-6">
       <div className="bg-surface border border-border rounded-xl p-5 space-y-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -585,9 +592,8 @@ export default async function StudentDetailPage({
               <span className={outstandingBalance > 0 ? 'text-amber-600' : 'text-emerald-600'}>
                 ₦{outstandingBalance.toLocaleString()}
               </span>
-              <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${
-                outstandingBalance === 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'
-              }`}>
+              <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${outstandingBalance === 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'
+                }`}>
                 {outstandingBalance === 0 ? 'Cleared ✓' : 'Pending'}
               </span>
             </div>
@@ -604,7 +610,7 @@ export default async function StudentDetailPage({
           </h4>
           {currentTermFees.length === 0 ? (
             <p className="text-xs text-text-secondary italic">
-              No fee structure configured for this student's class and term yet.
+              No fee structure configured for this student&apos;s class and term yet.
             </p>
           ) : (
             <div className="border border-border rounded-xl overflow-hidden divide-y divide-border">
@@ -716,23 +722,32 @@ export default async function StudentDetailPage({
           from === 'my-class'
             ? '/dashboard/my-class'
             : from === 'guardian' && guardianId
-            ? `/dashboard/guardians/${guardianId}`
-            : '/dashboard/students'
+              ? `/dashboard/guardians/${guardianId}`
+              : '/dashboard/students'
         }
         className="text-sm text-primary hover:text-primary-hover"
       >
         {from === 'my-class'
           ? '← Back to my class'
           : from === 'guardian' && guardianId
-          ? '← Back to guardian'
-          : '← Back to students'}
+            ? '← Back to guardian'
+            : '← Back to students'}
       </Link>
 
       <div className="flex items-center justify-between mt-4 mb-6">
         <div className="flex items-center gap-3">
-          <span className="w-11 h-11 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-sm font-medium">
-            {initials}
-          </span>
+          {student.photo_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={student.photo_url}
+              alt={`${student.first_name} ${student.last_name}`}
+              className="w-11 h-11 rounded-full object-cover border border-border shrink-0"
+            />
+          ) : (
+            <span className="w-11 h-11 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-sm font-medium shrink-0">
+              {initials}
+            </span>
+          )}
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-lg font-semibold text-text-primary">

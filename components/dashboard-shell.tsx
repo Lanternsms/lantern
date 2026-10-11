@@ -26,15 +26,13 @@ export function DashboardShell({
     <div className="min-h-screen bg-surface-muted">
       <div
         onClick={() => setIsOpen(false)}
-        className={`fixed inset-0 bg-black/30 z-30 transition-opacity duration-300 ${
-          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
+        className={`fixed inset-0 bg-black/30 z-30 transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
       />
 
       <aside
-        className={`fixed top-0 left-0 h-full w-60 bg-sidebar flex flex-col z-40 transition-transform duration-300 ease-in-out ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed top-0 left-0 h-full w-60 bg-sidebar flex flex-col z-40 transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
       >
         <div className="relative flex flex-col items-center justify-center gap-1 px-5 py-5 border-b border-text-on-sidebar/10">
           {logoUrl ? (
