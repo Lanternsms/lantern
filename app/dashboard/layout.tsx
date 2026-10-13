@@ -35,7 +35,6 @@ const ALL_NAV_ITEMS: NavItem[] = [
   // Items with no gate are visible to all authenticated users
   { label: 'Announcements', href: '/dashboard/announcements' },
   { label: 'Documents', href: '/dashboard/documents' },
-  { label: 'Communication', href: '/dashboard/communication' },
   // last item on the navbar with gated permission
   { label: 'Settings', href: '/dashboard/settings', permission: 'school.manage' }
 ]
