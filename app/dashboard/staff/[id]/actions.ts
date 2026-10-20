@@ -53,3 +53,13 @@ export async function unlinkStaffProfile(staffId: string) {
 
   revalidatePath(`/dashboard/staff/${staffId}`)
 }
+
+import { assignRole as assignRoleFromUsers, removeRole as removeRoleFromUsers } from '@/app/dashboard/users/actions'
+
+export async function assignRole(...args: Parameters<typeof assignRoleFromUsers>) {
+  return await assignRoleFromUsers(...args)
+}
+
+export async function removeRole(...args: Parameters<typeof removeRoleFromUsers>) {
+  return await removeRoleFromUsers(...args)
+}

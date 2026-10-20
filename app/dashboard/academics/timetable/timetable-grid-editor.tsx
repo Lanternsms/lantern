@@ -20,6 +20,7 @@ type Entry = {
     period_id: string
     subject_id: string
     teacher_id: string | null
+    delivery_mode?: 'live' | 'lms' | null
 }
 
 export default function TimetableGridEditor({
@@ -28,6 +29,7 @@ export default function TimetableGridEditor({
     classes,
     subjects,
     teachers,
+    facilitatorProfileIds = [],
     selectedClassId,
     selectedArmId,
     entries,
@@ -37,6 +39,7 @@ export default function TimetableGridEditor({
     classes: ClassRow[]
     subjects: { id: string; name: string }[]
     teachers: { id: string; name: string }[]
+    facilitatorProfileIds?: string[]
     selectedClassId: string
     selectedArmId: string | null
     entries: Entry[]
@@ -44,7 +47,11 @@ export default function TimetableGridEditor({
     const router = useRouter()
     const [isPending, startTransition] = useTransition()
     const [editingCell, setEditingCell] = useState<{ day: number; periodId: string } | null>(null)
-    const [cellForm, setCellForm] = useState({ subjectId: '', teacherId: '' })
+    const [cellForm, setCellForm] = useState<{
+        subjectId: string
+        teacherId: string
+        deliveryMode: 'live' | 'lms'
+    }>({ subjectId: '', teacherId: '', deliveryMode: 'live' })
     const [warning, setWarning] = useState<string | null>(null)
     const [conflictMessage, setConflictMessage] = useState<string | null>(null)
 
@@ -58,7 +65,11 @@ export default function TimetableGridEditor({
 
     function openCell(day: number, periodId: string) {
         const existing = entryFor(day, periodId)
-        setCellForm({ subjectId: existing?.subject_id ?? '', teacherId: existing?.teacher_id ?? '' })
+        setCellForm({
+            subjectId: existing?.subject_id ?? '',
+            teacherId: existing?.teacher_id ?? '',
+            deliveryMode: existing?.delivery_mode === 'lms' ? 'lms' : 'live',
+        })
         setWarning(null)
         setConflictMessage(null)
         setEditingCell({ day, periodId })
@@ -85,6 +96,7 @@ export default function TimetableGridEditor({
                 periodId: editingCell.periodId,
                 subjectId: cellForm.subjectId,
                 teacherId: cellForm.teacherId || null,
+                deliveryMode: cellForm.deliveryMode,
                 force,
             })
             if ('error' in result && result.error) {
@@ -193,7 +205,14 @@ export default function TimetableGridEditor({
                                                 >
                                                     {entry ? (
                                                         <div>
-                                                            <div className="text-xs font-medium text-text-primary">{subject?.name}</div>
+                                                            <div className="flex items-center gap-1.5 flex-wrap">
+                                                                <span className="text-xs font-medium text-text-primary">{subject?.name}</span>
+                                                                {entry.delivery_mode === 'lms' && (
+                                                                    <span className="inline-block text-[9px] font-semibold uppercase tracking-wider px-1 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
+                                                                        LMS
+                                                                    </span>
+                                                                )}
+                                                            </div>
                                                             {teacher && <div className="text-[10px] text-text-secondary">{teacher.name}</div>}
                                                         </div>
                                                     ) : (
@@ -262,6 +281,46 @@ export default function TimetableGridEditor({
 
                         <div className="space-y-3">
                             <div>
+                                <label className="block text-xs font-medium text-text-secondary mb-1">Delivery</label>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <label
+                                        className={`flex items-center gap-2 p-2 rounded-lg border text-xs cursor-pointer transition-colors ${
+                                            cellForm.deliveryMode === 'live'
+                                                ? 'border-primary bg-primary/5 text-primary font-medium'
+                                                : 'border-border text-text-secondary hover:bg-surface-muted'
+                                        }`}
+                                    >
+                                        <input
+                                            type="radio"
+                                            name="delivery_mode"
+                                            value="live"
+                                            checked={cellForm.deliveryMode === 'live'}
+                                            onChange={() => setCellForm({ ...cellForm, deliveryMode: 'live' })}
+                                            className="text-primary focus:ring-primary"
+                                        />
+                                        Live teacher
+                                    </label>
+                                    <label
+                                        className={`flex items-center gap-2 p-2 rounded-lg border text-xs cursor-pointer transition-colors ${
+                                            cellForm.deliveryMode === 'lms'
+                                                ? 'border-primary bg-primary/5 text-primary font-medium'
+                                                : 'border-border text-text-secondary hover:bg-surface-muted'
+                                        }`}
+                                    >
+                                        <input
+                                            type="radio"
+                                            name="delivery_mode"
+                                            value="lms"
+                                            checked={cellForm.deliveryMode === 'lms'}
+                                            onChange={() => setCellForm({ ...cellForm, deliveryMode: 'lms' })}
+                                            className="text-primary focus:ring-primary"
+                                        />
+                                        Recorded lesson (LMS)
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
                                 <label className="block text-xs font-medium text-text-secondary mb-1">Subject</label>
                                 <select
                                     value={cellForm.subjectId}
@@ -274,18 +333,31 @@ export default function TimetableGridEditor({
                                     ))}
                                 </select>
                             </div>
+
                             <div>
-                                <label className="block text-xs font-medium text-text-secondary mb-1">Teacher</label>
+                                <label className="block text-xs font-medium text-text-secondary mb-1">
+                                    {cellForm.deliveryMode === 'lms' ? 'Facilitator' : 'Teacher'}
+                                </label>
                                 <select
                                     value={cellForm.teacherId}
                                     onChange={(e) => setCellForm({ ...cellForm, teacherId: e.target.value })}
                                     className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
                                 >
-                                    <option value="">No teacher yet</option>
+                                    <option value="">
+                                        {cellForm.deliveryMode === 'lms' ? 'No facilitator yet' : 'No teacher yet'}
+                                    </option>
                                     {teachers.map((t) => (
                                         <option key={t.id} value={t.id}>{t.name}</option>
                                     ))}
                                 </select>
+                                {cellForm.deliveryMode === 'lms' &&
+                                    cellForm.teacherId &&
+                                    facilitatorProfileIds.length > 0 &&
+                                    !facilitatorProfileIds.includes(cellForm.teacherId) && (
+                                        <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-2">
+                                            Notice: This staff member does not have the lms.facilitate permission via their roles.
+                                        </p>
+                                    )}
                             </div>
                         </div>
 

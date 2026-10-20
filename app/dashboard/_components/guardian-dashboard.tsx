@@ -1,8 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import Link from 'next/link'
 import { ChildSelect, ChildrenTermSelect } from './child-select'
 import TimetableGridView, { TimetableRow } from '../my-timetable/timetable-grid-view'
+import { LessonPlayerModal } from '../lms/lesson-player-modal'
+import GuardianAskButton from './guardian-ask-button';
+
+
+function formatDuration(seconds: number | null): string {
+  if (!seconds) return '—'
+  const m = Math.floor(seconds / 60)
+  const s = seconds % 60
+  return `${m}:${String(s).padStart(2, '0')}`
+}
 
 function getAttendanceStatusBadge(label: string) {
   const l = (label || '').toLowerCase()
@@ -20,11 +31,11 @@ export async function GuardianDashboard({
   guardianRow,
   searchParams,
 }: {
-  guardianRow: { id: string; school_id: string; first_name: string; last_name: string; phone: string | null; email: string | null }
-  searchParams: { child?: string; term?: string; tab?: string; attScope?: string }
+  guardianRow: { id: string; school_id: string; first_name: string; last_name: string; phone: string | null; email: string | null },
+  searchParams: { child?: string; term?: string; tab?: string; attScope?: string },
 }) {
   const supabase = await createClient()
-  const admin = createAdminClient()
+  const admin = createAdminClient();
 
   const { data: links } = await supabase
     .from('student_guardians')
@@ -172,7 +183,7 @@ export async function GuardianDashboard({
     if (enrolment?.class_id) {
       let entriesQuery = (supabase as any)
         .from('timetable_entries')
-        .select('day_of_week, period_id, subjects(name), teacher:profiles(first_name, last_name)')
+        .select('day_of_week, period_id, delivery_mode, subjects(name), teacher:profiles(first_name, last_name)')
         .eq('session_id', currentSessionId)
         .eq('class_id', enrolment.class_id)
 
@@ -186,6 +197,7 @@ export async function GuardianDashboard({
         period_id: e.period_id,
         subject_name: e.subjects?.name ?? '',
         teacher_name: e.teacher ? `${e.teacher.first_name} ${e.teacher.last_name}` : null,
+        delivery_mode: e.delivery_mode ?? null,
       }))
     }
   }
@@ -219,7 +231,7 @@ export async function GuardianDashboard({
     const { data: structures } = await feeQuery
     const structureIds = (structures ?? []).map((s) => s.id)
 
-    let paymentsByStructure = new Map<string, number>()
+    const paymentsByStructure = new Map<string, number>()
     if (structureIds.length > 0) {
       const { data: payments } = await admin
         .from('payments')
@@ -251,6 +263,66 @@ export async function GuardianDashboard({
     .order('updated_at', { ascending: false })
     .limit(5)
 
+  // Lessons count & list (fetched inside component before buildUrl)
+  let lessonCount = 0
+  let lessonsBySubject: { subjectName: string; lessons: any[] }[] = []
+  const activityCountByLesson = new Map<string, number>()
+  const lessonHasBrief = new Map<string, boolean>()
+
+  if (selectedChild && enrolment?.class_id) {
+    const { count } = await (admin as any)
+      .from('lms_lessons')
+      .select('id', { count: 'exact', head: true })
+      .eq('class_id', enrolment.class_id)
+      .eq('status', 'published')
+      .not('video_path', 'is', null)
+
+    lessonCount = count ?? 0
+
+    if (activeTab === 'lessons') {
+      const { data: rawLessons } = await (admin as any)
+        .from('lms_lessons')
+        .select(`
+          id, title, topic, week_no, duration_seconds, created_at,
+          subjects:subject_id ( name )
+        `)
+        .eq('class_id', enrolment.class_id)
+        .eq('status', 'published')
+        .not('video_path', 'is', null)
+        .order('week_no', { ascending: true, nullsFirst: false })
+        .order('created_at', { ascending: false })
+
+      const groups = new Map<string, any[]>()
+      for (const l of rawLessons ?? []) {
+        const subName = (l.subjects as any)?.name ?? 'General'
+        if (!groups.has(subName)) groups.set(subName, [])
+        groups.get(subName)!.push(l)
+      }
+
+      const sortedKeys = Array.from(groups.keys()).sort((a, b) => a.localeCompare(b))
+      lessonsBySubject = sortedKeys.map((k) => ({
+        subjectName: k,
+        lessons: groups.get(k)!,
+      }))
+
+      const lessonIds = (rawLessons ?? []).map((l: any) => l.id)
+      if (lessonIds.length > 0) {
+        const { data: actRows } = await (admin as any)
+          .from('lms_activities')
+          .select('lesson_id, attachment_path')
+          .in('lesson_id', lessonIds)
+          .eq('status', 'published')
+
+        for (const a of (actRows ?? [])) {
+          activityCountByLesson.set(a.lesson_id, (activityCountByLesson.get(a.lesson_id) ?? 0) + 1)
+          if (a.attachment_path) {
+            lessonHasBrief.set(a.lesson_id, true)
+          }
+        }
+      }
+    }
+  }
+
   function buildUrl(next: { tab?: string; attScope?: string }) {
     const p = new URLSearchParams()
     if (selectedChild) p.set('child', selectedChild.id)
@@ -268,7 +340,7 @@ export async function GuardianDashboard({
       <div className="px-6 py-6 max-w-5xl space-y-6">
         <h1 className="text-xl font-semibold text-text-primary">Welcome, {guardianRow.first_name}</h1>
         <div className="bg-surface border border-border rounded-xl p-8 text-center text-sm text-text-secondary">
-          No children are linked to your account yet. Contact your school administrator to link your child's profile.
+          No children are linked to your account yet. Contact your school administrator to link your child&apos;s profile.
         </div>
       </div>
     )
@@ -316,6 +388,7 @@ export async function GuardianDashboard({
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
+            {/* eslint-disable-next-line react/no-children-prop */}
             <ChildSelect children={myChildren} selectedStudentId={selectedChild?.id ?? ''} />
             {terms && selectedTermId && (
               <ChildrenTermSelect terms={terms} selectedTermId={selectedTermId} />
@@ -387,6 +460,16 @@ export async function GuardianDashboard({
           >
             Timetable
           </Link>
+          {(lessonCount > 0 || activeTab === 'lessons') && (
+            <Link
+              href={buildUrl({ tab: 'lessons' })}
+              className={`pb-2.5 px-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+                activeTab === 'lessons' ? 'border-primary text-primary font-semibold' : 'border-transparent text-text-secondary hover:text-text-primary'
+              }`}
+            >
+              Lessons {lessonCount > 0 && `(${lessonCount})`}
+            </Link>
+          )}
         </div>
       </div>
 
@@ -413,7 +496,7 @@ export async function GuardianDashboard({
             </Link>
 
             <Link href={buildUrl({ tab: 'timetable' })} className="border border-border rounded-xl p-4 bg-surface hover:bg-surface-muted/30 transition-colors">
-              <div className="text-xs text-text-secondary font-medium">Today's Classes</div>
+              <div className="text-xs text-text-secondary font-medium">Today&apos;s Classes</div>
               <div className="text-xl font-bold text-text-primary mt-1">{todayRows.length}</div>
               <div className="text-[11px] text-text-secondary mt-1">
                 {todayRows[0]?.subject_name ? `Starts with ${todayRows[0].subject_name}` : 'No classes today'}
@@ -703,7 +786,7 @@ export async function GuardianDashboard({
 
           {feeItems.length === 0 ? (
             <div className="text-center py-10 text-sm text-text-secondary border border-dashed border-border rounded-xl p-6">
-              No fee structure has been set up for {selectedChild?.first_name}'s class this session yet.
+              No fee structure has been set up for {selectedChild?.first_name}&apos;s class this session yet.
             </div>
           ) : (
             <div className="border border-border rounded-xl overflow-x-auto">
@@ -737,6 +820,77 @@ export async function GuardianDashboard({
               View full payment history →
             </Link>
           </div>
+        </div>
+      )}
+
+      {/* LESSONS */}
+      {activeTab === 'lessons' && (
+        <div className="space-y-6">
+          {lessonsBySubject.length === 0 ? (
+            <div className="bg-surface border border-border rounded-xl p-8 text-center text-sm text-text-secondary">
+              No lessons have been published for {selectedChild?.first_name}&apos;s class yet.
+            </div>
+          ) : (
+            lessonsBySubject.map((group) => (
+              <div key={group.subjectName} className="bg-surface border border-border rounded-xl overflow-hidden">
+                <div className="px-5 py-3 border-b border-border bg-surface-muted">
+                  <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide">
+                    {group.subjectName}
+                  </h3>
+                </div>
+                <div className="divide-y divide-border">
+                  {group.lessons.map((lesson: any) => (
+                    <div
+                      key={lesson.id}
+                      className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-surface-muted transition-colors"
+                    >
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          {lesson.week_no != null && (
+                            <span className="text-xs font-medium text-text-muted px-1.5 py-0.5 rounded bg-surface-muted border border-border">
+                              Wk {lesson.week_no}
+                            </span>
+                          )}
+                          <p className="text-sm font-medium text-text-primary truncate">{lesson.title}</p>
+                        </div>
+                        <p className="text-xs text-text-secondary mt-0.5 truncate">
+                          {lesson.topic ? `${lesson.topic} · ` : ''}
+                          {formatDuration(lesson.duration_seconds)}
+                        </p>
+                      </div>
+                      <div className="shrink-0 flex items-center gap-2">
+                        <Link
+                          href={`/dashboard/lms/learn/${lesson.id}?student=${selectedChild.id}`}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+                        >
+                          Activities
+                          {(activityCountByLesson.get(lesson.id) ?? 0) > 0 && (
+                            <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-primary/10 px-1 text-[10px] font-bold text-primary">
+                              {activityCountByLesson.get(lesson.id)}
+                            </span>
+                          )}
+                          {lessonHasBrief.get(lesson.id) && (
+                            <span className="flex items-center text-red-500" title="Has assignment PDF document">
+                              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
+                              </svg>
+                            </span>
+                          )}
+                        </Link>
+                        <LessonPlayerModal
+                          lessonId={lesson.id}
+                          title={lesson.title}
+                          studentId={selectedChild.id}
+                          label="Watch"
+                        />
+                        <GuardianAskButton lessonId={lesson.id} title={lesson.title} studentId={selectedChild.id} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))
+          )}
         </div>
       )}
 

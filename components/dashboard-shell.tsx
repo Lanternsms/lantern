@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { signOut } from '@/app/auth/actions'
 import { GlobalSearch } from '@/components/global-search'
+import { LoadingOverlay } from '@/components/loading-overlay'
 
 export function DashboardShell({
   firstName,
@@ -17,13 +19,34 @@ export function DashboardShell({
   lastName: string
   schoolName: string
   logoUrl: string | null
-  navItems: { label: string; href: string }[]
+  navItems: { label: string; href: string; badge?: number | string | null }[]
   children: React.ReactNode
 }) {
   const [isOpen, setIsOpen] = useState(false)
+  const [isPending, startTransition] = useTransition()
+  const [isSigningOut, setIsSigningOut] = useState(false)
+  const router = useRouter()
+
+  function navigate(href: string) {
+    setIsOpen(false)
+    startTransition(() => {
+      router.push(href)
+    })
+  }
+
+  async function handleSignOut(formData: FormData) {
+    setIsSigningOut(true)
+    await signOut()
+  }
+
+  const showLoader = isPending || isSigningOut
 
   return (
     <div className="min-h-screen bg-surface-muted">
+      {showLoader && (
+        <LoadingOverlay message={isSigningOut ? 'Signing out…' : 'Loading…'} />
+      )}
+
       <div
         onClick={() => setIsOpen(false)}
         className={`fixed inset-0 bg-black/30 z-30 transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
@@ -57,27 +80,31 @@ export function DashboardShell({
 
         <nav className="flex-1 min-h-0 overflow-y-auto sidebar-scrollbar px-3 py-4 space-y-1">
           {navItems.map((item) => (
-            <Link
+            <button
               key={item.href}
-              href={item.href}
-              onClick={() => setIsOpen(false)}
-              className="block rounded-lg px-3 py-2 text-sm text-text-on-sidebar/70 hover:text-text-on-sidebar hover:bg-sidebar-active transition-colors"
+              onClick={() => navigate(item.href)}
+              className="flex items-center justify-between w-full text-left rounded-lg px-3 py-2 text-sm text-text-on-sidebar/70 hover:text-text-on-sidebar hover:bg-sidebar-active transition-colors"
             >
-              {item.label}
-            </Link>
+              <span className="truncate">{item.label}</span>
+              {typeof item.badge === 'number' && item.badge > 0 ? (
+                <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-semibold rounded-full bg-primary text-white shrink-0">
+                  {item.badge}
+                </span>
+              ) : null}
+            </button>
           ))}
         </nav>
 
         <div className="px-3 py-4 border-t border-text-on-sidebar/10 space-y-1">
-          <Link
-            href="/dashboard/help"
-            className="block rounded-lg px-3 py-2 text-sm text-text-on-sidebar/70 hover:text-text-on-sidebar hover:bg-sidebar-active transition-colors"
+          <button
+            onClick={() => navigate('/dashboard/help')}
+            className="block w-full text-left rounded-lg px-3 py-2 text-sm text-text-on-sidebar/70 hover:text-text-on-sidebar hover:bg-sidebar-active transition-colors"
           >
-            Help & Support
-          </Link>
+            Help &amp; Support
+          </button>
           <div className="flex items-center justify-between px-3 py-2">
             <p className="text-sm text-text-on-sidebar font-medium">{firstName} {lastName}</p>
-            <form action={signOut}>
+            <form action={handleSignOut}>
               <button type="submit" className="text-xs text-text-on-sidebar/50 hover:text-text-on-sidebar transition-colors">
                 Log out
               </button>

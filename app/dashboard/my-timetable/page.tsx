@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createClient } from '@/lib/supabase/server'
 import TimetableGridView, { TimetableRow } from './timetable-grid-view'
 
@@ -22,7 +23,7 @@ export default async function MyTimetablePage() {
     .eq('is_current', true)
     .single()
 
-  const { data: periods } = await supabase
+  const { data: periods } = await (supabase as any)
     .from('timetable_periods')
     .select('id, name, start_time, end_time, is_break')
     .order('sort_order')
@@ -39,9 +40,9 @@ export default async function MyTimetablePage() {
     .maybeSingle()
 
   if (staffRow) {
-    const { data: entries } = await supabase
+    const { data: entries } = await (supabase as any)
       .from('timetable_entries')
-      .select('day_of_week, period_id, subjects(name), classes(name), arms(name)')
+      .select('day_of_week, period_id, delivery_mode, subjects(name), classes(name), arms(name)')
       .eq('session_id', session.id)
       .eq('teacher_id', user.id)
 
@@ -51,6 +52,7 @@ export default async function MyTimetablePage() {
       subject_name: e.subjects?.name ?? '',
       class_name: e.classes?.name ?? '',
       arm_name: e.arms?.name ?? '',
+      delivery_mode: e.delivery_mode ?? null,
     }))
 
     return (
@@ -88,12 +90,12 @@ export default async function MyTimetablePage() {
     }
 
     if (!enrolment || !enrolment.class_id) {
-      return <div className="p-6"><p className="text-sm text-text-secondary">You're not enrolled in a class for this session yet.</p></div>
+      return <div className="p-6"><p className="text-sm text-text-secondary">You&apos;re not enrolled in a class for this session yet.</p></div>
     }
 
-    let entriesQuery = supabase
+    let entriesQuery = (supabase as any)
       .from('timetable_entries')
-      .select('day_of_week, period_id, subjects(name), teacher:profiles(first_name, last_name)')
+      .select('day_of_week, period_id, delivery_mode, subjects(name), teacher:profiles(first_name, last_name)')
       .eq('session_id', enrolment.session_id || session.id)
       .eq('class_id', enrolment.class_id)
 
@@ -110,6 +112,7 @@ export default async function MyTimetablePage() {
       period_id: e.period_id,
       subject_name: e.subjects?.name ?? '',
       teacher_name: e.teacher ? `${e.teacher.first_name} ${e.teacher.last_name}` : null,
+      delivery_mode: e.delivery_mode ?? null,
     }))
 
     return (

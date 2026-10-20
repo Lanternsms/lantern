@@ -13,6 +13,7 @@ export type TimetableRow = {
   teacher_name?: string | null
   class_name?: string | null
   arm_name?: string | null
+  delivery_mode?: 'live' | 'lms' | null
 }
 
 export default function TimetableGridView({
@@ -65,7 +66,14 @@ export default function TimetableGridView({
                     <td key={d.value} className="p-2 border border-border align-top">
                       {cell ? (
                         <div>
-                          <div className="text-xs font-medium text-text-primary">{cell.subject_name}</div>
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="text-xs font-medium text-text-primary">{cell.subject_name}</span>
+                            {cell.delivery_mode === 'lms' && (
+                              <span className="inline-block text-[9px] font-semibold uppercase tracking-wider px-1 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
+                                LMS
+                              </span>
+                            )}
+                          </div>
                           {mode === 'teacher' && cell.class_name && (
                             <div className="text-[10px] text-text-secondary">
                               {cell.class_name} {cell.arm_name}

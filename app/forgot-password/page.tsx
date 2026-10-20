@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { createPasswordResetClient } from '@/lib/supabase/password-reset-client'
+import { LoadingOverlay } from '@/components/loading-overlay'
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
@@ -55,6 +56,8 @@ export default function ForgotPasswordPage() {
   }
 
   return (
+    <>
+      {submitting && <LoadingOverlay message="Sending reset link…" />}
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="max-w-md w-full bg-surface border border-border rounded-xl p-6">
         <h1 className="text-lg font-semibold text-text-primary mb-1">Reset your password</h1>
@@ -92,5 +95,6 @@ export default function ForgotPasswordPage() {
         </Link>
       </div>
     </div>
+    </>
   )
 }

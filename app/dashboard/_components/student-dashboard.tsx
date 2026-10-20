@@ -1,5 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from 'next/link'
-import { Award, Calendar, CreditCard, Bell, FileText, Sparkles, CheckCircle2 } from 'lucide-react'
+import { Award, Calendar, CreditCard, Bell, FileText, CheckCircle2, PlayCircle } from 'lucide-react'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { LessonPlayerModal } from '../lms/lesson-player-modal'
+
+function formatDuration(seconds: number | null): string {
+  if (!seconds) return '—'
+  const m = Math.floor(seconds / 60)
+  const s = seconds % 60
+  return `${m}:${String(s).padStart(2, '0')}`
+}
 
 type EnrolmentData = {
   class_id: string
@@ -25,7 +35,7 @@ export type StudentDashboardProps = {
   }
 }
 
-export function StudentDashboard({ student }: StudentDashboardProps) {
+export async function StudentDashboard({ student }: StudentDashboardProps) {
   const currentEnrolment = student.enrolments?.find(
     (e) => e.academic_sessions?.is_current
   ) ?? student.enrolments?.[0]
@@ -36,6 +46,50 @@ export function StudentDashboard({ student }: StudentDashboardProps) {
   const sessionName = currentEnrolment?.academic_sessions?.name ?? 'Current Session'
   const initials = `${student.first_name[0] ?? ''}${student.last_name[0] ?? ''}`.toUpperCase()
   const isActive = student.status === 'active'
+
+  // Fetch published lessons for this student's class
+  let lessonsBySubject: { subjectName: string; lessons: any[] }[] = []
+  const activityCountByLesson = new Map<string, number>()
+  if (currentEnrolment?.class_id) {
+    const admin = createAdminClient()
+    const { data: rawLessons } = await (admin as any)
+      .from('lms_lessons')
+      .select(`
+        id, title, topic, week_no, duration_seconds, created_at,
+        subjects:subject_id ( name )
+      `)
+      .eq('class_id', currentEnrolment.class_id)
+      .eq('status', 'published')
+      .not('video_path', 'is', null)
+      .order('week_no', { ascending: true, nullsFirst: false })
+      .order('created_at', { ascending: false })
+
+    const groups = new Map<string, any[]>()
+    for (const l of rawLessons ?? []) {
+      const subName = (l.subjects as any)?.name ?? 'General'
+      if (!groups.has(subName)) groups.set(subName, [])
+      groups.get(subName)!.push(l)
+    }
+
+    const sortedKeys = Array.from(groups.keys()).sort((a, b) => a.localeCompare(b))
+    lessonsBySubject = sortedKeys.map((k) => ({
+      subjectName: k,
+      lessons: groups.get(k)!,
+    }))
+
+    const lessonIds = (rawLessons ?? []).map((l: any) => l.id)
+    if (lessonIds.length > 0) {
+      const { data: actRows } = await (admin as any)
+        .from('lms_activities')
+        .select('lesson_id')
+        .in('lesson_id', lessonIds)
+        .eq('status', 'published')
+
+      for (const a of (actRows ?? [])) {
+        activityCountByLesson.set(a.lesson_id, (activityCountByLesson.get(a.lesson_id) ?? 0) + 1)
+      }
+    }
+  }
 
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
@@ -72,6 +126,7 @@ export function StudentDashboard({ student }: StudentDashboardProps) {
 
           {/* Student Info */}
           <div className="flex-1 text-center sm:text-left min-w-0">
+            <p className="text-xs font-medium text-text-muted mb-0.5">{greeting}</p>
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 mb-2">
               <h1 className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight">
                 {student.first_name} {student.last_name}
@@ -173,6 +228,79 @@ export function StudentDashboard({ student }: StudentDashboardProps) {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Recorded Lessons Library */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base font-semibold text-text-primary flex items-center gap-2">
+            <PlayCircle size={18} className="text-primary" />
+            Class Lessons
+          </h2>
+          <span className="text-xs text-text-secondary">
+            {lessonsBySubject.reduce((acc, g) => acc + g.lessons.length, 0)} published
+          </span>
+        </div>
+
+        {lessonsBySubject.length === 0 ? (
+          <div className="bg-surface border border-border rounded-xl p-8 text-center text-sm text-text-secondary">
+            No lessons have been published for your class yet.
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {lessonsBySubject.map((group) => (
+              <div key={group.subjectName} className="bg-surface border border-border rounded-xl overflow-hidden">
+                <div className="px-5 py-3 border-b border-border bg-surface-muted">
+                  <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide">
+                    {group.subjectName}
+                  </h3>
+                </div>
+                <div className="divide-y divide-border">
+                  {group.lessons.map((lesson: any) => (
+                    <div
+                      key={lesson.id}
+                      className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-surface-muted transition-colors"
+                    >
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          {lesson.week_no != null && (
+                            <span className="text-xs font-medium text-text-muted px-1.5 py-0.5 rounded bg-surface-muted border border-border">
+                              Wk {lesson.week_no}
+                            </span>
+                          )}
+                          <p className="text-sm font-medium text-text-primary truncate">{lesson.title}</p>
+                        </div>
+                        <p className="text-xs text-text-secondary mt-0.5 truncate">
+                          {lesson.topic ? `${lesson.topic} · ` : ''}
+                          {formatDuration(lesson.duration_seconds)}
+                        </p>
+                      </div>
+                      <div className="shrink-0 flex items-center gap-2">
+                        <Link
+                          href={`/dashboard/lms/learn/${lesson.id}?student=${student.id}`}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+                        >
+                          Activities
+                          {(activityCountByLesson.get(lesson.id) ?? 0) > 0 && (
+                            <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-primary/10 px-1 text-[10px] font-bold text-primary">
+                              {activityCountByLesson.get(lesson.id)}
+                            </span>
+                          )}
+                        </Link>
+                        <LessonPlayerModal
+                          lessonId={lesson.id}
+                          title={lesson.title}
+                          studentId={student.id}
+                          label="Watch"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* School Resources & Announcements */}

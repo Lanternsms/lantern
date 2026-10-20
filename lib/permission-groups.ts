@@ -9,6 +9,7 @@ export const PERMISSION_GROUPS: { label: string; prefixes: string[] }[] = [
   { label: 'Announcements', prefixes: ['announcements.'] },
   { label: 'Documents & Fees', prefixes: ['documents.', 'fees.'] },
   { label: 'Notifications & Audit', prefixes: ['notifications.', 'audit.'] },
+  { label: 'Learning Management (LMS)', prefixes: ['lms.'] },
   { label: 'Records', prefixes: ['records.'] },
 ]
 

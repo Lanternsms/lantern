@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
@@ -5,15 +6,18 @@ import { revalidatePath } from 'next/cache'
 
 export async function savePeriod(formData: FormData) {
     const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Not authenticated' }
+
+    const { data: canManage } = await supabase.rpc('has_permission', { perm_code: 'timetable.manage' })
+    if (!canManage) return { error: 'Permission denied.' }
+
     const id = formData.get('id') as string | null
     const name = formData.get('name') as string
     const start_time = formData.get('start_time') as string
     const end_time = formData.get('end_time') as string
     const is_break = formData.get('is_break') === 'on'
     const sort_order = Number(formData.get('sort_order'))
-
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return { error: 'Not authenticated' }
 
     const { data: profile } = await supabase
         .from('profiles')
@@ -23,13 +27,13 @@ export async function savePeriod(formData: FormData) {
     if (!profile) return { error: 'Profile not found' }
 
     if (id) {
-        const { error } = await supabase
+        const { error } = await (supabase as any)
             .from('timetable_periods')
             .update({ name, start_time, end_time, is_break, sort_order })
             .eq('id', id)
         if (error) return { error: error.message }
     } else {
-        const { error } = await supabase
+        const { error } = await (supabase as any)
             .from('timetable_periods')
             .insert({ school_id: profile.school_id, name, start_time, end_time, is_break, sort_order })
         if (error) return { error: error.message }
@@ -41,7 +45,10 @@ export async function savePeriod(formData: FormData) {
 
 export async function deletePeriod(periodId: string) {
     const supabase = await createClient()
-    const { error } = await supabase.from('timetable_periods').delete().eq('id', periodId)
+    const { data: canManage } = await supabase.rpc('has_permission', { perm_code: 'timetable.manage' })
+    if (!canManage) return { error: 'Permission denied.' }
+
+    const { error } = await (supabase as any).from('timetable_periods').delete().eq('id', periodId)
     if (error) return { error: error.message }
     revalidatePath('/dashboard/academics/timetable')
     return { success: true }
@@ -55,11 +62,15 @@ export async function saveTimetableEntry(params: {
     periodId: string
     subjectId: string
     teacherId: string | null
+    deliveryMode?: 'live' | 'lms'
     force?: boolean
 }) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return { error: 'Not authenticated' }
+
+    const { data: canManage } = await supabase.rpc('has_permission', { perm_code: 'timetable.manage' })
+    if (!canManage) return { error: 'Permission denied.' }
 
     const { data: profile } = await supabase
         .from('profiles')
@@ -70,7 +81,7 @@ export async function saveTimetableEntry(params: {
 
     // Check for teacher double-booking BEFORE writing, unless the caller forced through.
     if (!params.force && params.teacherId) {
-        const { data: sameSlot } = await supabase
+        const { data: sameSlot } = await (supabase as any)
             .from('timetable_entries')
             .select('class_id, arm_id, classes(name), arms(name)')
             .eq('session_id', params.sessionId)
@@ -90,13 +101,16 @@ export async function saveTimetableEntry(params: {
         }
     }
 
+    const deliveryMode = params.deliveryMode ?? 'live'
+
     // Manual upsert: onConflict with NULL arm_id doesn't work in PostgreSQL
     // because NULL != NULL breaks unique index matching. We do update → insert instead.
-    let updateQuery = supabase
+    let updateQuery = (supabase as any)
         .from('timetable_entries')
         .update({
             subject_id: params.subjectId,
             teacher_id: params.teacherId,
+            delivery_mode: deliveryMode,
             updated_at: new Date().toISOString(),
         })
         .eq('session_id', params.sessionId)
@@ -115,7 +129,7 @@ export async function saveTimetableEntry(params: {
 
     // If no row was updated, it doesn't exist yet — insert it
     if (!updated || updated.length === 0) {
-        const { error: insertError } = await supabase
+        const { error: insertError } = await (supabase as any)
             .from('timetable_entries')
             .insert({
                 school_id: profile.school_id,
@@ -126,6 +140,7 @@ export async function saveTimetableEntry(params: {
                 period_id: params.periodId,
                 subject_id: params.subjectId,
                 teacher_id: params.teacherId,
+                delivery_mode: deliveryMode,
                 updated_at: new Date().toISOString(),
             })
         if (insertError) return { error: insertError.message }
@@ -137,6 +152,9 @@ export async function saveTimetableEntry(params: {
 
 export async function deleteTimetableEntry(entryId: string) {
     const supabase = await createClient()
+    const { data: canManage } = await supabase.rpc('has_permission', { perm_code: 'timetable.manage' })
+    if (!canManage) return { error: 'Permission denied.' }
+
     const { error } = await supabase.from('timetable_entries').delete().eq('id', entryId)
     if (error) return { error: error.message }
     revalidatePath('/dashboard/academics/timetable')

@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { User, Briefcase, BookOpen, Pencil } from 'lucide-react'
 import { linkStaffProfile, unlinkStaffProfile } from './actions'
 import { getLinkableProfiles } from '@/lib/staff'
+import StaffRolesManager, { RoleItem } from './staff-roles-manager'
 
 export default async function StaffDetailPage({
   params,
@@ -13,11 +15,16 @@ export default async function StaffDetailPage({
   const { id } = await params
   const supabase = await createClient()
 
-  const { data: staff, error } = await supabase
-    .from('staff')
-    .select('id, staff_no, first_name, last_name, email, phone, qualification, employment_date, status, profile_id, school_id, departments(name)')
-    .eq('id', id)
-    .single()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const [{ data: staff, error }, { data: canManageRoles }] = await Promise.all([
+    supabase
+      .from('staff')
+      .select('id, staff_no, first_name, last_name, email, phone, qualification, employment_date, status, profile_id, school_id, departments(name)')
+      .eq('id', id)
+      .single(),
+    supabase.rpc('has_permission', { perm_code: 'users.manage_roles' }),
+  ])
 
   if (error || !staff) notFound()
 
@@ -43,6 +50,31 @@ export default async function StaffDetailPage({
         .select('classes(name), arms(name), subjects(name)')
         .eq('teacher_id', staff.profile_id)
     : { data: null }
+
+  let currentRoles: RoleItem[] = []
+  let assignableRoles: RoleItem[] = []
+
+  if (canManageRoles) {
+    const { data: assignableData } = await (supabase as any)
+      .from('roles')
+      .select('id, name, description, is_system')
+      .or(`school_id.eq.${staff.school_id},and(school_id.is.null,is_system.eq.true)`)
+      .order('is_system', { ascending: false })
+      .order('name')
+    assignableRoles = assignableData ?? []
+
+    if (staff.profile_id) {
+      const { data: userRolesData } = await (supabase as any)
+        .from('user_roles')
+        .select('role_id, roles(id, name, description, is_system)')
+        .eq('user_id', staff.profile_id)
+        .eq('school_id', staff.school_id)
+
+      currentRoles = (userRolesData ?? [])
+        .map((ur: any) => ur.roles)
+        .filter(Boolean)
+    }
+  }
 
   const initials = `${staff.first_name?.[0] ?? ''}${staff.last_name?.[0] ?? ''}`
   const isActive = staff.status === 'active'
@@ -178,6 +210,16 @@ export default async function StaffDetailPage({
         </section>
 
         {portalAccessContent}
+
+        {canManageRoles && staff.profile_id && (
+          <StaffRolesManager
+            userId={staff.profile_id}
+            currentRoles={currentRoles}
+            assignableRoles={assignableRoles}
+            canManageRoles={!!canManageRoles}
+            currentUserId={user?.id ?? ''}
+          />
+        )}
 
         <section className="bg-surface border border-border rounded-xl p-5">
           <div className="flex items-center gap-2 mb-4">

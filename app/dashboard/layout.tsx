@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { DashboardShell } from '@/components/dashboard-shell'
 import { getMyAccessContext, canSee, type NavGate } from '@/lib/permissions'
 import { ThemeStyle } from './_components/theme-style'
+import { getOpenQuestionCount } from './lms/questions/actions'
 
 type NavItem = { label: string; href: string } & NavGate
 
@@ -18,6 +19,7 @@ const ALL_NAV_ITEMS: NavItem[] = [
   { label: 'Timetable', href: '/dashboard/academics/timetable', permission: 'timetable.manage' },
   { label: 'My Timetable', href: '/dashboard/my-timetable', scope: 'teacher' },
   { label: 'My Timetable', href: '/dashboard/my-timetable', scope: 'student' },
+  { label: 'Class Lessons', href: '/dashboard/class-lessons', scope: 'student' },
   { label: 'Class Results', href: '/dashboard/class-results', scope: 'teacher' },
   { label: 'Result Remarks', href: '/dashboard/results/remarks', scope: 'teacher' },
   { label: 'My Submissions', href: '/dashboard/my-submissions', scope: 'teacher' },
@@ -35,6 +37,9 @@ const ALL_NAV_ITEMS: NavItem[] = [
   // Items with no gate are visible to all authenticated users
   { label: 'Announcements', href: '/dashboard/announcements' },
   { label: 'Documents', href: '/dashboard/documents' },
+  // LMS
+  { label: "Today's Lessons", href: '/dashboard/lms/today', permission: ['lms.facilitate', 'lms.manage'] },
+  { label: 'Lessons', href: '/dashboard/lms', permission: ['lms.manage', 'lms.upload'] },
   // last item on the navbar with gated permission
   { label: 'Settings', href: '/dashboard/settings', permission: 'school.manage' }
 ]
@@ -59,7 +64,73 @@ export default async function DashboardLayout({
     getMyAccessContext(supabase),
   ])
 
-  const visibleItems = ALL_NAV_ITEMS.filter((item) => canSee(ctx, item))
+  // Check if user has recorded at least one lesson
+  let hasRecordedLesson = false
+  const { data: recordedLesson } = await (supabase as any)
+    .from('lms_lessons')
+    .select('id')
+    .eq('recorded_by', user.id)
+    .limit(1)
+    .maybeSingle()
+
+  if (recordedLesson) {
+    hasRecordedLesson = true
+  }
+
+  // Questions link for users with lms.manage or lms.facilitate, or who recorded at least one lesson
+  const canSeeQuestions = ctx.permissions.has('lms.manage') || ctx.permissions.has('lms.facilitate') || hasRecordedLesson
+
+  let questionsBadge: number | undefined
+  if (canSeeQuestions) {
+    try {
+      const { count } = await getOpenQuestionCount()
+      if (typeof count === 'number' && count > 0) {
+        questionsBadge = count
+      }
+    } catch {
+      // Fail gracefully on badge error
+    }
+  }
+
+  const visibleItems: { label: string; href: string; badge?: number | string | null }[] = ALL_NAV_ITEMS
+    .filter((item) => canSee(ctx, item))
+
+  if (canSeeQuestions) {
+    const questionsItem = {
+      label: 'Questions',
+      href: '/dashboard/lms/questions',
+      badge: questionsBadge,
+    }
+    const lmsIdx = visibleItems.findIndex((item) => item.href === '/dashboard/lms')
+    if (lmsIdx !== -1) {
+      visibleItems.splice(lmsIdx + 1, 0, questionsItem)
+    } else {
+      const todayIdx = visibleItems.findIndex((item) => item.href === '/dashboard/lms/today')
+      if (todayIdx !== -1) {
+        visibleItems.splice(todayIdx + 1, 0, questionsItem)
+      } else {
+        visibleItems.push(questionsItem)
+      }
+    }
+  }
+
+  if (hasRecordedLesson) {
+    const myLessonsItem = {
+      label: 'My Lessons',
+      href: '/dashboard/lms/my-lessons',
+    }
+    const qIdx = visibleItems.findIndex((item) => item.href === '/dashboard/lms/questions')
+    if (qIdx !== -1) {
+      visibleItems.splice(qIdx + 1, 0, myLessonsItem)
+    } else {
+      const lmsIdx = visibleItems.findIndex((item) => item.href === '/dashboard/lms')
+      if (lmsIdx !== -1) {
+        visibleItems.splice(lmsIdx + 1, 0, myLessonsItem)
+      } else {
+        visibleItems.push(myLessonsItem)
+      }
+    }
+  }
 
   return (
     <DashboardShell
