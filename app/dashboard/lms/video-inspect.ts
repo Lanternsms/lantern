@@ -1,4 +1,5 @@
-import MP4Box, { type MP4BoxInfo } from 'mp4box'
+import * as MP4Box from 'mp4box'
+import type { MP4BoxInfo } from 'mp4box'
 
 export type VideoCodec = 'h264' | 'hevc' | 'av1' | 'vp8' | 'vp9' | 'prores' | 'other'
 
