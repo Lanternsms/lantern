@@ -11,7 +11,7 @@ import { RoleAwareDashboard } from './_components/role-aware-dashboard'
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ child?: string; term?: string; tab?: string; attScope?: string }>
+  searchParams: Promise<{ child?: string; student?: string; term?: string; tab?: string; attScope?: string }>
 }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

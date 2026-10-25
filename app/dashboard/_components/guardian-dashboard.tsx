@@ -32,7 +32,7 @@ export async function GuardianDashboard({
   searchParams,
 }: {
   guardianRow: { id: string; school_id: string; first_name: string; last_name: string; phone: string | null; email: string | null },
-  searchParams: { child?: string; term?: string; tab?: string; attScope?: string },
+  searchParams: { child?: string; student?: string; term?: string; tab?: string; attScope?: string },
 }) {
   const supabase = await createClient()
   const admin = createAdminClient();
@@ -46,11 +46,17 @@ export async function GuardianDashboard({
     .map((l) => l.students as { id: string; first_name: string; last_name: string; admission_no: string; school_id: string; photo_url: string | null } | null)
     .filter((s): s is NonNullable<typeof s> => s !== null)
 
-  const { child: childParam, term: termParam, tab: tabParam, attScope: attScopeParam } = searchParams
-  const activeTab = tabParam || 'all'
+  const { child: childParam, student: studentParam, term: termParam, tab: tabParam, attScope: attScopeParam } = searchParams
+
+  // Validate tab against known list; ignore unknown tabs and fall back to default 'all'
+  const VALID_TABS = new Set(['all', 'attendance', 'results', 'fees', 'timetable', 'lessons'])
+  const normalizedTab = (tabParam || '').toLowerCase()
+  const activeTab = VALID_TABS.has(normalizedTab) ? normalizedTab : 'all'
   const attScope = attScopeParam || 'term'
 
-  const selectedChild = myChildren.find((c) => c.id === childParam) ?? myChildren[0]
+  // Validate that student belongs to the signed-in guardian; never trust param for authorization
+  const requestedStudentId = studentParam || childParam
+  const selectedChild = myChildren.find((c) => c.id === requestedStudentId) ?? myChildren[0]
 
   const { data: terms } = await supabase
     .from('terms')
@@ -338,7 +344,10 @@ export async function GuardianDashboard({
 
   function buildUrl(next: { tab?: string; attScope?: string }) {
     const p = new URLSearchParams()
-    if (selectedChild) p.set('child', selectedChild.id)
+    if (selectedChild) {
+      p.set('student', selectedChild.id)
+      p.set('child', selectedChild.id)
+    }
     if (selectedTermId) p.set('term', selectedTermId)
     const t = next.tab ?? activeTab
     if (t && t !== 'all') p.set('tab', t)

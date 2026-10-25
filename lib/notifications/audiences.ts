@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import 'server-only'
 import type { NotificationInput } from './types'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { notificationUrl } from './urls'
 
 type Resolver = (payload: Record<string, unknown>) => Promise<NotificationInput[]>
 
@@ -46,7 +48,7 @@ const audienceMap: Record<string, Resolver[]> = {
         category: 'attendance',
         title: 'Attendance recorded',
         body: `Attendance for ${studentName} has been recorded.`,
-        url: '/dashboard/attendance',
+        url: notificationUrl('attendance_marked', { studentId }, 'guardian'),
         studentId,
         actorId: recordedBy,
       }))
@@ -68,7 +70,7 @@ const audienceMap: Record<string, Resolver[]> = {
         category: 'attendance',
         title: 'Period attendance saved',
         body: `Period attendance for ${studentName} has been saved.`,
-        url: '/dashboard/lms/attendance',
+        url: notificationUrl('lms_period_attendance_saved', { studentId }, 'guardian'),
         studentId,
         actorId: recordedBy,
       }))
@@ -89,7 +91,7 @@ const audienceMap: Record<string, Resolver[]> = {
         category: 'fees',
         title: 'Payment received',
         body: `A payment was recorded: ${description}`,
-        url: '/dashboard/fees/payments',
+        url: notificationUrl('payment_recorded', { studentId }, 'guardian'),
         studentId,
       }))
     },
@@ -104,7 +106,7 @@ const audienceMap: Record<string, Resolver[]> = {
       if (!schoolId || !classId) return []
 
       const admin = createAdminClient()
-      const { data, error } = await admin
+      const { data, error } = await (admin as any)
         .from('lms_facilitators')
         .select('user_id')
         .eq('school_id', schoolId)
@@ -114,7 +116,7 @@ const audienceMap: Record<string, Resolver[]> = {
         return []
       }
 
-      const facilitatorIds = data.map((row) => row.user_id)
+      const facilitatorIds = (data as any[]).map((row) => row.user_id)
       return facilitatorIds.map((facId) => ({
         schoolId,
         recipientId: facId,
@@ -122,7 +124,7 @@ const audienceMap: Record<string, Resolver[]> = {
         category: 'qa',
         title: 'New question asked',
         body: `A new question was asked in lesson ${lessonId}.`,
-        url: `/dashboard/lms/lessons/${lessonId}/questions/${questionId}`,
+        url: notificationUrl('lms_question_asked', { lessonId, questionId }, 'staff'),
         actorId: authorId,
       }))
     },

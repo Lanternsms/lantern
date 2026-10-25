@@ -245,10 +245,10 @@ export function NotificationBell({
                     )}
                   </div>
                 )
-                return n.url ? (
-                  <Link key={n.id} href={n.url}>{inner}</Link>
-                ) : (
-                  <div key={n.id}>{inner}</div>
+                return (
+                  <Link key={n.id} href={`/n/${n.id}`} onClick={() => setOpen(false)}>
+                    {inner}
+                  </Link>
                 )
               })
             )}

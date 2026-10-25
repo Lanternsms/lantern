@@ -16,6 +16,7 @@ export function ChildSelect({
 
   function handleChange(childId: string) {
     const params = new URLSearchParams(searchParams.toString())
+    params.set('student', childId)
     params.set('child', childId)
     router.push(`/dashboard?${params.toString()}`)
   }

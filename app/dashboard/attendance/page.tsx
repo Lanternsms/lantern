@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import Link from 'next/link'
@@ -29,7 +30,7 @@ export default async function AttendancePage({
       .eq('profile_id', user.id)
       .maybeSingle()
     if (guardianRow) {
-      redirect('/dashboard/my-children?tab=attendance')
+      redirect('/dashboard?tab=attendance')
     }
   }
 
