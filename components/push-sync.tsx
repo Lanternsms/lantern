@@ -59,7 +59,9 @@ export function PushSync() {
           // Ignore sessionStorage error
         }
 
-        const registration = await navigator.serviceWorker.ready
+        const registration = await navigator.serviceWorker.getRegistration()
+        if (!registration?.pushManager) return
+
         const sub = await registration.pushManager.getSubscription()
 
         if (!sub) return

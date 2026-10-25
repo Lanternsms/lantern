@@ -43,7 +43,7 @@ const ALL_NAV_ITEMS: NavItem[] = [
   { label: 'Documents', href: '/dashboard/documents' },
   // LMS
   { label: "Today's Lessons", href: '/dashboard/lms/today', permission: ['lms.facilitate', 'lms.manage'] },
-  { label: 'Lessons', href: '/dashboard/lms', permission: ['lms.manage', 'lms.upload'] },
+  { label: 'LMS', href: '/dashboard/lms', permission: ['lms.manage', 'lms.upload'] },
   { label: 'Storage', href: '/dashboard/lms/storage', permission: ['lms.manage', 'lms.upload'] },
   // last item on the navbar with gated permission
   { label: 'Settings', href: '/dashboard/settings', permission: 'school.manage' }

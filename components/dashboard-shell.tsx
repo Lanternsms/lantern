@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { signOut } from '@/app/auth/actions'
 import { removeSubscription } from '@/app/dashboard/notifications/actions'
@@ -37,19 +36,31 @@ export function DashboardShell({
     })
   }
 
-  async function handleSignOut(formData: FormData) {
+  async function handleSignOut(_formData?: FormData) {
     setIsSigningOut(true)
     try {
       if (typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window) {
-        const reg = await navigator.serviceWorker.ready
-        const sub = await reg.pushManager.getSubscription()
-        if (sub) {
-          const ep = sub.endpoint
-          await sub.unsubscribe().catch(() => {})
-          await removeSubscription({ endpoint: ep }).catch(() => {})
+        const cleanupPromise = async () => {
+          const reg = await navigator.serviceWorker.getRegistration()
+          if (reg?.pushManager) {
+            const sub = await reg.pushManager.getSubscription()
+            if (sub) {
+              const ep = sub.endpoint
+              await sub.unsubscribe().catch(() => {})
+              await removeSubscription({ endpoint: ep }).catch(() => {})
+            }
+          }
         }
+        await Promise.race([
+          cleanupPromise(),
+          new Promise((resolve) => setTimeout(resolve, 800)),
+        ])
       }
-      sessionStorage.removeItem('push_synced')
+      try {
+        sessionStorage.removeItem('push_synced')
+      } catch {
+        // Ignore sessionStorage error
+      }
     } catch (e) {
       console.debug('Error unsubscribing before sign out:', e)
     }

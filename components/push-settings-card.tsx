@@ -102,7 +102,12 @@ export function PushSettingsCard({
 
     async function checkSubscription() {
       try {
-        const reg = await navigator.serviceWorker.ready
+        const reg = await navigator.serviceWorker.getRegistration()
+        if (!reg?.pushManager) {
+          setIsSubscribedOnDevice(false)
+          setCurrentEndpoint(null)
+          return
+        }
         const sub = await reg.pushManager.getSubscription()
         if (sub) {
           setIsSubscribedOnDevice(true)
@@ -243,12 +248,14 @@ export function PushSettingsCard({
     setTestResult(null)
 
     try {
-      const reg = await navigator.serviceWorker.ready
-      const sub = await reg.pushManager.getSubscription()
-      if (sub) {
-        const ep = sub.endpoint
-        await sub.unsubscribe()
-        await removeSubscription({ endpoint: ep })
+      const reg = await navigator.serviceWorker.getRegistration()
+      if (reg?.pushManager) {
+        const sub = await reg.pushManager.getSubscription()
+        if (sub) {
+          const ep = sub.endpoint
+          await sub.unsubscribe()
+          await removeSubscription({ endpoint: ep })
+        }
       }
       setIsSubscribedOnDevice(false)
       setCurrentEndpoint(null)
