@@ -1,9 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { DashboardShell } from '@/components/dashboard-shell'
 import { getMyAccessContext, canSee, type NavGate } from '@/lib/permissions'
 import { ThemeStyle } from './_components/theme-style'
 import { getOpenQuestionCount } from './lms/questions/actions'
+import { NotificationBellServer } from './_components/notification-bell-server'
+import { PushSync } from '@/components/push-sync'
+import { FirstLoginBanner } from '@/components/first-login-banner'
 
 type NavItem = { label: string; href: string } & NavGate
 
@@ -40,6 +44,7 @@ const ALL_NAV_ITEMS: NavItem[] = [
   // LMS
   { label: "Today's Lessons", href: '/dashboard/lms/today', permission: ['lms.facilitate', 'lms.manage'] },
   { label: 'Lessons', href: '/dashboard/lms', permission: ['lms.manage', 'lms.upload'] },
+  { label: 'Storage', href: '/dashboard/lms/storage', permission: ['lms.manage', 'lms.upload'] },
   // last item on the navbar with gated permission
   { label: 'Settings', href: '/dashboard/settings', permission: 'school.manage' }
 ]
@@ -139,8 +144,13 @@ export default async function DashboardLayout({
       schoolName={school.data?.name ?? ''}
       logoUrl={school.data?.logo_url ?? null}
       navItems={visibleItems}
+      notificationBell={<NotificationBellServer />}
     >
+      <PushSync />
       <ThemeStyle />
+      <div className="px-6 pt-4">
+        <FirstLoginBanner userId={user.id} />
+      </div>
       {children}
     </DashboardShell>
   )

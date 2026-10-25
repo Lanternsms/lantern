@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getTodayInLagos } from '../lagos-time'
 import { FacilitatorPeriodCard, LessonOption, DeliveryInfo } from './facilitator-period-card'
+import { getTodayAttendanceChips } from '../attendance/actions'
 
 export const dynamic = 'force-dynamic'
 
@@ -175,7 +176,14 @@ export default async function FacilitatorTodayPage() {
     })
   )
 
-  // 5. Read-only "Recently delivered" list (last 10) for this facilitator
+  // 5. Fetch attendance chips for all entries (server-side, no RLS bypass needed for counts)
+  const entryIds = entryCardsData.map(({ entry }) => entry.id)
+  const { chips: attendanceChips } = await getTodayAttendanceChips({
+    entryIds,
+    date: dateStr,
+  })
+
+  // 6. Read-only "Recently delivered" list (last 10) for this facilitator
   const { data: recentDeliveries } = await (supabase as any)
     .from('lms_lesson_deliveries')
     .select(`
@@ -248,6 +256,7 @@ export default async function FacilitatorTodayPage() {
                 todayDelivery={todayDeliveryInfo}
                 currentUserId={user.id}
                 canManage={!!canManage}
+                attendanceChip={attendanceChips[entry.id] ?? null}
               />
             ))}
           </div>

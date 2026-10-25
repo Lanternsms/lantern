@@ -8,6 +8,7 @@ import { LessonPlayerModal } from '../lesson-player-modal'
 import { LessonVideoUpload } from '../lesson-video-upload'
 import { canManageActivities, canViewActivityResults } from '../access'
 import { ActivityManager } from '../activities/activity-manager'
+import { getLessonAttendanceSummary } from '../attendance/actions'
 
 export const dynamic = 'force-dynamic'
 
@@ -71,9 +72,10 @@ export default async function LessonDetailPage({
     redirect('/dashboard?error=' + encodeURIComponent('You do not have access to this lesson.'))
   }
 
-  const [canManageAct, canViewActResults] = await Promise.all([
+  const [canManageAct, canViewActResults, attendanceSummary] = await Promise.all([
     canManageActivities(user.id, lesson),
-    canViewActivityResults(user.id, lesson)
+    canViewActivityResults(user.id, lesson),
+    getLessonAttendanceSummary({ lessonId }),
   ])
 
   // Get enrolled count for the class in current session
@@ -93,6 +95,22 @@ export default async function LessonDetailPage({
       .eq('session_id', currentSession.id)
       .eq('class_id', lesson.class_id)
     totalEnrolled = count ?? 0
+  }
+
+  // Load the primary LMS timetable entry for this lesson (for attendance Edit link)
+  let primaryLmsEntryId: string | null = null
+  if (currentSession && lesson.class_id && lesson.subject_id) {
+    const { data: entryRow } = await (supabase as any)
+      .from('timetable_entries')
+      .select('id')
+      .eq('school_id', schoolId)
+      .eq('session_id', currentSession.id)
+      .eq('class_id', lesson.class_id)
+      .eq('subject_id', lesson.subject_id)
+      .eq('delivery_mode', 'lms')
+      .limit(1)
+      .maybeSingle()
+    primaryLmsEntryId = entryRow?.id ?? null
   }
 
   // Load activities for this lesson
@@ -185,6 +203,19 @@ export default async function LessonDetailPage({
   const setPublished = setLessonStatus.bind(null, lessonId, 'published')
   const setDraft = setLessonStatus.bind(null, lessonId, 'draft')
 
+  let schoolStorageUsedStr: string | null = null
+  if (canManage || canUpload) {
+    const { data: usageData } = await (supabase as any).rpc('lms_storage_usage')
+    if (usageData && Array.isArray(usageData)) {
+      const totalBytes = usageData.reduce((acc: number, row: any) => acc + (Number(row.bytes) || 0), 0)
+      const gb = totalBytes / (1024 * 1024 * 1024)
+      schoolStorageUsedStr =
+        gb >= 0.01
+          ? `School storage used: ${gb.toFixed(2)} GB`
+          : `School storage used: ${(totalBytes / (1024 * 1024)).toFixed(1)} MB`
+    }
+  }
+
   return (
     <div className="px-8 py-8 max-w-4xl space-y-8">
       {/* Breadcrumb + title */}
@@ -265,7 +296,9 @@ export default async function LessonDetailPage({
             <LessonVideoUpload
               lessonId={lessonId}
               schoolId={schoolId}
+              currentVideoPath={lesson.video_path}
               hasExistingVideo={!!lesson.video_path}
+              schoolStorageUsed={schoolStorageUsedStr}
             />
           </div>
         )}
@@ -280,6 +313,58 @@ export default async function LessonDetailPage({
         isSchoolManager={!!canManage}
         totalEnrolled={totalEnrolled}
       />
+
+      {/* ── Attendance section ── */}
+      {attendanceSummary.ok && (
+        <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
+          <h2 className="text-sm font-semibold text-text-primary">Attendance</h2>
+          {attendanceSummary.rows.length === 0 ? (
+            <p className="text-sm text-text-secondary">No period attendance has been recorded for this lesson yet.</p>
+          ) : (
+            <div className="border border-border rounded-xl overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-surface-muted/40 text-text-secondary text-xs border-b border-border">
+                  <tr>
+                    <th className="text-left px-4 py-2.5 font-medium">Date</th>
+                    <th className="text-right px-4 py-2.5 font-medium">Present</th>
+                    <th className="text-right px-4 py-2.5 font-medium">Late</th>
+                    <th className="text-right px-4 py-2.5 font-medium">Absent</th>
+                    <th className="text-right px-4 py-2.5 font-medium">Total</th>
+                    {attendanceSummary.canManage && primaryLmsEntryId && (
+                      <th className="text-right px-4 py-2.5 font-medium">Actions</th>
+                    )}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {attendanceSummary.rows.map((row) => (
+                    <tr key={row.date} className="hover:bg-surface-muted/20 transition-colors">
+                      <td className="px-4 py-3 font-medium text-text-primary whitespace-nowrap">
+                        {new Date(row.date + 'T12:00:00').toLocaleDateString(undefined, {
+                          weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
+                        })}
+                      </td>
+                      <td className="px-4 py-3 text-right text-emerald-600 font-semibold">{row.present}</td>
+                      <td className="px-4 py-3 text-right text-amber-600">{row.late}</td>
+                      <td className="px-4 py-3 text-right text-red-600">{row.absent}</td>
+                      <td className="px-4 py-3 text-right text-text-secondary">{row.total}</td>
+                      {attendanceSummary.canManage && primaryLmsEntryId && (
+                        <td className="px-4 py-3 text-right">
+                          <Link
+                            href={`/dashboard/lms/today/attendance/${primaryLmsEntryId}?date=${row.date}`}
+                            className="text-xs text-primary hover:underline font-medium"
+                          >
+                            Edit
+                          </Link>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      )}
 
       {/* ── Edit metadata form (canManage only) ── */}
       {canManage && (

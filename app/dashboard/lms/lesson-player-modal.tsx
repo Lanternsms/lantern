@@ -9,6 +9,8 @@ interface LessonPlayerModalProps {
   label?: string
   studentId?: string
   size?: 'md' | 'lg'
+  videoPath?: string | null
+  schoolId?: string
 }
 
 export function LessonPlayerModal({
@@ -23,6 +25,8 @@ export function LessonPlayerModal({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [retried, setRetried] = useState(false)
+  const [videoCodec, setVideoCodec] = useState<string | null>(null)
+  const [isStaff, setIsStaff] = useState<boolean>(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const backdropRef = useRef<HTMLDivElement>(null)
 
@@ -35,6 +39,8 @@ export function LessonPlayerModal({
       setError(result.error)
     } else {
       setUrl(result.url ?? null)
+      if (result.videoCodec !== undefined) setVideoCodec(result.videoCodec)
+      if (result.isStaff !== undefined) setIsStaff(!!result.isStaff)
     }
   }, [lessonId, studentId])
 
@@ -69,7 +75,18 @@ export function LessonPlayerModal({
       // Retry once with a fresh signed URL
       fetchUrl()
     } else {
-      setError('The video failed to load. Please try again.')
+      let msg = "This lesson video couldn't be played on your device. Try the latest Chrome, or ask your school to re-upload it."
+      if (isStaff && videoCodec) {
+        const c = videoCodec.toLowerCase()
+        if (c === 'hevc') {
+          msg += ' Stored as HEVC (H.265), which many browsers can\'t play.'
+        } else if (c === 'prores') {
+          msg += ' Stored as ProRes, which many browsers can\'t play.'
+        } else if (c === 'av1') {
+          msg += ' Stored as AV1, which many browsers can\'t play.'
+        }
+      }
+      setError(msg)
       setUrl(null)
     }
   }

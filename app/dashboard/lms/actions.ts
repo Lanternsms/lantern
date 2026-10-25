@@ -118,10 +118,16 @@ export async function updateLesson(lessonId: string, formData: FormData): Promis
 
 // ─── attachLessonVideo ────────────────────────────────────────────────────────
 
+const ALLOWED_VIDEO_CODECS = new Set(['h264', 'hevc', 'av1', 'vp8', 'vp9', 'prores', 'other'])
+
 export async function attachLessonVideo(
   lessonId: string,
   videoPath: string,
-  durationSeconds: number | null
+  durationSeconds: number | null,
+  videoSizeBytes?: number | null,
+  videoCodec?: string | null,
+  videoWidth?: number | null,
+  videoHeight?: number | null
 ) {
   const { supabase, user, schoolId } = await getContext()
   await requirePermission(supabase, 'lms.upload')
@@ -130,6 +136,42 @@ export async function attachLessonVideo(
   const expectedPrefix = `${schoolId}/${lessonId}.`
   if (!videoPath.startsWith(expectedPrefix)) {
     return { error: 'Invalid video path.' }
+  }
+
+  // Validate metadata if provided
+  if (videoSizeBytes !== undefined && videoSizeBytes !== null) {
+    if (typeof videoSizeBytes !== 'number' || videoSizeBytes < 1 || videoSizeBytes > 500 * 1024 * 1024) {
+      return { error: 'Video file size must be between 1 byte and 500 MB.' }
+    }
+  }
+
+  if (videoCodec !== undefined && videoCodec !== null) {
+    if (typeof videoCodec !== 'string' || !ALLOWED_VIDEO_CODECS.has(videoCodec.toLowerCase())) {
+      return { error: 'Invalid or unsupported video codec.' }
+    }
+  }
+
+  if (videoWidth !== undefined && videoWidth !== null) {
+    if (typeof videoWidth !== 'number' || videoWidth <= 0) {
+      return { error: 'Video width must be a positive number.' }
+    }
+  }
+
+  if (videoHeight !== undefined && videoHeight !== null) {
+    if (typeof videoHeight !== 'number' || videoHeight <= 0) {
+      return { error: 'Video height must be a positive number.' }
+    }
+  }
+
+  // Verify the object actually exists in the bucket before saving video_path
+  const admin = createAdminClient()
+  const filename = videoPath.split('/').pop() ?? ''
+  const { data: listedFiles, error: listErr } = await admin.storage
+    .from('lms-lessons')
+    .list(schoolId, { search: lessonId })
+
+  if (listErr || !listedFiles || !listedFiles.some((f) => f.name === filename)) {
+    return { error: 'Uploaded video file could not be verified in storage.' }
   }
 
   // 1. Read the lesson's existing video_path BEFORE updating
@@ -145,13 +187,19 @@ export async function attachLessonVideo(
   const oldPath: string | null = existing.video_path
 
   // Update DB record
+  const updatePayload: Record<string, unknown> = {
+    video_path: videoPath,
+    duration_seconds: durationSeconds,
+    uploaded_by: user.id,
+  }
+  if (videoSizeBytes !== undefined) updatePayload.video_size_bytes = videoSizeBytes
+  if (videoCodec !== undefined) updatePayload.video_codec = videoCodec ? videoCodec.toLowerCase() : null
+  if (videoWidth !== undefined) updatePayload.video_width = videoWidth
+  if (videoHeight !== undefined) updatePayload.video_height = videoHeight
+
   const { data, error } = await (supabase as any)
     .from('lms_lessons')
-    .update({
-      video_path: videoPath,
-      duration_seconds: durationSeconds,
-      uploaded_by: user.id,
-    })
+    .update(updatePayload)
     .eq('id', lessonId)
     .eq('school_id', schoolId)
     .select('id')
@@ -457,7 +505,7 @@ export async function getLessonVideoUrl(lessonId: string, studentId?: string) {
   // 1. Fetch lesson
   const { data: lesson, error: fetchErr } = await (supabase as any)
     .from('lms_lessons')
-    .select('id, school_id, class_id, subject_id, status, video_path')
+    .select('id, school_id, class_id, subject_id, status, video_path, video_codec')
     .eq('id', lessonId)
     .eq('school_id', schoolId)
     .single()
@@ -473,6 +521,9 @@ export async function getLessonVideoUrl(lessonId: string, studentId?: string) {
     supabase.rpc('has_permission', { perm_code: 'lms.facilitate' }),
   ])
 
+  const isStaff = !!(canManage || canUpload)
+  const videoCodec: string | null = lesson.video_codec ?? null
+
   // Class a: lms.manage or lms.upload: any lesson in their school (signed URL via user client, 2 hours, as today)
   if (canManage || canUpload) {
     const { data: signed, error: signErr } = await supabase.storage
@@ -485,9 +536,9 @@ export async function getLessonVideoUrl(lessonId: string, studentId?: string) {
         .from('lms-lessons')
         .createSignedUrl(lesson.video_path, 7200)
       if (adminSignErr || !adminSigned) return { error: GENERIC_ERROR }
-      return { url: adminSigned.signedUrl }
+      return { url: adminSigned.signedUrl, videoCodec, isStaff }
     }
-    return { url: signed.signedUrl }
+    return { url: signed.signedUrl, videoCodec, isStaff }
   }
 
   // Class b: lms.facilitate only:
@@ -529,9 +580,9 @@ export async function getLessonVideoUrl(lessonId: string, studentId?: string) {
         .from('lms-lessons')
         .createSignedUrl(lesson.video_path, 7200)
       if (adminSignErr || !adminSigned) return { error: GENERIC_ERROR }
-      return { url: adminSigned.signedUrl }
+      return { url: adminSigned.signedUrl, videoCodec, isStaff }
     }
-    return { url: signed.signedUrl }
+    return { url: signed.signedUrl, videoCodec, isStaff }
   }
 
   // Class c: Everyone else (student/guardian):
@@ -540,11 +591,9 @@ export async function getLessonVideoUrl(lessonId: string, studentId?: string) {
     return { error: GENERIC_ERROR }
   }
 
-// Verify caller is that student's guardian or the student themselves using shared helper
-const access = await getAskerAccess(user.id, lessonId, studentId)
-if (!access) return { error: GENERIC_ERROR }
-// 'lesson' variable is already loaded; we can ignore access.lesson here
-
+  // Verify caller is that student's guardian or the student themselves using shared helper
+  const access = await getAskerAccess(user.id, lessonId, studentId)
+  if (!access) return { error: GENERIC_ERROR }
 
   // Sign with createAdminClient() (2 hours)
   const admin = createAdminClient()
@@ -553,5 +602,5 @@ if (!access) return { error: GENERIC_ERROR }
     .createSignedUrl(lesson.video_path, 7200)
 
   if (signErr || !signed) return { error: GENERIC_ERROR }
-  return { url: signed.signedUrl }
+  return { url: signed.signedUrl, videoCodec, isStaff }
 }

@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { signOut } from '@/app/auth/actions'
+import { removeSubscription } from '@/app/dashboard/notifications/actions'
 import { GlobalSearch } from '@/components/global-search'
 import { LoadingOverlay } from '@/components/loading-overlay'
 
@@ -13,6 +14,7 @@ export function DashboardShell({
   schoolName,
   logoUrl,
   navItems,
+  notificationBell,
   children,
 }: {
   firstName: string
@@ -20,6 +22,7 @@ export function DashboardShell({
   schoolName: string
   logoUrl: string | null
   navItems: { label: string; href: string; badge?: number | string | null }[]
+  notificationBell?: React.ReactNode
   children: React.ReactNode
 }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -36,6 +39,20 @@ export function DashboardShell({
 
   async function handleSignOut(formData: FormData) {
     setIsSigningOut(true)
+    try {
+      if (typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window) {
+        const reg = await navigator.serviceWorker.ready
+        const sub = await reg.pushManager.getSubscription()
+        if (sub) {
+          const ep = sub.endpoint
+          await sub.unsubscribe().catch(() => {})
+          await removeSubscription({ endpoint: ep }).catch(() => {})
+        }
+      }
+      sessionStorage.removeItem('push_synced')
+    } catch (e) {
+      console.debug('Error unsubscribing before sign out:', e)
+    }
     await signOut()
   }
 
@@ -128,8 +145,9 @@ export function DashboardShell({
           <span className="text-sm font-medium text-text-primary truncate">{schoolName}</span>
         </div>
 
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-2">
           <GlobalSearch />
+          {notificationBell}
         </div>
       </header>
 

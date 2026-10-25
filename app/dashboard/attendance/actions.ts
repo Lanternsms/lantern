@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { logSchoolAction } from '@/lib/audit/log-school-actions'
+import { emit } from '@/lib/notifications/service'
 
 export async function saveAttendance(params: {
   classId: string
@@ -49,6 +50,17 @@ export async function saveAttendance(params: {
       studentCount: params.marks.length,
     },
   })
+  // Emit notification to guardians of each student
+  await Promise.all(
+    params.marks.map(async (m) => {
+      await emit('attendance_marked', {
+        schoolId: profile.school_id,
+        studentId: m.studentId,
+        recordedBy: user.id,
+        // optional: studentName could be fetched elsewhere
+      })
+    })
+  )
 
   revalidatePath('/dashboard/attendance')
   return { success: true }

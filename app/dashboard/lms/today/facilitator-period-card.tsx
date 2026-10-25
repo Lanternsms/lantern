@@ -23,6 +23,11 @@ export type DeliveryInfo = {
   lesson_title?: string
 }
 
+export type AttendanceChip = {
+  marked: number
+  total: number
+}
+
 interface FacilitatorPeriodCardProps {
   timetableEntryId: string
   periodName: string
@@ -36,6 +41,7 @@ interface FacilitatorPeriodCardProps {
   todayDelivery: DeliveryInfo | null
   currentUserId: string
   canManage: boolean
+  attendanceChip: AttendanceChip | null
 }
 
 export function FacilitatorPeriodCard({
@@ -51,6 +57,7 @@ export function FacilitatorPeriodCard({
   todayDelivery,
   currentUserId,
   canManage,
+  attendanceChip,
 }: FacilitatorPeriodCardProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -108,7 +115,7 @@ export function FacilitatorPeriodCard({
           <h3 className="text-base font-semibold text-text-primary mt-1">{subjectName}</h3>
         </div>
 
-        <div>
+        <div className="flex flex-col items-end gap-1.5">
           {isDeliveredToday ? (
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
@@ -119,6 +126,17 @@ export function FacilitatorPeriodCard({
               <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
               Not yet
             </span>
+          )}
+          {attendanceChip !== null && (
+            <Link
+              href={`/dashboard/lms/today/attendance/${timetableEntryId}`}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 transition-colors"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+              </svg>
+              Attendance: {attendanceChip.marked} of {attendanceChip.total} marked
+            </Link>
           )}
         </div>
       </div>
@@ -153,13 +171,19 @@ export function FacilitatorPeriodCard({
                 )}
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-2 shrink-0 flex-wrap justify-end">
                 <LessonPlayerModal
                   lessonId={todayDelivery.lesson_id}
                   title={todayDelivery.lesson_title ?? 'Lesson'}
                   size="lg"
                   label="Play"
                 />
+                <Link
+                  href={`/dashboard/lms/today/attendance/${timetableEntryId}`}
+                  className="text-xs font-medium border border-primary/30 bg-primary/5 text-primary hover:bg-primary/10 px-3 py-2 rounded-lg transition-colors"
+                >
+                  Take attendance
+                </Link>
                 {canUndo && (
                   <button
                     type="button"
@@ -206,7 +230,7 @@ export function FacilitatorPeriodCard({
                 )}
               </div>
 
-              <div className="flex items-center gap-2 pt-4 sm:pt-0 shrink-0 self-end">
+              <div className="flex items-center gap-2 pt-4 sm:pt-0 shrink-0 self-end flex-wrap justify-end">
                 {selectedLesson && (
                   <LessonPlayerModal
                     lessonId={selectedLesson.id}
@@ -215,6 +239,12 @@ export function FacilitatorPeriodCard({
                     label="Play"
                   />
                 )}
+                <Link
+                  href={`/dashboard/lms/today/attendance/${timetableEntryId}`}
+                  className="text-xs font-medium border border-border px-3 py-2.5 rounded-lg hover:bg-surface-muted transition-colors"
+                >
+                  Take attendance
+                </Link>
                 <button
                   type="button"
                   onClick={handleMarkDelivered}
