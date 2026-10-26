@@ -1,8 +1,7 @@
 // app/dashboard/lms/questions/page.tsx
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { getAnswerableLessonIds } from '@/app/dashboard/lms/access'
+import { getLmsAccess, getAnswerableLessonIds } from '@/lib/lms/access'
 import { listInboxThreads } from './actions'
 
 export const dynamic = 'force-dynamic'
@@ -66,16 +65,12 @@ export default async function QuestionsInboxPage({
 
   const lessonIdFilter = params.lessonId || undefined
 
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  const access = await getLmsAccess()
+  const answerableIds = await getAnswerableLessonIds(access)
 
-  // Access check: lms.manage or can answer at least one lesson
-  const answerableIds = await getAnswerableLessonIds(user.id)
-  const { data: canManage } = await supabase.rpc('has_permission', { perm_code: 'lms.manage' })
-
-  if (!canManage && answerableIds.length === 0) {
-    redirect('/dashboard?error=' + encodeURIComponent('You do not have access to Lesson Questions.'))
+  // Access check: must be manager OR have at least one answerable lesson
+  if (!access.isManager && answerableIds.length === 0) {
+    notFound()
   }
 
   // Load threads
@@ -87,7 +82,7 @@ export default async function QuestionsInboxPage({
   // If filtered by lessonId, get lesson title for the banner
   let filteredLessonTitle: string | null = null
   if (lessonIdFilter) {
-    const { data: lesson } = await (supabase as any)
+    const { data: lesson } = await (access.supabase as any)
       .from('lms_lessons')
       .select('title')
       .eq('id', lessonIdFilter)
@@ -125,18 +120,22 @@ export default async function QuestionsInboxPage({
         </div>
 
         <div className="flex items-center gap-2">
-          <Link
-            href="/dashboard/lms"
-            className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-text-primary bg-surface hover:bg-surface-muted transition-colors"
-          >
-            Lesson Library
-          </Link>
-          <Link
-            href="/dashboard/lms/today"
-            className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-text-primary bg-surface hover:bg-surface-muted transition-colors"
-          >
-            Today&apos;s Lessons
-          </Link>
+          {access.isManager && (
+            <Link
+              href="/dashboard/lms"
+              className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-text-primary bg-surface hover:bg-surface-muted transition-colors"
+            >
+              Lesson Library
+            </Link>
+          )}
+          {(access.isFacilitator || access.isManager) && (
+            <Link
+              href="/dashboard/lms/today"
+              className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-text-primary bg-surface hover:bg-surface-muted transition-colors"
+            >
+              Today&apos;s Lessons
+            </Link>
+          )}
         </div>
       </div>
 

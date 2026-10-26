@@ -1,6 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
+import { getLmsAccess } from '@/lib/lms/access'
 import { getActivity, listSubmissions } from '../actions'
 import { ActivityRosterClient } from './activity-roster-client'
 
@@ -13,27 +14,36 @@ export default async function ActivityDetailPage({
 }) {
   const { activityId } = await params
 
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
+
+  const access = await getLmsAccess(supabase, user)
+
   const actData = await getActivity(activityId)
   if (!actData || !actData.activity) notFound()
 
   if (!actData.canView && !actData.canManage) {
-    redirect('/dashboard/lms?error=' + encodeURIComponent('Access denied to this activity.'))
+    notFound()
   }
 
   const submissionsData = await listSubmissions(activityId)
   if (!submissionsData || submissionsData.error) {
-    redirect('/dashboard/lms?error=' + encodeURIComponent(submissionsData?.error || 'Failed to load submissions.'))
+    notFound()
   }
 
   const { activity, session, roster, totalEnrolled, submittedCount } = submissionsData
   const lesson = activity.lesson
+
+  const libraryHref = access.isManager ? '/dashboard/lms' : '/dashboard/lms/my-lessons'
+  const libraryLabel = access.isManager ? 'Lessons' : 'My Lessons'
 
   return (
     <div className="px-8 py-8 max-w-5xl space-y-6">
       {/* Breadcrumb + Header */}
       <div>
         <p className="text-sm text-text-secondary mb-1">
-          <Link href="/dashboard/lms" className="hover:text-primary">Lessons</Link>
+          <Link href={libraryHref} className="hover:text-primary">{libraryLabel}</Link>
           {' '}/ <Link href={`/dashboard/lms/${activity.lesson_id}`} className="hover:text-primary">{lesson?.title || 'Lesson'}</Link>
           {' '}/ {activity.title}
         </p>

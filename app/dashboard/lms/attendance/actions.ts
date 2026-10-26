@@ -6,9 +6,9 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { logSchoolAction } from '@/lib/audit/log-school-actions'
-import { getTodayInLagos } from '../lagos-time'
+import { getLmsAccess, todayInSchoolTz, getCurrentAcademicSession } from '@/lib/lms/access'
 
-const GENERIC_ERROR = 'Access denied.'
+const GENERIC_ERROR = 'Not found'
 
 // ─── Shared context helper ─────────────────────────────────────────────────────
 
@@ -36,10 +36,10 @@ async function getContext() {
  * Returns { canMark: true, entry } on success, or { canMark: false } on failure.
  *
  * Authorization rules:
- * - lms.manage: any past or present date, any LMS entry of the school.
- * - lms.facilitate (facilitator): only for entries where teacher_id = user,
+ * - ADMIN (isManager): any past or present date, any LMS entry of the school.
+ * - FACILITATOR (isFacilitator): only for entries where teacher_id = user,
  *   delivery_mode = 'lms', session = current, entry.day_of_week == weekday of
- *   `date`, AND date must be today (Africa/Lagos).
+ *   `date`, AND date must be today in the school's timezone.
  */
 async function authorizeForEntry(
   supabase: Awaited<ReturnType<typeof createClient>>,
@@ -48,12 +48,9 @@ async function authorizeForEntry(
   timetableEntryId: string,
   date: string // YYYY-MM-DD
 ): Promise<{ ok: false } | { ok: true; entry: any; canManage: boolean }> {
-  const [{ data: canManage }, { data: canFacilitate }] = await Promise.all([
-    supabase.rpc('has_permission', { perm_code: 'lms.manage' }),
-    supabase.rpc('has_permission', { perm_code: 'lms.facilitate' }),
-  ])
+  const access = await getLmsAccess(supabase, user as any)
 
-  if (!canManage && !canFacilitate) return { ok: false }
+  if (!access.isManager && !access.isFacilitator) return { ok: false }
 
   // Load entry (scoped to school)
   const { data: entry, error: entryErr } = await (supabase as any)
@@ -67,25 +64,19 @@ async function authorizeForEntry(
   if (entry.delivery_mode !== 'lms') return { ok: false }
 
   // Load current session
-  const { data: currentSession } = await supabase
-    .from('academic_sessions')
-    .select('id')
-    .eq('school_id', schoolId)
-    .eq('is_current', true)
-    .single()
-
+  const currentSession = await getCurrentAcademicSession(supabase, schoolId)
   if (!currentSession) return { ok: false }
   if (entry.session_id !== currentSession.id) return { ok: false }
 
-  if (canManage) {
+  if (access.isManager) {
     return { ok: true, entry, canManage: true }
   }
 
   // Facilitator checks
   if (entry.teacher_id !== user.id) return { ok: false }
 
-  // The date must be today in Africa/Lagos
-  const { dateStr, dayOfWeek } = getTodayInLagos()
+  // The date must be today in the school's timezone
+  const { dateStr, dayOfWeek } = todayInSchoolTz(access.schoolTimezone)
   if (date !== dateStr) return { ok: false }
   if (entry.day_of_week !== dayOfWeek) return { ok: false }
 

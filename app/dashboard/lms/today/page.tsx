@@ -1,58 +1,41 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { getTodayInLagos } from '../lagos-time'
+import { getLmsAccess, todayInSchoolTz } from '@/lib/lms/access'
 import { FacilitatorPeriodCard, LessonOption, DeliveryInfo } from './facilitator-period-card'
 import { getTodayAttendanceChips } from '../attendance/actions'
 
 export const dynamic = 'force-dynamic'
 
-const WEEKDAY_NAMES = [
-  'Sunday',
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-]
-
 export default async function FacilitatorTodayPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  const access = await getLmsAccess()
+
+  // Only facilitators and managers may view this page
+  if (!access.isFacilitator && !access.isManager) {
+    notFound()
+  }
+
+  const { supabase, user, schoolId, schoolTimezone } = access
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('school_id, first_name, last_name')
+    .select('first_name, last_name')
     .eq('id', user.id)
     .single()
 
-  if (!profile) redirect('/login')
-
-  const [{ data: canFacilitate }, { data: canManage }] = await Promise.all([
-    supabase.rpc('has_permission', { perm_code: 'lms.facilitate' }),
-    supabase.rpc('has_permission', { perm_code: 'lms.manage' }),
-  ])
-
-  if (!canFacilitate && !canManage) {
-    redirect('/dashboard?error=' + encodeURIComponent('You do not have access to Today\'s Lessons.'))
-  }
-
   // 1. Current session
-  const { data: session } = await supabase
+  const { data: session } = await (supabase as any)
     .from('academic_sessions')
     .select('id, name')
-    .eq('school_id', profile.school_id)
+    .eq('school_id', schoolId)
     .eq('is_current', true)
     .maybeSingle()
 
-  // 2. Compute "today" in Africa/Lagos
-  const { dateStr, dayOfWeek } = getTodayInLagos()
+  // 2. Compute "today" in school timezone (never new Date().toISOString().slice(0, 10))
+  const { dateStr, dayOfWeek } = todayInSchoolTz(schoolTimezone)
   const todayDateObj = new Date()
   const formattedDate = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'Africa/Lagos',
+    timeZone: schoolTimezone || 'Africa/Lagos',
     weekday: 'long',
     month: 'short',
     day: 'numeric',
@@ -72,7 +55,7 @@ export default async function FacilitatorTodayPage() {
         subject:subjects ( id, name )
       `)
       .eq('session_id', session.id)
-      .eq('school_id', profile.school_id)
+      .eq('school_id', schoolId)
       .eq('teacher_id', user.id)
       .eq('delivery_mode', 'lms')
       .eq('day_of_week', dayOfWeek)
@@ -90,8 +73,8 @@ export default async function FacilitatorTodayPage() {
       // Load published lessons for this class & subject
       const { data: rawLessons } = await (supabase as any)
         .from('lms_lessons')
-        .select('id, title, topic, week_no, duration_seconds, created_at')
-        .eq('school_id', profile.school_id)
+        .select('id, title, topic, week_no, duration_seconds, created_at, notes_path, notes_size_bytes, ai_tutor_enabled')
+        .eq('school_id', schoolId)
         .eq('class_id', entry.class_id)
         .eq('subject_id', entry.subject_id)
         .eq('status', 'published')
@@ -103,7 +86,7 @@ export default async function FacilitatorTodayPage() {
       let deliveryQuery = (supabase as any)
         .from('lms_lesson_deliveries')
         .select('id, lesson_id, delivered_on, delivered_by, timetable_entry_id')
-        .eq('school_id', profile.school_id)
+        .eq('school_id', schoolId)
         .eq('class_id', entry.class_id)
 
       if (entry.arm_id) {
@@ -143,7 +126,7 @@ export default async function FacilitatorTodayPage() {
         const { data: openMsg } = await (supabase as any)
           .from('lms_lesson_messages')
           .select('lesson_id')
-          .eq('school_id', profile.school_id)
+          .eq('school_id', schoolId)
           .in('lesson_id', lessonIds)
           .is('parent_id', null)
           .eq('status', 'open')
@@ -161,6 +144,8 @@ export default async function FacilitatorTodayPage() {
         duration_seconds: l.duration_seconds,
         isDeliveredForClassArm: deliveredLessonIds.has(l.id),
         openQuestionsCount: openQuestionCounts[l.id] || 0,
+        notes_path: l.notes_path,
+        notes_size_bytes: l.notes_size_bytes,
       }))
 
       // "Suggested" lesson = first one with NO lms_lesson_deliveries row for this class & arm
@@ -192,7 +177,7 @@ export default async function FacilitatorTodayPage() {
       class:classes ( name ),
       arm:arms ( name )
     `)
-    .eq('school_id', profile.school_id)
+    .eq('school_id', schoolId)
     .eq('delivered_by', user.id)
     .order('created_at', { ascending: false })
     .limit(10)
@@ -210,12 +195,14 @@ export default async function FacilitatorTodayPage() {
             {formattedDate} {session && `· ${session.name}`}
           </p>
         </div>
-        <Link
-          href="/dashboard/lms"
-          className="text-sm text-primary hover:text-primary-hover font-medium self-center"
-        >
-          View Lesson Library →
-        </Link>
+        {access.isManager && (
+          <Link
+            href="/dashboard/lms"
+            className="text-sm text-primary hover:text-primary-hover font-medium self-center"
+          >
+            View Lesson Library →
+          </Link>
+        )}
       </div>
 
       {/* Period Cards Section */}
@@ -233,10 +220,9 @@ export default async function FacilitatorTodayPage() {
           </div>
         ) : entryCardsData.length === 0 ? (
           <div className="bg-surface border border-border rounded-xl p-10 text-center space-y-2">
-            <p className="text-sm font-medium text-text-primary">No LMS periods today</p>
+            <p className="text-sm font-medium text-text-primary">No lessons scheduled for you today</p>
             <p className="text-xs text-text-secondary max-w-sm mx-auto">
-              You do not have any recorded lesson (LMS) timetable entries scheduled for today (
-              {WEEKDAY_NAMES[todayDateObj.getDay()]}).
+              You do not have any recorded lesson (LMS) timetable entries scheduled for today.
             </p>
           </div>
         ) : (
@@ -255,7 +241,7 @@ export default async function FacilitatorTodayPage() {
                 suggestedLessonId={suggestedLessonId}
                 todayDelivery={todayDeliveryInfo}
                 currentUserId={user.id}
-                canManage={!!canManage}
+                canManage={access.isManager}
                 attendanceChip={attendanceChips[entry.id] ?? null}
               />
             ))}

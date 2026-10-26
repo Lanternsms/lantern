@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Award, Calendar, CreditCard, Bell, FileText, CheckCircle2, PlayCircle } from 'lucide-react'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { LessonPlayerModal } from '../lms/lesson-player-modal'
+import { NotesDownloadButton } from '../lms/notes-download-button'
 
 function formatDuration(seconds: number | null): string {
   if (!seconds) return '—'
@@ -56,6 +57,7 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
       .from('lms_lessons')
       .select(`
         id, title, topic, week_no, duration_seconds, created_at,
+        notes_path, notes_size_bytes, notes_downloadable,
         subjects:subject_id ( name )
       `)
       .eq('class_id', currentEnrolment.class_id)
@@ -293,6 +295,13 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
                           studentId={student.id}
                           label="Watch"
                         />
+                        {lesson.notes_path && lesson.notes_downloadable && (
+                          <NotesDownloadButton
+                            lessonId={lesson.id}
+                            notesSizeBytes={lesson.notes_size_bytes}
+                            studentId={student.id}
+                          />
+                        )}
                       </div>
                     </div>
                   ))}

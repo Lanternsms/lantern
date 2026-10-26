@@ -1,7 +1,7 @@
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
+import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createLesson } from '../actions'
+import { getLmsAccess } from '@/lib/lms/access'
 
 export const dynamic = 'force-dynamic'
 
@@ -11,12 +11,11 @@ export default async function NewLessonPage({
   searchParams: Promise<{ error?: string }>
 }) {
   const { error } = await searchParams
-  const supabase = await createClient()
-
-  const { data: canManage } = await supabase.rpc('has_permission', { perm_code: 'lms.manage' })
-  if (!canManage) {
-    redirect('/dashboard/lms?error=' + encodeURIComponent('Permission denied.'))
+  const access = await getLmsAccess()
+  if (!access.isManager) {
+    notFound()
   }
+  const { supabase } = access
 
   const [{ data: classes }, { data: subjects }, { data: terms }] = await Promise.all([
     supabase.from('classes').select('id, name').order('name'),
@@ -143,6 +142,21 @@ export default async function NewLessonPage({
               </select>
             </div>
           )}
+
+          <div className="pt-2 border-t border-border">
+            <label className="flex items-center gap-2 cursor-pointer text-sm text-text-primary">
+              <input
+                type="checkbox"
+                name="ai_tutor_enabled"
+                defaultChecked={true}
+                className="rounded border-border text-primary focus:ring-primary h-4 w-4"
+              />
+              <span className="font-medium">Enable AI Tutor (Lumi) for this lesson</span>
+            </label>
+            <p className="text-xs text-text-secondary ml-6 mt-0.5">
+              Allows students and classroom facilitators to ask questions grounded in this lesson's notes.
+            </p>
+          </div>
         </section>
 
         <div className="flex items-center justify-between">

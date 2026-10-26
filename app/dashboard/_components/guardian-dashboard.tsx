@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ChildSelect, ChildrenTermSelect } from './child-select'
 import TimetableGridView, { TimetableRow } from '../my-timetable/timetable-grid-view'
 import { LessonPlayerModal } from '../lms/lesson-player-modal'
+import { NotesDownloadButton } from '../lms/notes-download-button'
 import GuardianAskButton from './guardian-ask-button';
 
 
@@ -303,6 +304,7 @@ export async function GuardianDashboard({
         .from('lms_lessons')
         .select(`
           id, title, topic, week_no, duration_seconds, created_at,
+          notes_path, notes_size_bytes, notes_downloadable,
           subjects:subject_id ( name )
         `)
         .eq('class_id', enrolment.class_id)
@@ -974,6 +976,13 @@ export async function GuardianDashboard({
                           studentId={selectedChild.id}
                           label="Watch"
                         />
+                        {lesson.notes_path && lesson.notes_downloadable && (
+                          <NotesDownloadButton
+                            lessonId={lesson.id}
+                            notesSizeBytes={lesson.notes_size_bytes}
+                            studentId={selectedChild.id}
+                          />
+                        )}
                         <GuardianAskButton lessonId={lesson.id} title={lesson.title} studentId={selectedChild.id} />
                       </div>
                     </div>

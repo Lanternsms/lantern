@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
+import { getLmsAccess } from '@/lib/lms/access'
 import { formatFileSize, formatCodecLabel, type VideoCodec } from '../video-inspect'
 import { OrphansTable, type OrphanObject } from './orphans-table'
 
@@ -15,22 +17,10 @@ export default async function LmsStoragePage() {
 
   if (!user) redirect('/login')
 
-  const [{ data: canManage }, { data: canUpload }] = await Promise.all([
-    supabase.rpc('has_permission', { perm_code: 'lms.manage' }),
-    supabase.rpc('has_permission', { perm_code: 'lms.upload' }),
-  ])
-
-  if (!canManage && !canUpload) {
-    redirect('/dashboard?error=' + encodeURIComponent('You do not have access to LMS storage management.'))
+  const access = await getLmsAccess(supabase, user)
+  if (!access.isManager) {
+    notFound()
   }
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('school_id')
-    .eq('id', user.id)
-    .single()
-
-  if (!profile) redirect('/login')
 
   // 1. Fetch usage data from user RPC
   const { data: rawUsage } = await (supabase as any).rpc('lms_storage_usage')
@@ -78,7 +68,7 @@ interface LargestLessonItem {
       class:classes(name),
       subject:subjects(name)
     `)
-    .eq('school_id', profile.school_id)
+    .eq('school_id', access.schoolId)
     .not('video_path', 'is', null)
     .order('video_size_bytes', { ascending: false, nullsFirst: false })
     .limit(15)
@@ -94,7 +84,7 @@ interface LargestLessonItem {
 
   // 3. Fetch orphans from user RPC
   const { data: rawOrphans } = await (supabase as any).rpc('lms_orphan_objects')
-  const orphans: OrphanObject[] = Array.isArray(rawOrphans)
+  const baseOrphans: OrphanObject[] = Array.isArray(rawOrphans)
     ? rawOrphans.map((o: { bucket_id?: string; name?: string; bytes?: number; created_at?: string }) => ({
         bucket_id: o.bucket_id ?? 'unknown',
         name: o.name ?? '',
@@ -102,6 +92,42 @@ interface LargestLessonItem {
         created_at: o.created_at ?? new Date().toISOString(),
       }))
     : []
+
+  // Add lms-notes orphan detection (bucket has no RLS policies, so use admin client)
+  const admin = createAdminClient()
+  const { data: notesObjects } = await admin.storage
+    .from('lms-notes')
+    .list(access.schoolId, { limit: 1000 })
+
+  const { data: referencedNotes } = await (admin as any)
+    .from('lms_lessons')
+    .select('notes_path')
+    .eq('school_id', access.schoolId)
+    .not('notes_path', 'is', null)
+
+  const referencedPaths = new Set(
+    (referencedNotes ?? []).map((r: any) => r.notes_path as string)
+  )
+
+  const oneHourAgo = Date.now() - 60 * 60 * 1000
+  const notesOrphans: OrphanObject[] = (notesObjects ?? [])
+    .filter((obj) => {
+      if (!obj.name || obj.name === '.emptyFolderPlaceholder') return false
+      const fullPath = `${access.schoolId}/${obj.name}`
+      if (referencedPaths.has(fullPath)) return false
+      if (obj.created_at && new Date(obj.created_at).getTime() > oneHourAgo) {
+        return false
+      }
+      return true
+    })
+    .map((obj) => ({
+      bucket_id: 'lms-notes',
+      name: `${access.schoolId}/${obj.name}`,
+      bytes: obj.metadata?.size ?? 0,
+      created_at: obj.created_at ?? new Date().toISOString(),
+    }))
+
+  const orphans = [...baseOrphans, ...notesOrphans]
 
   return (
     <div className="px-8 py-8 max-w-6xl mx-auto space-y-8">

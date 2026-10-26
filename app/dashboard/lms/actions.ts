@@ -5,41 +5,25 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
+import { after } from 'next/server'
 import { logSchoolAction } from '@/lib/audit/log-school-actions'
-import { getTodayInLagos } from './lagos-time'
-import { getAskerAccess } from '@/app/dashboard/lms/access'
 import { removeStorageDirectory } from './storage-utils'
-
-// ─── Shared context helper ────────────────────────────────────────────────────
-
-async function getContext() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('school_id')
-    .eq('id', user.id)
-    .single()
-  if (!profile) redirect('/login')
-
-  return { supabase, user, schoolId: profile.school_id }
-}
-
-async function requirePermission(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  perm: string
-) {
-  const { data: ok } = await supabase.rpc('has_permission', { perm_code: perm })
-  if (!ok) redirect('/dashboard?error=' + encodeURIComponent('Permission denied.'))
-}
+import { extractNotesText } from '@/lib/lms/notes-extract'
+import { emit } from '@/lib/notifications/service'
+import {
+  getLmsAccess,
+  canPlayLesson,
+  todayInSchoolTz,
+  getCurrentAcademicSession,
+  facilitatorHasTodayEntryForLesson,
+} from '@/lib/lms/access'
 
 // ─── createLesson ─────────────────────────────────────────────────────────────
 
 export async function createLesson(formData: FormData) {
-  const { supabase, user, schoolId } = await getContext()
-  await requirePermission(supabase, 'lms.manage')
+  const access = await getLmsAccess()
+  if (!access.isManager) redirect('/dashboard?error=' + encodeURIComponent('Not found'))
+  const { user, schoolId, supabase } = access
 
   const title = (formData.get('title') as string)?.trim()
   if (!title) redirect('/dashboard/lms/new?error=' + encodeURIComponent('Title is required.'))
@@ -53,6 +37,8 @@ export async function createLesson(formData: FormData) {
   const termIdRaw = formData.get('term_id') as string
   const weekNoRaw = formData.get('week_no') as string
   const recordedByRaw = formData.get('recorded_by') as string
+  const aiTutorEnabledRaw = formData.get('ai_tutor_enabled')
+  const aiTutorEnabled = aiTutorEnabledRaw === null ? true : (aiTutorEnabledRaw === 'on' || aiTutorEnabledRaw === 'true')
 
   const { data, error } = await (supabase as any)
     .from('lms_lessons')
@@ -67,6 +53,7 @@ export async function createLesson(formData: FormData) {
       recorded_by: recordedByRaw || user.id,
       uploaded_by: user.id,
       status: 'draft',
+      ai_tutor_enabled: aiTutorEnabled,
     })
     .select('id')
     .single()
@@ -83,8 +70,9 @@ export async function createLesson(formData: FormData) {
 // ─── updateLesson ─────────────────────────────────────────────────────────────
 
 export async function updateLesson(lessonId: string, formData: FormData): Promise<void> {
-  const { supabase } = await getContext()
-  await requirePermission(supabase, 'lms.manage')
+  const access = await getLmsAccess()
+  if (!access.isManager) redirect('/dashboard?error=' + encodeURIComponent('Not found'))
+  const { supabase } = access
 
   const title = (formData.get('title') as string)?.trim()
   if (!title) redirect(`/dashboard/lms/${lessonId}?error=` + encodeURIComponent('Title is required.'))
@@ -92,6 +80,8 @@ export async function updateLesson(lessonId: string, formData: FormData): Promis
   const termIdRaw = formData.get('term_id') as string
   const weekNoRaw = formData.get('week_no') as string
   const recordedByRaw = formData.get('recorded_by') as string
+  const aiTutorEnabledRaw = formData.get('ai_tutor_enabled')
+  const aiTutorEnabled = aiTutorEnabledRaw === 'on' || aiTutorEnabledRaw === 'true'
 
   const { data, error } = await (supabase as any)
     .from('lms_lessons')
@@ -103,6 +93,7 @@ export async function updateLesson(lessonId: string, formData: FormData): Promis
       title,
       topic: (formData.get('topic') as string)?.trim() || null,
       recorded_by: recordedByRaw || null,
+      ai_tutor_enabled: aiTutorEnabled,
     })
     .eq('id', lessonId)
     .select('id')
@@ -129,8 +120,11 @@ export async function attachLessonVideo(
   videoWidth?: number | null,
   videoHeight?: number | null
 ) {
-  const { supabase, user, schoolId } = await getContext()
-  await requirePermission(supabase, 'lms.upload')
+  const access = await getLmsAccess()
+  if (!access.isManager) {
+    return { error: 'Not found' }
+  }
+  const { user, schoolId, supabase } = access
 
   // Validate path prefix — must belong to this school and lesson
   const expectedPrefix = `${schoolId}/${lessonId}.`
@@ -242,11 +236,430 @@ export async function attachLessonVideo(
   return { success: true }
 }
 
+// ─── Lesson Notes Actions (PDF) ───────────────────────────────────────────────
+
+function sanitiseFilename(name: string): string {
+  return name.replace(/[/\\?%*:|"<>]/g, '-').replace(/\s+/g, ' ').trim()
+}
+
+export async function createNotesUploadUrl(lessonId: string) {
+  const access = await getLmsAccess()
+  if (!access.isManager) return { error: 'Not found' }
+  const { schoolId } = access
+
+  const admin = createAdminClient()
+  const { data: lesson, error: fetchErr } = await (admin as any)
+    .from('lms_lessons')
+    .select('id')
+    .eq('id', lessonId)
+    .eq('school_id', schoolId)
+    .maybeSingle()
+
+  if (fetchErr || !lesson) return { error: 'Not found' }
+
+  const path = `${schoolId}/${lessonId}/notes-${Date.now()}.pdf`
+  const { data, error } = await admin.storage
+    .from('lms-notes')
+    .createSignedUploadUrl(path, { upsert: true })
+
+  if (error || !data) {
+    return { error: error?.message ?? 'Failed to create upload URL.' }
+  }
+
+  return {
+    ok: true,
+    signedUrl: data.signedUrl,
+    token: data.token,
+    path,
+  }
+}
+
+export async function attachLessonNotes(
+  lessonId: string,
+  path: string,
+  originalName: string,
+  downloadable: boolean = true
+) {
+  const access = await getLmsAccess()
+  if (!access.isManager) return { error: 'Not found' }
+  const { schoolId, supabase } = access
+
+  // 1. Verify path belongs to this school and lesson
+  const expectedPrefix = `${schoolId}/${lessonId}/`
+  if (!path || !path.startsWith(expectedPrefix)) {
+    return { error: 'Invalid notes path.' }
+  }
+
+  const admin = createAdminClient()
+
+  // 2. Verify object exists and is <= 25 MB
+  const { data: blob, error: dlErr } = await admin.storage
+    .from('lms-notes')
+    .download(path)
+
+  if (dlErr || !blob) {
+    return { error: 'Uploaded notes file could not be verified in storage.' }
+  }
+
+  const MAX_NOTES_BYTES = 25 * 1024 * 1024
+  if (blob.size > MAX_NOTES_BYTES) {
+    await admin.storage.from('lms-notes').remove([path])
+    return { error: 'File exceeds maximum allowed size of 25 MB.' }
+  }
+
+  // 3. Verify magic bytes (%PDF-)
+  const arrayBuffer = await blob.arrayBuffer()
+  const header = Buffer.from(arrayBuffer.slice(0, 5)).toString('utf-8')
+  if (header !== '%PDF-') {
+    await admin.storage.from('lms-notes').remove([path])
+    return { error: 'Invalid file format. File must be a valid PDF.' }
+  }
+
+  // 4. Fetch existing lesson record to inspect previous notes_path and status
+  const { data: existing, error: fetchErr } = await (supabase as any)
+    .from('lms_lessons')
+    .select('id, notes_path, status')
+    .eq('id', lessonId)
+    .eq('school_id', schoolId)
+    .maybeSingle()
+
+  if (fetchErr || !existing) {
+    await admin.storage.from('lms-notes').remove([path])
+    return { error: 'Not found' }
+  }
+
+  const oldPath: string | null = existing.notes_path
+  const isNewlyAdded = !oldPath
+
+  // 5. Update lms_lessons
+  const { data: updated, error: updateErr } = await (supabase as any)
+    .from('lms_lessons')
+    .update({
+      notes_path: path,
+      notes_name: originalName || 'notes.pdf',
+      notes_size_bytes: blob.size,
+      notes_uploaded_at: new Date().toISOString(),
+      notes_downloadable: Boolean(downloadable),
+    })
+    .eq('id', lessonId)
+    .eq('school_id', schoolId)
+    .select('id')
+
+  if (updateErr) return { error: updateErr.message }
+  if (!updated || updated.length === 0) return { error: 'Not found' }
+
+  // 6. Delete old object if replacing
+  if (oldPath && oldPath !== path) {
+    if (oldPath.startsWith(expectedPrefix)) {
+      const { data: removeData, error: removeErr } = await admin.storage
+        .from('lms-notes')
+        .remove([oldPath])
+
+      const oldFilename = oldPath.split('/').pop() ?? ''
+      const isRemoved =
+        !removeErr &&
+        Array.isArray(removeData) &&
+        removeData.length > 0 &&
+        removeData.some((item) => item.name === oldFilename || item.name === oldPath)
+
+      if (!isRemoved) {
+        await logSchoolAction('lms_orphan_storage_cleanup_failed', {
+          metadata: {
+            lessonId,
+            bucket: 'lms-notes',
+            oldPath,
+            error: removeErr?.message ?? 'Old notes object was not listed in storage remove result',
+            removeData,
+          },
+        })
+      }
+    }
+  }
+
+  // 7. Set lms_lesson_notes_text to 'pending'
+  await (admin as any)
+    .from('lms_lesson_notes_text')
+    .upsert({
+      lesson_id: lessonId,
+      school_id: schoolId,
+      status: 'pending',
+      content: null,
+      error: null,
+      extracted_at: new Date().toISOString(),
+    })
+
+  // 8. Trigger background extraction with after()
+  after(async () => {
+    try {
+      await extractNotesText(lessonId, schoolId, path)
+    } catch (err) {
+      console.error('[attachLessonNotes] Extraction failed:', err)
+    }
+  })
+
+  // 9. Audit log
+  await logSchoolAction('lms_notes_attached', {
+    metadata: {
+      lessonId,
+      path,
+      originalName,
+      sizeBytes: blob.size,
+    },
+  })
+
+  // 10. Notify if lesson is already published and notes were newly added (not replaced)
+  if (existing.status === 'published' && isNewlyAdded) {
+    after(async () => {
+      try {
+        await emit('lms_notes_attached', { schoolId, lessonId })
+      } catch (err) {
+        console.error('[attachLessonNotes] Notification failed:', err)
+      }
+    })
+  }
+
+  revalidatePath(`/dashboard/lms/${lessonId}`)
+  return { success: true }
+}
+
+export async function removeLessonNotes(lessonId: string) {
+  const access = await getLmsAccess()
+  if (!access.isManager) return { error: 'Not found' }
+  const { schoolId, supabase } = access
+
+  const admin = createAdminClient()
+
+  // Fetch current notes_path
+  const { data: existing, error: fetchErr } = await (supabase as any)
+    .from('lms_lessons')
+    .select('notes_path')
+    .eq('id', lessonId)
+    .eq('school_id', schoolId)
+    .maybeSingle()
+
+  if (fetchErr || !existing) return { error: 'Not found' }
+
+  const oldPath: string | null = existing.notes_path
+  if (oldPath) {
+    const { data: removeData, error: removeErr } = await admin.storage
+      .from('lms-notes')
+      .remove([oldPath])
+
+    const oldFilename = oldPath.split('/').pop() ?? ''
+    const isRemoved =
+      !removeErr &&
+      Array.isArray(removeData) &&
+      removeData.length > 0 &&
+      removeData.some((item) => item.name === oldFilename || item.name === oldPath)
+
+    if (!isRemoved) {
+      await logSchoolAction('lms_orphan_storage_cleanup_failed', {
+        metadata: {
+          lessonId,
+          bucket: 'lms-notes',
+          oldPath,
+          error: removeErr?.message ?? 'Notes object was not listed in storage remove result',
+          removeData,
+        },
+      })
+    }
+  }
+
+  // Update DB columns
+  const { data: updated, error: updateErr } = await (supabase as any)
+    .from('lms_lessons')
+    .update({
+      notes_path: null,
+      notes_name: null,
+      notes_size_bytes: null,
+      notes_uploaded_at: null,
+      notes_downloadable: false,
+    })
+    .eq('id', lessonId)
+    .eq('school_id', schoolId)
+    .select('id')
+
+  if (updateErr) return { error: updateErr.message }
+  if (!updated || updated.length === 0) return { error: 'Not found' }
+
+  // Clean up extracted text
+  await (admin as any)
+    .from('lms_lesson_notes_text')
+    .delete()
+    .eq('lesson_id', lessonId)
+    .eq('school_id', schoolId)
+
+  await logSchoolAction('lms_notes_removed', { metadata: { lessonId } })
+  revalidatePath(`/dashboard/lms/${lessonId}`)
+  return { success: true }
+}
+
+export async function setNotesDownloadable(lessonId: string, downloadable: boolean) {
+  const access = await getLmsAccess()
+  if (!access.isManager) return { error: 'Not found' }
+  const { schoolId, supabase } = access
+
+  const { data, error } = await (supabase as any)
+    .from('lms_lessons')
+    .update({ notes_downloadable: Boolean(downloadable) })
+    .eq('id', lessonId)
+    .eq('school_id', schoolId)
+    .select('id')
+
+  if (error) return { error: error.message }
+  if (!data || data.length === 0) return { error: 'Not found' }
+
+  revalidatePath(`/dashboard/lms/${lessonId}`)
+  return { success: true }
+}
+
+export async function reextractNotes(lessonId: string) {
+  const access = await getLmsAccess()
+  if (!access.isManager) return { error: 'Not found' }
+  const { schoolId, supabase } = access
+
+  const { data: lesson, error: fetchErr } = await (supabase as any)
+    .from('lms_lessons')
+    .select('id, notes_path')
+    .eq('id', lessonId)
+    .eq('school_id', schoolId)
+    .maybeSingle()
+
+  if (fetchErr || !lesson || !lesson.notes_path) {
+    return { error: 'No notes attached to this lesson.' }
+  }
+
+  const admin = createAdminClient()
+  await (admin as any)
+    .from('lms_lesson_notes_text')
+    .upsert({
+      lesson_id: lessonId,
+      school_id: schoolId,
+      status: 'pending',
+      error: null,
+      extracted_at: new Date().toISOString(),
+    })
+
+  const result = await extractNotesText(lessonId, schoolId, lesson.notes_path)
+  revalidatePath(`/dashboard/lms/${lessonId}`)
+  return { success: true, status: result.status }
+}
+
+export async function getNotesDownloadUrl(lessonId: string, studentId?: string) {
+  const access = await getLmsAccess()
+  const { schoolId, user } = access
+
+  const admin = createAdminClient()
+
+  const { data: lesson, error: fetchErr } = await (admin as any)
+    .from('lms_lessons')
+    .select(`
+      id,
+      school_id,
+      title,
+      status,
+      notes_path,
+      notes_name,
+      notes_downloadable,
+      recorded_by,
+      class_id,
+      subjects:subject_id ( name )
+    `)
+    .eq('id', lessonId)
+    .eq('school_id', schoolId)
+    .maybeSingle()
+
+  if (fetchErr || !lesson || !lesson.notes_path) {
+    return { error: 'Not found' }
+  }
+
+  // Authorization check
+  let authorized = false
+
+  if (access.isManager) {
+    authorized = true
+  } else if (lesson.recorded_by === user.id) {
+    authorized = true
+  } else if (access.isFacilitator) {
+    const hasToday = await facilitatorHasTodayEntryForLesson(access, lesson)
+    if (hasToday) authorized = true
+  } else {
+    // Student or guardian: requires published lesson + notes_downloadable true
+    if (lesson.status === 'published' && lesson.notes_downloadable) {
+      const currentSession = await getCurrentAcademicSession(admin, schoolId)
+      if (currentSession && lesson.class_id) {
+        if (studentId) {
+          // Check guardian relationship
+          const { data: rels } = await admin
+            .from('student_guardians')
+            .select('guardian_id, guardians!inner(profile_id)')
+            .eq('student_id', studentId)
+
+          const isGuardian = (rels ?? []).some((r: any) => r.guardians?.profile_id === user.id)
+          if (isGuardian) {
+            // Verify enrollment in lesson's class for current session
+            const { data: enrol } = await (admin as any)
+              .from('enrolments')
+              .select('id')
+              .eq('school_id', schoolId)
+              .eq('session_id', currentSession.id)
+              .eq('class_id', lesson.class_id)
+              .eq('student_id', studentId)
+              .maybeSingle()
+
+            if (enrol) authorized = true
+          }
+        } else {
+          // Check student self-enrollment
+          const { data: stRow } = await (admin as any)
+            .from('students')
+            .select('id')
+            .or(`user_id.eq.${user.id},profile_id.eq.${user.id}`)
+            .maybeSingle()
+
+          if (stRow) {
+            const { data: enrol } = await (admin as any)
+              .from('enrolments')
+              .select('id')
+              .eq('school_id', schoolId)
+              .eq('session_id', currentSession.id)
+              .eq('class_id', lesson.class_id)
+              .eq('student_id', stRow.id)
+              .maybeSingle()
+
+            if (enrol) authorized = true
+          }
+        }
+      }
+    }
+  }
+
+  if (!authorized) {
+    return { error: 'Not found' }
+  }
+
+  const subjectName = (lesson.subjects as any)?.name ?? 'Subject'
+  const downloadName = sanitiseFilename(`${subjectName} - ${lesson.title}.pdf`)
+
+  const { data: signed, error: signErr } = await admin.storage
+    .from('lms-notes')
+    .createSignedUrl(lesson.notes_path, 300, {
+      download: downloadName,
+    })
+
+  if (signErr || !signed) {
+    return { error: 'Not found' }
+  }
+
+  return { ok: true, url: signed.signedUrl }
+}
+
 // ─── setLessonStatus ──────────────────────────────────────────────────────────
 
 export async function setLessonStatus(lessonId: string, status: 'draft' | 'published'): Promise<void> {
-  const { supabase } = await getContext()
-  await requirePermission(supabase, 'lms.manage')
+  const access = await getLmsAccess()
+  if (!access.isManager) redirect('/dashboard?error=' + encodeURIComponent('Not found'))
+  const { supabase } = access
 
   if (status === 'published') {
     const { data: lesson, error: fetchErr } = await (supabase as any)
@@ -289,8 +702,9 @@ export async function setLessonStatus(lessonId: string, status: 'draft' | 'publi
 // ─── deleteLesson ─────────────────────────────────────────────────────────────
 
 export async function deleteLesson(lessonId: string) {
-  const { supabase, schoolId } = await getContext()
-  await requirePermission(supabase, 'lms.manage')
+  const access = await getLmsAccess()
+  if (!access.isManager) return { error: 'Not found' }
+  const { supabase, schoolId } = access
 
   // Verify school ownership and lesson existence
   const { data: lesson, error: fetchErr } = await (supabase as any)
@@ -345,6 +759,26 @@ export async function deleteLesson(lessonId: string) {
     }
   }
 
+  // Clean up lesson notes in lms-notes under `${schoolId}/${lessonId}`
+  const notesRes = await removeStorageDirectory(admin, 'lms-notes', `${schoolId}/${lessonId}`)
+  if (notesRes.error) {
+    await logSchoolAction('lms_orphan_storage_cleanup_failed', {
+      metadata: {
+        lessonId,
+        bucket: 'lms-notes',
+        path: `${schoolId}/${lessonId}`,
+        error: notesRes.error,
+      },
+    })
+  }
+
+  // Clean up notes text extraction row
+  await (admin as any)
+    .from('lms_lesson_notes_text')
+    .delete()
+    .eq('lesson_id', lessonId)
+    .eq('school_id', schoolId)
+
   // Delete the DB row
   const { data, error } = await (supabase as any)
     .from('lms_lessons')
@@ -370,60 +804,50 @@ export async function markLessonDelivered({
   lessonId: string
   timetableEntryId: string
 }) {
-  const { supabase, user, schoolId } = await getContext()
-  const [{ data: canFacilitate }, { data: canManage }] = await Promise.all([
-    supabase.rpc('has_permission', { perm_code: 'lms.facilitate' }),
-    supabase.rpc('has_permission', { perm_code: 'lms.manage' }),
-  ])
-  if (!canFacilitate && !canManage) return { error: 'Permission denied.' }
+  const access = await getLmsAccess()
+  if (!access.isManager && !access.isFacilitator) return { error: 'Not found' }
+  const { user, schoolId, supabase } = access
+
+  const admin = createAdminClient()
+  const currentSession = await getCurrentAcademicSession(admin, schoolId)
+  if (!currentSession) {
+    return { error: 'Not found' }
+  }
 
   // Load entry
-  const { data: entry, error: entryErr } = await (supabase as any)
+  const { data: entry, error: entryErr } = await (admin as any)
     .from('timetable_entries')
-    .select('id, school_id, session_id, class_id, arm_id, subject_id, teacher_id, delivery_mode')
+    .select('id, school_id, session_id, class_id, arm_id, subject_id, teacher_id, delivery_mode, day_of_week')
     .eq('id', timetableEntryId)
     .eq('school_id', schoolId)
     .single()
 
-  if (entryErr || !entry) return { error: 'Timetable entry not found.' }
-
-  // Verify in user's school and current session
-  const { data: currentSession } = await supabase
-    .from('academic_sessions')
-    .select('id')
-    .eq('school_id', schoolId)
-    .eq('is_current', true)
-    .single()
-
-  if (!currentSession || entry.session_id !== currentSession.id) {
-    return { error: 'Entry is not in the current academic session.' }
+  if (entryErr || !entry || entry.delivery_mode !== 'lms' || entry.session_id !== currentSession.id) {
+    return { error: 'Not found' }
   }
 
-  if (entry.delivery_mode !== 'lms') {
-    return { error: 'This entry is not scheduled for recorded lesson (LMS) delivery.' }
-  }
+  const { dateStr, dayOfWeek } = todayInSchoolTz(access.schoolTimezone)
 
-  if (!canManage && entry.teacher_id !== user.id) {
-    return { error: 'You are not assigned as the facilitator for this period.' }
+  if (!access.isManager) {
+    if (entry.teacher_id !== user.id || entry.day_of_week !== dayOfWeek) {
+      return { error: 'Not found' }
+    }
   }
 
   // Verify the lesson is published with the SAME class_id and subject_id as the entry
-  const { data: lesson, error: lessonErr } = await (supabase as any)
+  const { data: lesson, error: lessonErr } = await (admin as any)
     .from('lms_lessons')
     .select('id, class_id, subject_id, status, video_path, title')
     .eq('id', lessonId)
     .eq('school_id', schoolId)
     .single()
 
-  if (lessonErr || !lesson) return { error: 'Lesson not found.' }
-  if (lesson.status !== 'published' || !lesson.video_path) {
-    return { error: 'Only published lessons with video can be delivered.' }
+  if (lessonErr || !lesson || lesson.status !== 'published' || !lesson.video_path) {
+    return { error: 'Not found' }
   }
   if (lesson.class_id !== entry.class_id || lesson.subject_id !== entry.subject_id) {
-    return { error: 'Lesson class and subject must match the timetable period.' }
+    return { error: 'Not found' }
   }
-
-  const { dateStr } = getTodayInLagos()
 
   const { data: inserted, error: insertErr } = await (supabase as any)
     .from('lms_lesson_deliveries')
@@ -468,27 +892,26 @@ export async function markLessonDelivered({
 }
 
 export async function undoLessonDelivery(deliveryId: string) {
-  const { supabase, user, schoolId } = await getContext()
-  const [{ data: canFacilitate }, { data: canManage }] = await Promise.all([
-    supabase.rpc('has_permission', { perm_code: 'lms.facilitate' }),
-    supabase.rpc('has_permission', { perm_code: 'lms.manage' }),
-  ])
-  if (!canFacilitate && !canManage) return { error: 'Permission denied.' }
+  const access = await getLmsAccess()
+  if (!access.isManager && !access.isFacilitator) return { error: 'Not found' }
+  const { user, schoolId } = access
+  const admin = createAdminClient()
 
-  let deleteQuery = (supabase as any)
+  let deleteQuery = (admin as any)
     .from('lms_lesson_deliveries')
     .delete()
     .eq('id', deliveryId)
     .eq('school_id', schoolId)
 
-  if (!canManage) {
-    deleteQuery = deleteQuery.eq('delivered_by', user.id)
+  if (!access.isManager) {
+    const { dateStr } = todayInSchoolTz(access.schoolTimezone)
+    deleteQuery = deleteQuery.eq('delivered_by', user.id).eq('delivered_on', dateStr)
   }
 
   const { data, error } = await deleteQuery.select('id')
   if (error) return { error: error.message }
   if (!data || data.length === 0) {
-    return { error: 'Delivery record not found or access denied.' }
+    return { error: 'Not found' }
   }
 
   await logSchoolAction('lms_lesson_delivery_undone', { metadata: { deliveryId } })
@@ -499,108 +922,38 @@ export async function undoLessonDelivery(deliveryId: string) {
 // ─── getLessonVideoUrl ────────────────────────────────────────────────────────
 
 export async function getLessonVideoUrl(lessonId: string, studentId?: string) {
-  const GENERIC_ERROR = 'Could not access lesson video.'
-  const { supabase, user, schoolId } = await getContext()
+  const GENERIC_ERROR = 'Not found'
+  const access = await getLmsAccess()
+  const admin = createAdminClient()
 
   // 1. Fetch lesson
-  const { data: lesson, error: fetchErr } = await (supabase as any)
+  const { data: lesson, error: fetchErr } = await (admin as any)
     .from('lms_lessons')
-    .select('id, school_id, class_id, subject_id, status, video_path, video_codec')
+    .select('id, school_id, class_id, subject_id, status, video_path, video_codec, recorded_by')
     .eq('id', lessonId)
-    .eq('school_id', schoolId)
-    .single()
+    .eq('school_id', access.schoolId)
+    .maybeSingle()
 
   if (fetchErr || !lesson || !lesson.video_path) {
     return { error: GENERIC_ERROR }
   }
 
-  // Caller permissions
-  const [{ data: canManage }, { data: canUpload }, { data: canFacilitate }] = await Promise.all([
-    supabase.rpc('has_permission', { perm_code: 'lms.manage' }),
-    supabase.rpc('has_permission', { perm_code: 'lms.upload' }),
-    supabase.rpc('has_permission', { perm_code: 'lms.facilitate' }),
-  ])
-
-  const isStaff = !!(canManage || canUpload)
-  const videoCodec: string | null = lesson.video_codec ?? null
-
-  // Class a: lms.manage or lms.upload: any lesson in their school (signed URL via user client, 2 hours, as today)
-  if (canManage || canUpload) {
-    const { data: signed, error: signErr } = await supabase.storage
-      .from('lms-lessons')
-      .createSignedUrl(lesson.video_path, 7200)
-
-    if (signErr || !signed) {
-      const admin = createAdminClient()
-      const { data: adminSigned, error: adminSignErr } = await admin.storage
-        .from('lms-lessons')
-        .createSignedUrl(lesson.video_path, 7200)
-      if (adminSignErr || !adminSigned) return { error: GENERIC_ERROR }
-      return { url: adminSigned.signedUrl, videoCodec, isStaff }
-    }
-    return { url: signed.signedUrl, videoCodec, isStaff }
-  }
-
-  // Class b: lms.facilitate only:
-  // The lesson must be published AND user must have a delivery_mode='lms' timetable entry
-  // (teacher_id = user, current session) with same class_id and subject_id as lesson.
-  if (canFacilitate) {
-    if (lesson.status !== 'published') return { error: GENERIC_ERROR }
-
-    const { data: currentSession } = await supabase
-      .from('academic_sessions')
-      .select('id')
-      .eq('school_id', schoolId)
-      .eq('is_current', true)
-      .single()
-
-    if (!currentSession) return { error: GENERIC_ERROR }
-
-    const { data: entry } = await (supabase as any)
-      .from('timetable_entries')
-      .select('id')
-      .eq('school_id', schoolId)
-      .eq('session_id', currentSession.id)
-      .eq('teacher_id', user.id)
-      .eq('delivery_mode', 'lms')
-      .eq('class_id', lesson.class_id)
-      .eq('subject_id', lesson.subject_id)
-      .limit(1)
-      .maybeSingle()
-
-    if (!entry) return { error: GENERIC_ERROR }
-
-    const { data: signed, error: signErr } = await supabase.storage
-      .from('lms-lessons')
-      .createSignedUrl(lesson.video_path, 7200)
-
-    if (signErr || !signed) {
-      const admin = createAdminClient()
-      const { data: adminSigned, error: adminSignErr } = await admin.storage
-        .from('lms-lessons')
-        .createSignedUrl(lesson.video_path, 7200)
-      if (adminSignErr || !adminSigned) return { error: GENERIC_ERROR }
-      return { url: adminSigned.signedUrl, videoCodec, isStaff }
-    }
-    return { url: signed.signedUrl, videoCodec, isStaff }
-  }
-
-  // Class c: Everyone else (student/guardian):
-  // Lesson must be published with video_path, and studentId is required.
-  if (lesson.status !== 'published' || !studentId) {
+  // 2. Re-check caller authorization via canPlayLesson
+  const allowed = await canPlayLesson(lesson, access, { studentId })
+  if (!allowed) {
     return { error: GENERIC_ERROR }
   }
 
-  // Verify caller is that student's guardian or the student themselves using shared helper
-  const access = await getAskerAccess(user.id, lessonId, studentId)
-  if (!access) return { error: GENERIC_ERROR }
-
-  // Sign with createAdminClient() (2 hours)
-  const admin = createAdminClient()
+  // 3. Generate signed URL (2 hours) using admin client after verification
   const { data: signed, error: signErr } = await admin.storage
     .from('lms-lessons')
     .createSignedUrl(lesson.video_path, 7200)
 
   if (signErr || !signed) return { error: GENERIC_ERROR }
-  return { url: signed.signedUrl, videoCodec, isStaff }
+
+  return {
+    url: signed.signedUrl,
+    videoCodec: lesson.video_codec ?? null,
+    isStaff: access.isManager || lesson.recorded_by === access.userId,
+  }
 }

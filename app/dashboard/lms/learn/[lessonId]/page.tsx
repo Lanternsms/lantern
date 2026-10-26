@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getAskerAccess } from '@/app/dashboard/lms/access'
 import { listActivitiesForLearner } from '@/app/dashboard/lms/activities/actions'
 import { LessonPlayerModal } from '@/app/dashboard/lms/lesson-player-modal'
+import { LessonAiPanel } from '@/app/dashboard/lms/lesson-ai-panel'
 import GuardianAskButton from '@/app/dashboard/_components/guardian-ask-button'
 
 export const dynamic = 'force-dynamic'
@@ -85,6 +87,15 @@ export default async function LearnerLessonActivitiesPage({
     ? `${(studentRow as any).profile.first_name} ${(studentRow as any).profile.last_name}`
     : 'Student'
 
+  const admin = createAdminClient()
+  const { data: notesText } = await (admin as any)
+    .from('lms_lesson_notes_text')
+    .select('status')
+    .eq('lesson_id', lessonId)
+    .eq('school_id', profile.school_id)
+    .maybeSingle()
+  const notesReady = notesText?.status === 'ready'
+
   return (
     <div className="px-6 py-8 max-w-4xl mx-auto space-y-6">
       {/* Top breadcrumb & lesson info */}
@@ -111,7 +122,7 @@ export default async function LearnerLessonActivitiesPage({
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             {lesson.video_path && (
               <LessonPlayerModal
                 lessonId={lesson.id}
@@ -120,6 +131,14 @@ export default async function LearnerLessonActivitiesPage({
                 label="Watch Video"
               />
             )}
+            <LessonAiPanel
+              lessonId={lesson.id}
+              lessonTitle={lesson.title}
+              studentId={studentId}
+              mode="student"
+              aiTutorEnabled={lesson.ai_tutor_enabled ?? true}
+              notesReady={notesReady}
+            />
             <GuardianAskButton
               lessonId={lesson.id}
               title={lesson.title}

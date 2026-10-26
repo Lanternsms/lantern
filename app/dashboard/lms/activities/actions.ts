@@ -6,7 +6,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { logSchoolAction } from '@/lib/audit/log-school-actions'
-import { canManageActivities, canViewActivityResults, getAskerAccess } from '@/app/dashboard/lms/access'
+import { canManageActivitiesLegacy as canManageActivities, canViewActivityResults, getAskerAccess } from '@/app/dashboard/lms/access'
 import { removeStorageDirectory } from '../storage-utils'
 import { randomUUID } from 'crypto'
 

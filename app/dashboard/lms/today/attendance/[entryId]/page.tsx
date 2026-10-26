@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
-import { getTodayInLagos } from '@/app/dashboard/lms/lagos-time'
+import { getLmsAccess, todayInSchoolTz } from '@/lib/lms/access'
 import { getPeriodRoster } from '@/app/dashboard/lms/attendance/actions'
 import RosterWidget from './roster-widget'
 
@@ -21,19 +21,14 @@ export default async function PeriodAttendancePage({
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  // Check permissions
-  const [{ data: canManage }, { data: canFacilitate }] = await Promise.all([
-    supabase.rpc('has_permission', { perm_code: 'lms.manage' }),
-    supabase.rpc('has_permission', { perm_code: 'lms.facilitate' }),
-  ])
-
-  if (!canManage && !canFacilitate) {
-    redirect('/dashboard?error=' + encodeURIComponent('Access denied.'))
+  const access = await getLmsAccess(supabase, user)
+  if (!access.isManager && !access.isFacilitator) {
+    notFound()
   }
 
-  // Resolve date: lms.manage may supply ?date=; facilitators are always forced to today
-  const { dateStr: todayStr } = getTodayInLagos()
-  const date = canManage && dateParam ? dateParam : todayStr
+  // Resolve date: managers may supply ?date=; facilitators are always forced to today
+  const { dateStr: todayStr } = todayInSchoolTz(access.schoolTimezone)
+  const date = access.isManager && dateParam ? dateParam : todayStr
 
   // Get the roster data (authorization happens inside)
   const rosterData = await getPeriodRoster({ timetableEntryId: entryId, date })
@@ -45,7 +40,7 @@ export default async function PeriodAttendancePage({
   const { className, armName, subjectName, statuses, roster } = rosterData
 
   const formattedDate = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'Africa/Lagos',
+    timeZone: access.schoolTimezone,
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -73,7 +68,7 @@ export default async function PeriodAttendancePage({
               <span className="font-medium">{formattedDate}</span>
             </p>
           </div>
-          {canManage && (
+          {access.isManager && (
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200">
               Admin view
             </span>

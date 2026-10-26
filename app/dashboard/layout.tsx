@@ -5,6 +5,7 @@ import { DashboardShell } from '@/components/dashboard-shell'
 import { getMyAccessContext, canSee, type NavGate } from '@/lib/permissions'
 import { ThemeStyle } from './_components/theme-style'
 import { getOpenQuestionCount } from './lms/questions/actions'
+import { getLmsAccess } from '@/lib/lms/access'
 import { NotificationBellServer } from './_components/notification-bell-server'
 import { PushSync } from '@/components/push-sync'
 import { FirstLoginBanner } from '@/components/first-login-banner'
@@ -41,10 +42,6 @@ const ALL_NAV_ITEMS: NavItem[] = [
   // Items with no gate are visible to all authenticated users
   { label: 'Announcements', href: '/dashboard/announcements' },
   { label: 'Documents', href: '/dashboard/documents' },
-  // LMS
-  { label: "Today's Lessons", href: '/dashboard/lms/today', permission: ['lms.facilitate', 'lms.manage'] },
-  { label: 'LMS', href: '/dashboard/lms', permission: ['lms.manage', 'lms.upload'] },
-  { label: 'Storage', href: '/dashboard/lms/storage', permission: ['lms.manage', 'lms.upload'] },
   // last item on the navbar with gated permission
   { label: 'Settings', href: '/dashboard/settings', permission: 'school.manage' }
 ]
@@ -63,27 +60,15 @@ export default async function DashboardLayout({
     redirect(authError ? '/session-expired' : '/login')
   }
 
-  const [profile, school, ctx] = await Promise.all([
+  const [profile, school, ctx, lmsAccess] = await Promise.all([
     supabase.from('profiles').select('first_name, last_name').eq('id', user.id).single(),
     supabase.from('schools').select('name, logo_url').single(),
     getMyAccessContext(supabase),
+    getLmsAccess(supabase, user),
   ])
 
-  // Check if user has recorded at least one lesson
-  let hasRecordedLesson = false
-  const { data: recordedLesson } = await (supabase as any)
-    .from('lms_lessons')
-    .select('id')
-    .eq('recorded_by', user.id)
-    .limit(1)
-    .maybeSingle()
-
-  if (recordedLesson) {
-    hasRecordedLesson = true
-  }
-
-  // Questions link for users with lms.manage or lms.facilitate, or who recorded at least one lesson
-  const canSeeQuestions = ctx.permissions.has('lms.manage') || ctx.permissions.has('lms.facilitate') || hasRecordedLesson
+  const hasRecordedLesson = lmsAccess.recordedLessonCount > 0
+  const canSeeQuestions = lmsAccess.isManager || lmsAccess.isFacilitator || hasRecordedLesson
 
   let questionsBadge: number | undefined
   if (canSeeQuestions) {
@@ -100,41 +85,35 @@ export default async function DashboardLayout({
   const visibleItems: { label: string; href: string; badge?: number | string | null }[] = ALL_NAV_ITEMS
     .filter((item) => canSee(ctx, item))
 
+  // Construct LMS navigation items according to role access rules
+  const lmsNavItems: { label: string; href: string; badge?: number | string | null }[] = []
+
+  if (lmsAccess.isManager) {
+    lmsNavItems.push({ label: 'LMS', href: '/dashboard/lms' })
+  }
+  if (lmsAccess.isFacilitator || lmsAccess.isManager) {
+    lmsNavItems.push({ label: "Today's Lessons", href: '/dashboard/lms/today' })
+  }
+  if (hasRecordedLesson) {
+    lmsNavItems.push({ label: 'My Lessons', href: '/dashboard/lms/my-lessons' })
+  }
   if (canSeeQuestions) {
-    const questionsItem = {
+    lmsNavItems.push({
       label: 'Questions',
       href: '/dashboard/lms/questions',
       badge: questionsBadge,
-    }
-    const lmsIdx = visibleItems.findIndex((item) => item.href === '/dashboard/lms')
-    if (lmsIdx !== -1) {
-      visibleItems.splice(lmsIdx + 1, 0, questionsItem)
-    } else {
-      const todayIdx = visibleItems.findIndex((item) => item.href === '/dashboard/lms/today')
-      if (todayIdx !== -1) {
-        visibleItems.splice(todayIdx + 1, 0, questionsItem)
-      } else {
-        visibleItems.push(questionsItem)
-      }
-    }
+    })
+  }
+  if (lmsAccess.isManager) {
+    lmsNavItems.push({ label: 'Storage', href: '/dashboard/lms/storage' })
   }
 
-  if (hasRecordedLesson) {
-    const myLessonsItem = {
-      label: 'My Lessons',
-      href: '/dashboard/lms/my-lessons',
-    }
-    const qIdx = visibleItems.findIndex((item) => item.href === '/dashboard/lms/questions')
-    if (qIdx !== -1) {
-      visibleItems.splice(qIdx + 1, 0, myLessonsItem)
-    } else {
-      const lmsIdx = visibleItems.findIndex((item) => item.href === '/dashboard/lms')
-      if (lmsIdx !== -1) {
-        visibleItems.splice(lmsIdx + 1, 0, myLessonsItem)
-      } else {
-        visibleItems.push(myLessonsItem)
-      }
-    }
+  // Insert LMS items right before Settings (or append if Settings not present)
+  const settingsIdx = visibleItems.findIndex((item) => item.href === '/dashboard/settings')
+  if (settingsIdx !== -1) {
+    visibleItems.splice(settingsIdx, 0, ...lmsNavItems)
+  } else {
+    visibleItems.push(...lmsNavItems)
   }
 
   return (

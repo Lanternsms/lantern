@@ -6,6 +6,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { logSchoolAction } from '@/lib/audit/log-school-actions'
+import { getLmsAccess } from '@/lib/lms/access'
 
 export type DeleteOrphansResult = {
   ok: boolean
@@ -21,14 +22,9 @@ export async function deleteOrphans(names: string[]): Promise<DeleteOrphansResul
   } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  // Check permissions: lms.manage or lms.upload
-  const [{ data: canManage }, { data: canUpload }] = await Promise.all([
-    supabase.rpc('has_permission', { perm_code: 'lms.manage' }),
-    supabase.rpc('has_permission', { perm_code: 'lms.upload' }),
-  ])
-
-  if (!canManage && !canUpload) {
-    return { ok: false, deletedCount: 0, failedCount: names.length, error: 'Access denied.' }
+  const access = await getLmsAccess(supabase, user)
+  if (!access.isManager) {
+    return { ok: false, deletedCount: 0, failedCount: names.length, error: 'Not found' }
   }
 
   if (!Array.isArray(names) || names.length === 0) {
@@ -52,6 +48,31 @@ export async function deleteOrphans(names: string[]): Promise<DeleteOrphansResul
     if (item && item.name && item.bucket_id) {
       freshMap.set(item.name, { bucket_id: item.bucket_id, name: item.name })
     }
+  }
+
+  // Also include fresh lms-notes orphans (server-only bucket without RLS policies)
+  const adminClient = createAdminClient()
+  const { data: notesObjects } = await adminClient.storage
+    .from('lms-notes')
+    .list(access.schoolId, { limit: 1000 })
+
+  const { data: referencedNotes } = await (adminClient as any)
+    .from('lms_lessons')
+    .select('notes_path')
+    .eq('school_id', access.schoolId)
+    .not('notes_path', 'is', null)
+
+  const referencedPaths = new Set(
+    (referencedNotes ?? []).map((r: any) => r.notes_path as string)
+  )
+
+  const oneHourAgo = Date.now() - 60 * 60 * 1000
+  for (const obj of notesObjects ?? []) {
+    if (!obj.name || obj.name === '.emptyFolderPlaceholder') continue
+    const fullPath = `${access.schoolId}/${obj.name}`
+    if (referencedPaths.has(fullPath)) continue
+    if (obj.created_at && new Date(obj.created_at).getTime() > oneHourAgo) continue
+    freshMap.set(fullPath, { bucket_id: 'lms-notes', name: fullPath })
   }
 
   const toRemoveByBucket: Record<string, string[]> = {}

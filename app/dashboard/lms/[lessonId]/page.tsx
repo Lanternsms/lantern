@@ -1,14 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createClient } from '@/lib/supabase/server'
-import { redirect, notFound } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { updateLesson, setLessonStatus } from '../actions'
 import { DeleteLessonButton } from '../delete-lesson-button'
 import { LessonPlayerModal } from '../lesson-player-modal'
 import { LessonVideoUpload } from '../lesson-video-upload'
-import { canManageActivities, canViewActivityResults } from '../access'
+import { LessonNotesUpload } from './lesson-notes-upload'
+import { NotesDownloadButton } from '../notes-download-button'
+import { LessonAiPanel } from '../lesson-ai-panel'
 import { ActivityManager } from '../activities/activity-manager'
 import { getLessonAttendanceSummary } from '../attendance/actions'
+import {
+  getLmsAccess,
+  canViewLesson,
+  canManageLesson,
+  canManageActivities,
+} from '@/lib/lms/access'
 
 export const dynamic = 'force-dynamic'
 
@@ -28,31 +36,18 @@ export default async function LessonDetailPage({
 }) {
   const { lessonId } = await params
   const { error: errorMsg, success: successMsg } = await searchParams
-  const supabase = await createClient()
 
-  // Get current user and profile
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  const access = await getLmsAccess()
+  const { user, schoolId, supabase } = access
+  const admin = createAdminClient()
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('school_id')
-    .eq('id', user.id)
-    .single()
-  const schoolId = profile?.school_id ?? ''
-
-  // Permission checks
-  const [{ data: canManage }, { data: canUpload }, { data: canFacilitate }] = await Promise.all([
-    supabase.rpc('has_permission', { perm_code: 'lms.manage' }),
-    supabase.rpc('has_permission', { perm_code: 'lms.upload' }),
-    supabase.rpc('has_permission', { perm_code: 'lms.facilitate' }),
-  ])
-
-  const { data: lesson, error: fetchErr } = await (supabase as any)
+  const { data: lesson, error: fetchErr } = await (admin as any)
     .from('lms_lessons')
     .select(`
       id, title, topic, week_no, status, duration_seconds, created_at,
-      video_path, class_id, subject_id, term_id, recorded_by,
+      video_path, class_id, subject_id, term_id, recorded_by, school_id,
+      notes_path, notes_name, notes_size_bytes, notes_uploaded_at, notes_downloadable,
+      ai_tutor_enabled,
       classes:class_id ( name ),
       subjects:subject_id ( name ),
       terms:term_id ( name ),
@@ -60,23 +55,34 @@ export default async function LessonDetailPage({
       uploader:uploaded_by ( first_name, last_name )
     `)
     .eq('id', lessonId)
-    .single()
+    .eq('school_id', schoolId)
+    .maybeSingle()
 
   if (fetchErr || !lesson) notFound()
 
-  const isRecorder = lesson.recorded_by === user.id
-  const hasLmsPerms = !!(canManage || canUpload || canFacilitate)
+  // Verify caller is authorized to view this lesson
+  const canView = await canViewLesson(lesson, access)
+  if (!canView) notFound()
 
-  // Recorders without lms.* perms are allowed to access and manage activities
-  if (!hasLmsPerms && !isRecorder) {
-    redirect('/dashboard?error=' + encodeURIComponent('You do not have access to this lesson.'))
+  const canManage = canManageLesson(lesson, access)
+  const canUpload = access.isManager
+  const canManageAct = canManageActivities(lesson, access)
+
+  // Fetch notes extraction status (managers only — never expose to learners)
+  let notesExtractionStatus: 'pending' | 'ready' | 'scanned' | 'too_long' | 'failed' | null = null
+  let notesExtractionError: string | null = null
+  if (canManage || canUpload) {
+    const { data: notesText } = await (admin as any)
+      .from('lms_lesson_notes_text')
+      .select('status, error')
+      .eq('lesson_id', lessonId)
+      .eq('school_id', schoolId)
+      .maybeSingle()
+    notesExtractionStatus = notesText?.status ?? null
+    notesExtractionError = notesText?.error ?? null
   }
-
-  const [canManageAct, canViewActResults, attendanceSummary] = await Promise.all([
-    canManageActivities(user.id, lesson),
-    canViewActivityResults(user.id, lesson),
-    getLessonAttendanceSummary({ lessonId }),
-  ])
+  const canViewActResults = canManageAct // Only manager and recorder can view activity results/submissions
+  const attendanceSummary = await getLessonAttendanceSummary({ lessonId })
 
   // Get enrolled count for the class in current session
   const { data: currentSession } = await supabase
@@ -138,8 +144,9 @@ export default async function LessonDetailPage({
     submissions_count: subsCountByAct[a.id]?.size || 0
   }))
 
-  // Recorders without lms.* perms see ONLY the Activities section per spec
-  if (!hasLmsPerms && isRecorder) {
+  // Recorders without lms.* perms see ONLY the Activities section + notes download per spec
+  const isRecorder = lesson.recorded_by === access.userId
+  if (!access.isManager && isRecorder) {
     return (
       <div className="px-8 py-8 max-w-4xl space-y-8">
         <div>
@@ -170,6 +177,16 @@ export default async function LessonDetailPage({
           <p className="text-sm text-success-text bg-success-bg rounded-lg px-3 py-2">
             {successMsg}
           </p>
+        )}
+
+        {lesson.notes_path && (
+          <section className="bg-surface border border-border rounded-xl p-6">
+            <h2 className="text-sm font-semibold text-text-primary mb-3">Lesson Notes</h2>
+            <NotesDownloadButton
+              lessonId={lessonId}
+              notesSizeBytes={lesson.notes_size_bytes}
+            />
+          </section>
         )}
 
         <ActivityManager
@@ -221,7 +238,13 @@ export default async function LessonDetailPage({
       {/* Breadcrumb + title */}
       <div>
         <p className="text-sm text-text-secondary mb-1">
-          <Link href="/dashboard/lms" className="hover:text-primary">Lessons</Link> / {lesson.title}
+          {access.isManager ? (
+            <Link href="/dashboard/lms" className="hover:text-primary">Lessons</Link>
+          ) : lesson.recorded_by === access.userId ? (
+            <Link href="/dashboard/lms/my-lessons" className="hover:text-primary">My Lessons</Link>
+          ) : (
+            <Link href="/dashboard/lms/today" className="hover:text-primary">Today&apos;s Lessons</Link>
+          )} / {lesson.title}
         </p>
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <h1 className="text-xl font-semibold text-text-primary">{lesson.title}</h1>
@@ -304,6 +327,21 @@ export default async function LessonDetailPage({
         )}
       </section>
 
+      {/* ── Lesson Notes section ── */}
+      <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
+        <h2 className="text-sm font-semibold text-text-primary">Lesson Notes (PDF)</h2>
+        <LessonNotesUpload
+          lessonId={lessonId}
+          notesPath={lesson.notes_path ?? null}
+          notesName={lesson.notes_name ?? null}
+          notesSizeBytes={lesson.notes_size_bytes ?? null}
+          notesUploadedAt={lesson.notes_uploaded_at ?? null}
+          notesDownloadable={lesson.notes_downloadable ?? false}
+          extractionStatus={notesExtractionStatus}
+          extractionError={notesExtractionError}
+        />
+      </section>
+
       {/* ── Activities section ── */}
       <ActivityManager
         lessonId={lessonId}
@@ -365,6 +403,23 @@ export default async function LessonDetailPage({
           )}
         </section>
       )}
+
+      {/* ── AI Tutor section ── */}
+      <section className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-text-primary">AI Lesson Tutor (Lumi)</h2>
+          <span className="text-xs text-text-secondary">
+            {lesson.ai_tutor_enabled ? 'Active on this lesson' : 'Disabled for this lesson'}
+          </span>
+        </div>
+        <LessonAiPanel
+          lessonId={lessonId}
+          lessonTitle={lesson.title}
+          mode="class"
+          aiTutorEnabled={lesson.ai_tutor_enabled}
+          notesReady={notesExtractionStatus === 'ready'}
+        />
+      </section>
 
       {/* ── Edit metadata form (canManage only) ── */}
       {canManage && (
@@ -460,6 +515,22 @@ export default async function LessonDetailPage({
                 </select>
               </div>
             )}
+
+            <div className="pt-2 border-t border-border">
+              <label className="flex items-center gap-2 cursor-pointer text-sm text-text-primary">
+                <input
+                  type="checkbox"
+                  name="ai_tutor_enabled"
+                  defaultChecked={lesson.ai_tutor_enabled}
+                  className="rounded border-border text-primary focus:ring-primary h-4 w-4"
+                />
+                <span className="font-medium">Enable AI Tutor (Lumi) for this lesson</span>
+              </label>
+              <p className="text-xs text-text-secondary ml-6 mt-0.5">
+                Students and classroom facilitators can ask questions grounded in this lesson's notes.
+              </p>
+            </div>
+
             <div className="pt-2">
               <button
                 type="submit"

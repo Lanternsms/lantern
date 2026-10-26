@@ -4,6 +4,8 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { LessonPlayerModal } from '../lesson-player-modal'
+import { NotesDownloadButton } from '../notes-download-button'
+import { LessonAiPanel } from '../lesson-ai-panel'
 import { markLessonDelivered, undoLessonDelivery } from '../actions'
 
 export type LessonOption = {
@@ -14,6 +16,9 @@ export type LessonOption = {
   duration_seconds: number | null
   isDeliveredForClassArm: boolean
   openQuestionsCount?: number
+  notes_path?: string | null
+  notes_size_bytes?: number | null
+  ai_tutor_enabled?: boolean
 }
 
 export type DeliveryInfo = {
@@ -67,6 +72,7 @@ export function FacilitatorPeriodCard({
   const [selectedLessonId, setSelectedLessonId] = useState<string>(defaultId)
 
   const selectedLesson = publishedLessons.find((l) => l.id === selectedLessonId)
+  const deliveredLesson = publishedLessons.find((l) => l.id === todayDelivery?.lesson_id)
   const isDeliveredToday = !!todayDelivery
   const canUndo = todayDelivery && (todayDelivery.delivered_by === currentUserId || canManage)
 
@@ -150,7 +156,7 @@ export function FacilitatorPeriodCard({
       {/* Body: Lessons selection and action buttons */}
       {publishedLessons.length === 0 ? (
         <p className="text-xs text-text-muted italic py-1">
-          No published lessons available for this subject yet.
+          No lesson has been uploaded for this class yet.
         </p>
       ) : (
         <div className="space-y-3 pt-1">
@@ -177,6 +183,19 @@ export function FacilitatorPeriodCard({
                   title={todayDelivery.lesson_title ?? 'Lesson'}
                   size="lg"
                   label="Play"
+                />
+                {deliveredLesson?.notes_path && (
+                  <NotesDownloadButton
+                    lessonId={todayDelivery.lesson_id}
+                    notesSizeBytes={deliveredLesson.notes_size_bytes}
+                  />
+                )}
+                <LessonAiPanel
+                  lessonId={todayDelivery.lesson_id}
+                  lessonTitle={todayDelivery.lesson_title ?? 'Lesson'}
+                  mode="class"
+                  aiTutorEnabled={deliveredLesson?.ai_tutor_enabled ?? true}
+                  notesReady={Boolean(deliveredLesson?.notes_path)}
                 />
                 <Link
                   href={`/dashboard/lms/today/attendance/${timetableEntryId}`}
@@ -232,12 +251,21 @@ export function FacilitatorPeriodCard({
 
               <div className="flex items-center gap-2 pt-4 sm:pt-0 shrink-0 self-end flex-wrap justify-end">
                 {selectedLesson && (
-                  <LessonPlayerModal
-                    lessonId={selectedLesson.id}
-                    title={selectedLesson.title}
-                    size="lg"
-                    label="Play"
-                  />
+                  <>
+                    <LessonPlayerModal
+                      lessonId={selectedLesson.id}
+                      title={selectedLesson.title}
+                      size="lg"
+                      label="Play"
+                    />
+                    <LessonAiPanel
+                      lessonId={selectedLesson.id}
+                      lessonTitle={selectedLesson.title}
+                      mode="class"
+                      aiTutorEnabled={selectedLesson.ai_tutor_enabled ?? true}
+                      notesReady={Boolean(selectedLesson.notes_path)}
+                    />
+                  </>
                 )}
                 <Link
                   href={`/dashboard/lms/today/attendance/${timetableEntryId}`}

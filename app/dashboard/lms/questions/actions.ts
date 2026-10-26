@@ -7,7 +7,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { logSchoolAction } from '@/lib/audit/log-school-actions'
-import { getAskerAccess, canAnswerLesson, getAnswerableLessonIds } from '@/app/dashboard/lms/access'
+import { getAskerAccess, canAnswerLesson, getAnswerableLessonIdsForUser as getAnswerableLessonIds } from '@/app/dashboard/lms/access'
 
 /** Shared context helper */
 async function getContext() {

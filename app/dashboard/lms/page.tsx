@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
+import { getLmsAccess } from '@/lib/lms/access'
 
 export const dynamic = 'force-dynamic'
 
@@ -22,18 +22,11 @@ export default async function LmsPage({
   const subjectFilter = params.subject ?? ''
   const errorMsg = params.error ?? ''
 
-  const supabase = await createClient()
-
-  // Permission gate — users with none of the three lms permissions cannot see this page
-  const [{ data: canManage }, { data: canUpload }, { data: canFacilitate }] = await Promise.all([
-    supabase.rpc('has_permission', { perm_code: 'lms.manage' }),
-    supabase.rpc('has_permission', { perm_code: 'lms.upload' }),
-    supabase.rpc('has_permission', { perm_code: 'lms.facilitate' }),
-  ])
-
-  if (!canManage && !canUpload && !canFacilitate) {
-    redirect('/dashboard?error=' + encodeURIComponent('You do not have access to the Lessons module.'))
+  const access = await getLmsAccess()
+  if (!access.isManager) {
+    notFound()
   }
+  const { supabase } = access
 
   // Sidebar data
   const { data: classes } = await supabase.from('classes').select('id, name').order('name')
@@ -82,13 +75,21 @@ export default async function LmsPage({
       {/* Header */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <h1 className="text-xl font-semibold text-text-primary">Lessons</h1>
-        {canManage && (
-          <Link
-            href="/dashboard/lms/new"
-            className="bg-primary text-white text-sm font-medium rounded-lg px-4 py-2 hover:bg-primary-hover transition-colors"
-          >
-            + New Lesson
-          </Link>
+        {access.isManager && (
+          <div className="flex items-center gap-2">
+            <Link
+              href="/dashboard/lms/ai"
+              className="border border-primary/20 bg-primary/5 text-primary text-sm font-medium rounded-lg px-3.5 py-2 hover:bg-primary/10 transition-colors inline-flex items-center gap-1.5"
+            >
+              <span>✨ Lumi AI Tutor</span>
+            </Link>
+            <Link
+              href="/dashboard/lms/new"
+              className="bg-primary text-white text-sm font-medium rounded-lg px-4 py-2 hover:bg-primary-hover transition-colors"
+            >
+              + New Lesson
+            </Link>
+          </div>
         )}
       </div>
 

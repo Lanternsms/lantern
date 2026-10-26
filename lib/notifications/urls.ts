@@ -11,6 +11,8 @@ export interface NotificationUrlContext {
   announcementId?: string | null
   termId?: string | null
   deliveryId?: string | null
+  /** For staff recipients: 'recorder' | 'facilitator' | 'manager'. Drives per-role LMS deep links. */
+  staffKind?: 'recorder' | 'facilitator' | 'manager' | null
   [key: string]: unknown
 }
 
@@ -121,6 +123,7 @@ export function notificationUrl(
     }
 
     // Learning (LMS)
+    case 'lms_notes_attached':
     case 'lms_lesson_status_changed':
     case 'lms_activity_brief_attached': {
       if (recipientKind === 'guardian') {
@@ -132,6 +135,9 @@ export function notificationUrl(
         }
         return '/dashboard'
       }
+      // Staff: per-role deep link
+      if (context.staffKind === 'recorder') return '/dashboard/lms/my-lessons'
+      if (context.staffKind === 'facilitator') return '/dashboard/lms/today'
       return context.lessonId ? `/dashboard/lms/${context.lessonId}` : '/dashboard/lms'
     }
 
@@ -173,6 +179,7 @@ export function notificationUrl(
         }
         return '/dashboard'
       }
+      // Staff: recorders go to Q&A inbox, managers to thread or inbox
       const qId = context.questionId || context.threadId
       return qId ? `/dashboard/lms/questions/${qId}` : '/dashboard/lms/questions'
     }

@@ -15,12 +15,12 @@ const MAX_BYTES = 500 * 1024 * 1024 // 500 MB
 const ALLOWED_TYPES = ['video/mp4', 'video/webm']
 
 function getResumableUploadEndpoint(): string {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+  const supabaseUrl = (process.env.NEXT_PUBLIC_SUPABASE_URL || '').trim()
   try {
     const parsed = new URL(supabaseUrl)
     const match = parsed.hostname.match(/^([a-z0-9_-]+)\.supabase\.co$/i)
     if (match) {
-      return `https://${match[1]}.storage.supabase.co/upload/resumable`
+      return `https://${match[1]}.storage.supabase.co/storage/v1/upload/resumable`
     }
   } catch {
     // fallback
@@ -219,6 +219,7 @@ export function LessonVideoUpload({
       removeFingerprintOnSuccess: true,
       headers: {
         authorization: `Bearer ${session.access_token}`,
+        apikey: (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '').trim(),
         'x-upsert': 'true',
       },
       metadata: {
@@ -227,16 +228,17 @@ export function LessonVideoUpload({
         contentType: file.type || 'video/mp4',
         cacheControl: '3600',
       },
-      onBeforeRequest: async (req) => {
-        const {
-          data: { session: freshSession },
-        } = await supabase.auth.getSession()
-        if (freshSession?.access_token) {
-          req.setHeader('authorization', `Bearer ${freshSession.access_token}`)
+      onShouldRetry: (err, retryAttempt, options) => {
+        // Do not retry fatal client errors (4xx, except 409 Conflict or 429 Rate Limit)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const status = (err as any)?.originalResponse?.getStatus?.()
+        if (status && status >= 400 && status < 500 && status !== 409 && status !== 429) {
+          return false
         }
-      },
-      onShouldRetry: (_err, retryAttempt, options) => {
         const delays = options.retryDelays || [0, 3000, 5000, 10000, 20000]
+        if (retryAttempt >= delays.length) {
+          return false
+        }
         const delayMs = delays[retryAttempt] ?? 0
         const delaySec = Math.round(delayMs / 1000)
         setRetryMessage(`Connection lost, retrying in ${delaySec}s…`)
@@ -265,7 +267,19 @@ export function LessonVideoUpload({
         }
       },
       onError: (err) => {
-        setError(err.message || 'Video upload failed.')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const status = (err as any)?.originalResponse?.getStatus?.()
+        let msg = err.message || 'Video upload failed.'
+        if (status === 403) {
+          msg = 'Permission denied to upload video to storage. Please check your role/permissions.'
+        } else if (status === 401) {
+          msg = 'Authentication session expired. Please refresh and log in again.'
+        } else if (status === 404) {
+          msg = 'Storage upload endpoint or bucket not found.'
+        } else if (status === 413) {
+          msg = 'The video file exceeds the maximum allowed upload size.'
+        }
+        setError(msg)
         setUploading(false)
         setIsPaused(false)
         setRetryMessage(null)

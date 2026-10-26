@@ -1,4 +1,6 @@
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
+import { getLmsAccess } from '@/lib/lms/access'
 import {
   GraduationCap,
   CheckSquare,
@@ -10,7 +12,7 @@ import {
   ChevronRight,
 } from 'lucide-react'
 
-const TEACHER_ACTIONS = [
+const BASE_TEACHER_ACTIONS = [
   {
     label: 'Mark Attendance',
     description: 'Roll call for class & subject periods',
@@ -46,16 +48,43 @@ const TEACHER_ACTIONS = [
     icon: MessageSquare,
     color: 'text-pink-600 bg-pink-50 border-pink-200/60 dark:bg-pink-950/40',
   },
-  {
-    label: 'Recorded Lessons',
-    description: 'LMS lessons & student activities',
-    href: '/dashboard/lms',
-    icon: BookOpen,
-    color: 'text-sky-600 bg-sky-50 border-sky-200/60 dark:bg-sky-950/40',
-  },
 ]
 
 export async function TeacherWidget() {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  const access = user ? await getLmsAccess(supabase, user) : null
+
+  const actions = [...BASE_TEACHER_ACTIONS]
+
+  if (access?.isManager) {
+    actions.push({
+      label: 'Recorded Lessons',
+      description: 'LMS lessons & student activities',
+      href: '/dashboard/lms',
+      icon: BookOpen,
+      color: 'text-sky-600 bg-sky-50 border-sky-200/60 dark:bg-sky-950/40',
+    })
+  } else if (access && access.recordedLessonCount > 0) {
+    actions.push({
+      label: 'My Lessons',
+      description: 'Your recorded lessons & activities',
+      href: '/dashboard/lms/my-lessons',
+      icon: BookOpen,
+      color: 'text-sky-600 bg-sky-50 border-sky-200/60 dark:bg-sky-950/40',
+    })
+  } else if (access?.isFacilitator) {
+    actions.push({
+      label: "Today's Lessons",
+      description: 'Scheduled LMS periods for today',
+      href: '/dashboard/lms/today',
+      icon: BookOpen,
+      color: 'text-sky-600 bg-sky-50 border-sky-200/60 dark:bg-sky-950/40',
+    })
+  }
   return (
     <div className="bg-surface border border-border rounded-2xl p-6 shadow-xs h-full flex flex-col justify-between">
       <div>
@@ -78,7 +107,7 @@ export async function TeacherWidget() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {TEACHER_ACTIONS.map((action) => {
+          {actions.map((action) => {
             const Icon = action.icon
             return (
               <Link

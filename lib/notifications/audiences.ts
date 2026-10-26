@@ -99,34 +99,150 @@ const audienceMap: Record<string, Resolver[]> = {
   lms_question_asked: [
     async (payload) => {
       const schoolId = payload.schoolId as string
-      const classId = payload.classId as string
       const lessonId = payload.lessonId as string
       const questionId = payload.questionId as string
       const authorId = payload.authorId as string | undefined
-      if (!schoolId || !classId) return []
+      if (!schoolId || !lessonId) return []
 
       const admin = createAdminClient()
-      const { data, error } = await (admin as any)
-        .from('lms_facilitators')
-        .select('user_id')
-        .eq('school_id', schoolId)
-        .eq('class_id', classId)
 
-      if (error || !data) {
-        return []
+      // Load lesson to find the recorder
+      const { data: lesson } = await (admin as any)
+        .from('lms_lessons')
+        .select('id, recorded_by, class_id, subject_id')
+        .eq('id', lessonId)
+        .eq('school_id', schoolId)
+        .maybeSingle()
+
+      if (!lesson) return []
+
+      // Collect staff recipients: recorded_by + any user with lms.manage role permission
+      const recipientIds = new Set<string>()
+
+      if (lesson.recorded_by && lesson.recorded_by !== authorId) {
+        recipientIds.add(lesson.recorded_by)
       }
 
-      const facilitatorIds = (data as any[]).map((row) => row.user_id)
-      return facilitatorIds.map((facId) => ({
+      // Find profiles that have the lms.manage permission via role_permissions
+      const { data: rolePerms } = await (admin as any)
+        .from('role_permissions')
+        .select('roles:role_id ( role_members ( profile_id ) )')
+        .eq('school_id', schoolId)
+        .eq('permission_code', 'lms.manage')
+
+      for (const rp of rolePerms ?? []) {
+        for (const member of rp.roles?.role_members ?? []) {
+          if (member.profile_id && member.profile_id !== authorId) {
+            recipientIds.add(member.profile_id)
+          }
+        }
+      }
+
+      return Array.from(recipientIds).map((recipientId) => ({
         schoolId,
-        recipientId: facId,
+        recipientId,
         type: 'lms_question_asked',
         category: 'qa',
         title: 'New question asked',
-        body: `A new question was asked in lesson ${lessonId}.`,
+        body: `A new question was asked about a lesson.`,
         url: notificationUrl('lms_question_asked', { lessonId, questionId }, 'staff'),
         actorId: authorId,
       }))
+    },
+  ],
+  lms_notes_attached: [
+    async (payload) => {
+      const schoolId = payload.schoolId as string
+      const lessonId = payload.lessonId as string
+      if (!schoolId || !lessonId) return []
+
+      const admin = createAdminClient()
+
+      // Fetch lesson details
+      const { data: lesson } = await (admin as any)
+        .from('lms_lessons')
+        .select(`
+          id,
+          title,
+          status,
+          class_id,
+          subjects:subject_id ( name )
+        `)
+        .eq('id', lessonId)
+        .eq('school_id', schoolId)
+        .maybeSingle()
+
+      if (!lesson || lesson.status !== 'published' || !lesson.class_id) {
+        return []
+      }
+
+      // Fetch current academic session
+      const { data: currentSession } = await (admin as any)
+        .from('academic_sessions')
+        .select('id')
+        .eq('school_id', schoolId)
+        .eq('is_current', true)
+        .maybeSingle()
+
+      if (!currentSession) return []
+
+      // Fetch enrolled students
+      const { data: enrolments } = await (admin as any)
+        .from('enrolments')
+        .select('student_id, student:students(id, profile_id, user_id)')
+        .eq('school_id', schoolId)
+        .eq('session_id', currentSession.id)
+        .eq('class_id', lesson.class_id)
+
+      if (!enrolments || enrolments.length === 0) return []
+
+      const subjectName = (lesson.subjects as any)?.name ?? 'Lesson'
+      const title = 'Lesson notes added'
+      const body = `${subjectName}: ${lesson.title}`
+      const dedupeKey = `notes:${lessonId}`
+
+      const notifications: NotificationInput[] = []
+
+      for (const enr of enrolments) {
+        const student = enr.student
+        if (!student) continue
+
+        // 1. Student notification
+        const studentProfileId = student.profile_id || student.user_id
+        if (studentProfileId) {
+          notifications.push({
+            schoolId,
+            recipientId: studentProfileId,
+            type: 'lms_notes_attached',
+            category: 'learning',
+            title,
+            body,
+            url: notificationUrl('lms_notes_attached', { lessonId, studentId: student.id }, 'student'),
+            studentId: student.id,
+            dedupeKey,
+            onDuplicate: 'ignore',
+          })
+        }
+
+        // 2. Guardian notifications
+        const guardianProfileIds = await getGuardianProfileIds(student.id)
+        for (const guardianId of guardianProfileIds) {
+          notifications.push({
+            schoolId,
+            recipientId: guardianId,
+            type: 'lms_notes_attached',
+            category: 'learning',
+            title,
+            body,
+            url: notificationUrl('lms_notes_attached', { lessonId, studentId: student.id }, 'guardian'),
+            studentId: student.id,
+            dedupeKey,
+            onDuplicate: 'ignore',
+          })
+        }
+      }
+
+      return notifications
     },
   ],
 }

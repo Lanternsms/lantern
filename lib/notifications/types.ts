@@ -30,6 +30,7 @@ export type EventKey =
   | 'role_permission_revoked'
   // Learning (LMS)
   | 'lms_lesson_status_changed'
+  | 'lms_notes_attached'
   | 'lms_activity_status_changed'
   | 'lms_activity_updated'
   | 'lms_activity_brief_attached'

@@ -1,34 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { getLmsAccess } from '@/lib/lms/access'
+import { NotesDownloadButton } from '../notes-download-button'
 
 export const dynamic = 'force-dynamic'
 
 export default async function MyLessonsPage() {
-  const supabase = await createClient()
+  const access = await getLmsAccess()
 
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  // Only recorders (with at least one recorded lesson) and managers may see this page
+  if (!access.isManager && access.recordedLessonCount === 0) {
+    notFound()
+  }
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('school_id')
-    .eq('id', user.id)
-    .single()
-
-  if (!profile) redirect('/login')
-
-  const { data: lessons } = await (supabase as any)
+  const { data: lessons } = await (access.supabase as any)
     .from('lms_lessons')
     .select(`
       id, title, topic, week_no, status, created_at,
+      notes_path, notes_size_bytes, ai_tutor_enabled,
       classes:class_id ( name ),
       subjects:subject_id ( name ),
       activities:lms_activities ( id, kind, status )
     `)
-    .eq('school_id', profile.school_id)
-    .eq('recorded_by', user.id)
+    .eq('school_id', access.schoolId)
+    .eq('recorded_by', access.userId)
     .order('created_at', { ascending: false })
 
   const lessonList = lessons || []
@@ -116,12 +112,20 @@ export default async function MyLessonsPage() {
                         )}
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <Link
-                          href={`/dashboard/lms/${lesson.id}`}
-                          className="inline-flex items-center rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
-                        >
-                          Manage Activities &rarr;
-                        </Link>
+                        <div className="flex items-center justify-end gap-2">
+                          {lesson.notes_path && (
+                            <NotesDownloadButton
+                              lessonId={lesson.id}
+                              notesSizeBytes={lesson.notes_size_bytes}
+                            />
+                          )}
+                          <Link
+                            href={`/dashboard/lms/${lesson.id}`}
+                            className="inline-flex items-center rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+                          >
+                            Manage Activities &rarr;
+                          </Link>
+                        </div>
                       </td>
                     </tr>
                   )

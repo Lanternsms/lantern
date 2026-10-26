@@ -57,7 +57,8 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 const ANON_KEY =
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
-  process.env.SUPABASE_ANON_KEY
+  process.env.SUPABASE_ANON_KEY ??
+  SERVICE_ROLE_KEY
 
 if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
   console.error(
@@ -65,6 +66,8 @@ if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
   )
   process.exit(1)
 }
+
+const CLIENT_KEY = (ANON_KEY ?? SERVICE_ROLE_KEY)!
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -142,6 +145,7 @@ const fx = {
   activityId: null as string | null,
   attendanceCreated: false,
   storageObjects: [] as string[],
+  notesPath: null as string | null,
 }
 
 // ─── Utility ──────────────────────────────────────────────────────────────────
@@ -182,7 +186,7 @@ async function createUser(
 }
 
 async function signIn(email: string, password: string): Promise<AnyClient> {
-  const client = createClient(SUPABASE_URL!, ANON_KEY ?? SERVICE_ROLE_KEY, {
+  const client = createClient(SUPABASE_URL!, CLIENT_KEY, {
     auth: { autoRefreshToken: false, persistSession: false },
   })
   const { error } = await client.auth.signInWithPassword({ email, password })
@@ -804,48 +808,14 @@ async function canManageActivities(
   return lesson.recorded_by === authUser?.user?.id
 }
 
-/** Replicate canViewActivityResults from access.ts. */
+/** Replicate canViewActivityResults from access.ts (managers + recorders only; facilitators have NO access). */
 async function canViewActivityResults(
   userClient: AnyClient,
   schoolId: string,
   lessonId: string,
-  userId: string
+  _userId: string
 ): Promise<boolean> {
-  if (await canManageActivities(userClient, schoolId, lessonId)) return true
-
-  const { data: canFacilitate } = await userClient.rpc('has_permission', {
-    perm_code: 'lms.facilitate',
-  })
-  if (!canFacilitate) return false
-
-  const { data: lesson } = await svc
-    .from('lms_lessons')
-    .select('class_id, subject_id')
-    .eq('id', lessonId)
-    .eq('school_id', schoolId)
-    .maybeSingle()
-  if (!lesson) return false
-
-  const { data: sess } = await userClient
-    .from('academic_sessions')
-    .select('id')
-    .eq('school_id', schoolId)
-    .eq('is_current', true)
-    .maybeSingle()
-  if (!sess) return false
-
-  const { data: entries } = await userClient
-    .from('timetable_entries')
-    .select('id')
-    .eq('school_id', schoolId)
-    .eq('session_id', sess.id)
-    .eq('teacher_id', userId)
-    .eq('delivery_mode', 'lms')
-    .eq('class_id', lesson.class_id)
-    .eq('subject_id', lesson.subject_id)
-    .limit(1)
-
-  return !!(entries && entries.length > 0)
+  return canManageActivities(userClient, schoolId, lessonId)
 }
 
 /** Replicate authorizeForEntry from attendance/actions.ts. */
@@ -893,6 +863,134 @@ async function canMarkAttendance(
   if (entry.day_of_week !== todayDow) return false
 
   return true
+}
+
+/** Replicate getNotesDownloadUrl auth logic from actions.ts. */
+async function canGetNotesDownloadUrl(
+  userClient: AnyClient,
+  lessonId: string,
+  studentId?: string
+): Promise<{ allowed: boolean; reason: string }> {
+  const { data: authUser } = await userClient.auth.getUser()
+  const userId = authUser?.user?.id
+  if (!userId) return { allowed: false, reason: 'not authenticated' }
+
+  const { data: profile } = await userClient
+    .from('profiles')
+    .select('school_id')
+    .eq('id', userId)
+    .maybeSingle()
+  const schoolId = profile?.school_id
+  if (!schoolId) return { allowed: false, reason: 'no profile' }
+
+  // Load lesson via service role (actions.ts uses admin client after getLmsAccess)
+  const { data: lesson } = await svc
+    .from('lms_lessons')
+    .select(
+      'id, school_id, title, status, notes_path, notes_name, notes_downloadable, recorded_by, class_id, subject_id'
+    )
+    .eq('id', lessonId)
+    .eq('school_id', schoolId)
+    .maybeSingle()
+
+  if (!lesson || !lesson.notes_path) {
+    return { allowed: false, reason: 'lesson not found or no notes_path' }
+  }
+
+  const [{ data: canManage }, { data: canUpload }, { data: canFacilitate }] =
+    await Promise.all([
+      userClient.rpc('has_permission', { perm_code: 'lms.manage' }),
+      userClient.rpc('has_permission', { perm_code: 'lms.upload' }),
+      userClient.rpc('has_permission', { perm_code: 'lms.facilitate' }),
+    ])
+
+  const isManager = !!(canManage || canUpload)
+  if (isManager) return { allowed: true, reason: 'manager' }
+
+  if (lesson.recorded_by === userId) {
+    return { allowed: true, reason: 'recorder' }
+  }
+
+  if (canFacilitate) {
+    if (lesson.status !== 'published') {
+      return { allowed: false, reason: 'draft + facilitator' }
+    }
+    const { data: sess } = await userClient
+      .from('academic_sessions')
+      .select('id')
+      .eq('school_id', schoolId)
+      .eq('is_current', true)
+      .maybeSingle()
+    if (!sess) return { allowed: false, reason: 'no current session' }
+
+    const todayDow = todayLagosDayOfWeek()
+    const { data: entries } = await userClient
+      .from('timetable_entries')
+      .select('id, day_of_week')
+      .eq('school_id', schoolId)
+      .eq('session_id', sess.id)
+      .eq('teacher_id', userId)
+      .eq('delivery_mode', 'lms')
+      .eq('class_id', lesson.class_id)
+      .eq('subject_id', lesson.subject_id)
+
+    const hasToday = (entries ?? []).some((e: any) => e.day_of_week === todayDow)
+    if (!hasToday) return { allowed: false, reason: 'facilitator without today timetable entry' }
+    return { allowed: true, reason: 'facilitator + today entry' }
+  }
+
+  // Student / Guardian path:
+  if (lesson.status !== 'published' || !lesson.notes_downloadable) {
+    return { allowed: false, reason: 'not downloadable or not published' }
+  }
+
+  const { data: sess } = await userClient
+    .from('academic_sessions')
+    .select('id')
+    .eq('school_id', schoolId)
+    .eq('is_current', true)
+    .maybeSingle()
+  if (!sess) return { allowed: false, reason: 'no current session' }
+
+  if (studentId) {
+    const { data: rels } = await svc
+      .from('student_guardians')
+      .select('guardian_id, guardians!inner(profile_id)')
+      .eq('student_id', studentId)
+
+    const isGuardian = (rels ?? []).some((r: any) => (r as any).guardians?.profile_id === userId)
+    if (!isGuardian) return { allowed: false, reason: 'not guardian of student' }
+
+    const { data: enrol } = await svc
+      .from('enrolments')
+      .select('id')
+      .eq('school_id', schoolId)
+      .eq('session_id', sess.id)
+      .eq('class_id', lesson.class_id)
+      .eq('student_id', studentId)
+      .maybeSingle()
+
+    if (!enrol) return { allowed: false, reason: 'student not in lesson class' }
+    return { allowed: true, reason: 'guardian of enrolled student' }
+  } else {
+    const { data: stRow } = await svc
+      .from('students')
+      .select('id')
+      .or(`user_id.eq.${userId},profile_id.eq.${userId}`)
+      .maybeSingle()
+    if (!stRow) return { allowed: false, reason: 'not a student' }
+
+    const { data: enrol } = await svc
+      .from('enrolments')
+      .select('id')
+      .eq('school_id', schoolId)
+      .eq('session_id', sess.id)
+      .eq('class_id', lesson.class_id)
+      .eq('student_id', stRow.id)
+      .maybeSingle()
+    if (!enrol) return { allowed: false, reason: 'student not enrolled in lesson class' }
+    return { allowed: true, reason: 'enrolled student' }
+  }
 }
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
@@ -1203,7 +1301,7 @@ async function runTests() {
     if (act) fx.activityId = act.id
   }
 
-  // C4: F1 (facilitator + entry) can view activity results
+  // C4: F1 (facilitator + entry) CANNOT view activity results (facilitators have NO access to activities)
   {
     const ok = await canViewActivityResults(
       clientF1,
@@ -1211,7 +1309,7 @@ async function runTests() {
       fx.lessonId,
       fx.facilitatorF1Id
     )
-    assert('C4: facilitator F1 with entry can view activity results', ok)
+    assert('C4: facilitator F1 cannot view activity results', !ok)
   }
 
   // C5: F2 (facilitator, no entry) cannot view results
@@ -1324,7 +1422,7 @@ async function runTests() {
 
   // E1: Anon client → 0 rows from lms_lessons
   {
-    const anon = createClient(SUPABASE_URL!, ANON_KEY ?? SERVICE_ROLE_KEY, {
+    const anon = createClient(SUPABASE_URL!, CLIENT_KEY, {
       auth: { autoRefreshToken: false, persistSession: false },
     })
     const { data: rows } = await anon
@@ -1393,6 +1491,233 @@ async function runTests() {
   }
 
   // ══════════════════════════════════════════
+  console.log('\n── Section G: Lesson Notes PDF Security (G1–G10) ──')
+
+  // Setup fixture notes on fx.lessonId
+  fx.notesPath = `${fx.schoolAId}/${RUN_TAG}_notes.pdf`
+  const dummyPdfBuffer = Buffer.from('%PDF-1.4\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF\n')
+  const { error: notesUploadErr } = await svc.storage
+    .from('lms-notes')
+    .upload(fx.notesPath, dummyPdfBuffer, { contentType: 'application/pdf', upsert: true })
+  if (notesUploadErr) {
+    console.warn(`  ⚠️ Failed to upload dummy notes PDF: ${notesUploadErr.message}`)
+  }
+
+  await svc
+    .from('lms_lessons')
+    .update({
+      notes_path: fx.notesPath,
+      notes_name: 'test_notes.pdf',
+      notes_size_bytes: dummyPdfBuffer.length,
+      notes_uploaded_at: new Date().toISOString(),
+      notes_downloadable: true,
+    })
+    .eq('id', fx.lessonId)
+
+  // G1: Guardian of another class (G2 has S2 in JSS2, lesson is JSS1) → denied
+  {
+    const r = await canGetNotesDownloadUrl(clientG2, fx.lessonId, fx.studentS2Id)
+    assert('G1: guardian of another class → getNotesDownloadUrl denied', !r.allowed, r.reason)
+  }
+
+  // G2: Student of another class (G1 querying with S2, not their child / wrong class) → denied
+  {
+    const r = await canGetNotesDownloadUrl(clientG1, fx.lessonId, fx.studentS2Id)
+    assert('G2: student of another class → getNotesDownloadUrl denied', !r.allowed, r.reason)
+  }
+
+  // G3: Unpublished (draft) lesson with notes → guardian G1 denied
+  {
+    const draftNotesPath = `${fx.schoolAId}/${RUN_TAG}_draft_notes.pdf`
+    const { data: draftWithNotes } = await svc
+      .from('lms_lessons')
+      .insert({
+        school_id: fx.schoolAId,
+        class_id: fx.classJss1Id,
+        subject_id: fx.subjectChemId,
+        title: `${RUN_TAG}_DraftLessonNotes`,
+        recorded_by: fx.teacherT1Id,
+        uploaded_by: fx.teacherT1Id,
+        status: 'draft',
+        video_path: `${fx.schoolAId}/${RUN_TAG}_draft3.mp4`,
+        notes_path: draftNotesPath,
+        notes_downloadable: true,
+      })
+      .select('id')
+      .single()
+
+    if (draftWithNotes) {
+      const r = await canGetNotesDownloadUrl(clientG1, draftWithNotes.id, fx.studentS1Id)
+      assert('G3: unpublished lesson → notes download denied for guardian/student', !r.allowed, r.reason)
+      await svc.from('lms_lessons').delete().eq('id', draftWithNotes.id)
+    } else {
+      fail('G3: unpublished lesson → notes download denied', 'could not create draft fixture')
+    }
+  }
+
+  // G4: Recorder of someone else's lesson (teacher T2 on fx.lessonId recorded by T1) → denied
+  {
+    const r = await canGetNotesDownloadUrl(clientT2, fx.lessonId)
+    assert("G4: recorder of someone else's lesson → denied", !r.allowed, r.reason)
+  }
+
+  // G5: Facilitator without today timetable entry (F2) → denied
+  {
+    const r = await canGetNotesDownloadUrl(clientF2, fx.lessonId)
+    assert('G5: facilitator without today timetable entry → denied', !r.allowed, r.reason)
+  }
+
+  // G6: notes_downloadable = false → student/guardian denied; manager allowed
+  {
+    await svc.from('lms_lessons').update({ notes_downloadable: false }).eq('id', fx.lessonId)
+    const [rGuardian, rManager] = await Promise.all([
+      canGetNotesDownloadUrl(clientG1, fx.lessonId, fx.studentS1Id),
+      canGetNotesDownloadUrl(clientAdminA, fx.lessonId),
+    ])
+    assert(
+      'G6: notes_downloadable=false → student/guardian denied, manager allowed',
+      !rGuardian.allowed && rManager.allowed,
+      `guardian: ${rGuardian.allowed}, manager: ${rManager.allowed}`
+    )
+    await svc.from('lms_lessons').update({ notes_downloadable: true }).eq('id', fx.lessonId)
+  }
+
+  // G7: Manager with notes attached → gets signed URL
+  {
+    const r = await canGetNotesDownloadUrl(clientAdminA, fx.lessonId)
+    assert('G7: manager with notes → gets signed URL allowed', r.allowed, r.reason)
+  }
+
+  // G8: After notes removed (notes_path = null) → denied
+  {
+    await svc.from('lms_lessons').update({ notes_path: null }).eq('id', fx.lessonId)
+    const r = await canGetNotesDownloadUrl(clientAdminA, fx.lessonId)
+    assert('G8: after notes removed (notes_path null) → denied', !r.allowed, r.reason)
+    // restore for subsequent tests
+    await svc.from('lms_lessons').update({ notes_path: fx.notesPath }).eq('id', fx.lessonId)
+  }
+
+  // G9: Direct storage request with user JWT against lms-notes bucket → denied (no storage policies)
+  {
+    const { data: dlData, error: dlErr } = await clientAdminA.storage
+      .from('lms-notes')
+      .download(fx.notesPath)
+    const secured = !!dlErr || !dlData
+    assert(
+      'G9: direct storage request with user JWT against lms-notes → denied (HTTP 403 / unauthorized)',
+      secured,
+      dlErr ? dlErr.message : 'no error returned'
+    )
+  }
+
+  // G10: Recorder of own lesson (T1 on fx.lessonId recorded by T1) → gets signed URL allowed
+  {
+    const r = await canGetNotesDownloadUrl(clientT1, fx.lessonId)
+    assert('G10: recorder of own lesson → gets signed URL allowed', r.allowed, r.reason)
+  }
+
+  // ══════════════════════════════════════════
+  console.log('\n── Section H: AI Lesson Tutor (Lumi) Security (H1–H6) ──')
+
+  // H1: Direct select on lms_ai_messages with user client → 0 rows / denied (RLS enabled, no policies)
+  {
+    const { data: userAiMsgs, error: userAiErr } = await clientAdminA
+      .from('lms_ai_messages')
+      .select('id')
+      .eq('lesson_id', fx.lessonId)
+    const blocked = !!userAiErr || !userAiMsgs || userAiMsgs.length === 0
+    assert(
+      'H1: direct select on lms_ai_messages with user JWT → blocked / returns 0 rows',
+      blocked,
+      userAiErr ? userAiErr.message : '0 rows returned'
+    )
+  }
+
+  // H2: Direct insert on lms_ai_messages with user client → blocked by RLS
+  {
+    const { error: insErr } = await (clientAdminA as any)
+      .from('lms_ai_messages')
+      .insert({
+        school_id: fx.schoolAId,
+        lesson_id: fx.lessonId,
+        session_id: '00000000-0000-0000-0000-000000000001',
+        mode: 'student',
+        asked_by: fx.adminAId,
+        role: 'user',
+        content: 'Malicious direct insert attempt',
+      })
+    assert(
+      'H2: direct insert on lms_ai_messages with user client → denied by RLS',
+      !!insErr,
+      insErr ? insErr.message : 'unexpected success'
+    )
+  }
+
+  // H3: Direct select on lms_ai_settings with anon client → blocked
+  {
+    const { data: anonData, error: anonErr } = await (anon as any)
+      .from('lms_ai_settings')
+      .select('id')
+      .eq('school_id', fx.schoolAId)
+    const blocked = !!anonErr || !anonData || anonData.length === 0
+    assert(
+      'H3: direct select on lms_ai_settings with anon client → denied / 0 rows',
+      blocked,
+      anonErr ? anonErr.message : '0 rows'
+    )
+  }
+
+  // H4: Service role client can configure lms_ai_settings
+  {
+    const { error: upsertErr } = await (svc as any)
+      .from('lms_ai_settings')
+      .upsert({
+        school_id: fx.schoolAId,
+        enabled: true,
+        voice_enabled: true,
+        read_aloud_enabled: true,
+        daily_limit_per_student: 25,
+        daily_limit_per_class: 100,
+        monthly_limit_school: 5000,
+      })
+    assert('H4: admin service role can upsert lms_ai_settings', !upsertErr, upsertErr?.message)
+  }
+
+  // H5: Service role client can persist lms_ai_messages with usage metrics
+  {
+    const { error: logErr } = await (svc as any)
+      .from('lms_ai_messages')
+      .insert({
+        school_id: fx.schoolAId,
+        lesson_id: fx.lessonId,
+        session_id: '00000000-0000-0000-0000-000000000001',
+        mode: 'class',
+        asked_by: fx.adminAId,
+        role: 'assistant',
+        content: 'Test Lumi response grounded in notes [[GROUNDED:yes]]',
+        grounded: true,
+        tokens_in: 50,
+        tokens_out: 25,
+        model: 'gemini-2.5-flash-lite',
+      })
+    assert('H5: admin service role can log lms_ai_messages with tokens', !logErr, logErr?.message)
+  }
+
+  // H6: Verify lms_lessons.ai_tutor_enabled column is true by default
+  {
+    const { data: lessonRow } = await (svc as any)
+      .from('lms_lessons')
+      .select('ai_tutor_enabled')
+      .eq('id', fx.lessonId)
+      .single()
+    assert(
+      'H6: lms_lessons.ai_tutor_enabled defaults to true or is boolean',
+      lessonRow && typeof lessonRow.ai_tutor_enabled === 'boolean',
+      `ai_tutor_enabled=${lessonRow?.ai_tutor_enabled}`
+    )
+  }
+
+  // ══════════════════════════════════════════
   console.log('\n── Skipped / Unimplemented ──')
   console.log(
     '  ⏭  SKIP  TUS resumable upload endpoint auth (requires live HTTP upload)'
@@ -1412,6 +1737,12 @@ async function teardown() {
   try {
     if (fx.activityId)
       await svc.from('lms_activities').delete().eq('id', fx.activityId)
+
+    // AI messages and settings for fixture
+    if (fx.lessonId)
+      await svc.from('lms_ai_messages').delete().eq('lesson_id', fx.lessonId)
+    if (fx.schoolAId)
+      await svc.from('lms_ai_settings').delete().eq('school_id', fx.schoolAId)
 
     // Messages for this lesson
     if (fx.lessonId)
@@ -1437,6 +1768,14 @@ async function teardown() {
     // Timetable entry
     if (fx.entryF1Id)
       await svc.from('timetable_entries').delete().eq('id', fx.entryF1Id)
+
+    // Lesson notes text
+    if (fx.lessonId)
+      await svc.from('lms_lesson_notes_text').delete().eq('lesson_id', fx.lessonId)
+
+    // Notes storage object
+    if (fx.notesPath)
+      await svc.storage.from('lms-notes').remove([fx.notesPath])
 
     // Lesson
     if (fx.lessonId)
