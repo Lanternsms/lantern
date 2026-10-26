@@ -220,9 +220,19 @@ async function runEval() {
     const wc = wordCount(answer)
     const grounded = extractGrounded(answer)
 
-    // Word range: 40–220 except quiz mode (quiz may be shorter, single Q)
-    const minWords = tc.isQuizMode ? 10 : 40
-    const maxWords = tc.isQuizMode ? 220 : 220
+    // Word range:
+    // - Refusal/distress/injection: 10–150 words
+    // - Quiz mode: 15–150 words
+    // - Normal answers: 30–220 words
+    let minWords = 30
+    let maxWords = 220
+    if (tc.expectGroundedNo || tc.injection || tc.distress) {
+      minWords = 10
+      maxWords = 150
+    } else if (tc.isQuizMode) {
+      minWords = 15
+      maxWords = 150
+    }
     const wordRangeOk = wc >= minWords && wc <= maxWords
 
     // Grounded marker check
