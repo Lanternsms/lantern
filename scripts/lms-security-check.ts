@@ -953,13 +953,30 @@ async function canGetNotesDownloadUrl(
   if (!sess) return { allowed: false, reason: 'no current session' }
 
   if (studentId) {
-    const { data: rels } = await svc
-      .from('student_guardians')
-      .select('guardian_id, guardians!inner(profile_id)')
-      .eq('student_id', studentId)
+    const { data: selfStudent } = await svc
+      .from('students')
+      .select('id')
+      .eq('id', studentId)
+      .eq('profile_id', userId)
+      .eq('school_id', schoolId)
+      .maybeSingle()
 
-    const isGuardian = (rels ?? []).some((r: any) => (r as any).guardians?.profile_id === userId)
-    if (!isGuardian) return { allowed: false, reason: 'not guardian of student' }
+    let targetStudentId: string | null = null
+    if (selfStudent) {
+      targetStudentId = selfStudent.id
+    } else {
+      const { data: rels } = await svc
+        .from('student_guardians')
+        .select('guardian_id, guardians!inner(profile_id)')
+        .eq('student_id', studentId)
+
+      const isGuardian = (rels ?? []).some((r: any) => (r as any).guardians?.profile_id === userId)
+      if (isGuardian) {
+        targetStudentId = studentId
+      }
+    }
+
+    if (!targetStudentId) return { allowed: false, reason: 'not guardian of student' }
 
     const { data: enrol } = await svc
       .from('enrolments')
@@ -967,16 +984,16 @@ async function canGetNotesDownloadUrl(
       .eq('school_id', schoolId)
       .eq('session_id', sess.id)
       .eq('class_id', lesson.class_id)
-      .eq('student_id', studentId)
+      .eq('student_id', targetStudentId)
       .maybeSingle()
 
     if (!enrol) return { allowed: false, reason: 'student not in lesson class' }
-    return { allowed: true, reason: 'guardian of enrolled student' }
+    return { allowed: true, reason: selfStudent ? 'enrolled student' : 'guardian of enrolled student' }
   } else {
     const { data: stRow } = await svc
       .from('students')
       .select('id')
-      .or(`user_id.eq.${userId},profile_id.eq.${userId}`)
+      .eq('profile_id', userId)
       .maybeSingle()
     if (!stRow) return { allowed: false, reason: 'not a student' }
 
@@ -1655,6 +1672,9 @@ async function runTests() {
 
   // H3: Direct select on lms_ai_settings with anon client → blocked
   {
+    const anon = createClient(SUPABASE_URL!, CLIENT_KEY, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    })
     const { data: anonData, error: anonErr } = await (anon as any)
       .from('lms_ai_settings')
       .select('id')

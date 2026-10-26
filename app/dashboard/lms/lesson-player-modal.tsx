@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { getLessonVideoUrl } from './actions'
+import { NotesDownloadButton } from './notes-download-button'
 
 interface LessonPlayerModalProps {
   lessonId: string
@@ -11,6 +12,9 @@ interface LessonPlayerModalProps {
   size?: 'md' | 'lg'
   videoPath?: string | null
   schoolId?: string
+  notesName?: string | null
+  notesSizeBytes?: number | null
+  notesDownloadable?: boolean | null
 }
 
 export function LessonPlayerModal({
@@ -19,6 +23,9 @@ export function LessonPlayerModal({
   label = 'Preview',
   studentId,
   size = 'md',
+  notesName,
+  notesSizeBytes,
+  notesDownloadable,
 }: LessonPlayerModalProps) {
   const [open, setOpen] = useState(false)
   const [url, setUrl] = useState<string | null>(null)
@@ -113,17 +120,26 @@ export function LessonPlayerModal({
         >
           <div className={`relative w-full ${size === 'lg' ? 'max-w-6xl' : 'max-w-4xl'} bg-black rounded-2xl overflow-hidden shadow-2xl`}>
             {/* Header */}
-            <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-5 py-3 bg-gradient-to-b from-black/80 to-transparent">
-              <p className="text-white text-sm font-medium truncate pr-4">{title}</p>
-              <button
-                onClick={closeModal}
-                aria-label="Close video player"
-                className="text-white/70 hover:text-white transition-colors shrink-0"
-              >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              </button>
+            <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-5 py-3 bg-gradient-to-b from-black/80 to-transparent gap-3">
+              <p className="text-white text-sm font-medium truncate">{title}</p>
+              <div className="flex items-center gap-3 shrink-0">
+                {notesDownloadable !== false && notesName && (
+                  <NotesDownloadButton
+                    lessonId={lessonId}
+                    notesSizeBytes={notesSizeBytes}
+                    studentId={studentId}
+                  />
+                )}
+                <button
+                  onClick={closeModal}
+                  aria-label="Close video player"
+                  className="text-white/70 hover:text-white transition-colors shrink-0"
+                >
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </div>
             </div>
 
             {/* Video area */}

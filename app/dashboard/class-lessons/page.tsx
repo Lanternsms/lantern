@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { PlayCircle, BookOpen } from 'lucide-react'
 import { LessonPlayerModal } from '../lms/lesson-player-modal'
+import { NotesDownloadButton } from '../lms/notes-download-button'
 import GuardianAskButton from '../_components/guardian-ask-button'
 
 export const dynamic = 'force-dynamic'
@@ -68,6 +69,7 @@ export default async function ClassLessonsPage() {
       .from('lms_lessons')
       .select(`
         id, title, topic, week_no, duration_seconds, created_at,
+        notes_name, notes_size_bytes, notes_downloadable,
         subjects:subject_id ( name )
       `)
       .eq('class_id', currentEnrolment.class_id)
@@ -178,10 +180,10 @@ export default async function ClassLessonsPage() {
                         </p>
                       </div>
 
-                      <div className="shrink-0 flex items-center gap-2 self-end sm:self-auto">
+                      <div className="shrink-0 flex items-center gap-2 self-end sm:self-auto flex-wrap justify-end">
                         <Link
                           href={`/dashboard/lms/learn/${lesson.id}?student=${studentRow.id}`}
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors min-h-[44px]"
                         >
                           Activities
                           {actCount > 0 && (
@@ -195,8 +197,19 @@ export default async function ClassLessonsPage() {
                           lessonId={lesson.id}
                           title={lesson.title}
                           studentId={studentRow.id}
+                          notesName={lesson.notes_name}
+                          notesSizeBytes={lesson.notes_size_bytes}
+                          notesDownloadable={lesson.notes_downloadable}
                           label="Watch"
                         />
+
+                        {lesson.notes_name && lesson.notes_downloadable && (
+                          <NotesDownloadButton
+                            lessonId={lesson.id}
+                            notesSizeBytes={lesson.notes_size_bytes}
+                            studentId={studentRow.id}
+                          />
+                        )}
 
                         <GuardianAskButton
                           lessonId={lesson.id}

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
@@ -238,8 +237,32 @@ export async function attachLessonVideo(
 
 // ─── Lesson Notes Actions (PDF) ───────────────────────────────────────────────
 
-function sanitiseFilename(name: string): string {
-  return name.replace(/[/\\?%*:|"<>]/g, '-').replace(/\s+/g, ' ').trim()
+function sanitiseNotesFilename(
+  subjectName?: string | null,
+  lessonTitle?: string | null
+): string {
+  const parts: string[] = []
+  if (subjectName?.trim()) parts.push(subjectName.trim())
+  if (lessonTitle?.trim()) parts.push(lessonTitle.trim())
+  const raw = parts.join(' - ')
+
+  if (!raw) return 'lesson-notes.pdf'
+
+  // Replace middle dots, bullets, em/en dashes, and invalid filename characters with hyphens
+  const ascii = raw
+    .replace(/[·•]/g, '-')
+    .replace(/[—–]/g, '-')
+    .replace(/[/\\?%*:|"<>]/g, '-')
+    // Strip non-ASCII characters
+    .replace(/[^\x20-\x7E]/g, '')
+    // Collapse multiple spaces and hyphens
+    .replace(/\s+/g, ' ')
+    .replace(/-+/g, '-')
+    .trim()
+
+  const clean = ascii.replace(/^[-\s.]+|[-\s.]+$/g, '').trim()
+  if (!clean) return 'lesson-notes.pdf'
+  return `${clean}.pdf`
 }
 
 export async function createNotesUploadUrl(lessonId: string) {
@@ -298,6 +321,7 @@ export async function attachLessonNotes(
     .download(path)
 
   if (dlErr || !blob) {
+    await admin.storage.from('lms-notes').remove([path])
     return { error: 'Uploaded notes file could not be verified in storage.' }
   }
 
@@ -545,12 +569,28 @@ export async function reextractNotes(lessonId: string) {
   return { success: true, status: result.status }
 }
 
-export async function getNotesDownloadUrl(lessonId: string, studentId?: string) {
+export type NotesDownloadFailureReason =
+  | 'not_published'
+  | 'not_enrolled'
+  | 'forbidden'
+  | 'notes_disabled'
+  | 'file_missing'
+  | 'try_again'
+
+export type NotesDownloadResult =
+  | { ok: true; url: string }
+  | { ok: false; error: string; reason: NotesDownloadFailureReason; isStaff?: boolean }
+
+export async function getNotesDownloadUrl(
+  lessonId: string,
+  studentId?: string
+): Promise<NotesDownloadResult> {
   const access = await getLmsAccess()
   const { schoolId, user } = access
 
   const admin = createAdminClient()
 
+  // 1. Fetch lesson record
   const { data: lesson, error: fetchErr } = await (admin as any)
     .from('lms_lessons')
     .select(`
@@ -569,77 +609,165 @@ export async function getNotesDownloadUrl(lessonId: string, studentId?: string) 
     .eq('school_id', schoolId)
     .maybeSingle()
 
-  if (fetchErr || !lesson || !lesson.notes_path) {
-    return { error: 'Not found' }
+  if (fetchErr || !lesson) {
+    console.warn(`[getNotesDownloadUrl] download failed: reason=forbidden lessonId=${lessonId}`)
+    return { ok: false, error: 'Not available', reason: 'forbidden' }
   }
 
-  // Authorization check
-  let authorized = false
+  const isStaff = access.isManager || lesson.recorded_by === user.id
 
+  // 2. Check if notes path exists on DB record
+  if (!lesson.notes_path) {
+    console.warn(`[getNotesDownloadUrl] download failed: reason=file_missing lessonId=${lessonId}`)
+    return {
+      ok: false,
+      error: isStaff
+        ? 'The notes file is missing, upload it again'
+        : 'The notes file could not be found. Please tell your teacher.',
+      reason: 'file_missing',
+      isStaff,
+    }
+  }
+
+  // 3. Authorization check
   if (access.isManager) {
-    authorized = true
+    // School manager / admin: authorized for all lessons
   } else if (lesson.recorded_by === user.id) {
-    authorized = true
+    // Recorder: authorized for own recorded lessons
   } else if (access.isFacilitator) {
+    // Facilitator: only published lessons scheduled for them TODAY
+    if (lesson.status !== 'published') {
+      console.warn(`[getNotesDownloadUrl] download failed: reason=not_published lessonId=${lessonId}`)
+      return { ok: false, error: 'This lesson is not available yet', reason: 'not_published' }
+    }
     const hasToday = await facilitatorHasTodayEntryForLesson(access, lesson)
-    if (hasToday) authorized = true
+    if (!hasToday) {
+      console.warn(`[getNotesDownloadUrl] download failed: reason=forbidden lessonId=${lessonId}`)
+      return { ok: false, error: 'Not available', reason: 'forbidden' }
+    }
   } else {
-    // Student or guardian: requires published lesson + notes_downloadable true
-    if (lesson.status === 'published' && lesson.notes_downloadable) {
-      const currentSession = await getCurrentAcademicSession(admin, schoolId)
-      if (currentSession && lesson.class_id) {
-        if (studentId) {
-          // Check guardian relationship
-          const { data: rels } = await admin
+    // Student or guardian: requires published lesson + notes_downloadable true + enrollment in class
+    if (lesson.status !== 'published') {
+      console.warn(`[getNotesDownloadUrl] download failed: reason=not_published lessonId=${lessonId}`)
+      return { ok: false, error: 'This lesson is not available yet', reason: 'not_published' }
+    }
+
+    if (!lesson.notes_downloadable) {
+      console.warn(`[getNotesDownloadUrl] download failed: reason=notes_disabled lessonId=${lessonId}`)
+      return { ok: false, error: 'The school has turned off downloads for these notes', reason: 'notes_disabled' }
+    }
+
+    const currentSession = await getCurrentAcademicSession(admin, schoolId)
+    if (!currentSession || !lesson.class_id) {
+      console.warn(`[getNotesDownloadUrl] download failed: reason=not_enrolled lessonId=${lessonId}`)
+      return { ok: false, error: 'Not available', reason: 'not_enrolled' }
+    }
+
+    let targetStudentId: string | null = null
+
+    if (studentId) {
+      // Caller might be the student themselves passing their own studentId
+      const { data: selfStudent } = await (admin as any)
+        .from('students')
+        .select('id')
+        .eq('id', studentId)
+        .eq('profile_id', user.id)
+        .eq('school_id', schoolId)
+        .maybeSingle()
+
+      if (selfStudent) {
+        targetStudentId = selfStudent.id
+      } else {
+        // Caller might be a guardian of the student
+        const { data: guardianRow } = await (admin as any)
+          .from('guardians')
+          .select('id')
+          .eq('profile_id', user.id)
+          .eq('school_id', schoolId)
+          .maybeSingle()
+
+        if (guardianRow) {
+          const { data: link } = await (admin as any)
             .from('student_guardians')
-            .select('guardian_id, guardians!inner(profile_id)')
+            .select('student_id')
+            .eq('guardian_id', guardianRow.id)
             .eq('student_id', studentId)
-
-          const isGuardian = (rels ?? []).some((r: any) => r.guardians?.profile_id === user.id)
-          if (isGuardian) {
-            // Verify enrollment in lesson's class for current session
-            const { data: enrol } = await (admin as any)
-              .from('enrolments')
-              .select('id')
-              .eq('school_id', schoolId)
-              .eq('session_id', currentSession.id)
-              .eq('class_id', lesson.class_id)
-              .eq('student_id', studentId)
-              .maybeSingle()
-
-            if (enrol) authorized = true
-          }
-        } else {
-          // Check student self-enrollment
-          const { data: stRow } = await (admin as any)
-            .from('students')
-            .select('id')
-            .or(`user_id.eq.${user.id},profile_id.eq.${user.id}`)
             .maybeSingle()
 
-          if (stRow) {
-            const { data: enrol } = await (admin as any)
+          if (link) {
+            targetStudentId = studentId
+          }
+        }
+      }
+    } else {
+      // No studentId provided: check if caller is an enrolled student
+      const { data: selfStudent } = await (admin as any)
+        .from('students')
+        .select('id')
+        .eq('profile_id', user.id)
+        .eq('school_id', schoolId)
+        .maybeSingle()
+
+      if (selfStudent) {
+        targetStudentId = selfStudent.id
+      } else {
+        // Or check if caller is a guardian with a ward enrolled in this lesson's class
+        const { data: guardianRow } = await (admin as any)
+          .from('guardians')
+          .select('id')
+          .eq('profile_id', user.id)
+          .eq('school_id', schoolId)
+          .maybeSingle()
+
+        if (guardianRow) {
+          const { data: links } = await (admin as any)
+            .from('student_guardians')
+            .select('student_id')
+            .eq('guardian_id', guardianRow.id)
+
+          const wardIds = (links ?? []).map((l: any) => l.student_id)
+          if (wardIds.length > 0) {
+            const { data: wardEnrol } = await (admin as any)
               .from('enrolments')
-              .select('id')
+              .select('student_id')
               .eq('school_id', schoolId)
               .eq('session_id', currentSession.id)
               .eq('class_id', lesson.class_id)
-              .eq('student_id', stRow.id)
+              .in('student_id', wardIds)
               .maybeSingle()
 
-            if (enrol) authorized = true
+            if (wardEnrol) {
+              targetStudentId = wardEnrol.student_id
+            }
           }
         }
       }
     }
+
+    if (!targetStudentId) {
+      console.warn(`[getNotesDownloadUrl] download failed: reason=forbidden lessonId=${lessonId}`)
+      return { ok: false, error: 'Not available', reason: 'forbidden' }
+    }
+
+    // Verify student enrollment in lesson's class for current academic session
+    const { data: enrol } = await (admin as any)
+      .from('enrolments')
+      .select('id')
+      .eq('school_id', schoolId)
+      .eq('session_id', currentSession.id)
+      .eq('class_id', lesson.class_id)
+      .eq('student_id', targetStudentId)
+      .maybeSingle()
+
+    if (!enrol) {
+      console.warn(`[getNotesDownloadUrl] download failed: reason=not_enrolled lessonId=${lessonId}`)
+      return { ok: false, error: 'Not available', reason: 'not_enrolled' }
+    }
   }
 
-  if (!authorized) {
-    return { error: 'Not found' }
-  }
-
+  // 4. Create signed URL with ASCII sanitized filename using admin client
   const subjectName = (lesson.subjects as any)?.name ?? 'Subject'
-  const downloadName = sanitiseFilename(`${subjectName} - ${lesson.title}.pdf`)
+  const downloadName = sanitiseNotesFilename(subjectName, lesson.title)
 
   const { data: signed, error: signErr } = await admin.storage
     .from('lms-notes')
@@ -648,7 +776,31 @@ export async function getNotesDownloadUrl(lessonId: string, studentId?: string) 
     })
 
   if (signErr || !signed) {
-    return { error: 'Not found' }
+    const isMissing =
+      signErr &&
+      ((signErr as any).statusCode === '404' ||
+        (signErr as any).status === 404 ||
+        (signErr as any).code === 'NoSuchKey' ||
+        signErr.message?.toLowerCase().includes('not found'))
+
+    if (isMissing) {
+      console.warn(`[getNotesDownloadUrl] download failed: reason=file_missing lessonId=${lessonId}`)
+      return {
+        ok: false,
+        error: isStaff
+          ? 'The notes file is missing, upload it again'
+          : 'The notes file could not be found. Please tell your teacher.',
+        reason: 'file_missing',
+        isStaff,
+      }
+    }
+
+    console.warn(`[getNotesDownloadUrl] download failed: reason=try_again lessonId=${lessonId}`)
+    return {
+      ok: false,
+      error: 'A temporary error occurred. Please try again.',
+      reason: 'try_again',
+    }
   }
 
   return { ok: true, url: signed.signedUrl }
