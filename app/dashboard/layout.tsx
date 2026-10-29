@@ -13,32 +13,32 @@ import { FirstLoginBanner } from '@/components/first-login-banner'
 type NavItem = { label: string; href: string } & NavGate
 
 const ALL_NAV_ITEMS: NavItem[] = [
-  { label: 'Dashboard', href: '/dashboard' },
+  { label: 'Today', href: '/dashboard' },
   { label: 'Students', href: '/dashboard/students', permission: 'students.view_all' },
   { label: 'Guardians', href: '/dashboard/guardians', permission: 'students.view_all' },
   { label: 'Staff', href: '/dashboard/staff', permission: 'staff.view_all' },
   { label: 'Academics', href: '/dashboard/academics', permission: 'academic_structure.manage' },
-  { label: 'Roles & Permissions', href: '/dashboard/roles', permission: 'roles.manage' },
+  { label: 'Roles and permissions', href: '/dashboard/roles', permission: 'roles.manage' },
   { label: 'Gradebook', href: '/dashboard/gradebook', scope: 'teacher' },
   { label: 'Approvals', href: '/dashboard/approvals', scope: 'approver' },
   { label: 'Timetable', href: '/dashboard/academics/timetable', permission: 'timetable.manage' },
-  { label: 'My Timetable', href: '/dashboard/my-timetable', scope: 'teacher' },
-  { label: 'My Timetable', href: '/dashboard/my-timetable', scope: 'student' },
-  { label: 'Class Lessons', href: '/dashboard/class-lessons', scope: 'student' },
-  { label: 'Class Results', href: '/dashboard/class-results', scope: 'teacher' },
-  { label: 'Result Remarks', href: '/dashboard/results/remarks', scope: 'teacher' },
-  { label: 'My Submissions', href: '/dashboard/my-submissions', scope: 'teacher' },
-  { label: 'My Class', href: '/dashboard/my-class', scope: 'formTeacher' },
+  { label: 'My timetable', href: '/dashboard/my-timetable', scope: 'teacher' },
+  { label: 'My timetable', href: '/dashboard/my-timetable', scope: 'student' },
+  { label: 'Lessons', href: '/dashboard/class-lessons', scope: 'student' },
+  { label: 'Class results', href: '/dashboard/class-results', scope: 'teacher' },
+  { label: 'Result remarks', href: '/dashboard/results/remarks', scope: 'teacher' },
+  { label: 'My submissions', href: '/dashboard/my-submissions', scope: 'teacher' },
+  { label: 'My class', href: '/dashboard/my-class', scope: 'formTeacher' },
   { label: 'Results', href: '/dashboard/results', permission: 'results.view_all' },
-  { label: 'My Results', href: '/dashboard/my-results', scope: 'student' },
+  { label: 'My results', href: '/dashboard/my-results', scope: 'student' },
   { label: 'Users', href: '/dashboard/users', permission: ['users.invite', 'users.edit', 'users.view_all'] },
-  { label: 'Attendance', href: '/dashboard/attendance', permission: ['attendance.manage', 'attendance.view_all'] },
-  { label: 'Mark Attendance', href: '/dashboard/attendance', scope: 'teacher' },
-  { label: 'Attendance Categories', href: '/dashboard/attendance/settings', permission: 'settings.manage' },
-  { label: 'Fee Structures', href: '/dashboard/fees/structures', permission: 'fees.manage' },
-  { label: 'Record Payment', href: '/dashboard/fees/record', permission: 'fees.manage' },
-  { label: 'My Payments', href: '/dashboard/payments', scope: 'student' },
-  { label: 'Payments', href: '/dashboard/payments', scope: 'guardian' },
+  { label: 'Registers', href: '/dashboard/attendance', permission: ['attendance.manage', 'attendance.view_all'] },
+  { label: 'Registers', href: '/dashboard/attendance', scope: 'teacher' },
+  { label: 'Attendance statuses', href: '/dashboard/attendance/settings', permission: 'settings.manage' },
+  { label: 'Fee structures', href: '/dashboard/fees/structures', permission: 'fees.manage' },
+  { label: 'Fees', href: '/dashboard/fees/record', permission: 'fees.manage' },
+  { label: 'Fees', href: '/dashboard/payments', scope: 'student' },
+  { label: 'Fees', href: '/dashboard/payments', scope: 'guardian' },
   // Items with no gate are visible to all authenticated users
   { label: 'Announcements', href: '/dashboard/announcements' },
   { label: 'Documents', href: '/dashboard/documents' },
@@ -89,13 +89,13 @@ export default async function DashboardLayout({
   const lmsNavItems: { label: string; href: string; badge?: number | string | null }[] = []
 
   if (lmsAccess.isManager) {
-    lmsNavItems.push({ label: 'LMS', href: '/dashboard/lms' })
+    lmsNavItems.push({ label: 'Lessons', href: '/dashboard/lms' })
   }
   if (lmsAccess.isFacilitator || lmsAccess.isManager) {
-    lmsNavItems.push({ label: "Today's Lessons", href: '/dashboard/lms/today' })
+    lmsNavItems.push({ label: "Today's lessons", href: '/dashboard/lms/today' })
   }
   if (hasRecordedLesson) {
-    lmsNavItems.push({ label: 'My Lessons', href: '/dashboard/lms/my-lessons' })
+    lmsNavItems.push({ label: 'My lessons', href: '/dashboard/lms/my-lessons' })
   }
   if (canSeeQuestions) {
     lmsNavItems.push({
@@ -105,7 +105,7 @@ export default async function DashboardLayout({
     })
   }
   if (lmsAccess.isManager) {
-    lmsNavItems.push({ label: 'Storage', href: '/dashboard/lms/storage' })
+    lmsNavItems.push({ label: 'Video storage', href: '/dashboard/lms/storage' })
   }
 
   // Insert LMS items right before Settings (or append if Settings not present)

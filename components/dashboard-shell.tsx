@@ -266,8 +266,8 @@ export function DashboardShell({
         aria-label="Menu"
         aria-hidden={!isOpen}
         inert={!isOpen}
-        className={`fixed inset-y-0 left-0 z-50 w-[min(300px,86vw)] bg-ground shadow-xl transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] lg:hidden ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`fixed inset-y-0 left-0 z-50 w-[min(300px,86vw)] bg-ground transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] lg:hidden ${
+          isOpen ? 'translate-x-0 shadow-xl' : '-translate-x-full'
         }`}
       >
         <button
