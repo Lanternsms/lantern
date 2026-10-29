@@ -21,6 +21,7 @@ export function GlobalSearch() {
   const [loading, setLoading] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
   const router = useRouter()
 
   const flatResults = SECTIONS.flatMap((section) =>
@@ -36,7 +37,9 @@ export function GlobalSearch() {
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      // The shell renders the search twice (desktop sidebar, phone drawer); only the copy
+      // that is actually on screen answers the shortcut.
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k' && triggerRef.current?.offsetParent) {
         e.preventDefault()
         setIsOpen((v) => !v)
       } else if (e.key === 'Escape') {
@@ -92,15 +95,17 @@ export function GlobalSearch() {
   return (
     <>
       <button
+        ref={triggerRef}
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 text-sm text-text-secondary border border-border rounded-lg px-3 py-1.5 hover:border-text-secondary transition-colors"
+        className="flex h-9 w-full items-center gap-2 rounded-lg border border-border bg-surface px-2.5 text-sm text-text-secondary hover:border-control"
       >
-        <span>Search…</span>
-        <span className="text-xs border border-border rounded px-1.5 py-0.5">⌘K</span>
+        <svg aria-hidden width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+        <span className="flex-1 text-left">Search</span>
+        <kbd className="rounded border border-border px-1.5 font-sans text-[11px]">⌘K</kbd>
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-50 bg-black/30 flex items-start justify-center pt-24 px-4" onClick={close}>
+        <div className="fixed inset-0 z-[60] bg-black/30 flex items-start justify-center pt-24 px-4" onClick={close}>
           <div
             className="w-full max-w-lg bg-surface rounded-xl border border-border shadow-lg overflow-hidden"
             onClick={(e) => e.stopPropagation()}

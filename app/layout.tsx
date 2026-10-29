@@ -1,18 +1,18 @@
-import { Questrial } from 'next/font/google'
+import { DM_Sans } from 'next/font/google'
 import './globals.css'
 import { OfflineBanner } from '@/components/offline-banner'
 
 import type { Metadata, Viewport } from 'next'
 
-const questrial = Questrial({
-  weight: '400',
+const dmSans = DM_Sans({
   subsets: ['latin'],
-  variable: '--font-questrial',
+  variable: '--font-dm-sans',
+  display: 'swap',
 })
 
 export const metadata: Metadata = {
   title: 'Lantern',
-  description: 'School Management & Learning Platform',
+  description: 'Registers, results, fees and lessons for Nigerian secondary schools, in one place.',
   manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,
@@ -26,10 +26,9 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#182350',
+  themeColor: '#0c0f14',
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
 }
 
 export default function RootLayout({
@@ -38,7 +37,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={questrial.variable}>
+    <html lang="en" className={dmSans.variable}>
       <body>
         <OfflineBanner />
         {children}

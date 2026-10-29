@@ -1,6 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
-import { darken, deriveNeutralRamp } from '@/lib/theme/color-utils'
+import { deriveSchoolLadder } from '@/lib/theme/color-utils'
 
+/**
+ * Writes the school's colour ladder into CSS variables. A school picks one colour
+ * (schools.theme.primary); everything else is derived so contrast holds for any choice.
+ */
 export async function ThemeStyle() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -20,29 +24,16 @@ export async function ThemeStyle() {
     .single()
 
   const theme = (school?.theme ?? {}) as Record<string, string>
-  const primary = theme.primary || '#182350'
-  const sidebar = theme.sidebar || '#131c40'
-  const accent = theme.accent || '#b9915e'
-
-  const neutrals = deriveNeutralRamp(primary)
+  const l = deriveSchoolLadder(theme.primary || '#1D4ED8')
 
   const css = `:root {
-    --color-primary: ${primary};
-    --color-primary-hover: ${darken(primary, 0.15)};
-    --color-sidebar: ${sidebar};
-    --color-sidebar-active: ${darken(sidebar, 0.15)};
-    --color-accent: ${accent};
-    --color-accent-hover: ${darken(accent, 0.15)};
-    --color-text-on-primary: ${theme.text_on_primary || '#ffffff'};
-    --color-text-on-sidebar: ${theme.text_on_sidebar || '#ffffff'};
-    --color-text-on-accent: ${theme.text_on_accent || '#182350'};
-
-    --color-surface: ${neutrals.surface};
-    --color-surface-muted: ${neutrals.surfaceMuted};
-    --color-border: ${neutrals.border};
-    --color-text-primary: ${neutrals.textPrimary};
-    --color-text-secondary: ${neutrals.textSecondary};
-    --color-text-muted: ${neutrals.textMuted};
+    --color-school: ${l.accent};
+    --color-primary: ${l.action};
+    --color-primary-hover: ${l.actionHover};
+    --color-school-soft: ${l.soft};
+    --color-school-track: ${l.track};
+    --color-school-ink: ${l.ink};
+    --color-ground: ${l.ground};
   }`
 
   return <style dangerouslySetInnerHTML={{ __html: css }} />

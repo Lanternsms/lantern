@@ -1,32 +1,79 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #182350;
-  --color-primary-hover: #26346e;
-  --color-sidebar: #131c40;
-  --color-sidebar-active: #232f5e;
-  --color-accent: #b9915e;
-  --color-accent-hover: #a3804f;
+  /* School colour ladder. ThemeStyle overrides these per school from one chosen colour;
+     these defaults are what a school sees before it picks one. */
+  --color-school: #1d4ed8;          /* full colour: small marks only */
+  --color-primary: #1d4ed8;         /* action shade: buttons and links, always 4.5:1 with white */
+  --color-primary-hover: #193fae;
+  --color-school-soft: #e8edfb;     /* areas: active nav row, chips */
+  --color-school-track: #c9d6f7;    /* progress tracks, saved cells */
+  --color-school-ink: #102a77;      /* text on soft/track */
+  --color-ground: #fafbfe;          /* page ground, one step toward the hue */
 
-  --color-text-on-sidebar: #ffffff;
-
+  /* Legacy names, kept so every existing page picks up the new look. */
+  --color-sidebar: var(--color-ground);
+  --color-sidebar-active: var(--color-school-soft);
+  --color-accent: var(--color-school);
+  --color-accent-hover: var(--color-primary-hover);
+  --color-text-on-sidebar: #111827;
   --color-text-on-primary: #ffffff;
-  --color-text-on-accent: #182350;
+  --color-text-on-accent: #ffffff;
 
+  /* Neutrals: never tinted, so data stays readable whatever the school picks. */
   --color-surface: #ffffff;
-  --color-surface-muted: #f8f9fb;
+  --color-surface-muted: var(--color-ground);
+  --color-raised: #f3f4f6;
   --color-border: #e5e7eb;
+  --color-rule: #f2f2f2;
+  --color-control: #d1d5db;
+  --color-text-primary: #111827;
+  --color-text-secondary: #5f6672;
+  --color-text-muted: #6b7280;
 
-  --color-text-primary: #1f2430;
-  --color-text-secondary: #6b7280;
-  --color-text-muted: #9ca3af;
-
+  /* Status: identical in every school, so "Absent" always reads the same. */
   --color-success-bg: #dcfce7;
-  --color-success-text: #16a34a;
-  --color-danger-bg: #fee2e2;
-  --color-danger-text: #dc2626;
+  --color-success-text: #14532d;
+  --color-warning-bg: #fffbeb;
+  --color-warning-text: #92400e;
+  --color-danger-bg: #ffedea;
+  --color-danger-text: #b42318;
 
-  --font-questrial: var(--font-questrial), sans-serif;
+  --font-sans: var(--font-dm-sans), Inter, system-ui, sans-serif;
+  --font-questrial: var(--font-dm-sans), sans-serif;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background: var(--color-ground);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+  }
+  table, input, select { font-variant-numeric: tabular-nums; }
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+  /* Pressable things answer the press (Emil Kowalski: scale, not colour, 100-160ms). */
+  button:not(:disabled), [role='button'], a.press {
+    transition-property: transform, background-color, border-color, color, box-shadow;
+    transition-duration: 160ms;
+    transition-timing-function: var(--ease-out);
+  }
+  button:not(:disabled):active, [role='button']:active, a.press:active {
+    transform: scale(0.97);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+  }
 }
 
 @media print {
@@ -38,7 +85,7 @@
 /* Custom sleek scrollbar for sidebar */
 .sidebar-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+  scrollbar-color: rgba(17, 24, 39, 0.14) transparent;
 }
 
 .sidebar-scrollbar::-webkit-scrollbar {
@@ -50,12 +97,12 @@
 }
 
 .sidebar-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.18);
+  background-color: rgba(17, 24, 39, 0.14);
   border-radius: 9999px;
 }
 
 .sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.35);
+  background-color: rgba(17, 24, 39, 0.28);
 }
 
 /* ─── Loading animation keyframes ─────────────────────────────────────── */
@@ -77,4 +124,13 @@
 @keyframes lantern-fade {
   0%, 100% { opacity: 0.5; }
   50%       { opacity: 1; }
+}
+/* Landing demos: a notification arrives from slightly above; an answer resolves out of a blur. */
+@keyframes notify {
+  from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes fade-blur {
+  from { opacity: 0; filter: blur(3px); }
+  to   { opacity: 1; filter: none; }
 }
