@@ -16,8 +16,8 @@ export default async function GradebookListPage() {
     : { data: null }
 
   return (
-    <div className="px-8 py-8">
-      <h1 className="text-xl font-semibold text-text-primary mb-1">Gradebook</h1>
+    <div className="px-5 py-7 sm:px-8 sm:py-8">
+      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-1">Gradebook</h1>
       <p className="text-sm text-text-secondary mb-6">Your classes for the current term.</p>
 
       {!term && <p className="text-sm text-text-secondary">No current term is set for your school.</p>}
@@ -25,7 +25,7 @@ export default async function GradebookListPage() {
         <p className="text-sm text-text-secondary">You are not assigned to teach any subjects this term.</p>
       )}
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {assignments?.map((a) => (
           <Link key={a.id} href={`/dashboard/gradebook/${a.id}`} className="bg-surface border border-border rounded-lg p-5 hover:border-primary/40 transition-colors">
             <h3 className="text-sm font-semibold text-text-primary">{a.subjects?.name}</h3>

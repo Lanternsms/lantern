@@ -43,7 +43,7 @@ export default async function BillingPage() {
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
       <div className="flex items-center justify-between mb-2">
-        <h1 className="text-xl font-semibold text-text-primary">Subscription & Billing</h1>
+        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Subscription & Billing</h1>
         <form action={lockPlatformAdmin}>
           <button type="submit" className="text-sm text-text-secondary hover:text-text-primary">Lock</button>
         </form>

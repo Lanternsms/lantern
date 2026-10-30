@@ -16,7 +16,7 @@ export default async function OnboardPage() {
       <div className="max-w-2xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-semibold text-text-primary">New School Onboarding</h1>
+            <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">New School Onboarding</h1>
             <p className="text-sm text-text-secondary mt-1">Internal tool — creates a new tenant and its first admin account.</p>
           </div>
           <form action={lockPlatformAdmin}>

@@ -39,7 +39,7 @@ export default async function ActivityDetailPage({
   const libraryLabel = access.isManager ? 'Lessons' : 'My Lessons'
 
   return (
-    <div className="px-8 py-8 max-w-5xl space-y-6">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-5xl space-y-6">
       {/* Breadcrumb + Header */}
       <div>
         <p className="text-sm text-text-secondary mb-1">
@@ -60,7 +60,7 @@ export default async function ActivityDetailPage({
               >
                 {activity.kind}
               </span>
-              <h1 className="text-xl font-semibold text-text-primary">{activity.title}</h1>
+              <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">{activity.title}</h1>
               <span
                 className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                   activity.status === 'published'

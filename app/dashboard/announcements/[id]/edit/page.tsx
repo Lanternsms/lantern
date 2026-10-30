@@ -28,7 +28,7 @@ export default async function EditAnnouncementPage({
 
   return (
     <div className="p-6 space-y-4">
-      <h1 className="text-xl font-semibold text-text-primary">Edit Announcement</h1>
+      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Edit Announcement</h1>
       <AnnouncementForm
         initial={{ title: announcement.title, body: announcement.body, audience: announcement.audience }}
         onSubmit={handleSubmit}

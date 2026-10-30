@@ -27,19 +27,19 @@ export default async function SessionDetailPage({
     .order('start_date')
 
   return (
-    <div className="px-8 py-8 max-w-2xl">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-2xl">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/academics/sessions" className="hover:text-primary">Sessions</Link> / {session.name}
       </p>
       <div className="flex items-center gap-2 mb-6">
-        <h1 className="text-xl font-semibold text-text-primary">{session.name}</h1>
+        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">{session.name}</h1>
         {session.is_current && (
           <span className="text-xs font-medium bg-success-bg text-success-text rounded-full px-2.5 py-0.5">Current Session</span>
         )}
       </div>
 
       <section className="bg-surface border border-border rounded-lg p-5 mb-6">
-        <div className="grid grid-cols-2 gap-y-3 gap-x-6 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm">
           <div>
             <p className="text-text-secondary text-xs mb-0.5">Start Date</p>
             <p className="text-text-primary">{session.start_date}</p>
@@ -59,7 +59,7 @@ export default async function SessionDetailPage({
       </div>
 
       {terms && terms.length > 0 ? (
-        <div className="bg-surface border border-border rounded-lg overflow-hidden">
+        <div className="bg-surface border border-border rounded-lg overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">

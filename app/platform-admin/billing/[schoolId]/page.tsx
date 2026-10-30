@@ -37,7 +37,7 @@ export default async function BillingDetailPage({ params }: { params: Promise<{ 
   return (
     <div className="max-w-2xl mx-auto px-6 py-10">
       <div className="flex items-center justify-between mb-2">
-        <h1 className="text-xl font-semibold text-text-primary">{school.name} — Billing</h1>
+        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">{school.name} — Billing</h1>
         <form action={lockPlatformAdmin}>
           <button type="submit" className="text-sm text-text-secondary hover:text-text-primary">Lock</button>
         </form>
@@ -45,7 +45,7 @@ export default async function BillingDetailPage({ params }: { params: Promise<{ 
       <PlatformAdminNav active="billing" />
 
       <form action={updateWithId} className="space-y-5 border border-border rounded-lg p-6">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-text-secondary mb-1">Plan</label>
             <select name="plan" defaultValue={sub?.plan ?? 'trial'} className="w-full border border-control rounded-lg px-3 py-2 text-sm">

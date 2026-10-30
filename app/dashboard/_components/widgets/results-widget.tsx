@@ -68,7 +68,7 @@ export async function ResultsWidget() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3 pt-1 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-xs">
             <div className="p-3 rounded-lg bg-surface-muted/50 border border-border/80 flex items-center gap-2.5">
               <div className="w-7 h-7 rounded-lg bg-success-bg text-success-text flex items-center justify-center shrink-0 border border-success-bg">
                 <CheckCircle2 size={15} />

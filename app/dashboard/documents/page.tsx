@@ -46,7 +46,7 @@ export default async function DocumentsPage() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-text-primary">Documents & Downloads</h1>
+        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Documents & Downloads</h1>
         {canUpload && (
           <Link href="/dashboard/documents/new" className="bg-primary text-white rounded-lg px-4 py-2 text-sm font-medium">
             Upload Document

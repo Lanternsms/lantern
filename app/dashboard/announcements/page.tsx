@@ -20,7 +20,7 @@ export default async function AnnouncementsPage() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-text-primary">Announcements</h1>
+        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Announcements</h1>
         {canCreate && (
           <Link
             href="/dashboard/announcements/new"

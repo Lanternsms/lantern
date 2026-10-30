@@ -19,11 +19,11 @@ export default function AcademicsPage() {
   ]
 
   return (
-    <div className="px-8 py-8">
-      <h1 className="text-xl font-semibold text-text-primary mb-1">Academics</h1>
+    <div className="px-5 py-7 sm:px-8 sm:py-8">
+      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-1">Academics</h1>
       <p className="text-sm text-text-secondary mb-6">Configure your school&apos;s academic structure.</p>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {sections.map((s) => (
           <Link
             key={s.title}

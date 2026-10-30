@@ -19,18 +19,18 @@ export default async function NewStaffPage({
     .order('sort_order')
 
   return (
-    <div className="px-8 py-8 max-w-2xl">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-2xl">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/staff" className="hover:text-primary">Staff</Link> / Add Staff
       </p>
-      <h1 className="text-xl font-semibold text-text-primary mb-6">Add Staff</h1>
+      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-6">Add Staff</h1>
 
       {error && (
         <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
 
       <form action={createStaff} className="bg-surface border border-border rounded-lg p-6 space-y-5">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm text-text-secondary mb-1.5">First Name *</label>
             <input name="first_name" required className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
@@ -46,7 +46,7 @@ export default async function NewStaffPage({
           <input name="staff_no" required placeholder="e.g. GSS/STF/014" className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm text-text-secondary mb-1.5">Phone Number</label>
             <input name="phone" type="tel" className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
@@ -57,7 +57,7 @@ export default async function NewStaffPage({
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm text-text-secondary mb-1.5">Department</label>
             <select name="department_id" className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">

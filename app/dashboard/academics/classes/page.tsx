@@ -10,13 +10,13 @@ export default async function ClassesPage() {
     .order('level', { ascending: true, nullsFirst: false })
 
   return (
-    <div className="px-8 py-8">
+    <div className="px-5 py-7 sm:px-8 sm:py-8">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/academics" className="hover:text-primary">Academics</Link> / Classes &amp; Arms
       </p>
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-xl font-semibold text-text-primary">Classes</h1>
+          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Classes</h1>
           <p className="text-sm text-text-secondary mt-1">Manage your school&apos;s classes and their arms.</p>
         </div>
         <Link href="/dashboard/academics/classes/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
@@ -28,7 +28,7 @@ export default async function ClassesPage() {
       {!error && classes?.length === 0 && <p className="text-sm text-text-secondary">No classes added yet.</p>}
 
       {classes && classes.length > 0 && (
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {classes.map((c) => (
             <Link
               key={c.id}

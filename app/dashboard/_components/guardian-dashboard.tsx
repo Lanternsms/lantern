@@ -393,7 +393,7 @@ export async function GuardianDashboard({
   if (myChildren.length === 0) {
     return (
       <div className="px-6 py-6 max-w-5xl space-y-6">
-        <h1 className="text-xl font-semibold text-text-primary">Welcome, {guardianRow.first_name}</h1>
+        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Welcome, {guardianRow.first_name}</h1>
         <div className="bg-surface border border-border rounded-lg p-8 text-center text-sm text-text-secondary">
           No children are linked to your account yet. Contact your school administrator to link your child&apos;s profile.
         </div>

@@ -148,13 +148,13 @@ export default async function LessonDetailPage({
   const isRecorder = lesson.recorded_by === access.userId
   if (!access.isManager && isRecorder) {
     return (
-      <div className="px-8 py-8 max-w-4xl space-y-8">
+      <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-4xl space-y-8">
         <div>
           <p className="text-sm text-text-secondary mb-1">
             <Link href="/dashboard/lms/my-lessons" className="hover:text-primary">My Lessons</Link> / {lesson.title}
           </p>
           <div className="flex items-start justify-between gap-4 flex-wrap">
-            <h1 className="text-xl font-semibold text-text-primary">{lesson.title}</h1>
+            <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">{lesson.title}</h1>
             <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${
               lesson.status === 'published'
                 ? 'bg-success-bg text-success-text'
@@ -234,7 +234,7 @@ export default async function LessonDetailPage({
   }
 
   return (
-    <div className="px-8 py-8 max-w-4xl space-y-8">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-4xl space-y-8">
       {/* Breadcrumb + title */}
       <div>
         <p className="text-sm text-text-secondary mb-1">
@@ -247,7 +247,7 @@ export default async function LessonDetailPage({
           )} / {lesson.title}
         </p>
         <div className="flex items-start justify-between gap-4 flex-wrap">
-          <h1 className="text-xl font-semibold text-text-primary">{lesson.title}</h1>
+          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">{lesson.title}</h1>
           <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${
             lesson.status === 'published'
               ? 'bg-success-bg text-success-text'
@@ -273,7 +273,7 @@ export default async function LessonDetailPage({
       <section className="bg-surface border border-border rounded-lg p-6 space-y-4">
         <h2 className="text-sm font-semibold text-text-primary">Video</h2>
 
-        <div className="grid grid-cols-2 gap-4 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div>
             <p className="text-text-secondary text-xs mb-0.5">Status</p>
             <p className="text-text-primary">

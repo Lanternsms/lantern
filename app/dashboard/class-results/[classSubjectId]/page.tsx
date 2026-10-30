@@ -83,7 +83,7 @@ export default async function ClassResultDetailPage({
 
   if (!selectedTerm) {
     return (
-      <div className="px-8 py-8">
+      <div className="px-5 py-7 sm:px-8 sm:py-8">
         <Link href="/dashboard/class-results" className="text-sm text-primary hover:text-primary-hover">
           ← Back to Class Results
         </Link>
@@ -119,11 +119,11 @@ export default async function ClassResultDetailPage({
 
   if (!enrolments || enrolments.length === 0) {
     return (
-      <div className="px-8 py-8">
+      <div className="px-5 py-7 sm:px-8 sm:py-8">
         <Link href="/dashboard/class-results" className="text-sm text-primary hover:text-primary-hover">
           ← Back to Class Results
         </Link>
-        <h1 className="text-xl font-semibold text-text-primary mt-4 mb-1">
+        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mt-4 mb-1">
           {(cs.subjects as { name: string } | null)?.name} —{' '}
           {(cs.classes as { name: string } | null)?.name}
           {(cs.arms as { name: string } | null)?.name
@@ -224,7 +224,7 @@ export default async function ClassResultDetailPage({
   }
 
   return (
-    <div className="px-8 py-8 max-w-6xl print:px-4 print:py-4">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-6xl print:px-4 print:py-4">
       {/* ── Breadcrumb ── */}
       <Link
         href="/dashboard/class-results"
@@ -236,7 +236,7 @@ export default async function ClassResultDetailPage({
       {/* ── Header ── */}
       <div className="flex items-start justify-between mt-4 mb-6 print:mt-0">
         <div>
-          <h1 className="text-xl font-semibold text-text-primary">
+          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">
             {subjectName} — {classLabel}
           </h1>
           <p className="text-sm text-text-secondary mt-0.5">

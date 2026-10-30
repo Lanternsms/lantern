@@ -803,7 +803,7 @@ export function ActivityRosterClient({
 
             {/* Grading Form */}
             <form onSubmit={handleSaveMark} className="space-y-4 pt-3 border-t border-border">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-medium text-text-secondary mb-1">
                     Score (Out of {activity.max_score}) <span className="text-danger-text">*</span>

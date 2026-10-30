@@ -57,7 +57,7 @@ export default async function RecordPaymentPage({
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-xl font-semibold text-text-primary">Record Payment</h1>
+      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Record Payment</h1>
       <StudentSearch selectedStudent={student} />
       {student && <PaymentPanel student={student} dueItems={dueItems} paidFeeStructureIds={paidFeeStructureIds} />}
     </div>

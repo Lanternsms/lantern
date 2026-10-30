@@ -25,11 +25,11 @@ export default async function EditScalePage({
   const updateScaleWithId = updateScale.bind(null, id)
 
   return (
-    <div className="px-8 py-8 max-w-lg">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-lg">
       <Link href={`/dashboard/academics/grading/${id}`} className="text-sm text-primary hover:text-primary-hover">
         ← Back to scale
       </Link>
-      <h1 className="text-xl font-semibold text-text-primary mt-4 mb-6">Rename Scale</h1>
+      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mt-4 mb-6">Rename Scale</h1>
 
       {error && (
         <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>

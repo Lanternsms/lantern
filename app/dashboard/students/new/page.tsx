@@ -44,11 +44,11 @@ export default async function NewStudentPage({
     .order('first_name')
 
   return (
-    <div className="px-8 py-8 max-w-3xl">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-3xl">
       <p className="text-sm text-text-secondary mb-1">
         <Link href={backHref} className="hover:text-primary">{backLabel}</Link> / Add Student
       </p>
-      <h1 className="text-xl font-semibold text-text-primary mb-1">Add Student</h1>
+      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-1">Add Student</h1>
       <p className="text-sm text-text-secondary mb-6">Create a new student record and add them to your school.</p>
 
       {error && (
@@ -66,7 +66,7 @@ export default async function NewStudentPage({
 
           <StudentPhotoUploader />
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm text-text-secondary mb-1.5">First Name <span className="text-danger-text">*</span></label>
               <input name="first_name" required placeholder="e.g. Chidinma" className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
@@ -109,7 +109,7 @@ export default async function NewStudentPage({
 
         <section className="bg-surface border border-border rounded-lg p-6">
           <h2 className="text-sm font-semibold text-text-primary mb-4">Enrolment Information</h2>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm text-text-secondary mb-1.5">Academic Session <span className="text-danger-text">*</span></label>
               <input
@@ -168,7 +168,7 @@ export default async function NewStudentPage({
           <section className="bg-surface border border-border rounded-lg p-6">
             <h2 className="text-sm font-semibold text-text-primary">Additional Information</h2>
             <p className="text-xs text-text-secondary mb-4">School-configured fields. These can be customised in your school settings.</p>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <CustomFieldInputs definitions={customFields} />
             </div>
           </section>

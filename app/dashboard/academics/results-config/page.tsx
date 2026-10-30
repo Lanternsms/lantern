@@ -32,11 +32,11 @@ export default async function ResultComputationRulesPage({
   }
 
   return (
-    <div className="px-8 py-8 max-w-lg">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-lg">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/academics" className="hover:text-primary">Academics</Link> / Result Rules
       </p>
-      <h1 className="text-xl font-semibold text-text-primary mb-1">Result Computation Rules</h1>
+      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-1">Result Computation Rules</h1>
       <p className="text-sm text-text-secondary mb-6">
         Control how class positions are calculated, and who can see them once results are published.
       </p>

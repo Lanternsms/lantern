@@ -78,14 +78,14 @@ export default async function ClassDetailPage({
   }
 
   return (
-    <div className="px-8 py-8 max-w-2xl">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-2xl">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/academics/classes" className="hover:text-primary">Classes</Link> / {cls.name}
       </p>
 
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-semibold text-text-primary">{cls.name}</h1>
+          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">{cls.name}</h1>
           <p className="text-sm text-text-secondary mt-1">{cls.departments?.name ?? 'No department'}</p>
         </div>
         <div className="flex items-center gap-2">

@@ -25,13 +25,13 @@ export default async function SessionsPage() {
     .order('start_date', { ascending: false })
 
   return (
-    <div className="px-8 py-8">
+    <div className="px-5 py-7 sm:px-8 sm:py-8">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/academics" className="hover:text-primary">Academics</Link> / Sessions &amp; Terms
       </p>
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-xl font-semibold text-text-primary">Academic Sessions &amp; Terms</h1>
+          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Academic Sessions &amp; Terms</h1>
           <p className="text-sm text-text-secondary mt-1">
             Manage sessions and terms, add new terms, and set which ones are currently active.
           </p>
@@ -45,7 +45,7 @@ export default async function SessionsPage() {
       {!error && sessions?.length === 0 && <p className="text-sm text-text-secondary">No academic sessions yet.</p>}
 
       {sessions && sessions.length > 0 && (
-        <div className="bg-surface border border-border rounded-lg overflow-hidden">
+        <div className="bg-surface border border-border rounded-lg overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">

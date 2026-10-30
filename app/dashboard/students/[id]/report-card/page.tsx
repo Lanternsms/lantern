@@ -43,7 +43,7 @@ export default async function ReportCardPage({
 
   if (!selectedTermId) {
     return (
-      <div className="px-8 py-8">
+      <div className="px-5 py-7 sm:px-8 sm:py-8">
         <p className="text-sm text-text-secondary">No terms have been set up for your school yet.</p>
       </div>
     )
@@ -56,7 +56,7 @@ export default async function ReportCardPage({
   const { data: school } = await supabase.from('schools').select('name').eq('id', profile.school_id).single()
 
   return (
-    <div className="px-8 py-8 max-w-3xl mx-auto">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-6 print:hidden">
         <Link
           href={viewerIsStudentOrParent ? '/dashboard/my-results' : `/dashboard/students/${id}`}
@@ -72,11 +72,11 @@ export default async function ReportCardPage({
 
       <div className="bg-surface border border-border rounded-lg p-8 print:border-0 print:shadow-none">
         <div className="text-center mb-6 pb-6 border-b border-border">
-          <h1 className="text-lg font-semibold text-text-primary">{school?.name}</h1>
+          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">{school?.name}</h1>
           <p className="text-sm text-text-secondary mt-1">Report Card — {card.term.name}, {card.session.name}</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-y-2 text-sm mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 text-sm mb-6">
           <div><span className="text-text-secondary">Student: </span><span className="text-text-primary font-medium">{card.student.first_name} {card.student.last_name}</span></div>
           <div><span className="text-text-secondary">Admission No: </span><span className="text-text-primary font-medium">{card.student.admission_no}</span></div>
           <div><span className="text-text-secondary">Class: </span><span className="text-text-primary font-medium">{card.classLabel}</span></div>
@@ -117,7 +117,7 @@ export default async function ReportCardPage({
         )}
 
         {card.subjects.length > 0 && (
-          <div className="grid grid-cols-2 gap-y-2 text-sm mb-6 pb-6 border-b border-border">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 text-sm mb-6 pb-6 border-b border-border">
             <div><span className="text-text-secondary">Overall Total: </span><span className="text-text-primary font-medium">{card.overallTotal}</span></div>
             <div><span className="text-text-secondary">Overall Average: </span><span className="text-text-primary font-medium">{card.overallAverage}</span></div>
           </div>

@@ -58,14 +58,14 @@ export default async function WorkflowDetailPage({
   const renameWithId = renameTemplate.bind(null, id)
 
   return (
-    <div className="px-8 py-8 max-w-3xl">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-3xl">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/academics/workflow" className="hover:text-primary">Approval Workflow</Link> / {template.name}
       </p>
 
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <h1 className="text-xl font-semibold text-text-primary">{template.name}</h1>
+          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">{template.name}</h1>
           {template.is_active && (
             <span className="text-xs font-medium bg-success-bg text-success-text rounded-full px-2.5 py-0.5">Active</span>
           )}

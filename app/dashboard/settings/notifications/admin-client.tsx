@@ -204,7 +204,7 @@ export function AdminNotificationSettingsClient({
               <Mail className="w-4 h-4 text-primary" />
               <span>Email Channel</span>
             </div>
-            <div className="grid grid-cols-3 gap-2 text-center">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-center">
               <div className="bg-surface p-2.5 rounded-lg border border-border">
                 <p className="text-lg font-bold text-success-text">{todayStats.email.sent}</p>
                 <p className="text-[11px] text-text-secondary">Sent</p>
@@ -226,7 +226,7 @@ export function AdminNotificationSettingsClient({
               <Bell className="w-4 h-4 text-primary" />
               <span>Push Channel</span>
             </div>
-            <div className="grid grid-cols-3 gap-2 text-center">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-center">
               <div className="bg-surface p-2.5 rounded-lg border border-border">
                 <p className="text-lg font-bold text-success-text">{todayStats.push.sent}</p>
                 <p className="text-[11px] text-text-secondary">Sent</p>

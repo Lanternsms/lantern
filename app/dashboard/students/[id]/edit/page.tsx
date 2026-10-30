@@ -93,11 +93,11 @@ export default async function EditStudentPage({
   const updateStudentWithId = updateStudent.bind(null, id)
 
   return (
-    <div className="px-8 py-8 max-w-3xl">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-3xl">
       <p className="text-sm text-text-secondary mb-1">
         <Link href={`/dashboard/students/${id}${from ? `?from=${from}` : ''}`} className="hover:text-primary">{student.first_name} {student.last_name}</Link> / Edit
       </p>
-      <h1 className="text-xl font-semibold text-text-primary mb-1">Edit Student</h1>
+      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-1">Edit Student</h1>
       <p className="text-sm text-text-secondary mb-6">Update this student&apos;s record.</p>
 
       {error && (
@@ -111,7 +111,7 @@ export default async function EditStudentPage({
 
           <StudentPhotoUploader initialPhotoUrl={student.photo_url} />
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm text-text-secondary mb-1.5">First Name <span className="text-danger-text">*</span></label>
               <input name="first_name" defaultValue={student.first_name} required className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
@@ -160,7 +160,7 @@ export default async function EditStudentPage({
 
         <section className="bg-surface border border-border rounded-lg p-6">
           <h2 className="text-sm font-semibold text-text-primary mb-4">Enrolment Information</h2>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm text-text-secondary mb-1.5">Academic Session</label>
               <input disabled value={enrolment?.academic_sessions?.name ?? '—'} className="w-full rounded-lg border border-border px-3 py-2 text-sm bg-surface-muted text-text-muted cursor-not-allowed" />
@@ -194,7 +194,7 @@ export default async function EditStudentPage({
           <section className="bg-surface border border-border rounded-lg p-6">
             <h2 className="text-sm font-semibold text-text-primary">Additional Information</h2>
             <p className="text-xs text-text-secondary mb-4">School-configured fields. These can be customised in your school settings.</p>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <CustomFieldInputs definitions={customFields} initialValues={valuesByKey} />
             </div>
           </section>

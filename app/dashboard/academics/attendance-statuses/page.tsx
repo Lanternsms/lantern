@@ -22,11 +22,11 @@ export default async function AttendanceStatusesPage({
     .order('label')
 
   return (
-    <div className="px-8 py-8 max-w-2xl">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-2xl">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/academics" className="hover:text-primary">Academics</Link> / Attendance Categories
       </p>
-      <h1 className="text-xl font-semibold text-text-primary mb-1">Attendance Categories</h1>
+      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-1">Attendance Categories</h1>
       <p className="text-sm text-text-secondary mb-6">
         Define the options teachers can choose from when marking attendance, and whether each one
         counts toward a student&apos;s attendance rate.

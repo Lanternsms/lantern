@@ -37,8 +37,8 @@ export default async function ApprovalsQueuePage({
     : []
 
   return (
-    <div className="px-8 py-8">
-      <h1 className="text-xl font-semibold text-text-primary mb-1">Approvals</h1>
+    <div className="px-5 py-7 sm:px-8 sm:py-8">
+      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-1">Approvals</h1>
       <p className="text-sm text-text-secondary mb-6">Result batches waiting on your review.</p>
 
       {decided && (
@@ -50,7 +50,7 @@ export default async function ApprovalsQueuePage({
       {!error && myBatches.length === 0 && <p className="text-sm text-text-secondary">Nothing waiting on you right now.</p>}
 
       {myBatches.length > 0 && (
-        <div className="bg-surface border border-border rounded-lg overflow-hidden">
+        <div className="bg-surface border border-border rounded-lg overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">

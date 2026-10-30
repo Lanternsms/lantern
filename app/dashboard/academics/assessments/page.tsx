@@ -20,11 +20,11 @@ export default async function AssessmentTypesPage({
   const isBalanced = Math.abs(totalWeight - 100) < 0.01
 
   return (
-    <div className="px-8 py-8 max-w-2xl">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-2xl">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/academics" className="hover:text-primary">Academics</Link> / Assessment Types
       </p>
-      <h1 className="text-xl font-semibold text-text-primary mb-1">Assessment Types</h1>
+      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-1">Assessment Types</h1>
       <p className="text-sm text-text-secondary mb-6">
         Define how each term&apos;s final score is built — e.g. CA1, CA2, and Exam — and what percentage each contributes.
       </p>

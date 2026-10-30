@@ -32,7 +32,7 @@ export default async function GradebookEntryPage({
 
   const { data: term } = await supabase.from('terms').select('id, session_id, name').eq('is_current', true).single()
   if (!term) {
-    return <div className="px-8 py-8"><p className="text-sm text-text-secondary">No current term is set.</p></div>
+    return <div className="px-5 py-7 sm:px-8 sm:py-8"><p className="text-sm text-text-secondary">No current term is set.</p></div>
   }
 
   const { data: rawAssessmentTypes } = await supabase.from('assessment_types').select('id, name')
@@ -93,11 +93,11 @@ export default async function GradebookEntryPage({
   const submitWithId = submitForApproval.bind(null, id)
 
   return (
-    <div className="px-8 py-8">
+    <div className="px-5 py-7 sm:px-8 sm:py-8">
       <Link href="/dashboard/gradebook" className="text-sm text-primary hover:text-primary-hover">← Back to gradebook</Link>
 
       <div className="flex items-center justify-between mt-4 mb-1">
-        <h1 className="text-xl font-semibold text-text-primary">
+        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">
           {cs.subjects?.name} - {cs.classes?.name}{cs.arms?.name ? ` ${cs.arms.name}` : ''}
         </h1>
         {batch && (

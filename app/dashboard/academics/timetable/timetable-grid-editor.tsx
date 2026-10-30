@@ -282,7 +282,7 @@ export default function TimetableGridEditor({
                         <div className="space-y-3">
                             <div>
                                 <label className="block text-xs font-medium text-text-secondary mb-1">Delivery</label>
-                                <div className="grid grid-cols-2 gap-2">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                     <label
                                         className={`flex items-center gap-2 p-2 rounded-lg border text-xs cursor-pointer transition-colors ${
                                             cellForm.deliveryMode === 'live'

@@ -18,13 +18,13 @@ export default async function WorkflowListPage({
     .order('name')
 
   return (
-    <div className="px-8 py-8">
+    <div className="px-5 py-7 sm:px-8 sm:py-8">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/academics" className="hover:text-primary">Academics</Link> / Approval Workflow
       </p>
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-xl font-semibold text-text-primary">Approval Workflow</h1>
+          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Approval Workflow</h1>
           <p className="text-sm text-text-secondary mt-1">
             Define who reviews and approves results before they are published. Only the active workflow is used for new submissions.
           </p>
@@ -45,7 +45,7 @@ export default async function WorkflowListPage({
           <p className="text-sm text-text-secondary text-center mb-6">
             No approval workflow yet. Start from a preset, or build your own from scratch.
           </p>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <form action={seedWorkflowPreset} className="border border-border rounded-lg p-5">
               <input type="hidden" name="preset" value="simple" />
               <h3 className="text-sm font-medium text-text-primary mb-1">Simple</h3>
@@ -67,7 +67,7 @@ export default async function WorkflowListPage({
       )}
 
       {templates && templates.length > 0 && (
-        <div className="bg-surface border border-border rounded-lg overflow-hidden">
+        <div className="bg-surface border border-border rounded-lg overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">

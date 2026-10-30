@@ -25,11 +25,11 @@ export default async function EditSessionPage({
   const updateSessionWithId = updateSession.bind(null, id)
 
   return (
-    <div className="px-8 py-8 max-w-lg">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-lg">
       <Link href="/dashboard/academics/sessions" className="text-sm text-primary hover:text-primary-hover">
         ← Back to sessions
       </Link>
-      <h1 className="text-xl font-semibold text-text-primary mt-4 mb-6">Edit Session</h1>
+      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mt-4 mb-6">Edit Session</h1>
 
       {error && (
         <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
@@ -40,7 +40,7 @@ export default async function EditSessionPage({
           <label className="block text-sm text-text-secondary mb-1.5">Session Name *</label>
           <input name="name" defaultValue={session.name} required className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm text-text-secondary mb-1.5">Start Date *</label>
             <input name="start_date" type="date" defaultValue={session.start_date} required className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />

@@ -85,7 +85,7 @@ export async function AttendanceWidget() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3 pt-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
               <div className="p-3 rounded-lg bg-surface-muted/50 border border-border/80">
                 <span className="text-xs text-text-secondary block mb-0.5">Present Today</span>
                 <span className="text-base font-bold text-success-text">{present}</span>

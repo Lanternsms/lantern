@@ -37,7 +37,7 @@ export default async function BillingStatusPage() {
   if (!sub) {
     return (
       <div className="max-w-2xl mx-auto px-6 py-10">
-        <h1 className="text-xl font-semibold text-text-primary mb-2">Billing</h1>
+        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-2">Billing</h1>
         <p className="text-sm text-text-secondary">
           You don&apos;t have permission to view billing information, or it hasn&apos;t been set up for your school yet.
         </p>
@@ -50,7 +50,7 @@ export default async function BillingStatusPage() {
   return (
     <div className="max-w-2xl mx-auto px-6 py-10 space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-text-primary">Billing</h1>
+        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Billing</h1>
         <p className="text-sm text-text-secondary mt-1">Your school&apos;s subscription status with Lantern.</p>
       </div>
 
@@ -69,7 +69,7 @@ export default async function BillingStatusPage() {
           {STATUS_MESSAGES[status] ?? ''}
         </p>
 
-        <div className="grid grid-cols-2 gap-4 border-t border-border pt-4 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-border pt-4 text-sm">
           <div>
             <p className="text-xs text-text-secondary  mb-1">Amount</p>
             <p className="text-text-primary">

@@ -29,7 +29,7 @@ export default async function BrandingPage() {
   return (
     <div className="px-6 py-6 max-w-4xl space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-text-primary">Branding & Theme</h1>
+        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Branding & Theme</h1>
         <p className="text-sm text-text-secondary mt-1">
           Set your school's logo and colors. Changes apply across the whole portal for everyone at your school.
         </p>

@@ -16,7 +16,7 @@ export default async function PaymentsPage() {
 
   return (
     <div className="p-6 space-y-4">
-      <h1 className="text-xl font-semibold text-text-primary">Payment History</h1>
+      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Payment History</h1>
 
       {(!payments || payments.length === 0) && <p className="text-sm text-text-secondary">No payments recorded yet.</p>}
 

@@ -34,7 +34,7 @@ export default async function StudentsPage({
 
   if (!session) {
     return (
-      <div className="px-8 py-8">
+      <div className="px-5 py-7 sm:px-8 sm:py-8">
         <p className="text-sm text-text-secondary">No current academic session set.</p>
       </div>
     )
@@ -77,10 +77,10 @@ export default async function StudentsPage({
   }
 
   return (
-    <div className="px-8 py-8">
+    <div className="px-5 py-7 sm:px-8 sm:py-8">
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-xl font-semibold text-text-primary">Students</h1>
+          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Students</h1>
           <p className="text-sm text-text-secondary mt-1">
             Manage and view student records across your school.
           </p>
@@ -127,7 +127,7 @@ export default async function StudentsPage({
 
       {students && students.length > 0 && (
         <>
-          <div className="bg-surface border border-border rounded-lg overflow-hidden">
+          <div className="bg-surface border border-border rounded-lg overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border">

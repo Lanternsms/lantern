@@ -27,7 +27,7 @@ export default async function MyResultsPage({
 
   if (!studentRow) {
     return (
-      <div className="px-8 py-8">
+      <div className="px-5 py-7 sm:px-8 sm:py-8">
         <p className="text-sm text-text-secondary">
           No student record is linked to your account yet. Contact your school admin.
         </p>
@@ -46,7 +46,7 @@ export default async function MyResultsPage({
 
   if (!selectedTermId) {
     return (
-      <div className="px-8 py-8">
+      <div className="px-5 py-7 sm:px-8 sm:py-8">
         <p className="text-sm text-text-secondary">No academic terms have been set up yet.</p>
       </div>
     )
@@ -105,10 +105,10 @@ export default async function MyResultsPage({
   const currentTerm = terms?.find((t) => t.id === selectedTermId)
 
   return (
-    <div className="px-8 py-8 max-w-4xl">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-4xl">
       <div className="mb-6 flex items-start justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-text-primary mb-1">My Results</h1>
+          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-1">My Results</h1>
           <p className="text-sm text-text-secondary">
             {studentRow.first_name} {studentRow.last_name} &middot; {studentRow.admission_no}
           </p>

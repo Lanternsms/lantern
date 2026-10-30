@@ -165,7 +165,7 @@ export default async function StudentDetailPage({
     <div className="space-y-6">
       <section className="bg-surface border border-border rounded-lg p-5">
         <h3 className="text-sm font-medium text-text-primary mb-4">Personal Information</h3>
-        <div className="grid grid-cols-2 gap-y-3 gap-x-6 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm">
           <div>
             <p className="text-text-secondary text-xs mb-0.5">Full Name</p>
             <p className="text-text-primary">{student.first_name} {student.last_name}</p>
@@ -249,7 +249,7 @@ export default async function StudentDetailPage({
       {fieldDefs && fieldDefs.length > 0 && (
         <section className="bg-surface border border-border rounded-lg p-5">
           <h3 className="text-sm font-medium text-text-primary mb-4">Custom Fields</h3>
-          <div className="grid grid-cols-2 gap-y-3 gap-x-6 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm">
             {fieldDefs.map((def) => (
               <div key={def.id}>
                 <p className="text-text-secondary text-xs mb-0.5">{def.label}</p>
@@ -296,7 +296,7 @@ export default async function StudentDetailPage({
               View full report card →
             </Link>
           </div>
-          <div className="grid grid-cols-3 gap-y-3 text-sm">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-y-3 text-sm">
             <div>
               <p className="text-text-secondary text-xs mb-0.5">Overall Average</p>
               <p className="text-text-primary font-medium">{card.overallAverage}</p>
@@ -716,7 +716,7 @@ export default async function StudentDetailPage({
   )
 
   return (
-    <div className="px-8 py-8">
+    <div className="px-5 py-7 sm:px-8 sm:py-8">
       <Link
         href={
           from === 'my-class'
@@ -750,7 +750,7 @@ export default async function StudentDetailPage({
           )}
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-lg font-semibold text-text-primary">
+              <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">
                 {student.first_name} {student.last_name}
               </h1>
               <span className={`text-xs font-medium rounded-full px-2.5 py-0.5 ${isActive ? 'bg-success-bg text-success-text' : 'bg-danger-bg text-danger-text'}`}>

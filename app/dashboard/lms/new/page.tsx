@@ -33,11 +33,11 @@ export default async function NewLessonPage({
   const staff = (staffRows ?? []).filter((s) => s.profile_id)
 
   return (
-    <div className="px-8 py-8 max-w-2xl">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-2xl">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/lms" className="hover:text-primary">Lessons</Link> / New Lesson
       </p>
-      <h1 className="text-xl font-semibold text-text-primary mb-6">New Lesson</h1>
+      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-6">New Lesson</h1>
 
       {error && (
         <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">
@@ -70,7 +70,7 @@ export default async function NewLessonPage({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm text-text-secondary mb-1.5">
                 Class <span className="text-danger-text">*</span>

@@ -474,7 +474,7 @@ export function ActivityManager({
 
               {createKind === 'quiz' && (
                 <div className="space-y-3 pt-2 border-t border-border">
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="block text-xs font-medium text-text-secondary mb-1">
                         Allowed Attempts

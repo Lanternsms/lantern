@@ -74,7 +74,7 @@ export default async function LmsPage({
     <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
-        <h1 className="text-xl font-semibold text-text-primary">Lessons</h1>
+        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Lessons</h1>
         {access.isManager && (
           <div className="flex items-center gap-2">
             <Link

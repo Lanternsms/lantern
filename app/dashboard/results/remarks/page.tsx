@@ -21,7 +21,7 @@ export default async function RemarksPage({
 
   if (!profile) {
     return (
-      <div className="px-8 py-8">
+      <div className="px-5 py-7 sm:px-8 sm:py-8">
         <p className="text-sm text-text-secondary">Unable to load your profile.</p>
       </div>
     )
@@ -36,7 +36,7 @@ export default async function RemarksPage({
 
   if (!currentTerm) {
     return (
-      <div className="px-8 py-8">
+      <div className="px-5 py-7 sm:px-8 sm:py-8">
         <p className="text-sm text-text-secondary">No current term is set for your school.</p>
       </div>
     )
@@ -104,7 +104,7 @@ export default async function RemarksPage({
 
   if (classOptions.length === 0) {
     return (
-      <div className="px-8 py-8 space-y-6">
+      <div className="px-5 py-7 sm:px-8 sm:py-8 space-y-6">
         <h1 className="text-lg font-medium text-text-primary">Result Remarks</h1>
         <p className="text-sm text-text-secondary">
           You don't have any classes to view remarks for.
@@ -138,7 +138,7 @@ export default async function RemarksPage({
   const remarkByStudent = new Map((existingRemarks ?? []).map((r) => [r.student_id, r]))
 
   return (
-    <div className="px-8 py-8 space-y-6">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-medium text-text-primary">Result Remarks</h1>
@@ -168,7 +168,7 @@ export default async function RemarksPage({
                     <span className="text-xs text-text-secondary">{student.admission_no}</span>
                   </p>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <p className="text-xs text-text-secondary mb-1">Class Teacher's Remark</p>
                       {canEditClassTeacherRemark ? (

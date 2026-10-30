@@ -43,10 +43,10 @@ export default async function ApprovalReviewPage({
   const assessmentNames = sortAssessmentNames([...new Set((results ?? []).map((r) => r.assessment_types?.name ?? ''))])
 
   return (
-    <div className="px-8 py-8">
+    <div className="px-5 py-7 sm:px-8 sm:py-8">
       <Link href="/dashboard/approvals" className="text-sm text-primary hover:text-primary-hover">← Back to approvals</Link>
 
-      <h1 className="text-xl font-semibold text-text-primary mt-4 mb-1">
+      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mt-4 mb-1">
         {batch.subjects?.name} - {batch.classes?.name}{batch.arms?.name ? ` ${batch.arms.name}` : ''}
       </h1>
       <p className="text-sm text-text-secondary mb-6">

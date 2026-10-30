@@ -94,7 +94,7 @@ export async function FeesWidget() {
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-2.5 pt-1 text-xs">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5 pt-1 text-xs">
             <div className="p-3 rounded-lg bg-surface-muted/50 border border-border/80">
               <span className="text-text-secondary block mb-0.5">Expected</span>
               <span className="text-sm font-bold text-text-primary">{formatNaira(expected)}</span>

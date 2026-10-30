@@ -130,7 +130,7 @@ interface LargestLessonItem {
   const orphans = [...baseOrphans, ...notesOrphans]
 
   return (
-    <div className="px-8 py-8 max-w-6xl mx-auto space-y-8">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-6xl mx-auto space-y-8">
       {/* Header */}
       <div>
         <p className="text-xs text-text-secondary mb-1">

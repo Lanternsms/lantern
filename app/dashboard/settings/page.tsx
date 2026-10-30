@@ -13,7 +13,7 @@ export default function SettingsHubPage() {
 
   return (
     <div className="px-6 py-6 max-w-3xl space-y-4">
-      <h1 className="text-xl font-semibold text-text-primary">Settings</h1>
+      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Settings</h1>
       <div className="grid gap-3 sm:grid-cols-2">
         {sections.map((s) => (
           <Link

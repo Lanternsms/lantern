@@ -17,7 +17,7 @@ export default async function StudentAddedSuccessPage({
           <CheckCircle2 size={28} className="text-success-text" />
         </div>
 
-        <h1 className="text-lg font-semibold text-text-primary mb-1">
+        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-1">
           Student added successfully
         </h1>
         <p className="text-sm text-text-secondary mb-6">

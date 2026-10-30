@@ -143,7 +143,7 @@ export default async function GuardianDetailPage({
   )
 
   return (
-    <div className="px-8 py-8 max-w-2xl">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-2xl">
       <Link href="/dashboard/guardians" className="text-sm text-primary hover:text-primary-hover">
         ← Back to guardians
       </Link>
@@ -154,7 +154,7 @@ export default async function GuardianDetailPage({
             {initials}
           </span>
           <div>
-            <h1 className="text-lg font-semibold text-text-primary">{guardian.first_name} {guardian.last_name}</h1>
+            <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">{guardian.first_name} {guardian.last_name}</h1>
             <p className="text-xs text-text-secondary mt-0.5 capitalize">{guardian.relationship ?? 'Guardian'}</p>
           </div>
         </div>
@@ -172,7 +172,7 @@ export default async function GuardianDetailPage({
             <User size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Contact Information</h3>
           </div>
-          <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 text-sm">
             <div>
               <p className="text-text-secondary text-xs mb-0.5">Phone Number</p>
               <p className={guardian.phone ? 'text-text-primary' : 'text-text-muted'}>{guardian.phone ?? 'Not provided'}</p>
@@ -194,7 +194,7 @@ export default async function GuardianDetailPage({
               <FileText size={16} className="text-text-secondary" />
               <h3 className="text-sm font-medium text-text-primary">Custom Fields</h3>
             </div>
-            <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 text-sm">
               {fieldDefs.map((def) => {
                 const value = valueByDefId.get(def.id) as string | boolean | undefined
                 const displayValue =

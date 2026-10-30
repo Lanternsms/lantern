@@ -53,7 +53,7 @@ export default async function SchoolAuditLogPage({
   return (
     <div className="max-w-3xl mx-auto px-6 py-10 space-y-4">
       <div>
-        <h1 className="text-xl font-semibold text-text-primary">Audit Log</h1>
+        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Audit Log</h1>
         <p className="text-sm text-text-secondary mt-1">A record of changes made by your staff and admins.</p>
       </div>
 

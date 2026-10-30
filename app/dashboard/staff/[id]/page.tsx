@@ -140,7 +140,7 @@ export default async function StaffDetailPage({
   )
 
   return (
-    <div className="px-8 py-8 max-w-2xl">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-2xl">
       <Link href="/dashboard/staff" className="text-sm text-primary hover:text-primary-hover">
         ← Back to staff
       </Link>
@@ -152,7 +152,7 @@ export default async function StaffDetailPage({
           </span>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-lg font-semibold text-text-primary">{staff.first_name} {staff.last_name}</h1>
+              <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">{staff.first_name} {staff.last_name}</h1>
               <span className={`text-xs font-medium rounded-full px-2.5 py-0.5 ${isActive ? 'bg-success-bg text-success-text' : 'bg-secondary/10 text-secondary'}`}>
                 {isActive ? 'Active' : staff.status}
               </span>
@@ -176,7 +176,7 @@ export default async function StaffDetailPage({
             <User size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Contact Information</h3>
           </div>
-          <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 text-sm">
             <div>
               <p className="text-text-secondary text-xs mb-0.5">Phone Number</p>
               <p className={staff.phone ? 'text-text-primary' : 'text-text-muted'}>{staff.phone ?? 'Not provided'}</p>
@@ -193,7 +193,7 @@ export default async function StaffDetailPage({
             <Briefcase size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Employment Information</h3>
           </div>
-          <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 text-sm">
             <div>
               <p className="text-text-secondary text-xs mb-0.5">Department</p>
               <p className={staff.departments?.name ? 'text-text-primary' : 'text-text-muted'}>{staff.departments?.name ?? 'Not assigned'}</p>

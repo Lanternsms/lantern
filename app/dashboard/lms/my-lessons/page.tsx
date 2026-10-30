@@ -30,10 +30,10 @@ export default async function MyLessonsPage() {
   const lessonList = lessons || []
 
   return (
-    <div className="px-8 py-8 max-w-5xl space-y-6">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-5xl space-y-6">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold text-text-primary">My Recorded Lessons</h1>
+          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">My Recorded Lessons</h1>
           <p className="text-xs text-text-secondary mt-1">
             Lessons where you are designated as the recording teacher. Manage quizzes and assignments for each lesson.
           </p>

@@ -42,7 +42,7 @@ export default async function ClassLessonsPage() {
 
   if (!studentRow) {
     return (
-      <div className="px-8 py-8 max-w-4xl">
+      <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-4xl">
         <p className="text-sm text-text-secondary">
           No student profile is linked to your account. If you believe this is an error, please contact your school administrator.
         </p>

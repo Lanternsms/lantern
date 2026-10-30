@@ -13,7 +13,7 @@ export default async function RolesPage() {
 
   if (error) {
   return (
-    <div className="px-8 py-8">
+    <div className="px-5 py-7 sm:px-8 sm:py-8">
       <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2">
         Error loading roles: {error.message}
       </p>
@@ -25,10 +25,10 @@ export default async function RolesPage() {
   const customRoles = roles?.filter((r) => !r.is_system) ?? []
 
   return (
-    <div className="px-8 py-8">
+    <div className="px-5 py-7 sm:px-8 sm:py-8">
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-xl font-semibold text-text-primary">Roles &amp; Permissions</h1>
+          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Roles &amp; Permissions</h1>
           <p className="text-sm text-text-secondary mt-1">
             System roles are shared across every school and can&apos;t be edited. Create your own custom roles below.
           </p>
@@ -40,7 +40,7 @@ export default async function RolesPage() {
 
       <section className="mb-8">
         <h2 className="text-sm font-medium text-text-secondary mb-3">System Roles</h2>
-        <div className="bg-surface border border-border rounded-lg overflow-hidden">
+        <div className="bg-surface border border-border rounded-lg overflow-x-auto">
           <table className="w-full text-sm">
             <tbody>
               {systemRoles.map((r) => (
@@ -63,7 +63,7 @@ export default async function RolesPage() {
       <section>
         <h2 className="text-sm font-medium text-text-secondary mb-3">Custom Roles</h2>
         {customRoles.length > 0 ? (
-          <div className="bg-surface border border-border rounded-lg overflow-hidden">
+          <div className="bg-surface border border-border rounded-lg overflow-x-auto">
             <table className="w-full text-sm">
               <tbody>
                 {customRoles.map((r) => (

@@ -19,7 +19,7 @@ export default async function PlatformAdminGatePage({
     <div className="min-h-screen flex items-center justify-center bg-surface-muted px-4">
       <form action={unlockPlatformAdmin} className="w-full max-w-sm bg-surface border border-border rounded-lg p-6 space-y-4 ">
         <div>
-          <h1 className="text-lg font-semibold text-text-primary">Platform Admin</h1>
+          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Platform Admin</h1>
           <p className="text-sm text-text-secondary mt-1">Internal tool. Not for school staff.</p>
         </div>
         {error && (

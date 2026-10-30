@@ -23,7 +23,7 @@ export default async function MyClassPage() {
 
   if (!currentSession) {
     return (
-      <div className="px-8 py-8">
+      <div className="px-5 py-7 sm:px-8 sm:py-8">
         <p className="text-sm text-text-secondary">No current session is set.</p>
       </div>
     )
@@ -38,8 +38,8 @@ export default async function MyClassPage() {
 
   if (!myAssignments || myAssignments.length === 0) {
     return (
-      <div className="px-8 py-8">
-        <h1 className="text-xl font-semibold text-text-primary mb-2">My Class</h1>
+      <div className="px-5 py-7 sm:px-8 sm:py-8">
+        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-2">My Class</h1>
         <p className="text-sm text-text-secondary">You&apos;re not assigned as a form/class teacher this session.</p>
       </div>
     )
@@ -68,8 +68,8 @@ export default async function MyClassPage() {
   )
 
   return (
-    <div className="px-8 py-8">
-      <h1 className="text-xl font-semibold text-text-primary mb-1">My Class</h1>
+    <div className="px-5 py-7 sm:px-8 sm:py-8">
+      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-1">My Class</h1>
       <p className="text-sm text-text-secondary mb-6">
         Students in the class(es) you&apos;re the form teacher for.
       </p>
