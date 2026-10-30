@@ -1,38 +1,24 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
+import { getTodayInLagos } from '../lms/lagos-time'
 import { SetupChecklist } from './setup-checklist'
 
-function formatNaira(amount: number) {
-  if (amount >= 1_000_000) return `₦${(amount / 1_000_000).toFixed(1)}M`
-  if (amount >= 1_000) return `₦${(amount / 1_000).toFixed(1)}K`
-  return `₦${amount.toLocaleString()}`
+const naira = (n: number) => `₦${Math.round(n).toLocaleString('en-NG')}`
+const nairaM = (n: number) => (n >= 1_000_000 ? `₦${(n / 1_000_000).toFixed(2)}m` : naira(n))
+
+function daysAgo(iso: string | null, todayStr: string) {
+  if (!iso) return ''
+  const d = Math.round((Date.parse(todayStr) - Date.parse(iso.slice(0, 10))) / 86_400_000)
+  return d <= 0 ? 'Today' : d === 1 ? '1 day' : `${d} days`
 }
 
-function timeAgo(iso: string) {
-  const diffMs = Date.now() - new Date(iso).getTime()
-  const mins = Math.floor(diffMs / 60000)
-  if (mins < 1) return 'Just now'
-  if (mins < 60) return `${mins} minute${mins === 1 ? '' : 's'} ago`
-  const hours = Math.floor(mins / 60)
-  if (hours < 24) return `${hours} hour${hours === 1 ? '' : 's'} ago`
-  const days = Math.floor(hours / 24)
-  return `${days} day${days === 1 ? '' : 's'} ago`
-}
+type Cell = { arm: string; cls: string; label: string; pct: number | null; present: number; size: number }
 
-const ACTION_LABELS: Record<string, (metadata: Record<string, unknown>) => string> = {
-  branding_updated: () => 'Branding and theme were updated',
-  logo_removed: () => 'School logo was removed',
-}
-
-function describeActivity(action: string, metadata: Record<string, unknown>) {
-  const known = ACTION_LABELS[action]
-  if (known) return known(metadata)
-  // Fallback for action names this dashboard doesn't have a tailored
-  // sentence for yet — e.g. whatever you named results/fees/attendance/staff
-  // audit entries when you wired those modules up.
-  return action.replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase())
-}
-
+/**
+ * The principal's first screen answers one question: is school running normally today?
+ * Biggest block: every class arm's register this morning. The line under the title names
+ * the one thing to act on (registers still open), next to the action that fixes it.
+ */
 export async function AdminDashboard() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -44,438 +30,293 @@ export async function AdminDashboard() {
     .eq('id', user.id)
     .single()
   if (!profile) return null
-
   const schoolId = profile.school_id
 
-  const [{ data: currentSession }, { data: sessions }] = await Promise.all([
-    supabase.from('academic_sessions').select('id, name, start_date').eq('school_id', schoolId).eq('is_current', true).maybeSingle(),
-    supabase.from('academic_sessions').select('id, name, start_date').eq('school_id', schoolId).order('start_date', { ascending: false }).limit(2),
-  ])
+  const { data: currentSession } = await supabase
+    .from('academic_sessions')
+    .select('id, name, start_date')
+    .eq('school_id', schoolId)
+    .eq('is_current', true)
+    .maybeSingle()
 
   if (!currentSession) {
     return (
-      <div className="border border-border rounded-xl p-6 text-sm text-text-secondary">
-        No current academic session is set up yet. Set one up under Academics before the dashboard can show school-wide data.
+      <div className="flex flex-col gap-6 px-5 py-8 sm:px-8">
+        <SetupChecklist />
+        <section className="rounded-lg border border-border bg-surface p-6">
+          <h1 className="text-lg font-semibold">No current session yet</h1>
+          <p className="mt-1 max-w-[60ch] text-text-secondary">
+            Today’s registers, fees and results appear here once a session and term are set as current.
+          </p>
+          <Link href="/dashboard/academics/sessions" className="mt-4 inline-flex h-9 items-center rounded-md bg-primary px-3.5 text-sm font-semibold text-white hover:bg-primary-hover">
+            Set up the session
+          </Link>
+        </section>
       </div>
     )
   }
 
-  const previousSession = (sessions ?? []).find((s) => s.id !== currentSession.id) ?? null
+  const { dateStr: today } = getTodayInLagos()
 
-  const { data: currentTerm } = await supabase
-    .from('terms')
-    .select('id, name, start_date, end_date')
-    .eq('school_id', schoolId)
-    .eq('session_id', currentSession.id)
-    .eq('is_current', true)
-    .maybeSingle()
-
-  const hour = new Date().getHours()
-  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
-
-  // ---- KPIs ----
-  const [
-    { count: totalStudents },
-    { count: previousStudents },
-    { data: staffRows },
-    { data: classesRows },
-  ] = await Promise.all([
-    supabase.from('enrolments').select('id', { count: 'exact', head: true }).eq('school_id', schoolId).eq('session_id', currentSession.id),
-    previousSession
-      ? supabase.from('enrolments').select('id', { count: 'exact', head: true }).eq('school_id', schoolId).eq('session_id', previousSession.id)
-      : Promise.resolve({ count: null as number | null }),
-    supabase.from('staff').select('id, employment_date').eq('school_id', schoolId),
+  const [{ data: currentTerm }, { data: classes }, { data: arms }, { data: enrolments }, { data: statuses }] = await Promise.all([
+    supabase.from('terms').select('id, name, start_date').eq('school_id', schoolId).eq('session_id', currentSession.id).eq('is_current', true).maybeSingle(),
     supabase.from('classes').select('id, name, level').eq('school_id', schoolId).order('level'),
+    supabase.from('arms').select('id, name, class_id').eq('school_id', schoolId).order('name'),
+    supabase.from('enrolments').select('arm_id, class_id').eq('school_id', schoolId).eq('session_id', currentSession.id),
+    supabase.from('attendance_statuses').select('id, counts_as_present').eq('school_id', schoolId),
   ])
 
-  const totalStaff = staffRows?.length ?? 0
-  const newStaffThisSession = currentSession.start_date
-    ? (staffRows ?? []).filter((s) => s.employment_date && s.employment_date >= currentSession.start_date).length
-    : 0
-
-  const { data: armsRows } = await supabase
-    .from('arms')
-    .select('id, class_id')
-    .in('class_id', (classesRows ?? []).map((c) => c.id))
-
-  const activeClassesCount = armsRows?.length ?? 0
-  const classLabelRange =
-    classesRows && classesRows.length > 0
-      ? `Across ${classesRows[0].name} - ${classesRows[classesRows.length - 1].name}`
-      : 'No classes set up yet'
-
-  const studentTrend =
-    previousStudents && previousStudents > 0 && totalStudents != null
-      ? (((totalStudents - previousStudents) / previousStudents) * 100).toFixed(1)
-      : null
-
-  // ---- Student Overview: enrolment by class + gender ----
-  const { data: enrolmentRows } = await supabase
-    .from('enrolments')
-    .select('class_id, students(gender)')
-    .eq('school_id', schoolId)
-    .eq('session_id', currentSession.id)
-
-  const byClass = new Map<string, { male: number; female: number }>()
-  for (const row of enrolmentRows ?? []) {
-    const gender = (row as unknown as { students: { gender: string | null } | null }).students?.gender?.toLowerCase()
-    const bucket = byClass.get(row.class_id) ?? { male: 0, female: 0 }
-    if (gender === 'male') bucket.male += 1
-    else if (gender === 'female') bucket.female += 1
-    byClass.set(row.class_id, bucket)
-  }
-  const studentOverview = (classesRows ?? []).map((c) => ({
-    name: c.name,
-    male: byClass.get(c.id)?.male ?? 0,
-    female: byClass.get(c.id)?.female ?? 0,
-  }))
-  const studentOverviewTotal = studentOverview.reduce((sum, c) => sum + c.male + c.female, 0)
-  const studentOverviewMax = Math.max(...studentOverview.map((c) => c.male + c.female), 1)
-
-  // ---- Attendance Overview (current term to date) ----
-  const { data: statuses } = await supabase
-    .from('attendance_statuses')
-    .select('id, code, counts_as_present')
-    .eq('school_id', schoolId)
-  const statusById = new Map((statuses ?? []).map((s) => [s.id, s]))
-
-  const termStart = currentTerm?.start_date ?? currentSession.start_date
-  const { data: attendanceRows } = await supabase
+  // ---- Registers this morning: one cell per arm, from today's daily register ----
+  const { data: todayRows } = await supabase
     .from('attendance')
-    .select('date, status_id')
+    .select('arm_id, status_id')
     .eq('school_id', schoolId)
-    .gte('date', termStart)
+    .eq('date', today)
+    .is('subject_id', null)
 
-  let present = 0, absent = 0, late = 0, countsPresent = 0
-  const byDay = new Map<string, { present: number; total: number }>()
-  for (const row of attendanceRows ?? []) {
-    const status = statusById.get(row.status_id)
-    if (!status) continue
-    if (status.code === 'present') present += 1
-    else if (status.code === 'absent') absent += 1
-    else if (status.code === 'late') late += 1
-    if (status.counts_as_present) countsPresent += 1
-
-    const day = byDay.get(row.date) ?? { present: 0, total: 0 }
-    day.total += 1
-    if (status.counts_as_present) day.present += 1
-    byDay.set(row.date, day)
+  const presentStatus = new Set((statuses ?? []).filter((s) => s.counts_as_present).map((s) => s.id))
+  const rollByArm = new Map<string, number>()
+  for (const e of enrolments ?? []) if (e.arm_id) rollByArm.set(e.arm_id, (rollByArm.get(e.arm_id) ?? 0) + 1)
+  const markedByArm = new Map<string, { marked: number; present: number }>()
+  for (const r of todayRows ?? []) {
+    if (!r.arm_id) continue
+    const m = markedByArm.get(r.arm_id) ?? { marked: 0, present: 0 }
+    m.marked += 1
+    if (presentStatus.has(r.status_id)) m.present += 1
+    markedByArm.set(r.arm_id, m)
   }
-  const attendanceTotal = attendanceRows?.length ?? 0
-  const attendancePct = (n: number) => (attendanceTotal > 0 ? (n / attendanceTotal) * 100 : 0)
 
-  const recentDays = Array.from(byDay.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
-    .slice(-7)
-    .map(([date, d]) => ({ date, rate: d.total > 0 ? (d.present / d.total) * 100 : 0 }))
+  const board = (classes ?? []).map((c) => ({
+    level: c.name,
+    cells: (arms ?? [])
+      .filter((a) => a.class_id === c.id && (rollByArm.get(a.id) ?? 0) > 0)
+      .map<Cell>((a) => {
+        const m = markedByArm.get(a.id)
+        const size = rollByArm.get(a.id) ?? 0
+        return { arm: a.id, cls: c.id, label: `${c.name}${a.name}`, size, present: m?.present ?? 0, pct: m ? Math.round((m.present / m.marked) * 100) : null }
+      }),
+  })).filter((row) => row.cells.length > 0)
+  const maxArms = Math.max(1, ...board.map((r) => r.cells.length))
+  const allCells = board.flatMap((r) => r.cells)
+  const open = allCells.filter((c) => c.pct === null)
+  const savedCells = allCells.filter((c) => c.pct !== null)
+  const presentToday = savedCells.reduce((s, c) => s + c.present, 0)
+  const markedToday = (todayRows ?? []).filter((r) => r.arm_id).length
 
-  // ---- Fees Overview (current term) ----
+  // ---- Fees this term ----
   const { data: feeStructures } = currentTerm
-    ? await supabase
-        .from('fee_structures')
-        .select('id, class_id, amount')
-        .eq('school_id', schoolId)
-        .eq('session_id', currentSession.id)
-        .eq('term_id', currentTerm.id)
+    ? await supabase.from('fee_structures').select('id, class_id, amount').eq('school_id', schoolId).eq('session_id', currentSession.id).eq('term_id', currentTerm.id)
     : { data: [] as { id: string; class_id: string | null; amount: number }[] }
+  const rollByClass = new Map<string, number>()
+  for (const e of enrolments ?? []) rollByClass.set(e.class_id, (rollByClass.get(e.class_id) ?? 0) + 1)
+  const billed = (feeStructures ?? []).reduce(
+    (s, fs) => s + Number(fs.amount) * (fs.class_id ? rollByClass.get(fs.class_id) ?? 0 : enrolments?.length ?? 0),
+    0,
+  )
+  const feeIds = (feeStructures ?? []).map((f) => f.id)
+  const { data: payments } = feeIds.length
+    ? await supabase.from('payments').select('id, amount_paid, paid_at, payment_method, students(first_name, last_name)').eq('school_id', schoolId).in('fee_structure_id', feeIds).order('paid_at', { ascending: false })
+    : { data: [] as never[] }
+  const collected = (payments ?? []).reduce((s, p) => s + Number(p.amount_paid), 0)
 
-  const enrolmentCountByClass = new Map<string, number>()
-  for (const row of enrolmentRows ?? []) {
-    enrolmentCountByClass.set(row.class_id, (enrolmentCountByClass.get(row.class_id) ?? 0) + 1)
+  const termStart = Date.parse(currentTerm?.start_date ?? currentSession.start_date)
+  const weeks: number[] = []
+  for (const p of payments ?? []) {
+    if (!p.paid_at) continue
+    const w = Math.floor((Date.parse(p.paid_at) - termStart) / (7 * 86_400_000))
+    if (w < 0) continue
+    weeks[w] = (weeks[w] ?? 0) + Number(p.amount_paid)
   }
-  const totalEnrolled = enrolmentRows?.length ?? 0
+  const weekBars = Array.from({ length: Math.max(weeks.length, 1) }, (_, i) => weeks[i] ?? 0).slice(-10)
+  const weekMax = Math.max(1, ...weekBars)
+  const todaysPayments = (payments ?? []).filter((p) => p.paid_at?.slice(0, 10) === today)
 
-  let expectedFees = 0
-  for (const fs of feeStructures ?? []) {
-    const qualifying = fs.class_id ? (enrolmentCountByClass.get(fs.class_id) ?? 0) : totalEnrolled
-    expectedFees += Number(fs.amount) * qualifying
-  }
+  // ---- Result batches in review ----
+  const { data: batches } = currentTerm
+    ? await supabase
+        .from('result_batches')
+        .select('id, status, submitted_at, subjects(name), classes(name), arms(name)')
+        .eq('school_id', schoolId)
+        .eq('term_id', currentTerm.id)
+        .not('status', 'in', '(draft,returned,published)')
+        .order('submitted_at', { ascending: true })
+    : { data: [] as never[] }
+  const inReview = batches ?? []
 
-  const feeStructureIds = (feeStructures ?? []).map((fs) => fs.id)
-  const { data: paymentRows } =
-    feeStructureIds.length > 0
-      ? await supabase.from('payments').select('amount_paid').eq('school_id', schoolId).in('fee_structure_id', feeStructureIds)
-      : { data: [] as { amount_paid: number }[] }
-  const collectedFees = (paymentRows ?? []).reduce((sum, p) => sum + Number(p.amount_paid), 0)
-  const outstandingFees = Math.max(expectedFees - collectedFees, 0)
-  const collectionRate = expectedFees > 0 ? (collectedFees / expectedFees) * 100 : 0
-
-  // ---- Academic Snapshot (current term, by class + arm) ----
-  const { data: armsWithNames } = await supabase
-    .from('arms')
-    .select('id, name, class_id, classes(name)')
-    .eq('school_id', schoolId)
-
-  const { data: resultBatches } = currentTerm
-    ? await supabase.from('result_batches').select('class_id, arm_id, status').eq('school_id', schoolId).eq('term_id', currentTerm.id)
-    : { data: [] as { class_id: string; arm_id: string; status: string }[] }
-
-  const batchesByArm = new Map<string, string[]>()
-  for (const rb of resultBatches ?? []) {
-    const list = batchesByArm.get(rb.arm_id) ?? []
-    list.push(rb.status)
-    batchesByArm.set(rb.arm_id, list)
-  }
-
-  const academicSnapshot = (armsWithNames ?? [])
-    .map((arm) => {
-      const statusesForArm = batchesByArm.get(arm.id) ?? []
-      const className = (arm as unknown as { classes: { name: string } | null }).classes?.name ?? ''
-      const label = `${className} ${arm.name}`.trim()
-      let status: 'published' | 'pending' | 'not_started'
-      if (statusesForArm.length === 0) status = 'not_started'
-      else if (statusesForArm.every((s) => s === 'published')) status = 'published'
-      else status = 'pending'
-      return { label, status, classId: arm.class_id }
-    })
-    .filter((row) => row.status !== 'not_started')
-    .slice(0, 6)
-
-  const classesWithPendingResults = new Set(
-    academicSnapshot.filter((r) => r.status === 'pending').map((r) => r.classId)
-  ).size
-
-  // ---- Recent Activity (reuses the school_audit_log you already have) ----
-  const { data: activityRows } = await supabase
-    .from('school_audit_log')
-    .select('id, action, actor_name, metadata, created_at')
-    .eq('school_id', schoolId)
-    .order('created_at', { ascending: false })
-    .limit(6)
-
-  // ---- Incomplete student records ----
-  const { count: incompleteStudents } = await supabase
-    .from('students')
-    .select('id', { count: 'exact', head: true })
-    .eq('school_id', schoolId)
-    .or('date_of_birth.is.null,residential_address.is.null,gender.is.null')
+  const dateLabel = new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Lagos', weekday: 'long', day: 'numeric', month: 'long' }).format(new Date())
 
   return (
-    <div className="space-y-6 px-8 py-7">
+    <div className="flex flex-col gap-5 px-5 pb-10 pt-7 sm:px-8 sm:pt-8">
       <SetupChecklist />
 
-      <div className="flex items-start justify-between flex-wrap gap-2">
-        <div>
-          <h1 className="text-xl font-semibold text-text-primary">{greeting}, {profile.first_name}</h1>
-          <p className="text-sm text-text-secondary mt-0.5">Here&apos;s what&apos;s happening across your school.</p>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div className="flex min-w-0 flex-col gap-1.5">
+          <h1 className="text-[28px] font-bold leading-tight tracking-[-0.01em] sm:text-[32px]">{dateLabel}</h1>
+          <p className="text-[15px] text-text-secondary">
+            {currentTerm?.name ?? 'No current term'} · {currentSession.name}
+            {open.length > 0 && savedCells.length > 0 && (
+              <>
+                {' · '}
+                <strong className="font-semibold text-text-primary">
+                  {open.length} register{open.length === 1 ? '' : 's'} still open
+                </strong>
+                {' — '}
+                {open.slice(0, 4).map((c) => c.label).join(', ')}
+                {open.length > 4 ? ` and ${open.length - 4} more` : ''}
+              </>
+            )}
+          </p>
         </div>
-        <span className="text-xs font-medium text-text-secondary border border-border rounded-full px-3 py-1.5">
-          {currentSession.name} · {currentTerm?.name ?? 'No current term'}
-        </span>
-      </div>
-
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Link href="/dashboard/students" className="border border-border rounded-xl p-4 bg-surface hover:border-text-secondary transition-colors">
-          <p className="text-xs text-text-secondary uppercase tracking-wide">Total Students</p>
-          <p className="text-2xl font-semibold text-text-primary mt-1">{(totalStudents ?? 0).toLocaleString()}</p>
-          {studentTrend && (
-            <p className={`text-xs mt-1 ${Number(studentTrend) >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-              {Number(studentTrend) >= 0 ? '+' : ''}{studentTrend}% from last session
-            </p>
-          )}
-        </Link>
-
-        <Link href="/dashboard/staff" className="border border-border rounded-xl p-4 bg-surface hover:border-text-secondary transition-colors">
-          <p className="text-xs text-text-secondary uppercase tracking-wide">Total Staff</p>
-          <p className="text-2xl font-semibold text-text-primary mt-1">{totalStaff.toLocaleString()}</p>
-          {newStaffThisSession > 0 && (
-            <p className="text-xs mt-1 text-emerald-600">+{newStaffThisSession} new this session</p>
-          )}
-        </Link>
-
-        <Link href="/dashboard/academics" className="border border-border rounded-xl p-4 bg-surface hover:border-text-secondary transition-colors">
-          <p className="text-xs text-text-secondary uppercase tracking-wide">Active Classes</p>
-          <p className="text-2xl font-semibold text-text-primary mt-1">{activeClassesCount}</p>
-          <p className="text-xs mt-1 text-text-secondary">{classLabelRange}</p>
-        </Link>
-
-        <div className="border border-border rounded-xl p-4 bg-surface">
-          <p className="text-xs text-text-secondary uppercase tracking-wide">Current Term</p>
-          <p className="text-lg font-semibold text-text-primary mt-1">{currentTerm?.name ?? '—'}</p>
-          <p className="text-xs mt-1 text-text-secondary">{currentSession.name}</p>
+        <div className="flex gap-2">
+          <Link href="/dashboard/announcements/new" className="flex h-9 items-center rounded-md border border-control bg-surface px-3.5 text-sm font-medium hover:bg-raised">
+            Send announcement
+          </Link>
+          <Link href="/dashboard/attendance" className="flex h-9 items-center rounded-md bg-primary px-3.5 text-sm font-semibold text-white hover:bg-primary-hover">
+            Open registers
+          </Link>
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2">
-        <Link href="/dashboard/students" className="inline-flex items-center text-sm font-medium text-white bg-primary hover:bg-primary-hover px-3 py-1.5 rounded-lg transition-colors">
-          + Add Student
-        </Link>
-        <Link href="/dashboard/staff" className="inline-flex items-center text-sm font-medium text-text-primary border border-border hover:border-text-secondary px-3 py-1.5 rounded-lg transition-colors">
-          + Add Staff
-        </Link>
-        <Link href="/dashboard/attendance" className="inline-flex items-center text-sm font-medium text-text-primary border border-border hover:border-text-secondary px-3 py-1.5 rounded-lg transition-colors">
-          ✓ Record Attendance
-        </Link>
-        <Link href="/dashboard/results" className="inline-flex items-center text-sm font-medium text-text-primary border border-border hover:border-text-secondary px-3 py-1.5 rounded-lg transition-colors">
-          ✎ Enter Results
-        </Link>
-      </div>
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_384px]">
+        <div className="flex min-w-0 flex-col gap-4">
+          <section aria-label="Today in numbers" className="grid grid-cols-2 rounded-lg border border-border bg-surface md:grid-cols-4">
+            {[
+              { label: 'Present today', value: markedToday ? presentToday.toLocaleString('en-NG') : '—', unit: markedToday ? ` / ${markedToday.toLocaleString('en-NG')}` : '', note: markedToday ? `${((presentToday / markedToday) * 100).toFixed(1)}% of students in saved registers` : 'No register saved yet today' },
+              { label: 'Registers saved', value: String(savedCells.length), unit: ` / ${allCells.length}`, note: open.length ? `${open.length} still open` : 'All saved', warn: open.length > 0 && savedCells.length > 0 },
+              { label: 'Fees collected', value: nairaM(collected), unit: '', note: billed ? `${Math.round((collected / billed) * 100)}% of ${nairaM(billed)} billed this term` : 'No fee structures this term' },
+              { label: 'Waiting for approval', value: String(inReview.length), unit: '', note: inReview.length === 1 ? 'result batch' : 'result batches' },
+            ].map((k, i) => (
+              <div key={k.label} className={`flex flex-col gap-1.5 px-5 py-4 ${i % 2 ? 'border-l border-border' : ''} ${i > 1 ? 'border-t border-border md:border-t-0' : ''} ${i === 2 ? 'md:border-l' : ''}`}>
+                <span className="text-sm text-text-secondary">{k.label}</span>
+                <span className="text-2xl font-semibold tabular-nums">{k.value}<span className="text-sm font-normal text-text-secondary">{k.unit}</span></span>
+                <span className={`text-xs ${k.warn ? 'text-warning-text' : 'text-text-secondary'}`}>{k.note}</span>
+              </div>
+            ))}
+          </section>
 
-      <div className="grid lg:grid-cols-2 gap-4">
-        <div className="border border-border rounded-xl p-5 bg-surface">
-          <div className="flex items-center justify-between mb-1">
-            <h2 className="text-sm font-semibold text-text-primary">Student Overview</h2>
-            <span className="text-xs text-text-secondary">{studentOverviewTotal} total</span>
+          <section aria-labelledby="registers" className="flex flex-col gap-4 rounded-lg border border-border bg-surface p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h2 id="registers" className="text-lg font-semibold">Registers this morning</h2>
+                <p className="text-sm text-text-secondary">Each class arm, share of students present</p>
+              </div>
+              <div className="flex flex-wrap items-center gap-4 text-xs text-text-secondary">
+                <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded-[3px] bg-school-track" />Saved</span>
+                <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded-[3px] bg-school" />Below 90% present</span>
+                <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded-[3px] border border-dashed border-text-muted" />Not saved</span>
+              </div>
+            </div>
+            {board.length === 0 ? (
+              <p className="py-6 text-text-secondary">
+                No students are enrolled in a class arm this session yet. <Link href="/dashboard/students" className="font-medium text-primary underline-offset-4 hover:underline">Add students</Link>
+              </p>
+            ) : (
+              <div className="overflow-x-auto">
+                <div className="grid min-w-[480px] items-center gap-1.5" style={{ gridTemplateColumns: `64px repeat(${maxArms}, minmax(0, 1fr))` }}>
+                  {board.map((row) => [
+                    <span key={row.level} className="text-sm font-semibold">{row.level}</span>,
+                    ...Array.from({ length: maxArms }, (_, i) => {
+                      const c = row.cells[i]
+                      if (!c) return <span key={`${row.level}-${i}`} />
+                      const low = c.pct !== null && c.pct < 90
+                      return (
+                        <Link
+                          key={c.arm}
+                          href={`/dashboard/attendance?classId=${c.cls}&armId=${c.arm}&date=${today}`}
+                          aria-label={c.pct === null ? `${c.label} register not saved` : `${c.label}: ${c.present} of ${c.size} present`}
+                          className={`flex h-11 items-center justify-center rounded-md text-sm font-medium tabular-nums transition-[filter] hover:brightness-95 ${
+                            c.pct === null
+                              ? 'border border-dashed border-text-muted bg-surface text-text-secondary'
+                              : low
+                                ? 'bg-school text-white'
+                                : 'bg-school-track text-school-ink'
+                          }`}
+                        >
+                          {c.pct === null ? 'Open' : `${c.pct}%`}
+                        </Link>
+                      )
+                    }),
+                  ])}
+                </div>
+              </div>
+            )}
+          </section>
+
+          <section aria-labelledby="fees-week" className="flex flex-col gap-3.5 rounded-lg border border-border bg-surface p-5">
+            <div className="flex flex-wrap items-baseline justify-between gap-3">
+              <h2 id="fees-week" className="text-lg font-semibold">Fees received by week</h2>
+              <span className="text-sm text-text-secondary">This term · {nairaM(collected)} so far</span>
+            </div>
+            {collected === 0 ? (
+              <p className="py-6 text-text-secondary">No payments recorded this term yet.</p>
+            ) : (
+              <>
+                <div className="flex h-[150px] items-end gap-3 border-b border-border">
+                  {weekBars.map((v, i) => (
+                    <div key={i} className="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
+                      <span className="text-xs tabular-nums text-[#374151]">{v ? (v / 1_000_000).toFixed(2) : '0'}</span>
+                      <span className={`block w-full max-w-14 rounded-t ${i === weekBars.length - 1 ? 'bg-school' : 'bg-control'}`} style={{ height: `${Math.max(2, Math.round((v / weekMax) * 110))}px` }} />
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-3 text-center text-xs text-text-secondary">
+                  {weekBars.map((_, i) => <span key={i} className="flex-1">Wk {weeks.length - weekBars.length + i + 1}</span>)}
+                </div>
+                <p className="text-xs text-text-secondary">Amounts in ₦ millions. The current week is in your school colour.</p>
+              </>
+            )}
+          </section>
+        </div>
+
+        <aside className="flex min-w-0 flex-col">
+          <h2 className="mb-2 text-base font-semibold">Waiting for your approval</h2>
+          <div className="rounded-lg border border-border bg-surface px-4 pb-3">
+            {inReview.length === 0 ? (
+              <p className="py-4 text-sm text-text-secondary">Nothing to approve right now.</p>
+            ) : (
+              inReview.slice(0, 5).map((b) => {
+                const age = daysAgo(b.submitted_at, today)
+                return (
+                  <Link key={b.id} href={`/dashboard/approvals/${b.id}`} className="flex min-h-[52px] items-center gap-3 border-b border-rule">
+                    <span className="flex min-w-0 flex-1 flex-col">
+                      <span className="truncate font-medium">{b.subjects?.name ?? 'Subject'} · {b.classes?.name}{b.arms?.name}</span>
+                    </span>
+                    <span className={`whitespace-nowrap text-xs ${age.startsWith('Today') || age === '1 day' ? 'text-text-secondary' : 'text-warning-text'}`}>{age}</span>
+                  </Link>
+                )
+              })
+            )}
+            <Link href="/dashboard/approvals" className="mt-3 flex h-[30px] items-center justify-center rounded-md border border-control text-sm font-medium hover:bg-raised">
+              {inReview.length > 5 ? `View all ${inReview.length}` : 'Open approvals'}
+            </Link>
           </div>
-          <p className="text-xs text-text-secondary mb-4">Student population across classes</p>
-          <div className="flex items-end gap-3 h-32">
-            {studentOverview.map((c) => {
-              const total = c.male + c.female
-              return (
-                <div key={c.name} className="flex-1 flex flex-col items-center gap-1 h-full">
-                  <div className="w-full flex flex-col justify-end flex-1">
-                    <div
-                      className="w-full bg-primary rounded-t-sm"
-                      style={{ height: `${(total / studentOverviewMax) * 100}%` }}
-                      title={`${c.name}: ${total} (M ${c.male} / F ${c.female})`}
-                    />
+
+          <h2 className="mb-2 mt-4 text-base font-semibold">Payments today</h2>
+          <div className="rounded-lg border border-border bg-surface px-4 pb-3">
+            {todaysPayments.length === 0 ? (
+              <p className="py-4 text-sm text-text-secondary">No payments recorded today.</p>
+            ) : (
+              <>
+                {todaysPayments.slice(0, 5).map((p) => (
+                  <div key={p.id} className="flex min-h-12 items-center gap-3 border-b border-rule">
+                    <span className="flex min-w-0 flex-1 flex-col">
+                      <span className="truncate font-medium">{p.students ? `${p.students.first_name} ${p.students.last_name}` : 'Student'}</span>
+                      <span className="text-xs capitalize text-text-secondary">{p.payment_method?.replace(/_/g, ' ') ?? '—'}</span>
+                    </span>
+                    <span className="font-medium tabular-nums">{naira(Number(p.amount_paid))}</span>
                   </div>
-                  <span className="text-[10px] text-text-secondary">{c.name}</span>
+                ))}
+                <div className="flex justify-between pt-3 text-text-secondary">
+                  <span>Total today</span>
+                  <span className="font-semibold tabular-nums text-text-primary">{naira(todaysPayments.reduce((s, p) => s + Number(p.amount_paid), 0))}</span>
                 </div>
-              )
-            })}
-          </div>
-          <div className="flex items-center gap-4 mt-3 text-xs text-text-secondary">
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-primary inline-block" /> Male</span>
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-accent inline-block" /> Female</span>
-          </div>
-        </div>
-
-        <div className="border border-border rounded-xl p-5 bg-surface">
-          <h2 className="text-sm font-semibold text-text-primary mb-1">Attendance Overview</h2>
-          <p className="text-xs text-text-secondary mb-4">Summary for the current term</p>
-          <div className="grid grid-cols-4 gap-2 mb-4">
-            <div>
-              <p className="text-base font-semibold text-emerald-600">{attendancePct(present).toFixed(1)}%</p>
-              <p className="text-[10px] text-text-secondary">Present</p>
-            </div>
-            <div>
-              <p className="text-base font-semibold text-red-600">{attendancePct(absent).toFixed(1)}%</p>
-              <p className="text-[10px] text-text-secondary">Absent</p>
-            </div>
-            <div>
-              <p className="text-base font-semibold text-amber-600">{attendancePct(late).toFixed(1)}%</p>
-              <p className="text-[10px] text-text-secondary">Late</p>
-            </div>
-            <div>
-              <p className="text-base font-semibold text-text-primary">{attendancePct(countsPresent).toFixed(1)}%</p>
-              <p className="text-[10px] text-text-secondary">Overall</p>
-            </div>
-          </div>
-          <div className="flex items-end gap-2 h-16">
-            {recentDays.map((d) => (
-              <div key={d.date} className="flex-1 flex flex-col items-center gap-1 h-full">
-                <div className="w-full flex flex-col justify-end flex-1">
-                  <div className="w-full bg-accent rounded-t-sm" style={{ height: `${d.rate}%` }} title={`${d.date}: ${d.rate.toFixed(1)}%`} />
-                </div>
-                <span className="text-[9px] text-text-secondary">
-                  {new Date(d.date).toLocaleDateString(undefined, { weekday: 'short' })}
-                </span>
-              </div>
-            ))}
-            {recentDays.length === 0 && <p className="text-xs text-text-secondary">No attendance recorded yet.</p>}
-          </div>
-        </div>
-
-        <div className="border border-border rounded-xl p-5 bg-surface">
-          <h2 className="text-sm font-semibold text-text-primary mb-1">Fees Overview</h2>
-          <p className="text-xs text-text-secondary mb-4">Current term fee collection summary</p>
-          <div className="grid grid-cols-2 gap-4 mb-3">
-            <div>
-              <p className="text-xs text-text-secondary">Expected</p>
-              <p className="text-lg font-semibold text-text-primary">{formatNaira(expectedFees)}</p>
-            </div>
-            <div>
-              <p className="text-xs text-text-secondary">Collected</p>
-              <p className="text-lg font-semibold text-emerald-600">{formatNaira(collectedFees)}</p>
-            </div>
-            <div>
-              <p className="text-xs text-text-secondary">Outstanding</p>
-              <p className="text-lg font-semibold text-red-600">{formatNaira(outstandingFees)}</p>
-            </div>
-            <div>
-              <p className="text-xs text-text-secondary">Collection Rate</p>
-              <p className="text-lg font-semibold text-text-primary">{collectionRate.toFixed(1)}%</p>
-            </div>
-          </div>
-          <div className="w-full h-1.5 bg-surface-muted rounded-full overflow-hidden">
-            <div className="h-full bg-primary" style={{ width: `${Math.min(collectionRate, 100)}%` }} />
-          </div>
-        </div>
-
-        <div className="border border-border rounded-xl p-5 bg-surface">
-          <div className="flex items-center justify-between mb-1">
-            <h2 className="text-sm font-semibold text-text-primary">Academic Snapshot</h2>
-            <Link href="/dashboard/results" className="text-xs font-medium text-primary hover:underline">View Results</Link>
-          </div>
-          <p className="text-xs text-text-secondary mb-4">Results status across classes</p>
-          <div className="space-y-2">
-            {academicSnapshot.map((row) => (
-              <div key={row.label} className="flex items-center justify-between text-sm">
-                <span className="text-text-primary">{row.label}</span>
-                <span
-                  className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                    row.status === 'published'
-                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                      : 'bg-amber-50 text-amber-700 border border-amber-200'
-                  }`}
-                >
-                  {row.status === 'published' ? 'Results Published' : 'Results Pending'}
-                </span>
-              </div>
-            ))}
-            {academicSnapshot.length === 0 && (
-              <p className="text-xs text-text-secondary">No result batches started for this term yet.</p>
+              </>
             )}
+            <Link href="/dashboard/fees/record" className="mt-3 flex h-[30px] items-center justify-center rounded-md border border-control text-sm font-medium hover:bg-raised">
+              Record a payment
+            </Link>
           </div>
-        </div>
-      </div>
-
-      <div className="grid lg:grid-cols-2 gap-4">
-        <div className="border border-border rounded-xl p-5 bg-surface">
-          <h2 className="text-sm font-semibold text-text-primary mb-3">Recent Activity</h2>
-          <div className="space-y-3">
-            {(activityRows ?? []).map((row) => (
-              <div key={row.id} className="flex items-start justify-between gap-3">
-                <p className="text-sm text-text-primary">{describeActivity(row.action, row.metadata as Record<string, unknown>)}</p>
-                <span className="text-xs text-text-secondary whitespace-nowrap">{timeAgo(row.created_at)}</span>
-              </div>
-            ))}
-            {(activityRows ?? []).length === 0 && (
-              <p className="text-xs text-text-secondary">No activity logged yet.</p>
-            )}
-          </div>
-        </div>
-
-        <div className="border border-border rounded-xl p-5 bg-surface">
-          <h2 className="text-sm font-semibold text-text-primary mb-3">Needs Attention</h2>
-          <div className="space-y-3">
-            {classesWithPendingResults > 0 && (
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                <p className="text-sm text-amber-800 font-medium">Results pending</p>
-                <p className="text-xs text-amber-700 mb-1">{classesWithPendingResults} class{classesWithPendingResults === 1 ? '' : 'es'} have pending results.</p>
-                <Link href="/dashboard/results" className="text-xs font-medium text-amber-800 hover:underline">View Results →</Link>
-              </div>
-            )}
-            {outstandingFees > 0 && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                <p className="text-sm text-red-800 font-medium">Outstanding fees</p>
-                <p className="text-xs text-red-700 mb-1">{formatNaira(outstandingFees)} remains outstanding for the current term.</p>
-                <Link href="/dashboard/fees/structures" className="text-xs font-medium text-red-800 hover:underline">View Fees →</Link>
-              </div>
-            )}
-            {(incompleteStudents ?? 0) > 0 && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                <p className="text-sm text-blue-800 font-medium">Incomplete student records</p>
-                <p className="text-xs text-blue-700 mb-1">{incompleteStudents} student profile{incompleteStudents === 1 ? '' : 's'} require additional information.</p>
-                <Link href="/dashboard/students" className="text-xs font-medium text-blue-800 hover:underline">View Students →</Link>
-              </div>
-            )}
-            {classesWithPendingResults === 0 && outstandingFees <= 0 && (incompleteStudents ?? 0) === 0 && (
-              <p className="text-xs text-text-secondary">Nothing needs your attention right now.</p>
-            )}
-          </div>
-        </div>
+        </aside>
       </div>
     </div>
   )
