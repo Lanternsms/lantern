@@ -2,6 +2,8 @@
 import Link from 'next/link'
 import { Award, Calendar, CreditCard, Bell, FileText, CheckCircle2, PlayCircle } from 'lucide-react'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { createClient } from '@/lib/supabase/server'
+import { getTodayInLagos } from '../lms/lagos-time'
 import { LessonPlayerModal } from '../lms/lesson-player-modal'
 import { NotesDownloadButton } from '../lms/notes-download-button'
 
@@ -93,144 +95,112 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
     }
   }
 
-  const hour = new Date().getHours()
+  // ---- Today's timetable for this student's class arm ----
+  const { dayOfWeek } = getTodayInLagos()
+  const nowHm = new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Lagos', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date())
+  type Slot = { id: string; time: string; subject: string; teacher: string; state: 'past' | 'now' | 'next' | 'later' }
+  let today: Slot[] = []
+  if (currentEnrolment?.class_id) {
+    const supabase = await createClient()
+    const { data: session } = await supabase.from('academic_sessions').select('id').eq('school_id', student.school_id).eq('is_current', true).maybeSingle()
+    if (session) {
+      const [{ data: periods }, { data: entries }] = await Promise.all([
+        (supabase as any).from('timetable_periods').select('id, name, start_time, end_time, is_break').order('sort_order'),
+        (() => {
+          let q = (supabase as any).from('timetable_entries').select('period_id, subjects(name), teacher:profiles(first_name, last_name)')
+            .eq('session_id', session.id).eq('class_id', currentEnrolment.class_id).eq('day_of_week', dayOfWeek)
+          q = currentEnrolment.arm_id ? q.eq('arm_id', currentEnrolment.arm_id) : q.is('arm_id', null)
+          return q
+        })(),
+      ])
+      const byPeriod = new Map((entries ?? []).map((e: any) => [e.period_id, e]))
+      let nextGiven = false
+      today = (periods ?? []).filter((p: any) => !p.is_break && byPeriod.has(p.id)).map((p: any) => {
+        const e: any = byPeriod.get(p.id)
+        const start = String(p.start_time).slice(0, 5), end = String(p.end_time).slice(0, 5)
+        let state: Slot['state'] = nowHm >= end ? 'past' : nowHm >= start ? 'now' : 'later'
+        if (state === 'later' && !nextGiven) { state = 'next'; nextGiven = true }
+        return { id: p.id, time: start, subject: e.subjects?.name ?? p.name, teacher: e.teacher ? `${e.teacher.first_name ?? ''} ${e.teacher.last_name ?? ''}`.trim() : '', state }
+      })
+    }
+  }
+  const nextSlot = today.find((t) => t.state === 'next')
+  const lessonTotal = lessonsBySubject.reduce((n, g) => n + g.lessons.length, 0)
+
+  const hour = Number(nowHm.slice(0, 2))
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-8 space-y-8">
-      {/* Student Hero Profile Card */}
-      <div className="bg-surface border border-border rounded-2xl p-6 sm:p-8 shadow-xs">
-        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-          {/* Student Photo */}
-          <div className="relative shrink-0">
-            {student.photo_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={student.photo_url}
-                alt={`${student.first_name} ${student.last_name}`}
-                className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover border-2 border-border  ring-4 ring-primary/5"
-              />
-            ) : (
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-warning-bg text-warning-text flex flex-col items-center justify-center font-bold text-2xl sm:text-3xl border-2 border-warning-bg ring-4 ring-warning-bg">
-                {initials}
-                <span className="text-[10px] font-normal text-warning-text mt-1">No photo</span>
-              </div>
-            )}
-            <span
-              className={`absolute -bottom-1.5 -right-1.5 w-6 h-6 rounded-full border-2 border-surface flex items-center justify-center ${
-                isActive ? 'bg-success-text text-white' : 'bg-danger-text text-white'
-              }`}
-              title={isActive ? 'Active Student' : student.status}
-            >
-              <CheckCircle2 size={14} />
-            </span>
-          </div>
+    <div className="mx-auto flex max-w-[1120px] flex-col gap-7 px-5 pb-12 pt-7 sm:px-6 sm:pt-9">
+      <div className="flex items-center gap-4">
+        {student.photo_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={student.photo_url} alt="" className="h-14 w-14 shrink-0 rounded-full object-cover" />
+        ) : (
+          <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-school-soft text-lg font-semibold text-school-ink">{initials}</span>
+        )}
+        <div className="flex min-w-0 flex-col gap-1">
+          <h1 className="text-[32px] font-semibold leading-tight tracking-[-0.02em] sm:text-[40px]">
+            {greeting.replace('Good ', '').replace(/^./, (c) => c.toUpperCase())}, {student.first_name}.
+          </h1>
+          <p className="text-base text-text-secondary sm:text-lg">
+            {nextSlot
+              ? `${nextSlot.subject} is next, at ${nextSlot.time}.`
+              : today.length
+                ? 'That’s all your classes for today.'
+                : `${classLabel} · ${sessionName}`}
+            {lessonTotal > 0 && ` ${lessonTotal} recorded lesson${lessonTotal === 1 ? '' : 's'} for your class.`}
+          </p>
+        </div>
+      </div>
 
-          {/* Student Info */}
-          <div className="flex-1 text-center sm:text-left min-w-0">
-            <p className="text-xs font-medium text-text-muted mb-0.5">{greeting}</p>
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 mb-2">
-              <h1 className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight">
-                {student.first_name} {student.last_name}
-              </h1>
-              <span
-                className={`text-xs font-semibold rounded-full px-2.5 py-0.5 capitalize ${
-                  isActive ? 'bg-success-bg text-success-text' : 'bg-danger-bg text-danger-text'
+      {!isActive && (
+        <p role="status" className="rounded-lg bg-warning-bg px-4 py-3 text-sm text-warning-text">
+          Your account is marked “{student.status}”. Ask the school office if this is a mistake.
+        </p>
+      )}
+
+      <section aria-labelledby="today-tt" className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-5">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 id="today-tt" className="text-lg font-semibold">Today</h2>
+          <Link href="/dashboard/my-timetable" className="text-sm font-medium text-primary hover:underline">Full timetable</Link>
+        </div>
+        {today.length === 0 ? (
+          <p className="text-text-secondary">No classes on your timetable today.</p>
+        ) : (
+          <ol className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-2">
+            {today.map((t) => (
+              <li
+                key={t.id}
+                aria-current={t.state === 'now' ? 'time' : undefined}
+                className={`flex min-h-[64px] flex-col gap-0.5 rounded-xl px-3 py-2.5 ${
+                  t.state === 'now' ? 'bg-school text-white'
+                  : t.state === 'next' ? 'bg-school-soft text-school-ink'
+                  : t.state === 'past' ? 'bg-raised text-text-secondary'
+                  : 'border border-border text-text-primary'
                 }`}
               >
-                {student.status}
-              </span>
-            </div>
+                <span className="text-xs tabular-nums opacity-85">{t.state === 'now' ? `Now · ${t.time}` : t.time}</span>
+                <span className="font-semibold leading-tight">{t.subject}</span>
+                {t.teacher && <span className="truncate text-xs opacity-85">{t.teacher}</span>}
+              </li>
+            ))}
+          </ol>
+        )}
+      </section>
 
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-1.5 text-xs sm:text-sm text-text-secondary">
-              <span className="inline-flex items-center gap-1.5">
-                <span className="text-text-muted">Admission No:</span>
-                <strong className="text-text-primary font-semibold font-mono">{student.admission_no}</strong>
-              </span>
-              <span className="text-border hidden sm:inline">•</span>
-              <span className="inline-flex items-center gap-1.5">
-                <span className="text-text-muted">Class:</span>
-                <strong className="text-text-primary font-medium">{classLabel}</strong>
-              </span>
-              <span className="text-border hidden sm:inline">•</span>
-              <span className="inline-flex items-center gap-1.5">
-                <span className="text-text-muted">Session:</span>
-                <strong className="text-text-primary font-medium">{sessionName}</strong>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Action Hub */}
-      <div>
-        <h2 className="text-base font-semibold text-text-primary mb-4">Your Portal Dashboard</h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {/* Card: My Results */}
-          <div className="bg-surface border border-border rounded-lg p-6 flex flex-col justify-between hover:border-primary/50 transition-all hover:shadow-xs group">
-            <div>
-              <div className="flex items-center justify-center mb-4 shrink-0 text-text-secondary">
-                <Award size={24} />
-              </div>
-              <h3 className="text-base font-semibold text-text-primary mb-1">My Results</h3>
-              <p className="text-xs text-text-secondary leading-relaxed">
-                Check published term grades, test scores, subject totals, class position, and full report cards.
-              </p>
-            </div>
-            <div className="mt-6 pt-4 border-t border-border">
-              <Link
-                href="/dashboard/my-results"
-                className="text-xs font-semibold text-primary hover:text-primary-hover inline-flex items-center gap-1"
-              >
-                View Academic Results →
-              </Link>
-            </div>
-          </div>
-
-          {/* Card: My Timetable */}
-          <div className="bg-surface border border-border rounded-lg p-6 flex flex-col justify-between hover:border-primary/50 transition-all hover:shadow-xs group">
-            <div>
-              <div className="flex items-center justify-center mb-4 shrink-0 text-text-secondary">
-                <Calendar size={24} />
-              </div>
-              <h3 className="text-base font-semibold text-text-primary mb-1">My Timetable</h3>
-              <p className="text-xs text-text-secondary leading-relaxed">
-                Access your weekly class schedule, subject period times, and daily classroom routines.
-              </p>
-            </div>
-            <div className="mt-6 pt-4 border-t border-border">
-              <Link
-                href="/dashboard/my-timetable"
-                className="text-xs font-semibold text-primary hover:text-primary-hover inline-flex items-center gap-1"
-              >
-                View Class Timetable →
-              </Link>
-            </div>
-          </div>
-
-          {/* Card: My Payments */}
-          <div className="bg-surface border border-border rounded-lg p-6 flex flex-col justify-between hover:border-primary/50 transition-all hover:shadow-xs group">
-            <div>
-              <div className="flex items-center justify-center mb-4 shrink-0 text-text-secondary">
-                <CreditCard size={24} />
-              </div>
-              <h3 className="text-base font-semibold text-text-primary mb-1">My Payments</h3>
-              <p className="text-xs text-text-secondary leading-relaxed">
-                Review fee payment history, term bills, settled invoices, and download transaction receipts.
-              </p>
-            </div>
-            <div className="mt-6 pt-4 border-t border-border">
-              <Link
-                href="/dashboard/payments"
-                className="text-xs font-semibold text-primary hover:text-primary-hover inline-flex items-center gap-1"
-              >
-                View Fee Payments →
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
+      <nav aria-label="Your pages" className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+        {[
+          { href: '/dashboard/my-results', label: 'Results', note: 'Term scores and report cards', Icon: Award },
+          { href: '/dashboard/my-timetable', label: 'Timetable', note: 'Your week, period by period', Icon: Calendar },
+          { href: '/dashboard/payments', label: 'Fees', note: 'Bills, payments and receipts', Icon: CreditCard },
+        ].map(({ href, label, note, Icon }) => (
+          <Link key={href} href={href} className="flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3.5 hover:border-control">
+            <Icon aria-hidden size={18} strokeWidth={1.6} className="shrink-0 text-text-secondary" />
+            <span className="flex min-w-0 flex-col"><span className="font-semibold">{label}</span><span className="truncate text-sm text-text-secondary">{note}</span></span>
+          </Link>
+        ))}
+      </nav>
 
       {/* Recorded Lessons Library */}
       <div>
