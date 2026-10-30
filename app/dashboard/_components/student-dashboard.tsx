@@ -132,62 +132,59 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
 
   return (
     <div className="mx-auto flex max-w-[1120px] flex-col gap-7 px-5 pb-12 pt-7 sm:px-6 sm:pt-9">
-      <div className="flex items-center gap-4">
-        {student.photo_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={student.photo_url} alt="" className="h-14 w-14 shrink-0 rounded-full object-cover" />
-        ) : (
-          <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-school-soft text-lg font-semibold text-school-ink">{initials}</span>
-        )}
-        <div className="flex min-w-0 flex-col gap-1">
-          <h1 className="text-[32px] font-semibold leading-tight tracking-[-0.02em] sm:text-[40px]">
-            {greeting.replace('Good ', '').replace(/^./, (c) => c.toUpperCase())}, {student.first_name}.
-          </h1>
-          <p className="text-base text-text-secondary sm:text-lg">
-            {nextSlot
-              ? `${nextSlot.subject} is next, at ${nextSlot.time}.`
-              : today.length
-                ? 'That’s all your classes for today.'
-                : `${classLabel} · ${sessionName}`}
-            {lessonTotal > 0 && ` ${lessonTotal} recorded lesson${lessonTotal === 1 ? '' : 's'} for your class.`}
-          </p>
+      <section aria-labelledby="hello" className="flex flex-col gap-6 rounded-[24px] bg-school-deep p-6 text-white shadow-raise sm:p-8">
+        <div className="flex items-start gap-4">
+          {student.photo_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={student.photo_url} alt="" className="h-14 w-14 shrink-0 rounded-full object-cover ring-2 ring-white/30" />
+          ) : (
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white text-lg font-semibold text-school-deep">{initials}</span>
+          )}
+          <div className="flex min-w-0 flex-col gap-1.5">
+            <h1 id="hello" className="text-[32px] font-semibold leading-[1.05] sm:text-[44px]">
+              {greeting.replace('Good ', '').replace(/^./, (c) => c.toUpperCase())}, {student.first_name}.
+            </h1>
+            <p className="text-base text-school-deep-muted sm:text-lg">
+              {nextSlot ? `${nextSlot.subject} is next, at ${nextSlot.time}.` : today.length ? 'That’s all your classes for today.' : `${classLabel} · ${sessionName}`}
+              {lessonTotal > 0 && ` ${lessonTotal} recorded lesson${lessonTotal === 1 ? '' : 's'} for your class.`}
+            </p>
+          </div>
         </div>
-      </div>
+        <div className="flex flex-col gap-2.5">
+          <div className="flex items-baseline justify-between text-sm">
+            <span className="font-medium">Today</span>
+            <Link href="/dashboard/my-timetable" className="text-school-deep-muted underline-offset-4 hover:text-white hover:underline">Full timetable</Link>
+          </div>
+          {today.length === 0 ? (
+            <p className="text-school-deep-muted">No classes on your timetable today.</p>
+          ) : (
+            <ol className="grid grid-cols-[repeat(auto-fill,minmax(132px,1fr))] gap-2">
+              {today.map((t) => (
+                <li
+                  key={t.id}
+                  aria-current={t.state === 'now' ? 'time' : undefined}
+                  className={`flex min-h-[64px] flex-col gap-0.5 rounded-xl px-3 py-2.5 ${
+                    t.state === 'now' ? 'bg-white text-school-deep'
+                    : t.state === 'next' ? 'bg-white/20 text-white'
+                    : t.state === 'past' ? 'bg-white/[0.06] text-white/55'
+                    : 'border border-white/20 text-white/85'
+                  }`}
+                >
+                  <span className="text-xs tabular-nums opacity-80">{t.state === 'now' ? `Now · ${t.time}` : t.time}</span>
+                  <span className="font-semibold leading-tight">{t.subject}</span>
+                  {t.teacher && <span className="truncate text-xs opacity-75">{t.teacher}</span>}
+                </li>
+              ))}
+            </ol>
+          )}
+        </div>
+      </section>
 
       {!isActive && (
-        <p role="status" className="rounded-lg bg-warning-bg px-4 py-3 text-sm text-warning-text">
+        <p role="status" className="rounded-xl bg-warning-bg px-4 py-3 text-sm text-warning-text">
           Your account is marked “{student.status}”. Ask the school office if this is a mistake.
         </p>
       )}
-
-      <section aria-labelledby="today-tt" className="card flex flex-col gap-3 p-5">
-        <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 id="today-tt" className="text-lg font-semibold">Today</h2>
-          <Link href="/dashboard/my-timetable" className="text-sm font-medium text-primary hover:underline">Full timetable</Link>
-        </div>
-        {today.length === 0 ? (
-          <p className="text-text-secondary">No classes on your timetable today.</p>
-        ) : (
-          <ol className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-2">
-            {today.map((t) => (
-              <li
-                key={t.id}
-                aria-current={t.state === 'now' ? 'time' : undefined}
-                className={`flex min-h-[64px] flex-col gap-0.5 rounded-xl px-3 py-2.5 ${
-                  t.state === 'now' ? 'bg-school text-white'
-                  : t.state === 'next' ? 'bg-school-soft text-school-ink'
-                  : t.state === 'past' ? 'bg-raised text-text-secondary'
-                  : 'border border-border text-text-primary'
-                }`}
-              >
-                <span className="text-xs tabular-nums opacity-85">{t.state === 'now' ? `Now · ${t.time}` : t.time}</span>
-                <span className="font-semibold leading-tight">{t.subject}</span>
-                {t.teacher && <span className="truncate text-xs opacity-85">{t.teacher}</span>}
-              </li>
-            ))}
-          </ol>
-        )}
-      </section>
 
       <nav aria-label="Your pages" className="grid grid-cols-1 gap-2 sm:grid-cols-3">
         {[
@@ -195,7 +192,7 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
           { href: '/dashboard/my-timetable', label: 'Timetable', note: 'Your week, period by period', Icon: Calendar },
           { href: '/dashboard/payments', label: 'Fees', note: 'Bills, payments and receipts', Icon: CreditCard },
         ].map(({ href, label, note, Icon }) => (
-          <Link key={href} href={href} className="flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3.5 hover:border-control">
+          <Link key={href} href={href} className="card flex items-center gap-3 px-4 py-4 transition-transform hover:-translate-y-px">
             <Icon aria-hidden size={18} strokeWidth={1.6} className="shrink-0 text-text-secondary" />
             <span className="flex min-w-0 flex-col"><span className="font-semibold">{label}</span><span className="truncate text-sm text-text-secondary">{note}</span></span>
           </Link>

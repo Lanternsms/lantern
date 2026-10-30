@@ -419,46 +419,47 @@ export async function GuardianDashboard({
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
-        {selectedChild?.photo_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={selectedChild.photo_url} alt="" className="h-14 w-14 shrink-0 rounded-full object-cover" />
-        ) : (
-          <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-school-soft text-lg font-semibold text-school-ink">
-            {selectedChild?.first_name?.[0]}{selectedChild?.last_name?.[0]}
-          </span>
-        )}
-        <div className="flex min-w-0 flex-col gap-1">
-          <h1 className="text-[28px] font-semibold leading-tight tracking-[-0.02em] sm:text-[36px]">{headline}</h1>
-          <p className="text-[15px] text-text-secondary sm:text-base">
-            {selectedChild?.first_name} {selectedChild?.last_name} · {selectedChild?.admission_no}
-            {markerName && todayRecord ? ` · marked by ${markerName}` : ''}
-          </p>
+      <section aria-labelledby="child-today" className="flex flex-col gap-6 rounded-[24px] bg-school-deep p-6 text-white shadow-raise sm:p-8">
+        <div className="flex items-start gap-4">
+          {selectedChild?.photo_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={selectedChild.photo_url} alt="" className="h-14 w-14 shrink-0 rounded-full object-cover ring-2 ring-white/30" />
+          ) : (
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white text-lg font-semibold text-school-deep">
+              {selectedChild?.first_name?.[0]}{selectedChild?.last_name?.[0]}
+            </span>
+          )}
+          <div className="flex min-w-0 flex-col gap-1.5">
+            <h1 id="child-today" className="text-[28px] font-semibold leading-[1.1] sm:text-[40px]">{headline}</h1>
+            <p className="text-[15px] text-school-deep-muted sm:text-base">
+              {selectedChild?.first_name} {selectedChild?.last_name} · {selectedChild?.admission_no}
+              {markerName && todayRecord ? ` · marked by ${markerName}` : ''}
+            </p>
+          </div>
         </div>
-      </div>
-
-      <section aria-labelledby="this-week" className="card flex flex-col gap-3 p-5">
-        <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 id="this-week" className="text-lg font-semibold">This week at school</h2>
-          {attendanceRate !== null && <span className="text-sm text-text-secondary">{attendanceRate}% present this term</span>}
+        <div className="flex flex-col gap-2.5">
+          <div className="flex flex-wrap items-baseline justify-between gap-2 text-sm">
+            <span className="font-medium">This week at school</span>
+            {attendanceRate !== null && <span className="text-school-deep-muted">{attendanceRate}% present this term</span>}
+          </div>
+          <ol className="grid grid-cols-5 gap-1.5 sm:gap-2">
+            {week.map((d) => (
+              <li
+                key={d.date}
+                className={`flex min-h-[68px] flex-col gap-0.5 rounded-xl p-2.5 text-sm sm:p-3.5 ${
+                  d.state === 'present' ? 'bg-white text-school-deep'
+                  : d.state === 'late' ? 'bg-warning-bg text-warning-text'
+                  : d.state === 'absent' ? 'bg-danger-bg text-danger-text'
+                  : d.state === 'upcoming' ? 'border border-dashed border-white/35 text-white/70'
+                  : 'bg-white/10 text-white/80'
+                }`}
+              >
+                <span className="text-xs opacity-80">{d.day}</span>
+                <span className="font-semibold leading-tight">{d.state === 'present' ? 'Present' : d.state === 'late' ? 'Late' : d.state === 'absent' ? 'Absent' : d.state === 'upcoming' ? '' : d.label}</span>
+              </li>
+            ))}
+          </ol>
         </div>
-        <ol className="grid grid-cols-5 gap-1.5 sm:gap-2">
-          {week.map((d) => (
-            <li
-              key={d.date}
-              className={`flex min-h-[72px] flex-col gap-0.5 rounded-xl p-2.5 text-sm sm:p-3.5 ${
-                d.state === 'present' ? 'bg-school-soft text-school-ink'
-                : d.state === 'late' ? 'bg-warning-bg text-warning-text'
-                : d.state === 'absent' ? 'bg-danger-bg text-danger-text'
-                : d.state === 'upcoming' ? 'border border-dashed border-control text-text-secondary'
-                : 'bg-raised text-text-secondary'
-              }`}
-            >
-              <span className="text-xs opacity-85">{d.day}</span>
-              <span className="font-semibold leading-tight">{d.state === 'present' ? 'Present' : d.state === 'late' ? 'Late' : d.state === 'absent' ? 'Absent' : d.state === 'upcoming' ? '' : d.label}</span>
-            </li>
-          ))}
-        </ol>
       </section>
 
       <div className="card px-5 pt-1">
