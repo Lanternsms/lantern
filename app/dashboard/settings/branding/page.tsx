@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 import { BrandingEditor } from './branding-editor'
 
 const FALLBACK_THEME = {
-  primary: '#182350',
+  primary: '#1D4ED8',
   sidebar: '#131c40',
   accent: '#b9915e',
   text_on_primary: '#ffffff',
@@ -27,11 +27,11 @@ export default async function BrandingPage() {
   ])
 
   return (
-    <div className="px-6 py-6 max-w-4xl space-y-6">
+    <div className="flex max-w-[1100px] flex-col gap-6 px-5 py-7 sm:px-8 sm:py-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Branding & Theme</h1>
-        <p className="text-sm text-text-secondary mt-1">
-          Set your school's logo and colors. Changes apply across the whole portal for everyone at your school.
+        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Branding</h1>
+        <p className="mt-1 text-[15px] text-text-secondary">
+          Staff, students and guardians see your colour and crest everywhere in Lantern.
         </p>
       </div>
       <BrandingEditor
