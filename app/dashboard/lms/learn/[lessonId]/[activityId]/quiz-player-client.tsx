@@ -147,7 +147,7 @@ export function QuizPlayerClient({
         <div>
           <Link
             href={`/dashboard/lms/learn/${lessonId}?student=${studentId}`}
-            className="inline-flex items-center rounded-xl bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-primary/90"
+            className="inline-flex items-center rounded-lg bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-primary/90"
           >
             &larr; Back to Lesson Activities
           </Link>
@@ -163,7 +163,7 @@ export function QuizPlayerClient({
 
     return (
       <div className="space-y-6">
-        <div className="rounded-2xl border border-border bg-surface p-8 shadow-sm text-center space-y-4">
+        <div className="rounded-2xl border border-border bg-surface p-8  text-center space-y-4">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-success-bg text-success-text">
             <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
@@ -181,21 +181,21 @@ export function QuizPlayerClient({
             </div>
             <div className="text-xs font-medium text-text-secondary mt-1">
               Score: {percentage}%
-              {result.isLate && <span className="ml-2 text-amber-500 font-semibold">(Submitted Late)</span>}
+              {result.isLate && <span className="ml-2 text-warning-text font-semibold">(Submitted Late)</span>}
             </div>
           </div>
 
           <div className="flex justify-center gap-3 pt-2">
             <Link
               href={`/dashboard/lms/learn/${lessonId}?student=${studentId}`}
-              className="rounded-xl border border-border bg-surface px-4 py-2 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+              className="rounded-lg border border-border bg-surface px-4 py-2 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
             >
               &larr; Back to Activities
             </Link>
             <button
               type="button"
               onClick={handleRetake}
-              className="rounded-xl bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-primary/90 transition-colors"
+              className="rounded-lg bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-primary/90 transition-colors"
             >
               Take Quiz Again
             </button>
@@ -242,10 +242,10 @@ export function QuizPlayerClient({
                       let badge = ''
                       let borderClass = 'border-border bg-surface'
                       if (isCorrectOption) {
-                        borderClass = 'border-emerald-500 bg-emerald-500/10 text-emerald-800 dark:text-emerald-200'
+                        borderClass = 'border-success-text bg-success-text text-success-text dark:text-success-text'
                         badge = ' (Correct Answer)'
                       } else if (isStudentSelected && !isCorrectOption) {
-                        borderClass = 'border-red-500 bg-red-500/10 text-red-800 dark:text-red-200'
+                        borderClass = 'border-danger-text bg-danger-text text-danger-text dark:text-danger-text'
                         badge = ' (Your Answer)'
                       }
 
@@ -290,7 +290,7 @@ export function QuizPlayerClient({
   return (
     <div className="space-y-6">
       {/* Quiz Header Bar */}
-      <div className="sticky top-4 z-20 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-surface/95 p-4 backdrop-blur shadow-sm">
+      <div className="sticky top-4 z-20 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-surface/95 p-4 backdrop-blur ">
         <div>
           <h2 className="text-base font-bold text-text-primary">{activity?.title}</h2>
           <p className="text-xs text-text-secondary">
@@ -301,7 +301,7 @@ export function QuizPlayerClient({
         <div className="flex items-center gap-3">
           {secondsRemaining !== null && (
             <div
-              className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-bold ${
+              className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-bold ${
                 secondsRemaining < 60
                   ? 'border-danger-bg bg-danger-bg/20 text-danger-text animate-pulse'
                   : 'border-border bg-surface-muted text-text-primary'
@@ -318,7 +318,7 @@ export function QuizPlayerClient({
             type="button"
             onClick={handleSubmit}
             disabled={submitting}
-            className="rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
+            className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
           >
             {submitting ? 'Submitting...' : 'Submit Quiz'}
           </button>
@@ -326,7 +326,7 @@ export function QuizPlayerClient({
       </div>
 
       {error && (
-        <div className="rounded-xl border border-danger-bg bg-danger-bg/20 p-3 text-xs text-danger-text">
+        <div className="rounded-lg border border-danger-bg bg-danger-bg/20 p-3 text-xs text-danger-text">
           {error}
         </div>
       )}
@@ -336,14 +336,14 @@ export function QuizPlayerClient({
         {questions.map((q, qIdx) => (
           <div
             key={q.id}
-            className="rounded-2xl border border-border bg-surface p-6 shadow-sm space-y-4"
+            className="rounded-2xl border border-border bg-surface p-6  space-y-4"
           >
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-center gap-2">
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
                   {qIdx + 1}
                 </span>
-                <span className="text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                <span className="text-xs font-semibold  text-text-secondary">
                   Question {qIdx + 1}
                 </span>
               </div>
@@ -362,7 +362,7 @@ export function QuizPlayerClient({
                 return (
                   <label
                     key={optIdx}
-                    className={`flex items-center gap-3 rounded-xl border p-3.5 text-sm cursor-pointer transition-all ${
+                    className={`flex items-center gap-3 rounded-lg border p-3.5 text-sm cursor-pointer transition-all ${
                       isSelected
                         ? 'border-primary bg-primary/5 text-primary font-medium ring-1 ring-primary'
                         : 'border-border bg-surface hover:bg-surface-muted/50 text-text-primary'
@@ -395,7 +395,7 @@ export function QuizPlayerClient({
           type="button"
           onClick={handleSubmit}
           disabled={submitting}
-          className="rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
+          className="rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
         >
           {submitting ? 'Submitting...' : 'Submit Answers & Finish'}
         </button>

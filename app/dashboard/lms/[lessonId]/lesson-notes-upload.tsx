@@ -195,17 +195,17 @@ export function LessonNotesUpload({
   return (
     <div className="space-y-4">
       {uploadError && (
-        <div className="text-xs text-danger-text bg-danger-bg border border-red-200 rounded-lg p-3">
+        <div className="text-xs text-danger-text bg-danger-bg border border-danger-bg rounded-lg p-3">
           {uploadError}
         </div>
       )}
 
       {hasNotes && !isReplacing ? (
-        <div className="rounded-xl border border-border bg-surface-muted/30 p-4 space-y-4">
+        <div className="rounded-lg border border-border bg-surface-muted/30 p-4 space-y-4">
           {/* File details */}
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-start gap-3 min-w-0">
-              <div className="w-10 h-10 rounded-lg bg-red-50 text-red-600 flex items-center justify-center shrink-0 border border-red-200">
+              <div className="flex items-center justify-center shrink-0 text-text-secondary">
                 <FileText size={20} />
               </div>
               <div className="min-w-0">
@@ -235,7 +235,7 @@ export function LessonNotesUpload({
                 type="button"
                 onClick={handleRemoveNotes}
                 disabled={isPending}
-                className="text-xs font-medium text-danger-text hover:bg-danger-bg border border-red-200 rounded-lg p-1.5 transition-colors"
+                className="text-xs font-medium text-danger-text hover:bg-danger-bg border border-danger-bg rounded-lg p-1.5 transition-colors"
                 title="Remove notes"
               >
                 <Trash2 size={14} />
@@ -247,32 +247,32 @@ export function LessonNotesUpload({
           <div className="pt-3 border-t border-border flex items-start justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-2">
               {extractionStatus === 'ready' && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  <CheckCircle2 size={14} className="text-emerald-600" />
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-success-bg text-success-text border border-success-bg">
+                  <CheckCircle2 size={14} className="text-success-text" />
                   Ready for the AI tutor
                 </span>
               )}
               {extractionStatus === 'scanned' && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-800 border border-amber-200">
-                  <AlertTriangle size={14} className="text-amber-600" />
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-warning-bg text-warning-text border border-warning-bg">
+                  <AlertTriangle size={14} className="text-warning-text" />
                   This PDF looks scanned, so the AI tutor cannot read it. Upload a text-based PDF (export from Word or Google Docs)
                 </span>
               )}
               {extractionStatus === 'too_long' && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-800 border border-amber-200">
-                  <AlertTriangle size={14} className="text-amber-600" />
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-warning-bg text-warning-text border border-warning-bg">
+                  <AlertTriangle size={14} className="text-warning-text" />
                   Too long for the AI tutor
                 </span>
               )}
               {extractionStatus === 'failed' && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-200">
-                  <AlertCircle size={14} className="text-red-600" />
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-danger-bg text-danger-text border border-danger-bg">
+                  <AlertCircle size={14} className="text-danger-text" />
                   Could not read this PDF
                 </span>
               )}
               {extractionStatus === 'pending' && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
-                  <Loader2 size={14} className="animate-spin text-blue-600" />
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-school-soft text-school-ink border border-school-track">
+                  <Loader2 size={14} className="animate-spin text-school-ink" />
                   Extracting text for AI tutor…
                 </span>
               )}
@@ -310,7 +310,7 @@ export function LessonNotesUpload({
           </div>
         </div>
       ) : (
-        <div className="rounded-xl border border-dashed border-border bg-surface p-5 space-y-4">
+        <div className="rounded-lg border border-dashed border-border bg-surface p-5 space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-semibold text-text-primary">
@@ -347,7 +347,7 @@ export function LessonNotesUpload({
                 htmlFor={`notes-upload-${lessonId}`}
                 className="flex flex-col items-center justify-center p-6 border border-dashed border-border rounded-lg bg-surface-muted/20 hover:bg-surface-muted/50 cursor-pointer transition-colors"
               >
-                <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-2">
+                <div className="flex items-center justify-center mb-2 shrink-0 text-text-secondary">
                   <Upload size={18} />
                 </div>
                 <p className="text-xs font-semibold text-text-primary">Click to select PDF document</p>
@@ -358,7 +358,7 @@ export function LessonNotesUpload({
             <div className="space-y-3">
               <div className="flex items-center justify-between p-3 rounded-lg border border-border bg-surface-muted/30">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <FileText size={18} className="text-red-500 shrink-0" />
+                  <FileText size={18} className="text-danger-text shrink-0" />
                   <div className="min-w-0">
                     <p className="text-xs font-medium text-text-primary truncate">{selectedFile.name}</p>
                     <p className="text-[11px] text-text-secondary">{formatFileSize(selectedFile.size)}</p>

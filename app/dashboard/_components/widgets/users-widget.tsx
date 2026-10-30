@@ -19,7 +19,7 @@ export async function UsersWidget() {
       <div>
         <div className="flex items-center justify-between pb-4 border-b border-border mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center shrink-0 border border-orange-200/60">
+            <div className="flex items-center justify-center shrink-0 text-text-secondary">
               <UserCog size={20} />
             </div>
             <div>
@@ -51,17 +51,17 @@ export async function UsersWidget() {
           <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
             <Link
               href="/dashboard/users/new"
-              className="p-3 rounded-xl border border-border bg-surface-muted/40 hover:bg-surface-muted hover:border-primary/40 transition-colors flex items-center justify-between group"
+              className="p-3 rounded-lg border border-border bg-surface-muted/40 hover:bg-surface-muted hover:border-primary/40 transition-colors flex items-center justify-between group"
             >
               <div className="flex items-center gap-2">
-                <UserPlus size={14} className="text-orange-600" />
+                <UserPlus size={14} className="text-warning-text" />
                 <span className="font-semibold text-text-primary">Invite User</span>
               </div>
               <ArrowUpRight size={13} className="text-text-muted group-hover:text-primary transition-colors" />
             </Link>
             <Link
               href="/dashboard/users"
-              className="p-3 rounded-xl border border-border bg-surface-muted/40 hover:bg-surface-muted hover:border-primary/40 transition-colors flex items-center justify-between group"
+              className="p-3 rounded-lg border border-border bg-surface-muted/40 hover:bg-surface-muted hover:border-primary/40 transition-colors flex items-center justify-between group"
             >
               <div className="flex items-center gap-2">
                 <UserCog size={14} className="text-text-secondary" />

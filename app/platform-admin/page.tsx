@@ -17,13 +17,13 @@ export default async function PlatformAdminGatePage({
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-surface-muted px-4">
-      <form action={unlockPlatformAdmin} className="w-full max-w-sm bg-surface border border-border rounded-xl p-6 space-y-4 shadow-sm">
+      <form action={unlockPlatformAdmin} className="w-full max-w-sm bg-surface border border-border rounded-lg p-6 space-y-4 ">
         <div>
           <h1 className="text-lg font-semibold text-text-primary">Platform Admin</h1>
           <p className="text-sm text-text-secondary mt-1">Internal tool. Not for school staff.</p>
         </div>
         {error && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">Incorrect password.</p>
+          <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2">Incorrect password.</p>
         )}
         <input
           type="password"

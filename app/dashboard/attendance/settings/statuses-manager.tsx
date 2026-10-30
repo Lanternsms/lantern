@@ -32,7 +32,7 @@ export default function StatusesManager({ statuses }: { statuses: Status[] }) {
 
   return (
     <div className="space-y-4">
-      <table className="w-full text-sm bg-surface border border-border rounded-xl overflow-hidden">
+      <table className="w-full text-sm bg-surface border border-border rounded-lg overflow-hidden">
         <thead>
           <tr className="border-b border-border text-left text-xs text-text-secondary">
             <th className="p-3">Code</th>

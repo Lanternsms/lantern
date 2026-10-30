@@ -39,7 +39,7 @@ export default async function AnnouncementsPage() {
         {(announcements ?? []).map((a: any) => {
           const canManage = a.created_by === user.id || canManageAll
           return (
-            <div key={a.id} className="bg-surface border border-border rounded-xl p-5">
+            <div key={a.id} className="bg-surface border border-border rounded-lg p-5">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <h2 className="text-sm font-semibold text-text-primary">{a.title}</h2>

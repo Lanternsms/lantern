@@ -190,7 +190,7 @@ export function QuizBuilder({
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-border bg-surface p-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-border bg-surface p-4">
         <div>
           <div className="text-sm font-semibold text-text-primary">
             Quiz Questions ({questions.length})
@@ -225,7 +225,7 @@ export function QuizBuilder({
       </div>
 
       {hasSubmissions && (
-        <div className="rounded-lg border border-amber-500/20 bg-amber-500/10 p-3 text-xs text-amber-700 dark:text-amber-300">
+        <div className="rounded-lg border border-warning-text bg-warning-text p-3 text-xs text-warning-text dark:text-warning-text">
           Submissions have already been received for this quiz. Questions and point values can no longer be edited.
         </div>
       )}
@@ -246,7 +246,7 @@ export function QuizBuilder({
         {questions.map((q, qIdx) => (
           <div
             key={qIdx}
-            className="rounded-xl border border-border bg-surface p-5 shadow-sm space-y-4"
+            className="rounded-lg border border-border bg-surface p-5  space-y-4"
           >
             {/* Question Header */}
             <div className="flex items-center justify-between gap-3 border-b border-border pb-3">
@@ -254,7 +254,7 @@ export function QuizBuilder({
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
                   {qIdx + 1}
                 </span>
-                <span className="text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                <span className="text-xs font-semibold  text-text-secondary">
                   Question {qIdx + 1}
                 </span>
               </div>

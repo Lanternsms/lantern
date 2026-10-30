@@ -7,21 +7,21 @@ const STUDENT_LINKS = [
     description: 'Published report cards & test marks',
     href: '/dashboard/my-results',
     icon: Award,
-    color: 'text-violet-600 bg-violet-50 border-violet-200/60',
+    color: 'text-school-ink bg-school-soft border-school-track',
   },
   {
     label: 'My Timetable',
     description: 'Weekly schedule & class periods',
     href: '/dashboard/my-timetable',
     icon: Calendar,
-    color: 'text-amber-600 bg-amber-50 border-amber-200/60',
+    color: 'text-warning-text bg-warning-bg border-warning-bg',
   },
   {
     label: 'My Payments',
     description: 'Fee balances & transaction receipts',
     href: '/dashboard/payments',
     icon: CreditCard,
-    color: 'text-emerald-600 bg-emerald-50 border-emerald-200/60',
+    color: 'text-success-text bg-success-bg border-success-bg',
   },
 ]
 
@@ -31,7 +31,7 @@ export async function StudentWidget() {
       <div>
         <div className="flex items-center justify-between pb-4 border-b border-border mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 border border-primary/20">
+            <div className="flex items-center justify-center shrink-0 text-text-secondary">
               <GraduationCap size={20} />
             </div>
             <div>
@@ -54,10 +54,10 @@ export async function StudentWidget() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="group p-3.5 rounded-xl border border-border bg-surface-muted/30 hover:bg-surface-muted hover:border-primary/40 transition-all flex flex-col justify-between gap-3"
+                className="group p-3.5 rounded-lg border border-border bg-surface-muted/30 hover:bg-surface-muted hover:border-primary/40 transition-all flex flex-col justify-between gap-3"
               >
                 <div className="flex items-center justify-between">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border ${link.color}`}>
+                  <div className="flex items-center justify-center shrink-0 text-text-secondary">
                     <Icon size={16} />
                   </div>
                   <ChevronRight size={14} className="text-text-muted group-hover:text-primary group-hover:translate-x-0.5 transition-all" />

@@ -86,9 +86,9 @@ export function PwaInstallPrompt({
   if (variant === 'card') {
     if (isStandalone) {
       return (
-        <div className="bg-surface border border-border rounded-xl p-5 flex items-center justify-between">
+        <div className="bg-surface border border-border rounded-lg p-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-success-bg flex items-center justify-center text-success-text">
+            <div className="flex items-center justify-center shrink-0 text-text-secondary">
               <Download className="w-5 h-5" />
             </div>
             <div>
@@ -104,10 +104,10 @@ export function PwaInstallPrompt({
     }
 
     return (
-      <div className="bg-surface border border-border rounded-xl p-5 space-y-3">
+      <div className="bg-surface border border-border rounded-lg p-5 space-y-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+            <div className="flex items-center justify-center shrink-0 text-text-secondary">
               <Download className="w-5 h-5" />
             </div>
             <div>
@@ -144,7 +144,7 @@ export function PwaInstallPrompt({
 
   // Banner variant
   return (
-    <div className="relative mb-6 rounded-xl border border-border bg-surface p-4 shadow-sm">
+    <div className="relative mb-6 rounded-lg border border-border bg-surface p-4 ">
       <button
         onClick={handleDismiss}
         aria-label="Dismiss install banner"
@@ -154,7 +154,7 @@ export function PwaInstallPrompt({
       </button>
 
       <div className="flex items-start gap-3.5 pr-8">
-        <div className="w-10 h-10 shrink-0 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+        <div className="shrink-0 flex items-center justify-center text-text-secondary">
           <Download className="w-5 h-5" />
         </div>
         <div className="space-y-1.5">

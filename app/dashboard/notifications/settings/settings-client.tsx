@@ -81,7 +81,7 @@ export function NotificationSettingsClient({
       </div>
 
       {/* Category Notification Preferences Matrix */}
-      <div className="bg-surface border border-border rounded-xl p-6 space-y-6">
+      <div className="bg-surface border border-border rounded-lg p-6 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 className="text-base font-semibold text-text-primary">
@@ -108,10 +108,10 @@ export function NotificationSettingsClient({
           </div>
         </div>
 
-        <div className="border border-border rounded-xl overflow-hidden">
+        <div className="border border-border rounded-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-surface-muted border-b border-border text-text-secondary uppercase tracking-wider font-semibold">
+              <thead className="bg-surface-muted border-b border-border text-text-secondary  font-semibold">
                 <tr>
                   <th className="py-3 px-4 min-w-[200px]">Category</th>
                   <th className="py-3 px-4 text-center w-28">In-app</th>

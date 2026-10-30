@@ -16,10 +16,10 @@ export default async function NewSessionPage({
       <h1 className="text-xl font-semibold text-text-primary mt-4 mb-6">Add Academic Session</h1>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">{error}</p>
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
 
-      <form action={createSession} className="bg-surface border border-border rounded-xl p-6 space-y-4">
+      <form action={createSession} className="bg-surface border border-border rounded-lg p-6 space-y-4">
         <div>
           <label className="block text-sm text-text-secondary mb-1.5">Session Name *</label>
           <input name="name" required placeholder="e.g. 2025/2026" className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />

@@ -42,7 +42,7 @@ export default async function ResultComputationRulesPage({
       </p>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">{error}</p>
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
       {success && (
         <div className="flex items-center gap-2 text-sm text-success-text bg-success-bg rounded-lg px-3 py-2 mb-4">
@@ -50,7 +50,7 @@ export default async function ResultComputationRulesPage({
         </div>
       )}
 
-      <form action={updateResultComputationRules} className="bg-surface border border-border rounded-xl p-6 space-y-6">
+      <form action={updateResultComputationRules} className="bg-surface border border-border rounded-lg p-6 space-y-6">
         <div>
           <label className="flex items-center justify-between">
             <div>

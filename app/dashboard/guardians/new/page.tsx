@@ -41,10 +41,10 @@ export default async function NewGuardianPage({
       </p>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">{error}</p>
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
 
-      <form action={createGuardian} className="bg-surface border border-border rounded-xl p-6 space-y-4">
+      <form action={createGuardian} className="bg-surface border border-border rounded-lg p-6 space-y-4">
         <input type="hidden" name="student_id" value={student_id} />
 
         <div>

@@ -108,7 +108,7 @@ export default async function GradebookEntryPage({
       </div>
       <p className="text-sm text-text-secondary mb-6">{term.name}</p>
 
-      {error && <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">{error}</p>}
+      {error && <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>}
       {saved && (
         <p className="flex items-center gap-2 text-sm text-success-text bg-success-bg rounded-lg px-3 py-2 mb-4">
           <CheckCircle2 size={16} /> Scores saved.
@@ -129,13 +129,13 @@ export default async function GradebookEntryPage({
         <p className="text-sm text-text-secondary">No students enrolled in this class for the current term.</p>
       ) : (
         <form action={saveScoresWithId}>
-          <div className="bg-surface border border-border rounded-xl overflow-hidden mb-4">
+          <div className="bg-surface border border-border rounded-lg overflow-hidden mb-4">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Student</th>
+                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Student</th>
                   {assessmentTypes?.map((at) => (
-                    <th key={at.id} className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">{at.name}</th>
+                    <th key={at.id} className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">{at.name}</th>
                   ))}
                 </tr>
               </thead>

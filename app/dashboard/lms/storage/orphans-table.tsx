@@ -94,7 +94,7 @@ export function OrphansTable({ orphans }: OrphansTableProps) {
               type="button"
               disabled={selectedNames.size === 0 || isPending}
               onClick={() => setDialogMode('selected')}
-              className="text-xs px-3.5 py-2 rounded-lg border border-red-300 bg-red-50 text-red-700 hover:bg-red-100 font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="text-xs px-3.5 py-2 rounded-lg border border-danger-bg bg-danger-bg text-danger-text hover:bg-danger-bg font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Delete selected ({selectedNames.size})
             </button>
@@ -102,7 +102,7 @@ export function OrphansTable({ orphans }: OrphansTableProps) {
               type="button"
               disabled={isPending}
               onClick={() => setDialogMode('all')}
-              className="text-xs px-3.5 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 font-medium transition-colors disabled:opacity-40"
+              className="text-xs px-3.5 py-2 rounded-lg bg-danger-text text-white hover:bg-danger-text font-medium transition-colors disabled:opacity-40"
             >
               Delete all ({orphans.length})
             </button>
@@ -114,8 +114,8 @@ export function OrphansTable({ orphans }: OrphansTableProps) {
         <div
           className={`p-3 rounded-lg text-xs font-medium border ${
             resultMessage.type === 'success'
-              ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-              : 'bg-red-50 text-red-800 border-red-200'
+              ? 'bg-success-bg text-success-text border-success-bg'
+              : 'bg-danger-bg text-danger-text border-danger-bg'
           }`}
         >
           {resultMessage.text}
@@ -123,7 +123,7 @@ export function OrphansTable({ orphans }: OrphansTableProps) {
       )}
 
       {/* Table */}
-      <div className="border border-border rounded-xl overflow-hidden bg-surface">
+      <div className="border border-border rounded-lg overflow-hidden bg-surface">
         {orphans.length === 0 ? (
           <div className="py-12 px-4 text-center space-y-1">
             <p className="text-sm font-medium text-text-primary">No orphaned files</p>
@@ -205,7 +205,7 @@ export function OrphansTable({ orphans }: OrphansTableProps) {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60">
           <div className="bg-surface border border-border rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600 shrink-0">
+              <div className="w-10 h-10 rounded-full bg-danger-bg flex items-center justify-center text-danger-text shrink-0">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
@@ -239,7 +239,7 @@ export function OrphansTable({ orphans }: OrphansTableProps) {
                 type="button"
                 onClick={handleDeleteConfirmed}
                 disabled={isPending}
-                className="text-xs px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 font-semibold transition-colors disabled:opacity-50"
+                className="text-xs px-4 py-2 rounded-lg bg-danger-text text-white hover:bg-danger-text font-semibold transition-colors disabled:opacity-50"
               >
                 {isPending ? 'Deleting…' : 'Yes, delete'}
               </button>

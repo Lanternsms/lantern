@@ -89,7 +89,7 @@ export default async function ClassResultsIndexPage({
       )}
 
       {selectedTermId && (!assignments || assignments.length === 0) && (
-        <div className="bg-surface border border-border rounded-xl p-12 text-center">
+        <div className="bg-surface border border-border rounded-lg p-12 text-center">
           <BarChart3 size={36} className="mx-auto text-text-muted mb-3" />
           <p className="text-sm text-text-secondary">
             You are not assigned to teach any subjects in this term.
@@ -103,7 +103,7 @@ export default async function ClassResultsIndexPage({
             <Link
               key={a.id}
               href={`/dashboard/class-results/${a.id}${selectedTermId ? `?term=${selectedTermId}` : ''}`}
-              className="group bg-surface border border-border rounded-xl p-5 hover:border-primary/50 hover:shadow-sm transition-all"
+              className="group bg-surface border border-border rounded-lg p-5 hover:border-primary/50 hover: transition-all"
             >
               <div className="flex items-start justify-between">
                 <div>

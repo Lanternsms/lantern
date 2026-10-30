@@ -34,13 +34,13 @@ export default async function GradingScalesPage({
       </div>
 
       {(error || fetchError) && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">
           {error ?? fetchError?.message}
         </p>
       )}
 
       {!fetchError && scales?.length === 0 && (
-        <div className="bg-surface border border-border rounded-xl p-8 text-center">
+        <div className="bg-surface border border-border rounded-lg p-8 text-center">
           <p className="text-sm text-text-secondary mb-4">
             No grading scales yet. Start with the standard A–F scale, or build your own from scratch.
           </p>
@@ -53,13 +53,13 @@ export default async function GradingScalesPage({
       )}
 
       {scales && scales.length > 0 && (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden">
+        <div className="bg-surface border border-border rounded-lg overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Scale</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Grade Bands</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Status</th>
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Scale</th>
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Grade Bands</th>
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Status</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>

@@ -41,17 +41,17 @@ export default async function MyLessonsPage() {
       </div>
 
       {lessonList.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border p-12 text-center bg-surface">
+        <div className="rounded-lg border border-dashed border-border p-12 text-center bg-surface">
           <p className="text-sm font-medium text-text-primary">No recorded lessons yet</p>
           <p className="text-xs text-text-secondary mt-1">
             When lessons are uploaded and assigned to you as the recording teacher, they will appear here.
           </p>
         </div>
       ) : (
-        <div className="rounded-xl border border-border bg-surface overflow-hidden shadow-sm">
+        <div className="rounded-lg border border-border bg-surface overflow-hidden ">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-border bg-surface-muted/50 text-xs font-semibold text-text-secondary uppercase tracking-wider">
+              <thead className="border-b border-border bg-surface-muted/50 text-xs font-semibold text-text-secondary ">
                 <tr>
                   <th className="px-4 py-3">Lesson Title</th>
                   <th className="px-4 py-3">Class</th>

@@ -130,16 +130,16 @@ export function PushSettingsCard({
 
   if (!mounted) {
     return (
-      <div className="bg-surface border border-border rounded-xl p-6 animate-pulse h-48" />
+      <div className="bg-surface border border-border rounded-lg p-6 animate-pulse h-48" />
     )
   }
 
   // State 1: Unsupported browser
   if (!supported) {
     return (
-      <div className="bg-surface border border-border rounded-xl p-6 space-y-3">
+      <div className="bg-surface border border-border rounded-lg p-6 space-y-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-surface-muted flex items-center justify-center text-text-muted">
+          <div className="flex items-center justify-center shrink-0 text-text-secondary">
             <AlertTriangle className="w-5 h-5" />
           </div>
           <div>
@@ -156,9 +156,9 @@ export function PushSettingsCard({
   // State 2: iOS not installed as standalone PWA
   if (isIOSWebTab) {
     return (
-      <div className="bg-surface border border-border rounded-xl p-6 space-y-4">
+      <div className="bg-surface border border-border rounded-lg p-6 space-y-4">
         <div className="flex items-start gap-3.5">
-          <div className="w-10 h-10 rounded-lg bg-accent/15 flex items-center justify-center text-accent shrink-0">
+          <div className="flex items-center justify-center shrink-0 text-text-secondary">
             <Smartphone className="w-5 h-5" />
           </div>
           <div className="space-y-1">
@@ -300,7 +300,7 @@ export function PushSettingsCard({
   return (
     <div className="space-y-6">
       {/* Primary Device Card */}
-      <div className="bg-surface border border-border rounded-xl p-6">
+      <div className="bg-surface border border-border rounded-lg p-6">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div
@@ -337,7 +337,7 @@ export function PushSettingsCard({
 
         {/* State 3: Permission Denied */}
         {permission === 'denied' && (
-          <div className="mt-4 rounded-lg bg-danger-bg/50 border border-red-200 p-4 text-xs text-text-primary space-y-2">
+          <div className="mt-4 rounded-lg bg-danger-bg/50 border border-danger-bg p-4 text-xs text-text-primary space-y-2">
             <p className="font-semibold text-danger-text flex items-center gap-1.5">
               <AlertTriangle className="w-4 h-4" /> Notification permissions are blocked
             </p>
@@ -397,7 +397,7 @@ export function PushSettingsCard({
 
       {/* Other Registered Devices */}
       {otherDevices.length > 0 && (
-        <div className="bg-surface border border-border rounded-xl p-6 space-y-4">
+        <div className="bg-surface border border-border rounded-lg p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-sm font-semibold text-text-primary">Registered devices</h3>

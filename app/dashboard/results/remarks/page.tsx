@@ -151,7 +151,7 @@ export default async function RemarksPage({
         </form>
       </div>
 
-      <div className="bg-surface border border-border rounded-xl p-5">
+      <div className="bg-surface border border-border rounded-lg p-5">
         {(students ?? []).length === 0 ? (
           <p className="text-sm text-text-secondary">No students enrolled in this class/arm yet.</p>
         ) : (

@@ -35,7 +35,7 @@ function ColorField({
   const passesAA = currentRatio >= 4.5
 
   return (
-    <div className="border border-border rounded-xl p-4 space-y-3">
+    <div className="border border-border rounded-lg p-4 space-y-3">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-text-primary">{label}</h3>
         <div className="flex items-center gap-2">
@@ -76,7 +76,7 @@ function ColorField({
         </div>
       </div>
 
-      <p className={`text-[11px] ${passesAA ? 'text-emerald-600' : 'text-amber-600'}`}>
+      <p className={`text-[11px] ${passesAA ? 'text-success-text' : 'text-warning-text'}`}>
         {usingSuggestion ? 'Using suggested' : 'Overriding suggestion'} — contrast {currentRatio.toFixed(1)}:1
         {passesAA ? ' (passes WCAG AA)' : ' (low contrast — hard to read)'}
       </p>
@@ -188,7 +188,7 @@ export function BrandingEditor({
     <div className="grid lg:grid-cols-2 gap-6">
       {/* CONTROLS */}
       <div className="space-y-4">
-        <div className="border border-border rounded-xl p-4 space-y-3">
+        <div className="border border-border rounded-lg p-4 space-y-3">
           <h3 className="text-sm font-semibold text-text-primary">Logo</h3>
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-lg border border-border bg-surface-muted flex items-center justify-center overflow-hidden">
@@ -213,7 +213,7 @@ export function BrandingEditor({
                   type="button"
                   onClick={handleRemoveLogo}
                   disabled={isRemovingLogo || isPending}
-                  className="text-sm font-medium text-red-600 hover:underline disabled:opacity-60"
+                  className="text-sm font-medium text-danger-text hover:underline disabled:opacity-60"
                 >
                   {isRemovingLogo ? 'Removing…' : 'Remove logo'}
                 </button>
@@ -252,15 +252,15 @@ export function BrandingEditor({
             Reset
           </button>
           {message && (
-            <p className={`text-xs ${message.type === 'success' ? 'text-emerald-600' : 'text-red-600'}`}>{message.text}</p>
+            <p className={`text-xs ${message.type === 'success' ? 'text-success-text' : 'text-danger-text'}`}>{message.text}</p>
           )}
         </div>
       </div>
 
       {/* LIVE PREVIEW */}
       <div className="space-y-2">
-        <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wider">Live Preview</h3>
-        <div className="border border-border rounded-xl overflow-hidden shadow-xs">
+        <h3 className="text-xs font-semibold text-text-secondary ">Live Preview</h3>
+        <div className="border border-border rounded-lg overflow-hidden shadow-xs">
           <div className="flex h-72">
             <div className="w-40 shrink-0 p-3 space-y-2" style={{ backgroundColor: sidebar }}>
               <div className="flex flex-col items-center justify-center gap-1 mb-4">

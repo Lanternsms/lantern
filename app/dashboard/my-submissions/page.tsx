@@ -41,13 +41,13 @@ const statusConfig: Record<
     label: 'Returned',
     icon: RotateCcw,
     className: 'text-danger-text',
-    badgeClass: 'bg-danger-bg text-danger-text border border-red-200',
+    badgeClass: 'bg-danger-bg text-danger-text border border-danger-bg',
   },
   published: {
     label: 'Published',
     icon: CheckCircle2,
     className: 'text-success-text',
-    badgeClass: 'bg-success-bg text-success-text border border-green-200',
+    badgeClass: 'bg-success-bg text-success-text border border-success-bg',
   },
 }
 
@@ -178,14 +178,14 @@ export default async function MySubmissionsPage({
       </div>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">
           {error.message}
         </p>
       )}
 
       {/* ── Returned items alert ── */}
       {counts.returned > 0 && !filterStatus && (
-        <div className="flex items-start gap-3 bg-danger-bg border border-red-200 rounded-xl px-4 py-3 mb-6">
+        <div className="flex items-start gap-3 bg-danger-bg border border-danger-bg rounded-lg px-4 py-3 mb-6">
           <RotateCcw size={16} className="text-danger-text mt-0.5 shrink-0" />
           <div>
             <p className="text-sm font-medium text-danger-text">
@@ -202,7 +202,7 @@ export default async function MySubmissionsPage({
       )}
 
       {filtered.length === 0 && (
-        <div className="bg-surface border border-border rounded-xl p-12 text-center">
+        <div className="bg-surface border border-border rounded-lg p-12 text-center">
           <FileText size={36} className="mx-auto text-text-muted mb-3" />
           <p className="text-sm text-text-secondary">
             {filterStatus
@@ -219,23 +219,23 @@ export default async function MySubmissionsPage({
       )}
 
       {filtered.length > 0 && (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden">
+        <div className="bg-surface border border-border rounded-lg overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-surface-muted/40">
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">
                   Class / Subject
                 </th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">
                   Term
                 </th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">
                   Status
                 </th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">
                   Current Stage
                 </th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">
                   Submitted
                 </th>
                 <th className="px-4 py-3" />
@@ -276,7 +276,7 @@ export default async function MySubmissionsPage({
                   <tr
                     key={b.id}
                     className={`border-b border-border last:border-0 hover:bg-surface-muted/30 transition-colors ${
-                      b.status === 'returned' ? 'bg-red-50/30' : ''
+                      b.status === 'returned' ? 'bg-danger-bg' : ''
                     }`}
                   >
                     <td className="px-4 py-3">
@@ -355,7 +355,7 @@ export default async function MySubmissionsPage({
               )?.some((a) => a.action === 'return_to_teacher' && a.comment)
           ) && (
             <div className="border-t border-border px-5 py-4 space-y-3">
-              <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide">
+              <h3 className="text-xs font-semibold text-text-secondary ">
                 Reviewer Feedback
               </h3>
               {filtered
@@ -384,7 +384,7 @@ export default async function MySubmissionsPage({
                   return (
                     <div
                       key={b.id}
-                      className="bg-danger-bg/60 border border-red-200/60 rounded-lg px-4 py-3"
+                      className="bg-danger-bg/60 border border-danger-bg rounded-lg px-4 py-3"
                     >
                       <p className="text-xs font-medium text-text-primary mb-1">
                         {subj?.name} — {cls?.name}

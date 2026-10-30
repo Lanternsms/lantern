@@ -12,18 +12,18 @@ function statusTheme(label: string, selected: boolean) {
   const l = label.toLowerCase()
   if (l.includes('present')) {
     return selected
-      ? 'bg-emerald-500 text-white border-emerald-500 shadow-md shadow-emerald-200'
-      : 'border-border text-text-secondary hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-700'
+      ? 'bg-success-text text-white border-success-text'
+      : 'border-border text-text-secondary hover:bg-success-bg hover:border-success-bg hover:text-success-text'
   }
   if (l.includes('absent')) {
     return selected
-      ? 'bg-red-500 text-white border-red-500 shadow-md shadow-red-200'
-      : 'border-border text-text-secondary hover:bg-red-50 hover:border-red-300 hover:text-red-700'
+      ? 'bg-danger-text text-white border-danger-text'
+      : 'border-border text-text-secondary hover:bg-danger-bg hover:border-danger-bg hover:text-danger-text'
   }
   if (l.includes('late')) {
     return selected
-      ? 'bg-amber-500 text-white border-amber-500 shadow-md shadow-amber-200'
-      : 'border-border text-text-secondary hover:bg-amber-50 hover:border-amber-300 hover:text-amber-700'
+      ? 'bg-warning-text text-white border-warning-text'
+      : 'border-border text-text-secondary hover:bg-warning-bg hover:border-warning-bg hover:text-warning-text'
   }
   return selected
     ? 'bg-primary text-white border-primary shadow-md'
@@ -32,9 +32,9 @@ function statusTheme(label: string, selected: boolean) {
 
 function markAllChipTheme(label: string) {
   const l = label.toLowerCase()
-  if (l.includes('present')) return 'border-emerald-200 text-emerald-700 hover:bg-emerald-50 active:bg-emerald-100'
-  if (l.includes('absent')) return 'border-red-200 text-red-700 hover:bg-red-50 active:bg-red-100'
-  if (l.includes('late')) return 'border-amber-200 text-amber-700 hover:bg-amber-50 active:bg-amber-100'
+  if (l.includes('present')) return 'border-success-bg text-success-text hover:bg-success-bg active:bg-success-bg'
+  if (l.includes('absent')) return 'border-danger-bg text-danger-text hover:bg-danger-bg active:bg-danger-bg'
+  if (l.includes('late')) return 'border-warning-bg text-warning-text hover:bg-warning-bg active:bg-warning-bg'
   return 'border-border text-text-secondary hover:bg-surface-muted active:bg-background'
 }
 
@@ -167,7 +167,7 @@ export default function MarkingGrid({
       </div>
 
       {/* Student table */}
-      <div className="bg-surface border border-border rounded-xl overflow-hidden">
+      <div className="bg-surface border border-border rounded-lg overflow-hidden">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border text-left text-xs text-text-secondary bg-surface-muted">
@@ -182,12 +182,12 @@ export default function MarkingGrid({
               return (
                 <tr
                   key={s.id}
-                  className={`border-b border-border last:border-0 transition-colors duration-100 ${isFullyMarked ? 'bg-surface' : 'bg-amber-50/40'}`}
+                  className={`border-b border-border last:border-0 transition-colors duration-100 ${isFullyMarked ? 'bg-surface' : 'bg-warning-bg'}`}
                 >
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <span
-                        className={`inline-block w-1.5 h-1.5 rounded-full flex-shrink-0 transition-colors duration-200 ${isFullyMarked ? 'bg-emerald-400' : 'bg-amber-300'}`}
+                        className={`inline-block w-1.5 h-1.5 rounded-full flex-shrink-0 transition-colors duration-200 ${isFullyMarked ? 'bg-success-text' : 'bg-warning-text'}`}
                       />
                       <span className="font-medium text-text-primary">
                         {s.first_name} {s.last_name}
@@ -220,12 +220,12 @@ export default function MarkingGrid({
 
       {/* Feedback messages */}
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2">
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2">
           {error}
         </p>
       )}
       {savedMessage && (
-        <p className="text-sm text-success-text bg-success-bg border border-emerald-200 rounded-lg px-3 py-2">
+        <p className="text-sm text-success-text bg-success-bg border border-success-bg rounded-lg px-3 py-2">
           ✓ {savedMessage}
         </p>
       )}
@@ -236,7 +236,7 @@ export default function MarkingGrid({
         disabled={isPending}
         className={`flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-all duration-150 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed ${
           allMarked
-            ? 'bg-primary text-white hover:bg-primary-hover shadow-sm'
+            ? 'bg-primary text-white hover:bg-primary-hover '
             : 'bg-primary/80 text-white hover:bg-primary'
         }`}
       >

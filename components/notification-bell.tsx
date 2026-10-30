@@ -25,14 +25,14 @@ function timeAgo(iso: string) {
 }
 
 const categoryColour: Record<string, string> = {
-  results: 'bg-blue-500',
-  attendance: 'bg-amber-500',
-  fees: 'bg-green-500',
-  learning: 'bg-violet-500',
+  results: 'bg-primary',
+  attendance: 'bg-warning-text',
+  fees: 'bg-success-text',
+  learning: 'bg-primary',
   qa: 'bg-pink-500',
-  announcements: 'bg-sky-500',
-  account: 'bg-orange-500',
-  system: 'bg-slate-500',
+  announcements: 'bg-primary',
+  account: 'bg-warning-text',
+  system: 'bg-text-secondary',
 }
 
 export function NotificationBell({
@@ -186,7 +186,7 @@ export function NotificationBell({
       {open && (
         <div
           id="notification-dropdown"
-          className="absolute right-0 top-full mt-2 w-80 bg-surface border border-border rounded-xl shadow-lg z-50 overflow-hidden"
+          className="absolute right-0 top-full mt-2 w-80 bg-surface border border-border rounded-lg shadow-lg z-50 overflow-hidden"
         >
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-border">
@@ -221,7 +221,7 @@ export function NotificationBell({
             ) : (
               notifications.map(n => {
                 const isUnread = !n.read_at
-                const dot = categoryColour[n.category] ?? 'bg-slate-400'
+                const dot = categoryColour[n.category] ?? 'bg-text-secondary'
                 const inner = (
                   <div
                     className={`flex items-start gap-3 px-4 py-3 hover:bg-surface-muted transition-colors cursor-pointer ${isUnread ? 'bg-primary/5' : ''}`}

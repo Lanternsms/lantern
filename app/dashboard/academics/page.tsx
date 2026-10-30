@@ -28,7 +28,7 @@ export default function AcademicsPage() {
           <Link
             key={s.title}
             href={s.href}
-            className="bg-surface border border-border rounded-xl p-5 hover:border-primary/40 transition-colors"
+            className="bg-surface border border-border rounded-lg p-5 hover:border-primary/40 transition-colors"
           >
             <s.icon size={20} className="text-primary mb-3" />
             <h3 className="text-sm font-medium text-text-primary mb-1">{s.title}</h3>

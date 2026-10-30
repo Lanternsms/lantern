@@ -86,7 +86,7 @@ export function AdminNotificationSettingsClient({
   return (
     <div className="space-y-8">
       {/* 1. School-Wide Channels Toggle & Test */}
-      <div className="bg-surface border border-border rounded-xl p-6 space-y-6">
+      <div className="bg-surface border border-border rounded-lg p-6 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 className="text-base font-semibold text-text-primary">
@@ -127,7 +127,7 @@ export function AdminNotificationSettingsClient({
 
         <div className="grid gap-4 sm:grid-cols-2">
           {/* Email Channel Toggle */}
-          <div className="border border-border rounded-xl p-4 flex items-center justify-between">
+          <div className="border border-border rounded-lg p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div
                 className={`w-10 h-10 rounded-lg flex items-center justify-center ${
@@ -157,7 +157,7 @@ export function AdminNotificationSettingsClient({
           </div>
 
           {/* Push Channel Toggle */}
-          <div className="border border-border rounded-xl p-4 flex items-center justify-between">
+          <div className="border border-border rounded-lg p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div
                 className={`w-10 h-10 rounded-lg flex items-center justify-center ${
@@ -189,7 +189,7 @@ export function AdminNotificationSettingsClient({
       </div>
 
       {/* 2. Today's Delivery Volume & Health */}
-      <div className="bg-surface border border-border rounded-xl p-6 space-y-4">
+      <div className="bg-surface border border-border rounded-lg p-6 space-y-4">
         <div>
           <h2 className="text-base font-semibold text-text-primary">Today&apos;s Deliveries</h2>
           <p className="text-xs text-text-secondary mt-0.5">
@@ -199,7 +199,7 @@ export function AdminNotificationSettingsClient({
 
         <div className="grid gap-4 sm:grid-cols-2">
           {/* Email Stats */}
-          <div className="rounded-xl border border-border p-4 bg-surface-muted/30 space-y-3">
+          <div className="rounded-lg border border-border p-4 bg-surface-muted/30 space-y-3">
             <div className="flex items-center gap-2 text-xs font-semibold text-text-primary">
               <Mail className="w-4 h-4 text-primary" />
               <span>Email Channel</span>
@@ -221,7 +221,7 @@ export function AdminNotificationSettingsClient({
           </div>
 
           {/* Push Stats */}
-          <div className="rounded-xl border border-border p-4 bg-surface-muted/30 space-y-3">
+          <div className="rounded-lg border border-border p-4 bg-surface-muted/30 space-y-3">
             <div className="flex items-center gap-2 text-xs font-semibold text-text-primary">
               <Bell className="w-4 h-4 text-primary" />
               <span>Push Channel</span>
@@ -245,7 +245,7 @@ export function AdminNotificationSettingsClient({
       </div>
 
       {/* 3. Push Adoption by Kind */}
-      <div className="bg-surface border border-border rounded-xl p-6 space-y-4">
+      <div className="bg-surface border border-border rounded-lg p-6 space-y-4">
         <div>
           <h2 className="text-base font-semibold text-text-primary">Push Notification Adoption</h2>
           <p className="text-xs text-text-secondary mt-0.5">
@@ -254,7 +254,7 @@ export function AdminNotificationSettingsClient({
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3">
-          <div className="border border-border rounded-xl p-4 bg-surface space-y-1">
+          <div className="border border-border rounded-lg p-4 bg-surface space-y-1">
             <p className="text-xs font-medium text-text-secondary flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5" /> Parents &amp; Guardians
             </p>
@@ -270,7 +270,7 @@ export function AdminNotificationSettingsClient({
             </p>
           </div>
 
-          <div className="border border-border rounded-xl p-4 bg-surface space-y-1">
+          <div className="border border-border rounded-lg p-4 bg-surface space-y-1">
             <p className="text-xs font-medium text-text-secondary flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5" /> Students
             </p>
@@ -286,7 +286,7 @@ export function AdminNotificationSettingsClient({
             </p>
           </div>
 
-          <div className="border border-border rounded-xl p-4 bg-surface space-y-1">
+          <div className="border border-border rounded-lg p-4 bg-surface space-y-1">
             <p className="text-xs font-medium text-text-secondary flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5" /> Staff Members
             </p>
@@ -305,7 +305,7 @@ export function AdminNotificationSettingsClient({
       </div>
 
       {/* 4. Last 20 Failed / Skipped Deliveries */}
-      <div className="bg-surface border border-border rounded-xl p-6 space-y-4">
+      <div className="bg-surface border border-border rounded-lg p-6 space-y-4">
         <div>
           <h2 className="text-base font-semibold text-text-primary">
             Recent Delivery Exceptions
@@ -316,11 +316,11 @@ export function AdminNotificationSettingsClient({
         </div>
 
         {recentDeliveries.length === 0 ? (
-          <div className="text-center py-8 text-xs text-text-muted border border-dashed border-border rounded-xl">
+          <div className="text-center py-8 text-xs text-text-muted border border-dashed border-border rounded-lg">
             No failed or skipped deliveries recorded.
           </div>
         ) : (
-          <div className="border border-border rounded-xl overflow-hidden">
+          <div className="border border-border rounded-lg overflow-hidden">
             <table className="w-full text-left text-xs">
               <thead className="bg-surface-muted border-b border-border text-text-secondary font-medium">
                 <tr>

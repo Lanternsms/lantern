@@ -81,9 +81,9 @@ export default function RosterWidget({
 
   if (saved && result) {
     return (
-      <div className="bg-surface border border-border rounded-xl p-8 text-center space-y-4">
-        <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mx-auto">
-          <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="bg-surface border border-border rounded-lg p-8 text-center space-y-4">
+        <div className="w-12 h-12 rounded-full bg-success-bg flex items-center justify-center mx-auto">
+          <svg className="w-6 h-6 text-success-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
           </svg>
         </div>
@@ -135,13 +135,13 @@ export default function RosterWidget({
       </div>
 
       {error && (
-        <p className="text-xs text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2">
+        <p className="text-xs text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2">
           {error}
         </p>
       )}
 
       {/* Roster table */}
-      <div className="bg-surface border border-border rounded-xl overflow-hidden">
+      <div className="bg-surface border border-border rounded-lg overflow-hidden">
         {roster.length === 0 ? (
           <div className="p-8 text-center text-sm text-text-secondary">
             No students enrolled for this class{' '}
@@ -174,11 +174,11 @@ export default function RosterWidget({
                         let colorClass = 'border-border text-text-secondary hover:border-primary hover:text-primary'
                         if (selected) {
                           if (status.counts_as_present || code === 'present' || label.includes('present')) {
-                            colorClass = 'border-emerald-500 bg-emerald-50 text-emerald-700 font-semibold'
+                            colorClass = 'border-success-text bg-success-bg text-success-text font-semibold'
                           } else if (code === 'late' || label.includes('late')) {
-                            colorClass = 'border-amber-500 bg-amber-50 text-amber-700 font-semibold'
+                            colorClass = 'border-warning-text bg-warning-bg text-warning-text font-semibold'
                           } else {
-                            colorClass = 'border-red-400 bg-red-50 text-red-700 font-semibold'
+                            colorClass = 'border-danger-text bg-danger-bg text-danger-text font-semibold'
                           }
                         }
                         return (

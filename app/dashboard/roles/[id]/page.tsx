@@ -55,7 +55,7 @@ export default async function RoleDetailPage({
         {!role.is_system && assignedUserCount === 0 && (
           <form action={deleteRole}>
             <input type="hidden" name="role_id" value={id} />
-            <button type="submit" className="flex items-center gap-1.5 text-sm text-danger-text border border-red-200 rounded-lg px-4 py-2 hover:bg-danger-bg transition-colors">
+            <button type="submit" className="flex items-center gap-1.5 text-sm text-danger-text border border-danger-bg rounded-lg px-4 py-2 hover:bg-danger-bg transition-colors">
               <Trash2 size={14} /> Delete Role
             </button>
           </form>
@@ -63,7 +63,7 @@ export default async function RoleDetailPage({
       </div>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">{error}</p>
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
 
       {assignedUserCount !== null && assignedUserCount > 0 && !role.is_system && (
@@ -73,7 +73,7 @@ export default async function RoleDetailPage({
       )}
 
       {!role.is_system ? (
-        <form action={updateRoleWithId} className="bg-surface border border-border rounded-xl p-5 mb-6 space-y-3">
+        <form action={updateRoleWithId} className="bg-surface border border-border rounded-lg p-5 mb-6 space-y-3">
           <div className="grid grid-cols-2 gap-4 items-end">
             <div>
               <label className="block text-sm text-text-secondary mb-1.5">Role Name *</label>
@@ -96,7 +96,7 @@ export default async function RoleDetailPage({
 
       <div className="space-y-4">
         {grouped.map((group) => (
-          <section key={group.label} className="bg-surface border border-border rounded-xl p-5">
+          <section key={group.label} className="bg-surface border border-border rounded-lg p-5">
             <h3 className="text-sm font-medium text-text-primary mb-3">{group.label}</h3>
             <div className="space-y-2">
               {group.permissions.map((p) => {
@@ -117,7 +117,7 @@ export default async function RoleDetailPage({
                       <form action={revokePermission}>
                         <input type="hidden" name="role_id" value={id} />
                         <input type="hidden" name="permission_id" value={p.id} />
-                        <button type="submit" className="text-xs text-danger-text hover:text-red-700 font-medium">
+                        <button type="submit" className="text-xs text-danger-text hover:text-danger-text font-medium">
                           Revoke
                         </button>
                       </form>

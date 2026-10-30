@@ -192,7 +192,7 @@ export function GuardianRepeater({
           <button
             type="button"
             onClick={removeEntry}
-            className="flex items-center gap-2 text-sm text-danger-text hover:text-red-700"
+            className="flex items-center gap-2 text-sm text-danger-text hover:text-danger-text"
           >
             <Trash2 size={16} />
             Remove guardian

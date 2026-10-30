@@ -27,15 +27,15 @@ function StatusChip({ status }: { status: 'open' | 'answered' | 'closed' }) {
   switch (status) {
     case 'open':
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-          <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-warning-bg text-warning-text border border-warning-bg">
+          <span className="w-1.5 h-1.5 rounded-full bg-warning-text" />
           Open
         </span>
       )
     case 'answered':
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-success-bg text-success-text border border-success-bg">
+          <span className="w-1.5 h-1.5 rounded-full bg-success-text" />
           Answered
         </span>
       )
@@ -110,7 +110,7 @@ export default async function QuestionsInboxPage({
       {/* Header */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <p className="text-xs text-text-secondary uppercase tracking-wider font-semibold">
+          <p className="text-xs text-text-secondary  font-semibold">
             LMS Questions
           </p>
           <h1 className="text-2xl font-bold text-text-primary mt-0.5">Questions Inbox</h1>
@@ -178,14 +178,14 @@ export default async function QuestionsInboxPage({
       </div>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-4 py-3">
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-4 py-3">
           {error}
         </p>
       )}
 
       {/* Inbox List */}
       {threads.length === 0 ? (
-        <div className="bg-surface border border-border rounded-xl p-12 text-center space-y-2">
+        <div className="bg-surface border border-border rounded-lg p-12 text-center space-y-2">
           <div className="w-10 h-10 rounded-full bg-surface-muted flex items-center justify-center mx-auto text-text-muted">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path
@@ -204,7 +204,7 @@ export default async function QuestionsInboxPage({
           </p>
         </div>
       ) : (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden divide-y divide-border">
+        <div className="bg-surface border border-border rounded-lg overflow-hidden divide-y divide-border">
           {threads.map((thread) => (
             <Link
               key={thread.id}

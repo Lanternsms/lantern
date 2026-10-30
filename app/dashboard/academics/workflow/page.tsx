@@ -35,18 +35,18 @@ export default async function WorkflowListPage({
       </div>
 
       {(error || fetchError) && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">
           {error ?? fetchError?.message}
         </p>
       )}
 
       {!fetchError && templates?.length === 0 && (
-        <div className="bg-surface border border-border rounded-xl p-8">
+        <div className="bg-surface border border-border rounded-lg p-8">
           <p className="text-sm text-text-secondary text-center mb-6">
             No approval workflow yet. Start from a preset, or build your own from scratch.
           </p>
           <div className="grid grid-cols-2 gap-4">
-            <form action={seedWorkflowPreset} className="border border-border rounded-xl p-5">
+            <form action={seedWorkflowPreset} className="border border-border rounded-lg p-5">
               <input type="hidden" name="preset" value="simple" />
               <h3 className="text-sm font-medium text-text-primary mb-1">Simple</h3>
               <p className="text-xs text-text-secondary mb-4">Teacher submits, the principal approves, results are published.</p>
@@ -54,7 +54,7 @@ export default async function WorkflowListPage({
                 Use Simple
               </button>
             </form>
-            <form action={seedWorkflowPreset} className="border border-border rounded-xl p-5">
+            <form action={seedWorkflowPreset} className="border border-border rounded-lg p-5">
               <input type="hidden" name="preset" value="standard" />
               <h3 className="text-sm font-medium text-text-primary mb-1">Standard</h3>
               <p className="text-xs text-text-secondary mb-4">Teacher submits, the HOD reviews, the principal approves, results are published.</p>
@@ -67,13 +67,13 @@ export default async function WorkflowListPage({
       )}
 
       {templates && templates.length > 0 && (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden">
+        <div className="bg-surface border border-border rounded-lg overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Workflow</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Stages</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Status</th>
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Workflow</th>
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Stages</th>
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Status</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>

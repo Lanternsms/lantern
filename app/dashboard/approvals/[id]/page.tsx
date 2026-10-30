@@ -53,15 +53,15 @@ export default async function ApprovalReviewPage({
         {batch.terms?.name} · Submitted by {batch.profiles?.first_name} {batch.profiles?.last_name} · Currently at {batch.workflow_stages?.name}
       </p>
 
-      {error && <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">{error}</p>}
+      {error && <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>}
 
-      <div className="bg-surface border border-border rounded-xl overflow-hidden mb-6">
+      <div className="bg-surface border border-border rounded-lg overflow-hidden mb-6">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border">
-              <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Student</th>
+              <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Student</th>
               {assessmentNames.map((n) => (
-                <th key={n} className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">{n}</th>
+                <th key={n} className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">{n}</th>
               ))}
             </tr>
           </thead>
@@ -78,14 +78,14 @@ export default async function ApprovalReviewPage({
         </table>
       </div>
 
-      <form action={decideWithId} className="bg-surface border border-border rounded-xl p-5 space-y-3">
+      <form action={decideWithId} className="bg-surface border border-border rounded-lg p-5 space-y-3">
         <label className="block text-sm text-text-secondary mb-1.5">Comment (optional)</label>
         <textarea name="comment" rows={2} className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
         <div className="flex gap-3">
           <button type="submit" name="action" value="approve" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
             Approve
           </button>
-          <button type="submit" name="action" value="return_to_teacher" className="text-sm text-danger-text border border-red-200 rounded-lg px-4 py-2 hover:bg-danger-bg transition-colors">
+          <button type="submit" name="action" value="return_to_teacher" className="text-sm text-danger-text border border-danger-bg rounded-lg px-4 py-2 hover:bg-danger-bg transition-colors">
             Return to Teacher
           </button>
         </div>

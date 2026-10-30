@@ -45,14 +45,14 @@ export default async function SessionsPage() {
       {!error && sessions?.length === 0 && <p className="text-sm text-text-secondary">No academic sessions yet.</p>}
 
       {sessions && sessions.length > 0 && (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden">
+        <div className="bg-surface border border-border rounded-lg overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Session</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Dates</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Status</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Terms</th>
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Session</th>
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Dates</th>
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Status</th>
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Terms</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>

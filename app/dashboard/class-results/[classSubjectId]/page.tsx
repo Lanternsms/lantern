@@ -288,9 +288,9 @@ export default async function ClassResultDetailPage({
         ].map((card) => (
           <div
             key={card.label}
-            className="bg-surface border border-border rounded-xl px-5 py-4"
+            className="bg-surface border border-border rounded-lg px-5 py-4"
           >
-            <p className="text-xs font-medium text-text-secondary uppercase tracking-wide mb-1">
+            <p className="text-xs font-medium text-text-secondary  mb-1">
               {card.label}
             </p>
             <p className="text-2xl font-bold text-text-primary">{card.value}</p>
@@ -300,7 +300,7 @@ export default async function ClassResultDetailPage({
 
       {/* ── Grade Distribution ── */}
       {gradeLabels.length > 0 && (
-        <div className="bg-surface border border-border rounded-xl p-5 mb-6">
+        <div className="bg-surface border border-border rounded-lg p-5 mb-6">
           <h2 className="text-sm font-semibold text-text-primary mb-4">Grade Distribution</h2>
           <div className="flex items-end gap-3 flex-wrap">
             {gradeLabels.map((g) => {
@@ -340,7 +340,7 @@ export default async function ClassResultDetailPage({
       )}
 
       {/* ── Student result table ── */}
-      <div className="bg-surface border border-border rounded-xl overflow-hidden">
+      <div className="bg-surface border border-border rounded-lg overflow-hidden">
         <div className="px-5 py-4 border-b border-border flex items-center justify-between">
           <h2 className="text-sm font-semibold text-text-primary">Student Scores</h2>
           <span className="text-xs text-text-secondary">
@@ -356,19 +356,19 @@ export default async function ClassResultDetailPage({
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-surface-muted/50">
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide w-8">
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs  w-8">
                   #
                 </th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">
                   Student
                 </th>
-                <th className="text-right font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">
+                <th className="text-right font-medium text-text-secondary px-4 py-3 text-xs ">
                   Score
                 </th>
-                <th className="text-center font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">
+                <th className="text-center font-medium text-text-secondary px-4 py-3 text-xs ">
                   Grade
                 </th>
-                <th className="text-center font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">
+                <th className="text-center font-medium text-text-secondary px-4 py-3 text-xs ">
                   Rank
                 </th>
               </tr>
@@ -403,11 +403,11 @@ export default async function ClassResultDetailPage({
                       <span
                         className={`text-xs font-semibold ${
                           s.rank === 1
-                            ? 'text-yellow-600'
+                            ? 'text-warning-text'
                             : s.rank === 2
-                            ? 'text-slate-500'
+                            ? 'text-text-secondary'
                             : s.rank === 3
-                            ? 'text-amber-700'
+                            ? 'text-warning-text'
                             : 'text-text-secondary'
                         }`}
                       >

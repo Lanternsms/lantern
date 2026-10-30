@@ -38,7 +38,7 @@ export default async function SessionDetailPage({
         )}
       </div>
 
-      <section className="bg-surface border border-border rounded-xl p-5 mb-6">
+      <section className="bg-surface border border-border rounded-lg p-5 mb-6">
         <div className="grid grid-cols-2 gap-y-3 gap-x-6 text-sm">
           <div>
             <p className="text-text-secondary text-xs mb-0.5">Start Date</p>
@@ -59,14 +59,14 @@ export default async function SessionDetailPage({
       </div>
 
       {terms && terms.length > 0 ? (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden">
+        <div className="bg-surface border border-border rounded-lg overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Term</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Start Date</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">End Date</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Status</th>
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Term</th>
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Start Date</th>
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">End Date</th>
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Status</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
@@ -100,7 +100,7 @@ export default async function SessionDetailPage({
           </table>
         </div>
       ) : (
-        <div className="bg-surface border border-border border-dashed rounded-xl p-8 text-center">
+        <div className="bg-surface border border-border border-dashed rounded-lg p-8 text-center">
           <p className="text-sm text-text-secondary mb-3">No terms added yet for this session.</p>
           <Link
             href={`/dashboard/academics/sessions/${id}/terms/new`}

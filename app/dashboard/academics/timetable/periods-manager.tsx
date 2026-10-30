@@ -45,7 +45,7 @@ export default function PeriodsManager({ periods }: { periods: Period[] }) {
   }
 
   return (
-    <div className="bg-surface border border-border rounded-xl p-4">
+    <div className="bg-surface border border-border rounded-lg p-4">
       <button
         onClick={() => setOpen(!open)}
         className="text-sm font-semibold text-text-primary flex items-center gap-2"

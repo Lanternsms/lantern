@@ -69,7 +69,7 @@ export default async function SchoolAuditLogPage({
         </button>
       </form>
 
-      <div className="border border-border rounded-xl divide-y divide-border">
+      <div className="border border-border rounded-lg divide-y divide-border">
         {rows.map((row) => (
           <details key={row.id} className="px-4 py-3">
             <summary className="flex items-center justify-between cursor-pointer list-none">

@@ -19,7 +19,7 @@ export default function SettingsHubPage() {
           <Link
             key={s.href}
             href={s.href}
-            className="block bg-surface border border-border rounded-xl p-4 hover:border-primary/40 transition-colors"
+            className="block bg-surface border border-border rounded-lg p-4 hover:border-primary/40 transition-colors"
           >
             <h2 className="text-sm font-semibold text-text-primary">{s.title}</h2>
             <p className="text-xs text-text-secondary mt-1">{s.description}</p>

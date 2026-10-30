@@ -29,7 +29,7 @@ export async function ResultsWidget() {
       <div>
         <div className="flex items-center justify-between pb-4 border-b border-border mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center shrink-0 border border-violet-200/60">
+            <div className="flex items-center justify-center shrink-0 text-text-secondary">
               <Award size={20} />
             </div>
             <div>
@@ -55,7 +55,7 @@ export async function ResultsWidget() {
               </span>
               <span className="text-xs text-text-secondary ml-2 font-medium">of {total} batches published</span>
             </div>
-            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200">
+            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-school-soft text-school-ink border border-school-track">
               {publishRate.toFixed(0)}% Complete
             </span>
           </div>
@@ -63,28 +63,28 @@ export async function ResultsWidget() {
           {/* Progress bar */}
           <div className="w-full bg-border/60 rounded-full h-2.5 overflow-hidden">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-violet-500 to-indigo-500 transition-all duration-500"
+              className="h-full rounded-full bg-school transition-all duration-500"
               style={{ width: `${Math.min(100, Math.max(0, publishRate))}%` }}
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3 pt-1 text-xs">
-            <div className="p-3 rounded-xl bg-surface-muted/50 border border-border/80 flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-200">
+            <div className="p-3 rounded-lg bg-surface-muted/50 border border-border/80 flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-success-bg text-success-text flex items-center justify-center shrink-0 border border-success-bg">
                 <CheckCircle2 size={15} />
               </div>
               <div>
                 <span className="text-text-secondary block text-[11px]">Published</span>
-                <span className="text-sm font-bold text-emerald-600">{published} batches</span>
+                <span className="text-sm font-bold text-success-text">{published} batches</span>
               </div>
             </div>
-            <div className="p-3 rounded-xl bg-surface-muted/50 border border-border/80 flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-200">
+            <div className="p-3 rounded-lg bg-surface-muted/50 border border-border/80 flex items-center gap-2.5">
+              <div className="flex items-center justify-center shrink-0 text-text-secondary">
                 <Clock size={15} />
               </div>
               <div>
                 <span className="text-text-secondary block text-[11px]">In Review / Draft</span>
-                <span className="text-sm font-bold text-amber-600">{pending} batches</span>
+                <span className="text-sm font-bold text-warning-text">{pending} batches</span>
               </div>
             </div>
           </div>

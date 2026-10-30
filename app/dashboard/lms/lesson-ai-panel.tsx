@@ -29,7 +29,7 @@ function LumiAvatar({ size = 'sm' }: { size?: 'sm' | 'lg' }) {
   const dim = size === 'lg' ? 'w-9 h-9 text-base' : 'w-7 h-7 text-xs'
   return (
     <div
-      className={`shrink-0 ${dim} rounded-xl bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center text-white font-bold shadow-sm`}
+      className={`shrink-0 ${dim} rounded-lg bg-school-ink flex items-center justify-center text-white font-bold `}
       aria-hidden="true"
     >
       L
@@ -396,12 +396,12 @@ export function LessonAiPanel({
         <button
           type="button"
           onClick={() => setIsOpen(true)}
-          className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-primary to-indigo-600 text-white font-medium text-xs shadow-md hover:shadow-lg hover:opacity-95 transition-all transform active:scale-95"
+          className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-lg bg-primary text-white font-medium text-xs hover:bg-primary-hover"
           title={`Ask ${AI_NAME} about this lesson`}
         >
           <LumiAvatar />
           <span>Ask {AI_NAME}</span>
-          <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded-full uppercase tracking-wider font-semibold">
+          <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded-full  font-semibold">
             Tutor
           </span>
         </button>
@@ -421,7 +421,7 @@ export function LessonAiPanel({
       style={{ maxHeight: isClassProjectorMode ? 'calc(100vh - 2rem)' : '650px' }}
     >
       {/* ── Header ── */}
-      <div className="flex items-center justify-between px-5 py-3.5 bg-gradient-to-r from-primary/10 via-surface to-surface border-b border-border shrink-0">
+      <div className="flex items-center justify-between px-5 py-3.5 bg-school-soft border-b border-border shrink-0">
         <div className="flex items-center gap-3">
           <LumiAvatar size="lg" />
           <div>
@@ -465,7 +465,7 @@ export function LessonAiPanel({
       <div className="px-5 py-1.5 bg-primary/5 border-b border-border/50 text-[11px] text-text-secondary flex items-center justify-between shrink-0">
         <span>{AI_DISCLOSURE}</span>
         {!notesReady && (
-          <span className="text-[10px] text-amber-600 font-medium">Notes not ready</span>
+          <span className="text-[10px] text-warning-text font-medium">Notes not ready</span>
         )}
       </div>
 
@@ -489,21 +489,21 @@ export function LessonAiPanel({
               <button
                 type="button"
                 onClick={() => handleSendQuestion('What are the main points of this lesson?')}
-                className="text-xs border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary px-3 py-1.5 rounded-xl transition-colors"
+                className="text-xs border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary px-3 py-1.5 rounded-lg transition-colors"
               >
                 What are the main points?
               </button>
               <button
                 type="button"
                 onClick={() => handleSendQuestion('Give me an everyday example from this lesson.')}
-                className="text-xs border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary px-3 py-1.5 rounded-xl transition-colors"
+                className="text-xs border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary px-3 py-1.5 rounded-lg transition-colors"
               >
                 Give me an example
               </button>
               <button
                 type="button"
                 onClick={() => handleSendQuestion('Quiz me on this lesson.', 'quiz_me')}
-                className="text-xs border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary px-3 py-1.5 rounded-xl transition-colors"
+                className="text-xs border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary px-3 py-1.5 rounded-lg transition-colors"
               >
                 Test me
               </button>
@@ -535,7 +535,7 @@ export function LessonAiPanel({
 
               {/* Bubble */}
               <div
-                className={`rounded-2xl px-4 py-3 text-xs sm:text-sm leading-relaxed shadow-sm ${
+                className={`rounded-2xl px-4 py-3 text-xs sm:text-sm leading-relaxed  ${
                   m.role === 'user'
                     ? 'bg-primary text-white rounded-tr-none'
                     : 'bg-surface border border-border text-text-primary rounded-tl-none'
@@ -584,7 +584,7 @@ export function LessonAiPanel({
                 <span className="text-primary">typing</span>
               </div>
               <div
-                className={`rounded-2xl px-4 py-3 text-xs sm:text-sm leading-relaxed bg-surface border border-border text-text-primary rounded-tl-none shadow-sm ${
+                className={`rounded-2xl px-4 py-3 text-xs sm:text-sm leading-relaxed bg-surface border border-border text-text-primary rounded-tl-none  ${
                   isClassProjectorMode ? '!text-base p-5' : ''
                 }`}
               >
@@ -607,7 +607,7 @@ export function LessonAiPanel({
 
         {/* Escalation notice */}
         {escalatedNotice && (
-          <div className="rounded-xl border border-success/30 bg-success-bg p-3 text-xs text-success-text flex items-center justify-between">
+          <div className="rounded-lg border border-success/30 bg-success-bg p-3 text-xs text-success-text flex items-center justify-between">
             <span>{escalatedNotice}</span>
             <button type="button" onClick={() => setEscalatedNotice(null)} className="font-bold ml-2 text-sm">✕</button>
           </div>
@@ -615,7 +615,7 @@ export function LessonAiPanel({
 
         {/* Error notice */}
         {errorMsg && (
-          <div className="rounded-xl border border-red-300 bg-red-50 dark:bg-red-950/30 p-3 text-xs text-red-700 dark:text-red-300">
+          <div className="rounded-lg border border-danger-bg bg-danger-bg dark:bg-danger-text p-3 text-xs text-danger-text dark:text-danger-text">
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-start gap-2">
                 <span className="shrink-0 mt-0.5">
@@ -628,7 +628,7 @@ export function LessonAiPanel({
                 <div>
                   <span className="font-medium">{errorMsg.message}</span>
                   {errorMsg.why && (
-                    <span className="block mt-1 text-[10px] text-red-500 dark:text-red-400 opacity-80">
+                    <span className="block mt-1 text-[10px] text-danger-text dark:text-danger-text opacity-80">
                       {errorMsg.why}
                     </span>
                   )}
@@ -692,9 +692,9 @@ export function LessonAiPanel({
             <button
               type="button"
               onClick={toggleSpeechListening}
-              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all shrink-0 ${
+              className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all shrink-0 ${
                 isListening
-                  ? 'bg-red-600 text-white animate-pulse shadow-lg ring-2 ring-red-400'
+                  ? 'bg-danger-text text-white animate-pulse shadow-lg ring-2 ring-danger-text'
                   : 'bg-surface-muted border border-border text-text-secondary hover:text-text-primary hover:border-primary/40'
               }`}
               title={isListening ? 'Stop listening' : 'Speak your question'}
@@ -712,7 +712,7 @@ export function LessonAiPanel({
               placeholder={isListening ? 'Listening… speak clearly' : `Ask ${AI_NAME} about this lesson…`}
               disabled={isStreaming || !aiTutorEnabled || !notesReady}
               maxLength={500}
-              className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-xs sm:text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-xs sm:text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
             />
             {inputValue && (
               <span className="absolute right-3 top-2.5 text-[10px] text-text-secondary">
@@ -724,7 +724,7 @@ export function LessonAiPanel({
           <button
             type="submit"
             disabled={!inputValue.trim() || isStreaming || !aiTutorEnabled || !notesReady}
-            className="h-10 px-4 rounded-xl bg-primary text-white font-medium text-xs sm:text-sm hover:bg-primary-hover disabled:opacity-40 transition-colors shrink-0 flex items-center gap-1.5"
+            className="h-10 px-4 rounded-lg bg-primary text-white font-medium text-xs sm:text-sm hover:bg-primary-hover disabled:opacity-40 transition-colors shrink-0 flex items-center gap-1.5"
           >
             <span>Ask</span>
             <span>&rarr;</span>
@@ -732,7 +732,7 @@ export function LessonAiPanel({
         </form>
 
         {!notesReady && (
-          <p className="text-[11px] text-amber-600 text-center">
+          <p className="text-[11px] text-warning-text text-center">
             Lesson notes are being processed. Please check back shortly.
           </p>
         )}

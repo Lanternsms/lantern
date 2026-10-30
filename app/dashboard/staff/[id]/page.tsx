@@ -80,7 +80,7 @@ export default async function StaffDetailPage({
   const isActive = staff.status === 'active'
 
   const portalAccessContent = (
-    <div className="bg-surface border border-border rounded-xl p-5">
+    <div className="bg-surface border border-border rounded-lg p-5">
       <h3 className="text-sm font-medium text-text-primary mb-3">Portal Access</h3>
 
       {linkedProfile ? (
@@ -95,7 +95,7 @@ export default async function StaffDetailPage({
           <form action={unlinkStaffProfile.bind(null, staff.id)}>
             <button
               type="submit"
-              className="text-xs text-red-600 hover:text-red-700 font-medium"
+              className="text-xs text-danger-text hover:text-danger-text font-medium"
             >
               Unlink
             </button>
@@ -147,7 +147,7 @@ export default async function StaffDetailPage({
 
       <div className="flex items-center justify-between mt-4 mb-6">
         <div className="flex items-center gap-3">
-          <span className="w-11 h-11 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-sm font-medium">
+          <span className="w-11 h-11 rounded-full bg-school-soft text-school-ink flex items-center justify-center text-sm font-medium">
             {initials}
           </span>
           <div>
@@ -171,7 +171,7 @@ export default async function StaffDetailPage({
       </div>
 
       <div className="space-y-4">
-        <section className="bg-surface border border-border rounded-xl p-5">
+        <section className="bg-surface border border-border rounded-lg p-5">
           <div className="flex items-center gap-2 mb-4">
             <User size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Contact Information</h3>
@@ -188,7 +188,7 @@ export default async function StaffDetailPage({
           </div>
         </section>
 
-        <section className="bg-surface border border-border rounded-xl p-5">
+        <section className="bg-surface border border-border rounded-lg p-5">
           <div className="flex items-center gap-2 mb-4">
             <Briefcase size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Employment Information</h3>
@@ -221,7 +221,7 @@ export default async function StaffDetailPage({
           />
         )}
 
-        <section className="bg-surface border border-border rounded-xl p-5">
+        <section className="bg-surface border border-border rounded-lg p-5">
           <div className="flex items-center gap-2 mb-4">
             <BookOpen size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Classes &amp; Subjects Taught</h3>

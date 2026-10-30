@@ -31,7 +31,7 @@ export function FirstLoginBanner({ userId }: { userId: string }) {
   }
 
   return (
-    <div className="relative mb-6 rounded-xl border border-accent/30 bg-accent/5 p-4 sm:p-5">
+    <div className="relative mb-6 rounded-lg border border-accent/30 bg-accent/5 p-4 sm:p-5">
       <button
         onClick={handleDismiss}
         aria-label="Dismiss banner"
@@ -41,7 +41,7 @@ export function FirstLoginBanner({ userId }: { userId: string }) {
       </button>
 
       <div className="flex items-start gap-3.5 pr-8">
-        <div className="w-10 h-10 shrink-0 rounded-lg bg-accent/15 flex items-center justify-center text-accent">
+        <div className="shrink-0 flex items-center justify-center text-text-secondary">
           <Sparkles className="w-5 h-5" />
         </div>
         <div className="space-y-1.5">

@@ -23,9 +23,9 @@ const { data: roles } = await supabase
       <Link href="/dashboard/users" className="text-sm text-primary hover:text-primary-hover">← Back to users</Link>
       <h1 className="text-xl font-semibold text-text-primary mt-4 mb-6">Invite User</h1>
 
-      {error && <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">{error}</p>}
+      {error && <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>}
 
-      <form action={inviteUser} className="bg-surface border border-border rounded-xl p-6 space-y-4">
+      <form action={inviteUser} className="bg-surface border border-border rounded-lg p-6 space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm text-text-secondary mb-1.5">First Name *</label>

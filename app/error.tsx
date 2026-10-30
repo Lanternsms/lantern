@@ -10,7 +10,7 @@ export default function ErrorPage({ error, reset }: { error: Error & { digest?: 
   return (
     <div className="min-h-screen flex items-center justify-center bg-surface-muted px-6">
       <div className="max-w-md text-center space-y-4">
-        <p className="text-sm font-semibold text-red-600 tracking-wide uppercase">Something went wrong</p>
+        <p className="text-sm font-semibold text-danger-text ">Something went wrong</p>
         <h1 className="text-2xl font-semibold text-text-primary">We hit a snag</h1>
         <p className="text-sm text-text-secondary">
           An unexpected error occurred. You can try again, or head back and pick up where you left off.

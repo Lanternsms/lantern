@@ -123,7 +123,7 @@ export default function LessonQuestionsModal({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
-      <div className="bg-surface border border-border rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 shadow-lg">
+      <div className="bg-surface border border-border rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 shadow-lg">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-text-primary">{lessonTitle} – Questions</h2>
           <button onClick={onClose} className="text-sm text-text-secondary hover:text-text-primary">Close</button>

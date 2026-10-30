@@ -95,7 +95,7 @@ export default async function ClassDetailPage({
           {studentCount === 0 && (
             <form action={deleteClass}>
               <input type="hidden" name="class_id" value={id} />
-              <button type="submit" className="flex items-center gap-1.5 text-sm text-danger-text border border-red-200 rounded-lg px-4 py-2 hover:bg-danger-bg transition-colors">
+              <button type="submit" className="flex items-center gap-1.5 text-sm text-danger-text border border-danger-bg rounded-lg px-4 py-2 hover:bg-danger-bg transition-colors">
                 <Trash2 size={14} /> Delete
               </button>
             </form>
@@ -104,7 +104,7 @@ export default async function ClassDetailPage({
       </div>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">{error}</p>
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
 
       {studentCount !== null && studentCount > 0 && (
@@ -113,7 +113,7 @@ export default async function ClassDetailPage({
         </p>
       )}
 
-      <section className="bg-surface border border-border rounded-xl p-5">
+      <section className="bg-surface border border-border rounded-lg p-5">
         <h3 className="text-sm font-medium text-text-primary mb-4">Arms</h3>
 
         {arms && arms.length > 0 ? (
@@ -150,7 +150,7 @@ export default async function ClassDetailPage({
       </section>
 
       {session && (
-        <section className="bg-surface border border-border rounded-xl p-5 mt-6">
+        <section className="bg-surface border border-border rounded-lg p-5 mt-6">
           <h3 className="text-sm font-medium text-text-primary mb-4">Form Teacher</h3>
           <div className="space-y-3">
             {armIds.map((armId) => {
@@ -189,7 +189,7 @@ export default async function ClassDetailPage({
         </section>
       )}
 
-      <section className="bg-surface border border-border rounded-xl p-5 mt-6">
+      <section className="bg-surface border border-border rounded-lg p-5 mt-6">
         <h3 className="text-sm font-medium text-text-primary mb-4">Subjects</h3>
 
         {!session && (

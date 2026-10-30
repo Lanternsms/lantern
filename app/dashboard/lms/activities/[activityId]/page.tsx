@@ -52,10 +52,10 @@ export default async function ActivityDetailPage({
           <div>
             <div className="flex items-center gap-2.5">
               <span
-                className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold uppercase tracking-wider ${
+                className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold  ${
                   activity.kind === 'quiz'
-                    ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                    : 'bg-purple-500/10 text-purple-600 dark:text-purple-400'
+                    ? 'bg-primary text-school-ink dark:text-school'
+                    : 'bg-primary text-school-ink dark:text-school'
                 }`}
               >
                 {activity.kind}

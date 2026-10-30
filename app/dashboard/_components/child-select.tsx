@@ -22,7 +22,7 @@ export function ChildSelect({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-1.5 p-1 bg-surface-muted/60 border border-border rounded-xl">
+    <div className="flex flex-wrap items-center gap-1.5 p-1 bg-surface-muted/60 border border-border rounded-lg">
       {children.map((c) => {
         const isSelected = c.id === selectedStudentId
         return (

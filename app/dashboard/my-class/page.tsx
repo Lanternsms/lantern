@@ -75,7 +75,7 @@ export default async function MyClassPage() {
       </p>
 
       {sections.map((section) => (
-        <div key={section.label} className="bg-surface border border-border rounded-xl overflow-hidden mb-6">
+        <div key={section.label} className="bg-surface border border-border rounded-lg overflow-hidden mb-6">
           <div className="px-4 py-3 border-b border-border flex items-center justify-between">
             <h2 className="text-sm font-medium text-text-primary">{section.label}</h2>
             <Link
@@ -88,13 +88,13 @@ export default async function MyClassPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                <th className="text-left font-medium text-text-secondary px-4 py-2 text-xs uppercase tracking-wide">
+                <th className="text-left font-medium text-text-secondary px-4 py-2 text-xs ">
                   Name
                 </th>
-                <th className="text-left font-medium text-text-secondary px-4 py-2 text-xs uppercase tracking-wide">
+                <th className="text-left font-medium text-text-secondary px-4 py-2 text-xs ">
                   Admission No.
                 </th>
-                <th className="text-left font-medium text-text-secondary px-4 py-2 text-xs uppercase tracking-wide">
+                <th className="text-left font-medium text-text-secondary px-4 py-2 text-xs ">
                   Status
                 </th>
               </tr>

@@ -33,7 +33,7 @@ export default async function ClassesPage() {
             <Link
               key={c.id}
               href={`/dashboard/academics/classes/${c.id}`}
-              className="bg-surface border border-border rounded-xl p-5 hover:border-primary/40 transition-colors"
+              className="bg-surface border border-border rounded-lg p-5 hover:border-primary/40 transition-colors"
             >
               <h3 className="text-sm font-semibold text-text-primary mb-1">{c.name}</h3>
               <p className="text-xs text-text-secondary">{c.departments?.name ?? 'No department'}</p>

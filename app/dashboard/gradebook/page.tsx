@@ -27,7 +27,7 @@ export default async function GradebookListPage() {
 
       <div className="grid grid-cols-3 gap-4">
         {assignments?.map((a) => (
-          <Link key={a.id} href={`/dashboard/gradebook/${a.id}`} className="bg-surface border border-border rounded-xl p-5 hover:border-primary/40 transition-colors">
+          <Link key={a.id} href={`/dashboard/gradebook/${a.id}`} className="bg-surface border border-border rounded-lg p-5 hover:border-primary/40 transition-colors">
             <h3 className="text-sm font-semibold text-text-primary">{a.subjects?.name}</h3>
             <p className="text-xs text-text-secondary mt-1">{a.classes?.name}{a.arms?.name ? ` ${a.arms.name}` : ''}</p>
           </Link>

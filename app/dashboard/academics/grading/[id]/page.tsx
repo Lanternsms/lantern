@@ -48,17 +48,17 @@ export default async function ScaleDetailPage({
       </div>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">{error}</p>
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
 
-      <section className="bg-surface border border-border rounded-xl p-5">
+      <section className="bg-surface border border-border rounded-lg p-5">
         <h3 className="text-sm font-medium text-text-primary mb-4">Grade Bands</h3>
 
         {bands && bands.length > 0 ? (
           <div className="mb-5">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-text-secondary text-xs uppercase tracking-wide">
+                <tr className="text-left text-text-secondary text-xs ">
                   <th className="pb-2 font-medium">Score Range</th>
                   <th className="pb-2 font-medium">Grade</th>
                   <th className="pb-2 font-medium">Remark</th>

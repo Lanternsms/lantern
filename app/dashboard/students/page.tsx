@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 const PAGE_SIZE = 20
 
-const avatarColors = ['bg-emerald-100 text-emerald-700', 'bg-blue-100 text-blue-700', 'bg-orange-100 text-orange-700', 'bg-purple-100 text-purple-700', 'bg-pink-100 text-pink-700']
+const avatarColors = ['bg-success-bg text-success-text', 'bg-school-soft text-school-ink', 'bg-warning-bg text-warning-text', 'bg-school-soft text-school-ink', 'bg-pink-100 text-pink-700']
 function avatarColor(name: string) {
   return avatarColors[name.charCodeAt(0) % avatarColors.length]
 }
@@ -127,14 +127,14 @@ export default async function StudentsPage({
 
       {students && students.length > 0 && (
         <>
-          <div className="bg-surface border border-border rounded-xl overflow-hidden">
+          <div className="bg-surface border border-border rounded-lg overflow-hidden">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Student</th>
-                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Admission No.</th>
-                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Class</th>
-                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Status</th>
+                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Student</th>
+                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Admission No.</th>
+                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Class</th>
+                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Status</th>
                 </tr>
               </thead>
               <tbody>

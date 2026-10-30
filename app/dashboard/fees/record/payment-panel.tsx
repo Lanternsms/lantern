@@ -39,7 +39,7 @@ export default function PaymentPanel({
 
   return (
     <div className="space-y-4 max-w-xl">
-      <div className="bg-surface border border-border rounded-xl p-4 space-y-3">
+      <div className="bg-surface border border-border rounded-lg p-4 space-y-3">
         <h2 className="text-sm font-semibold text-text-primary">Outstanding</h2>
         {unpaid.length === 0 ? (
           <p className="text-sm text-text-secondary">All fee components paid for this term.</p>
@@ -57,7 +57,7 @@ export default function PaymentPanel({
       </div>
 
       {payingId && (
-        <div className="bg-surface border border-border rounded-xl p-4 space-y-3">
+        <div className="bg-surface border border-border rounded-lg p-4 space-y-3">
           <h3 className="text-sm font-semibold text-text-primary">
             Confirm payment: {dueItems.find((f) => f.id === payingId)?.name} — ₦{Number(dueItems.find((f) => f.id === payingId)?.amount ?? 0).toLocaleString()}
           </h3>
@@ -87,7 +87,7 @@ export default function PaymentPanel({
       )}
 
       {paid.length > 0 && (
-        <div className="bg-surface border border-border rounded-xl p-4">
+        <div className="bg-surface border border-border rounded-lg p-4">
           <h2 className="text-sm font-semibold text-text-primary mb-2">Already Paid</h2>
           {paid.map((f) => (
             <div key={f.id} className="text-sm text-text-secondary flex justify-between py-1">

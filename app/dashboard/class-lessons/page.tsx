@@ -134,7 +134,7 @@ export default async function ClassLessonsPage() {
       {/* Content */}
       {lessonsBySubject.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border bg-surface p-12 text-center space-y-3">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-surface-muted text-text-secondary">
+          <div className="mx-auto flex items-center justify-center shrink-0 text-text-secondary">
             <BookOpen className="w-6 h-6" />
           </div>
           <h2 className="text-base font-semibold text-text-primary">No lessons published yet</h2>
@@ -145,9 +145,9 @@ export default async function ClassLessonsPage() {
       ) : (
         <div className="space-y-6">
           {lessonsBySubject.map((group) => (
-            <div key={group.subjectName} className="rounded-2xl border border-border bg-surface overflow-hidden shadow-sm">
+            <div key={group.subjectName} className="rounded-2xl border border-border bg-surface overflow-hidden ">
               <div className="px-5 py-3.5 border-b border-border bg-surface-muted flex items-center justify-between">
-                <h2 className="text-xs font-bold text-text-secondary uppercase tracking-wider">
+                <h2 className="text-xs font-bold text-text-secondary ">
                   {group.subjectName}
                 </h2>
                 <span className="text-xs text-text-secondary font-medium">

@@ -40,13 +40,13 @@ export default async function NewLessonPage({
       <h1 className="text-xl font-semibold text-text-primary mb-6">New Lesson</h1>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">
           {error}
         </p>
       )}
 
       <form action={createLesson} className="space-y-6">
-        <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
+        <section className="bg-surface border border-border rounded-lg p-6 space-y-4">
           <h2 className="text-sm font-semibold text-text-primary">Lesson Details</h2>
 
           <div>

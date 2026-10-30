@@ -56,7 +56,7 @@ export default async function EditGuardianPage({
       </Link>
 
       <div className="flex items-center gap-3 mt-4 mb-6">
-        <span className="w-11 h-11 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm font-medium">
+        <span className="w-11 h-11 rounded-full bg-school-soft text-school-ink flex items-center justify-center text-sm font-medium">
           {initials}
         </span>
         <div>
@@ -66,11 +66,11 @@ export default async function EditGuardianPage({
       </div>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">{error}</p>
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
 
       <form action={updateGuardianWithId} className="space-y-4">
-        <section className="bg-surface border border-border rounded-xl p-5">
+        <section className="bg-surface border border-border rounded-lg p-5">
           <div className="flex items-center gap-2 mb-4">
             <User size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Contact Information</h3>
@@ -109,12 +109,12 @@ export default async function EditGuardianPage({
         </section>
 
         {customFields && customFields.length > 0 && (
-          <section className="bg-surface border border-border rounded-xl p-5">
+          <section className="bg-surface border border-border rounded-lg p-5">
             <CustomFieldInputs definitions={customFields} initialValues={valuesByKey} />
           </section>
         )}
 
-        <section className="bg-surface border border-border rounded-xl p-5">
+        <section className="bg-surface border border-border rounded-lg p-5">
           <div className="flex items-center gap-2 mb-4">
             <Users size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Linked Students</h3>

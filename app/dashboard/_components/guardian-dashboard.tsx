@@ -18,10 +18,10 @@ function formatDuration(seconds: number | null): string {
 
 function getAttendanceStatusBadge(label: string) {
   const l = (label || '').toLowerCase()
-  if (l.includes('present')) return 'bg-emerald-50 text-emerald-700 border-emerald-200'
-  if (l.includes('absent')) return 'bg-red-50 text-red-700 border-red-200'
-  if (l.includes('late')) return 'bg-amber-50 text-amber-700 border-amber-200'
-  return 'bg-blue-50 text-blue-700 border-blue-200'
+  if (l.includes('present')) return 'bg-success-bg text-success-text border-success-bg'
+  if (l.includes('absent')) return 'bg-danger-bg text-danger-text border-danger-bg'
+  if (l.includes('late')) return 'bg-warning-bg text-warning-text border-warning-bg'
+  return 'bg-school-soft text-school-ink border-school-track'
 }
 
 function formatCurrency(n: number) {
@@ -363,7 +363,7 @@ export async function GuardianDashboard({
     return (
       <div className="px-6 py-6 max-w-5xl space-y-6">
         <h1 className="text-xl font-semibold text-text-primary">Welcome, {guardianRow.first_name}</h1>
-        <div className="bg-surface border border-border rounded-xl p-8 text-center text-sm text-text-secondary">
+        <div className="bg-surface border border-border rounded-lg p-8 text-center text-sm text-text-secondary">
           No children are linked to your account yet. Contact your school administrator to link your child&apos;s profile.
         </div>
       </div>
@@ -377,7 +377,7 @@ export async function GuardianDashboard({
       </div>
 
       {/* Child Profile Header */}
-      <div className="bg-surface border border-border rounded-xl p-5 shadow-xs">
+      <div className="bg-surface border border-border rounded-lg p-5 shadow-xs">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-3.5">
@@ -447,9 +447,9 @@ export async function GuardianDashboard({
             <span>Attendance</span>
             {attendanceRate !== null && (
               <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border ${
-                attendanceRate >= 90 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                attendanceRate >= 75 ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                'bg-red-50 text-red-700 border-red-200'
+                attendanceRate >= 90 ? 'bg-success-bg text-success-text border-success-bg' :
+                attendanceRate >= 75 ? 'bg-warning-bg text-warning-text border-warning-bg' :
+                'bg-danger-bg text-danger-text border-danger-bg'
               }`}>
                 {attendanceRate}%
               </span>
@@ -471,7 +471,7 @@ export async function GuardianDashboard({
           >
             <span>Fees</span>
             {totalBalance > 0 && (
-              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full border bg-red-50 text-red-700 border-red-200">
+              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full border bg-danger-bg text-danger-text border-danger-bg">
                 Owing
               </span>
             )}
@@ -501,7 +501,7 @@ export async function GuardianDashboard({
       {activeTab === 'all' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <Link href={buildUrl({ tab: 'attendance' })} className="border border-border rounded-xl p-4 bg-surface hover:bg-surface-muted/30 transition-colors">
+            <Link href={buildUrl({ tab: 'attendance' })} className="border border-border rounded-lg p-4 bg-surface hover:bg-surface-muted/30 transition-colors">
               <div className="text-xs text-text-secondary font-medium">Attendance Rate</div>
               <div className="text-xl font-bold text-text-primary mt-1">
                 {attendanceRate !== null ? `${attendanceRate}%` : '—'}
@@ -509,9 +509,9 @@ export async function GuardianDashboard({
               <div className="text-[11px] text-text-secondary mt-1">{currentTerm?.name ?? 'This term'}</div>
             </Link>
 
-            <Link href={buildUrl({ tab: 'fees' })} className="border border-border rounded-xl p-4 bg-surface hover:bg-surface-muted/30 transition-colors">
+            <Link href={buildUrl({ tab: 'fees' })} className="border border-border rounded-lg p-4 bg-surface hover:bg-surface-muted/30 transition-colors">
               <div className="text-xs text-text-secondary font-medium">Fees Balance</div>
-              <div className={`text-xl font-bold mt-1 ${totalBalance > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+              <div className={`text-xl font-bold mt-1 ${totalBalance > 0 ? 'text-danger-text' : 'text-success-text'}`}>
                 {formatCurrency(totalBalance)}
               </div>
               <div className="text-[11px] text-text-secondary mt-1">
@@ -519,7 +519,7 @@ export async function GuardianDashboard({
               </div>
             </Link>
 
-            <Link href={buildUrl({ tab: 'timetable' })} className="border border-border rounded-xl p-4 bg-surface hover:bg-surface-muted/30 transition-colors">
+            <Link href={buildUrl({ tab: 'timetable' })} className="border border-border rounded-lg p-4 bg-surface hover:bg-surface-muted/30 transition-colors">
               <div className="text-xs text-text-secondary font-medium">Today&apos;s Classes</div>
               <div className="text-xl font-bold text-text-primary mt-1">{todayRows.length}</div>
               <div className="text-[11px] text-text-secondary mt-1">
@@ -527,7 +527,7 @@ export async function GuardianDashboard({
               </div>
             </Link>
 
-            <Link href={buildUrl({ tab: 'results' })} className="border border-border rounded-xl p-4 bg-surface hover:bg-surface-muted/30 transition-colors">
+            <Link href={buildUrl({ tab: 'results' })} className="border border-border rounded-lg p-4 bg-surface hover:bg-surface-muted/30 transition-colors">
               <div className="text-xs text-text-secondary font-medium">Academic Position</div>
               <div className="text-xl font-bold text-text-primary mt-1">
                 {rank ? `${rank.rank} / ${rank.out_of}` : '—'}
@@ -536,7 +536,7 @@ export async function GuardianDashboard({
             </Link>
           </div>
 
-          <div className="bg-surface border border-border rounded-xl p-5 shadow-xs space-y-3">
+          <div className="bg-surface border border-border rounded-lg p-5 shadow-xs space-y-3">
             <div className="flex items-center justify-between">
               <h2 className="text-base font-semibold text-text-primary">Latest Announcements</h2>
               <Link href="/dashboard/announcements" className="text-xs text-primary hover:underline font-semibold">
@@ -562,8 +562,8 @@ export async function GuardianDashboard({
             )}
           </div>
 
-          <div className="bg-surface border border-border rounded-xl p-4">
-            <h2 className="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">My Contact Information</h2>
+          <div className="bg-surface border border-border rounded-lg p-4">
+            <h2 className="text-xs font-semibold text-text-secondary  mb-2">My Contact Information</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
               <div>
                 <span className="block text-xs text-text-secondary mb-0.5">Phone</span>
@@ -580,7 +580,7 @@ export async function GuardianDashboard({
 
       {/* ATTENDANCE */}
       {activeTab === 'attendance' && (
-        <div className="bg-surface border border-border rounded-xl p-5 shadow-xs space-y-4">
+        <div className="bg-surface border border-border rounded-lg p-5 shadow-xs space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="text-base font-semibold text-text-primary flex items-center gap-2">
@@ -617,15 +617,15 @@ export async function GuardianDashboard({
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="border border-border rounded-xl p-3.5 bg-surface-muted/30">
+            <div className="border border-border rounded-lg p-3.5 bg-surface-muted/30">
               <div className="text-xs text-text-secondary font-medium">Attendance Rate</div>
               <div className="text-xl font-bold text-text-primary mt-1 flex items-baseline gap-2">
                 {attendanceRate !== null ? `${attendanceRate}%` : '—'}
                 {attendanceRate !== null && (
                   <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${
-                    attendanceRate >= 90 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                    attendanceRate >= 75 ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                    'bg-red-50 text-red-700 border-red-200'
+                    attendanceRate >= 90 ? 'bg-success-bg text-success-text border-success-bg' :
+                    attendanceRate >= 75 ? 'bg-warning-bg text-warning-text border-warning-bg' :
+                    'bg-danger-bg text-danger-text border-danger-bg'
                   }`}>
                     {attendanceRate >= 90 ? 'Excellent' : attendanceRate >= 75 ? 'Good' : 'Low'}
                   </span>
@@ -636,27 +636,27 @@ export async function GuardianDashboard({
               </div>
             </div>
 
-            <div className="border border-border rounded-xl p-3.5 bg-surface-muted/30">
+            <div className="border border-border rounded-lg p-3.5 bg-surface-muted/30">
               <div className="text-xs text-text-secondary font-medium">Present</div>
-              <div className="text-xl font-bold text-emerald-600 mt-1">{presentCount}</div>
+              <div className="text-xl font-bold text-success-text mt-1">{presentCount}</div>
               <div className="text-[11px] text-text-secondary mt-1">Sessions attended</div>
             </div>
 
-            <div className="border border-border rounded-xl p-3.5 bg-surface-muted/30">
+            <div className="border border-border rounded-lg p-3.5 bg-surface-muted/30">
               <div className="text-xs text-text-secondary font-medium">Late</div>
-              <div className="text-xl font-bold text-amber-600 mt-1">{lateCount}</div>
+              <div className="text-xl font-bold text-warning-text mt-1">{lateCount}</div>
               <div className="text-[11px] text-text-secondary mt-1">Late arrivals</div>
             </div>
 
-            <div className="border border-border rounded-xl p-3.5 bg-surface-muted/30">
+            <div className="border border-border rounded-lg p-3.5 bg-surface-muted/30">
               <div className="text-xs text-text-secondary font-medium">Absent</div>
-              <div className="text-xl font-bold text-red-600 mt-1">{absentCount}</div>
+              <div className="text-xl font-bold text-danger-text mt-1">{absentCount}</div>
               <div className="text-[11px] text-text-secondary mt-1">Sessions missed</div>
             </div>
           </div>
 
           {displayedAttendance.length === 0 ? (
-            <div className="text-center py-10 text-sm text-text-secondary border border-dashed border-border rounded-xl p-6">
+            <div className="text-center py-10 text-sm text-text-secondary border border-dashed border-border rounded-lg p-6">
               <p className="font-medium text-text-primary">
                 No attendance records found for {selectedChild?.first_name} {attScope === 'all' ? 'yet' : `in ${currentTerm?.name ?? 'this term'}`}.
               </p>
@@ -672,7 +672,7 @@ export async function GuardianDashboard({
               )}
             </div>
           ) : (
-            <div className="border border-border rounded-xl overflow-x-auto">
+            <div className="border border-border rounded-lg overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-surface-muted/40 text-text-secondary text-xs">
                   <tr>
@@ -722,7 +722,7 @@ export async function GuardianDashboard({
           )}
 
           {/* Recorded-lesson attendance (separate from daily; does NOT affect rate/counters) */}
-          <div className="bg-surface border border-border rounded-xl p-5 shadow-xs space-y-4 mt-4">
+          <div className="bg-surface border border-border rounded-lg p-5 shadow-xs space-y-4 mt-4">
             <div>
               <h2 className="text-base font-semibold text-text-primary flex items-center gap-2">
                 <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -734,12 +734,12 @@ export async function GuardianDashboard({
             </div>
 
             {lmsPeriodAttendance.length === 0 ? (
-              <div className="text-center py-8 text-sm text-text-secondary border border-dashed border-border rounded-xl">
+              <div className="text-center py-8 text-sm text-text-secondary border border-dashed border-border rounded-lg">
                 <p className="font-medium text-text-primary">No recorded-lesson attendance yet.</p>
                 <p className="text-xs text-text-secondary mt-1">Attendance for recorded (LMS) periods will appear here once marked by a teacher.</p>
               </div>
             ) : (
-              <div className="border border-border rounded-xl overflow-x-auto">
+              <div className="border border-border rounded-lg overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead className="bg-surface-muted/40 text-text-secondary text-xs border-b border-border">
                     <tr>
@@ -803,11 +803,11 @@ export async function GuardianDashboard({
           </h2>
 
           {subjectRows.length === 0 ? (
-            <div className="bg-surface border border-border rounded-xl p-8 text-center text-sm text-text-secondary">
+            <div className="bg-surface border border-border rounded-lg p-8 text-center text-sm text-text-secondary">
               No published results for {currentTerm?.name ?? 'this term'} yet.
             </div>
           ) : (
-            <div className="bg-surface border border-border rounded-xl overflow-hidden shadow-xs">
+            <div className="bg-surface border border-border rounded-lg overflow-hidden shadow-xs">
               <table className="w-full text-sm">
                 <thead className="bg-surface-muted text-text-secondary text-xs">
                   <tr>
@@ -836,7 +836,7 @@ export async function GuardianDashboard({
           )}
 
           {remark && (remark.class_teacher_remark || remark.principal_remark) && (
-            <div className="bg-surface border border-border rounded-xl p-5 space-y-3 shadow-xs">
+            <div className="bg-surface border border-border rounded-lg p-5 space-y-3 shadow-xs">
               <h3 className="text-sm font-semibold text-text-primary">Report Card Remarks</h3>
               {remark.class_teacher_remark && (
                 <p className="text-sm text-text-secondary">
@@ -857,32 +857,32 @@ export async function GuardianDashboard({
 
       {/* FEES */}
       {activeTab === 'fees' && (
-        <div className="bg-surface border border-border rounded-xl p-5 shadow-xs space-y-4">
+        <div className="bg-surface border border-border rounded-lg p-5 shadow-xs space-y-4">
           <h2 className="text-base font-semibold text-text-primary">Fees — {currentTerm?.academic_sessions?.name ?? 'Current Session'}</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="border border-border rounded-xl p-3.5 bg-surface-muted/30">
+            <div className="border border-border rounded-lg p-3.5 bg-surface-muted/30">
               <div className="text-xs text-text-secondary font-medium">Total Billed</div>
               <div className="text-xl font-bold text-text-primary mt-1">{formatCurrency(totalBilled)}</div>
             </div>
-            <div className="border border-border rounded-xl p-3.5 bg-surface-muted/30">
+            <div className="border border-border rounded-lg p-3.5 bg-surface-muted/30">
               <div className="text-xs text-text-secondary font-medium">Total Paid</div>
-              <div className="text-xl font-bold text-emerald-600 mt-1">{formatCurrency(totalPaid)}</div>
+              <div className="text-xl font-bold text-success-text mt-1">{formatCurrency(totalPaid)}</div>
             </div>
-            <div className="border border-border rounded-xl p-3.5 bg-surface-muted/30">
+            <div className="border border-border rounded-lg p-3.5 bg-surface-muted/30">
               <div className="text-xs text-text-secondary font-medium">Balance</div>
-              <div className={`text-xl font-bold mt-1 ${totalBalance > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+              <div className={`text-xl font-bold mt-1 ${totalBalance > 0 ? 'text-danger-text' : 'text-success-text'}`}>
                 {formatCurrency(totalBalance)}
               </div>
             </div>
           </div>
 
           {feeItems.length === 0 ? (
-            <div className="text-center py-10 text-sm text-text-secondary border border-dashed border-border rounded-xl p-6">
+            <div className="text-center py-10 text-sm text-text-secondary border border-dashed border-border rounded-lg p-6">
               No fee structure has been set up for {selectedChild?.first_name}&apos;s class this session yet.
             </div>
           ) : (
-            <div className="border border-border rounded-xl overflow-x-auto">
+            <div className="border border-border rounded-lg overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-surface-muted/40 text-text-secondary text-xs">
                   <tr>
@@ -897,8 +897,8 @@ export async function GuardianDashboard({
                     <tr key={item.id} className="border-t border-border hover:bg-surface-muted/20 transition-colors">
                       <td className="px-4 py-3 font-medium text-text-primary">{item.name}</td>
                       <td className="px-4 py-3 text-right text-text-secondary">{formatCurrency(item.amount)}</td>
-                      <td className="px-4 py-3 text-right text-emerald-600">{formatCurrency(item.paid)}</td>
-                      <td className={`px-4 py-3 text-right font-semibold ${item.balance > 0 ? 'text-red-600' : 'text-text-secondary'}`}>
+                      <td className="px-4 py-3 text-right text-success-text">{formatCurrency(item.paid)}</td>
+                      <td className={`px-4 py-3 text-right font-semibold ${item.balance > 0 ? 'text-danger-text' : 'text-text-secondary'}`}>
                         {formatCurrency(item.balance)}
                       </td>
                     </tr>
@@ -920,14 +920,14 @@ export async function GuardianDashboard({
       {activeTab === 'lessons' && (
         <div className="space-y-6">
           {lessonsBySubject.length === 0 ? (
-            <div className="bg-surface border border-border rounded-xl p-8 text-center text-sm text-text-secondary">
+            <div className="bg-surface border border-border rounded-lg p-8 text-center text-sm text-text-secondary">
               No lessons have been published for {selectedChild?.first_name}&apos;s class yet.
             </div>
           ) : (
             lessonsBySubject.map((group) => (
-              <div key={group.subjectName} className="bg-surface border border-border rounded-xl overflow-hidden">
+              <div key={group.subjectName} className="bg-surface border border-border rounded-lg overflow-hidden">
                 <div className="px-5 py-3 border-b border-border bg-surface-muted">
-                  <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide">
+                  <h3 className="text-xs font-semibold text-text-secondary ">
                     {group.subjectName}
                   </h3>
                 </div>
@@ -963,7 +963,7 @@ export async function GuardianDashboard({
                             </span>
                           )}
                           {lessonHasBrief.get(lesson.id) && (
-                            <span className="flex items-center text-red-500" title="Has assignment PDF document">
+                            <span className="flex items-center text-danger-text" title="Has assignment PDF document">
                               <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
                               </svg>
@@ -999,7 +999,7 @@ export async function GuardianDashboard({
 
       {/* TIMETABLE */}
       {activeTab === 'timetable' && (
-        <div className="bg-surface border border-border rounded-xl p-5 shadow-xs space-y-3">
+        <div className="bg-surface border border-border rounded-lg p-5 shadow-xs space-y-3">
           <h2 className="text-base font-semibold text-text-primary flex items-center gap-2">
             <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 1118 0z" />

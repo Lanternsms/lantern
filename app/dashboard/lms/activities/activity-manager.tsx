@@ -192,7 +192,7 @@ export function ActivityManager({
   }
 
   return (
-    <section className="bg-surface border border-border rounded-xl p-6 space-y-6">
+    <section className="bg-surface border border-border rounded-lg p-6 space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 className="text-base font-semibold text-text-primary">Activities & Assessments</h2>
@@ -228,14 +228,14 @@ export function ActivityManager({
       </div>
 
       {activities.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border p-8 text-center">
+        <div className="rounded-lg border border-dashed border-border p-8 text-center">
           <p className="text-sm font-medium text-text-secondary">No activities added yet</p>
           <p className="text-xs text-text-secondary/80 mt-1">
             Create a quiz or assignment to assess student learning on this lesson.
           </p>
         </div>
       ) : (
-        <div className="divide-y divide-border rounded-xl border border-border overflow-hidden">
+        <div className="divide-y divide-border rounded-lg border border-border overflow-hidden">
           {activities.map(act => (
             <div
               key={act.id}
@@ -244,10 +244,10 @@ export function ActivityManager({
               <div className="space-y-1.5 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span
-                    className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider ${
+                    className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold  ${
                       act.kind === 'quiz'
-                        ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                        : 'bg-purple-500/10 text-purple-600 dark:text-purple-400'
+                        ? 'bg-primary text-school-ink dark:text-school'
+                        : 'bg-primary text-school-ink dark:text-school'
                     }`}
                   >
                     {act.kind}
@@ -268,7 +268,7 @@ export function ActivityManager({
                     {act.status}
                   </span>
                   {act.attachment_name && (
-                    <span className="inline-flex items-center gap-1 rounded-md bg-red-500/10 px-1.5 py-0.5 text-[11px] font-medium text-red-600 dark:text-red-400" title={act.attachment_name}>
+                    <span className="inline-flex items-center gap-1 rounded-md bg-danger-text px-1.5 py-0.5 text-[11px] font-medium text-danger-text dark:text-danger-text" title={act.attachment_name}>
                       <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
                       </svg>
@@ -451,7 +451,7 @@ export function ActivityManager({
                   ) : (
                     <div className="flex items-center justify-between rounded-lg border border-border bg-surface-muted/50 px-3 py-2 text-xs">
                       <div className="flex items-center gap-2 truncate">
-                        <svg className="w-4 h-4 text-red-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-4 h-4 text-danger-text shrink-0" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
                         </svg>
                         <span className="font-medium text-text-primary truncate">{briefFile.name}</span>

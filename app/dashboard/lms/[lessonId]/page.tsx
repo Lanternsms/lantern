@@ -169,7 +169,7 @@ export default async function LessonDetailPage({
         </div>
 
         {errorMsg && (
-          <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2">
+          <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2">
             {errorMsg}
           </p>
         )}
@@ -180,7 +180,7 @@ export default async function LessonDetailPage({
         )}
 
         {lesson.notes_path && (
-          <section className="bg-surface border border-border rounded-xl p-6">
+          <section className="bg-surface border border-border rounded-lg p-6">
             <h2 className="text-sm font-semibold text-text-primary mb-3">Lesson Notes</h2>
             <NotesDownloadButton
               lessonId={lessonId}
@@ -259,7 +259,7 @@ export default async function LessonDetailPage({
       </div>
 
       {errorMsg && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2">
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2">
           {errorMsg}
         </p>
       )}
@@ -270,7 +270,7 @@ export default async function LessonDetailPage({
       )}
 
       {/* ── Video section ── */}
-      <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
+      <section className="bg-surface border border-border rounded-lg p-6 space-y-4">
         <h2 className="text-sm font-semibold text-text-primary">Video</h2>
 
         <div className="grid grid-cols-2 gap-4 text-sm">
@@ -328,7 +328,7 @@ export default async function LessonDetailPage({
       </section>
 
       {/* ── Lesson Notes section ── */}
-      <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
+      <section className="bg-surface border border-border rounded-lg p-6 space-y-4">
         <h2 className="text-sm font-semibold text-text-primary">Lesson Notes (PDF)</h2>
         <LessonNotesUpload
           lessonId={lessonId}
@@ -354,12 +354,12 @@ export default async function LessonDetailPage({
 
       {/* ── Attendance section ── */}
       {attendanceSummary.ok && (
-        <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
+        <section className="bg-surface border border-border rounded-lg p-6 space-y-4">
           <h2 className="text-sm font-semibold text-text-primary">Attendance</h2>
           {attendanceSummary.rows.length === 0 ? (
             <p className="text-sm text-text-secondary">No period attendance has been recorded for this lesson yet.</p>
           ) : (
-            <div className="border border-border rounded-xl overflow-x-auto">
+            <div className="border border-border rounded-lg overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-surface-muted/40 text-text-secondary text-xs border-b border-border">
                   <tr>
@@ -381,9 +381,9 @@ export default async function LessonDetailPage({
                           weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
                         })}
                       </td>
-                      <td className="px-4 py-3 text-right text-emerald-600 font-semibold">{row.present}</td>
-                      <td className="px-4 py-3 text-right text-amber-600">{row.late}</td>
-                      <td className="px-4 py-3 text-right text-red-600">{row.absent}</td>
+                      <td className="px-4 py-3 text-right text-success-text font-semibold">{row.present}</td>
+                      <td className="px-4 py-3 text-right text-warning-text">{row.late}</td>
+                      <td className="px-4 py-3 text-right text-danger-text">{row.absent}</td>
                       <td className="px-4 py-3 text-right text-text-secondary">{row.total}</td>
                       {attendanceSummary.canManage && primaryLmsEntryId && (
                         <td className="px-4 py-3 text-right">
@@ -423,7 +423,7 @@ export default async function LessonDetailPage({
 
       {/* ── Edit metadata form (canManage only) ── */}
       {canManage && (
-        <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
+        <section className="bg-surface border border-border rounded-lg p-6 space-y-4">
           <h2 className="text-sm font-semibold text-text-primary">Lesson details</h2>
 
           <form action={updateWithId} className="space-y-4">
@@ -545,7 +545,7 @@ export default async function LessonDetailPage({
 
       {/* ── Status & delete ── */}
       {canManage && (
-        <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
+        <section className="bg-surface border border-border rounded-lg p-6 space-y-4">
           <h2 className="text-sm font-semibold text-text-primary">Actions</h2>
           <div className="flex flex-wrap gap-3">
             {lesson.status === 'draft' ? (

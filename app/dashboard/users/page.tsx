@@ -24,12 +24,12 @@ export default async function UsersPage() {
       {error && <p className="text-sm text-danger-text">Error: {error.message}</p>}
 
       {users && users.length > 0 && (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden">
+        <div className="bg-surface border border-border rounded-lg overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Name</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Roles</th>
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Name</th>
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Roles</th>
               </tr>
             </thead>
             <tbody>

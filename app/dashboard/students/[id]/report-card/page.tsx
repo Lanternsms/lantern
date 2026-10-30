@@ -70,7 +70,7 @@ export default async function ReportCardPage({
         <PrintButton />
       </div>
 
-      <div className="bg-surface border border-border rounded-xl p-8 print:border-0 print:shadow-none">
+      <div className="bg-surface border border-border rounded-lg p-8 print:border-0 print:shadow-none">
         <div className="text-center mb-6 pb-6 border-b border-border">
           <h1 className="text-lg font-semibold text-text-primary">{school?.name}</h1>
           <p className="text-sm text-text-secondary mt-1">Report Card — {card.term.name}, {card.session.name}</p>
@@ -90,7 +90,7 @@ export default async function ReportCardPage({
         ) : (
           <table className="w-full text-sm mb-6">
             <thead>
-              <tr className="border-b border-border text-left text-text-secondary text-xs uppercase tracking-wide">
+              <tr className="border-b border-border text-left text-text-secondary text-xs ">
                 <th className="py-2">Subject</th>
                 {(card.assessmentNames?.length ? card.assessmentNames : Object.keys(card.subjects[0]?.scores ?? {})).map((name) => (
                   <th key={name} className="py-2">{name}</th>

@@ -7,21 +7,21 @@ const TIMETABLE_LINKS = [
     description: 'Master schedule & teacher periods',
     href: '/dashboard/academics/timetable',
     icon: CalendarDays,
-    color: 'text-indigo-600 bg-indigo-50 border-indigo-200/60',
+    color: 'text-school-ink bg-school-soft border-school-track',
   },
   {
     label: 'Bell Schedule & Periods',
     description: 'Configure lesson timings and break hours',
     href: '/dashboard/academics/timetable',
     icon: Clock,
-    color: 'text-blue-600 bg-blue-50 border-blue-200/60',
+    color: 'text-school-ink bg-school-soft border-school-track',
   },
   {
     label: 'Class Allocation',
     description: 'Subject assignments across arms',
     href: '/dashboard/academics/classes',
     icon: Layers,
-    color: 'text-teal-600 bg-teal-50 border-teal-200/60',
+    color: 'text-success-text bg-success-bg border-success-bg',
   },
 ]
 
@@ -31,7 +31,7 @@ export async function TimetableWidget() {
       <div>
         <div className="flex items-center justify-between pb-4 border-b border-border mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 border border-indigo-200/60">
+            <div className="flex items-center justify-center shrink-0 text-text-secondary">
               <CalendarDays size={20} />
             </div>
             <div>
@@ -54,10 +54,10 @@ export async function TimetableWidget() {
               <Link
                 key={item.label}
                 href={item.href}
-                className="group p-3 rounded-xl border border-border bg-surface-muted/30 hover:bg-surface-muted hover:border-primary/40 transition-all flex items-center justify-between"
+                className="group p-3 rounded-lg border border-border bg-surface-muted/30 hover:bg-surface-muted hover:border-primary/40 transition-all flex items-center justify-between"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border ${item.color}`}>
+                  <div className="flex items-center justify-center shrink-0 text-text-secondary">
                     <Icon size={16} />
                   </div>
                   <div className="min-w-0">

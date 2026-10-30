@@ -4,7 +4,7 @@ export default function OfflinePage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-surface-muted px-6">
       <div className="max-w-md text-center space-y-4">
-        <p className="text-sm font-semibold text-accent tracking-wide uppercase">No connection</p>
+        <p className="text-sm font-semibold text-accent ">No connection</p>
         <h1 className="text-2xl font-semibold text-text-primary">You&apos;re offline</h1>
         <p className="text-sm text-text-secondary">
           Lantern needs an internet connection to load your school&apos;s data. Check your connection and try again.

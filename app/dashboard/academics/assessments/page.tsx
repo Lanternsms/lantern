@@ -30,13 +30,13 @@ export default async function AssessmentTypesPage({
       </p>
 
       {(error || fetchError) && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">
           {error ?? fetchError?.message}
         </p>
       )}
 
       {!fetchError && types?.length === 0 && (
-        <div className="bg-surface border border-border rounded-xl p-8 text-center mb-6">
+        <div className="bg-surface border border-border rounded-lg p-8 text-center mb-6">
           <p className="text-sm text-text-secondary mb-4">
             No assessment types yet. Start with the standard CA1 / CA2 / Exam split, or build your own.
           </p>
@@ -59,12 +59,12 @@ export default async function AssessmentTypesPage({
             Total weight: {totalWeight}%{!isBalanced && ' — this should add up to exactly 100%'}
           </div>
 
-          <div className="bg-surface border border-border rounded-xl overflow-hidden mb-6">
+          <div className="bg-surface border border-border rounded-lg overflow-hidden mb-6">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Name</th>
-                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Weight (%)</th>
+                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Name</th>
+                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Weight (%)</th>
                   <th className="px-4 py-3"></th>
                 </tr>
               </thead>
@@ -109,7 +109,7 @@ export default async function AssessmentTypesPage({
         </>
       )}
 
-      <section className="bg-surface border border-border rounded-xl p-5">
+      <section className="bg-surface border border-border rounded-lg p-5">
         <h3 className="text-sm font-medium text-text-primary mb-4">Add Assessment Type</h3>
         <form action={createAssessmentType} className="flex gap-2">
           <input

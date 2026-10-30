@@ -68,7 +68,7 @@ export default async function GuardianDetailPage({
         .order('name')
 
   const portalAccessContent = (
-    <div className="bg-surface border border-border rounded-xl p-5">
+    <div className="bg-surface border border-border rounded-lg p-5">
       <h3 className="text-sm font-medium text-text-primary mb-3">Portal Access</h3>
 
       {linkedProfile ? (
@@ -81,7 +81,7 @@ export default async function GuardianDetailPage({
             's login.
           </p>
           <form action={revokeGuardianPortalAccess.bind(null, guardian.id)}>
-            <button type="submit" className="text-xs text-red-600 hover:text-red-700">
+            <button type="submit" className="text-xs text-danger-text hover:text-danger-text">
               Revoke
             </button>
           </form>
@@ -150,7 +150,7 @@ export default async function GuardianDetailPage({
 
       <div className="flex items-center justify-between mt-4 mb-6">
         <div className="flex items-center gap-3">
-          <span className="w-11 h-11 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm font-medium">
+          <span className="w-11 h-11 rounded-full bg-school-soft text-school-ink flex items-center justify-center text-sm font-medium">
             {initials}
           </span>
           <div>
@@ -167,7 +167,7 @@ export default async function GuardianDetailPage({
       </div>
 
       <div className="space-y-4">
-        <section className="bg-surface border border-border rounded-xl p-5">
+        <section className="bg-surface border border-border rounded-lg p-5">
           <div className="flex items-center gap-2 mb-4">
             <User size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Contact Information</h3>
@@ -189,7 +189,7 @@ export default async function GuardianDetailPage({
         </section>
 
         {fieldDefs && fieldDefs.length > 0 && (
-          <section className="bg-surface border border-border rounded-xl p-5">
+          <section className="bg-surface border border-border rounded-lg p-5">
             <div className="flex items-center gap-2 mb-4">
               <FileText size={16} className="text-text-secondary" />
               <h3 className="text-sm font-medium text-text-primary">Custom Fields</h3>
@@ -212,7 +212,7 @@ export default async function GuardianDetailPage({
           </section>
         )}
 
-        <section className="bg-surface border border-border rounded-xl p-5">
+        <section className="bg-surface border border-border rounded-lg p-5">
           <div className="flex items-center gap-2 mb-4">
             <Users size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Linked Students</h3>

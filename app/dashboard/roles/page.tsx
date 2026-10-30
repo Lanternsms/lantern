@@ -14,7 +14,7 @@ export default async function RolesPage() {
   if (error) {
   return (
     <div className="px-8 py-8">
-      <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2">
+      <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2">
         Error loading roles: {error.message}
       </p>
     </div>
@@ -40,7 +40,7 @@ export default async function RolesPage() {
 
       <section className="mb-8">
         <h2 className="text-sm font-medium text-text-secondary mb-3">System Roles</h2>
-        <div className="bg-surface border border-border rounded-xl overflow-hidden">
+        <div className="bg-surface border border-border rounded-lg overflow-hidden">
           <table className="w-full text-sm">
             <tbody>
               {systemRoles.map((r) => (
@@ -63,7 +63,7 @@ export default async function RolesPage() {
       <section>
         <h2 className="text-sm font-medium text-text-secondary mb-3">Custom Roles</h2>
         {customRoles.length > 0 ? (
-          <div className="bg-surface border border-border rounded-xl overflow-hidden">
+          <div className="bg-surface border border-border rounded-lg overflow-hidden">
             <table className="w-full text-sm">
               <tbody>
                 {customRoles.map((r) => (

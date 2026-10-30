@@ -69,7 +69,7 @@ export default function TimetableGridView({
                           <div className="flex items-center gap-1.5 flex-wrap">
                             <span className="text-xs font-medium text-text-primary">{cell.subject_name}</span>
                             {cell.delivery_mode === 'lms' && (
-                              <span className="inline-block text-[9px] font-semibold uppercase tracking-wider px-1 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
+                              <span className="inline-block text-[9px] font-semibold  px-1 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
                                 LMS
                               </span>
                             )}

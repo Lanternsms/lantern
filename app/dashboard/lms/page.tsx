@@ -94,7 +94,7 @@ export default async function LmsPage({
       </div>
 
       {errorMsg && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2">
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2">
           {errorMsg}
         </p>
       )}
@@ -148,9 +148,9 @@ export default async function LmsPage({
               <h2 className="text-sm font-semibold text-text-primary mb-3">{className}</h2>
               <div className="space-y-6">
                 {Array.from(subjectMap.entries()).map(([subjectName, items]) => (
-                  <div key={subjectName} className="bg-surface border border-border rounded-xl overflow-hidden">
+                  <div key={subjectName} className="bg-surface border border-border rounded-lg overflow-hidden">
                     <div className="px-5 py-3 border-b border-border bg-surface-muted">
-                      <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide">
+                      <h3 className="text-xs font-semibold text-text-secondary ">
                         {subjectName}
                       </h3>
                     </div>

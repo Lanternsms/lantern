@@ -101,12 +101,12 @@ export default async function EditStudentPage({
       <p className="text-sm text-text-secondary mb-6">Update this student&apos;s record.</p>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">{error}</p>
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
 
       <form action={updateStudentWithId} className="space-y-6">
         <input type="hidden" name="from" value={from ?? ''} />
-        <section className="bg-surface border border-border rounded-xl p-6">
+        <section className="bg-surface border border-border rounded-lg p-6">
           <h2 className="text-sm font-semibold text-text-primary mb-4">Personal Information</h2>
 
           <StudentPhotoUploader initialPhotoUrl={student.photo_url} />
@@ -152,13 +152,13 @@ export default async function EditStudentPage({
           </div>
         </section>
 
-        <section className="bg-surface border border-border rounded-xl p-6">
+        <section className="bg-surface border border-border rounded-lg p-6">
           <h2 className="text-sm font-semibold text-text-primary">Guardian Information</h2>
           <p className="text-xs text-text-secondary mb-4">At least one guardian is required.</p>
           <GuardianEditRepeater initialGuardians={initialGuardians} customFieldDefs={guardianCustomFields ?? []} />
         </section>
 
-        <section className="bg-surface border border-border rounded-xl p-6">
+        <section className="bg-surface border border-border rounded-lg p-6">
           <h2 className="text-sm font-semibold text-text-primary mb-4">Enrolment Information</h2>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -191,7 +191,7 @@ export default async function EditStudentPage({
         </section>
 
         {customFields && customFields.length > 0 && (
-          <section className="bg-surface border border-border rounded-xl p-6">
+          <section className="bg-surface border border-border rounded-lg p-6">
             <h2 className="text-sm font-semibold text-text-primary">Additional Information</h2>
             <p className="text-xs text-text-secondary mb-4">School-configured fields. These can be customised in your school settings.</p>
             <div className="grid grid-cols-2 gap-4">

@@ -108,17 +108,17 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
               <img
                 src={student.photo_url}
                 alt={`${student.first_name} ${student.last_name}`}
-                className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover border-2 border-border shadow-sm ring-4 ring-primary/5"
+                className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover border-2 border-border  ring-4 ring-primary/5"
               />
             ) : (
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-amber-100 text-amber-700 flex flex-col items-center justify-center font-bold text-2xl sm:text-3xl border-2 border-amber-200 ring-4 ring-amber-50">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-warning-bg text-warning-text flex flex-col items-center justify-center font-bold text-2xl sm:text-3xl border-2 border-warning-bg ring-4 ring-warning-bg">
                 {initials}
-                <span className="text-[10px] font-normal text-amber-600/80 mt-1">No photo</span>
+                <span className="text-[10px] font-normal text-warning-text mt-1">No photo</span>
               </div>
             )}
             <span
               className={`absolute -bottom-1.5 -right-1.5 w-6 h-6 rounded-full border-2 border-surface flex items-center justify-center ${
-                isActive ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'
+                isActive ? 'bg-success-text text-white' : 'bg-danger-text text-white'
               }`}
               title={isActive ? 'Active Student' : student.status}
             >
@@ -168,9 +168,9 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {/* Card: My Results */}
-          <div className="bg-surface border border-border rounded-xl p-6 flex flex-col justify-between hover:border-primary/50 transition-all hover:shadow-xs group">
+          <div className="bg-surface border border-border rounded-lg p-6 flex flex-col justify-between hover:border-primary/50 transition-all hover:shadow-xs group">
             <div>
-              <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+              <div className="flex items-center justify-center mb-4 shrink-0 text-text-secondary">
                 <Award size={24} />
               </div>
               <h3 className="text-base font-semibold text-text-primary mb-1">My Results</h3>
@@ -189,9 +189,9 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
           </div>
 
           {/* Card: My Timetable */}
-          <div className="bg-surface border border-border rounded-xl p-6 flex flex-col justify-between hover:border-primary/50 transition-all hover:shadow-xs group">
+          <div className="bg-surface border border-border rounded-lg p-6 flex flex-col justify-between hover:border-primary/50 transition-all hover:shadow-xs group">
             <div>
-              <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+              <div className="flex items-center justify-center mb-4 shrink-0 text-text-secondary">
                 <Calendar size={24} />
               </div>
               <h3 className="text-base font-semibold text-text-primary mb-1">My Timetable</h3>
@@ -210,9 +210,9 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
           </div>
 
           {/* Card: My Payments */}
-          <div className="bg-surface border border-border rounded-xl p-6 flex flex-col justify-between hover:border-primary/50 transition-all hover:shadow-xs group">
+          <div className="bg-surface border border-border rounded-lg p-6 flex flex-col justify-between hover:border-primary/50 transition-all hover:shadow-xs group">
             <div>
-              <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+              <div className="flex items-center justify-center mb-4 shrink-0 text-text-secondary">
                 <CreditCard size={24} />
               </div>
               <h3 className="text-base font-semibold text-text-primary mb-1">My Payments</h3>
@@ -245,15 +245,15 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
         </div>
 
         {lessonsBySubject.length === 0 ? (
-          <div className="bg-surface border border-border rounded-xl p-8 text-center text-sm text-text-secondary">
+          <div className="bg-surface border border-border rounded-lg p-8 text-center text-sm text-text-secondary">
             No lessons have been published for your class yet.
           </div>
         ) : (
           <div className="space-y-4">
             {lessonsBySubject.map((group) => (
-              <div key={group.subjectName} className="bg-surface border border-border rounded-xl overflow-hidden">
+              <div key={group.subjectName} className="bg-surface border border-border rounded-lg overflow-hidden">
                 <div className="px-5 py-3 border-b border-border bg-surface-muted">
-                  <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide">
+                  <h3 className="text-xs font-semibold text-text-secondary ">
                     {group.subjectName}
                   </h3>
                 </div>
@@ -319,10 +319,10 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Link
           href="/dashboard/announcements"
-          className="bg-surface border border-border rounded-xl p-5 flex items-center justify-between hover:border-primary/50 transition-colors group"
+          className="bg-surface border border-border rounded-lg p-5 flex items-center justify-between hover:border-primary/50 transition-colors group"
         >
           <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-lg bg-surface-muted text-text-secondary flex items-center justify-center shrink-0 group-hover:text-primary transition-colors">
+            <div className="flex items-center justify-center shrink-0 text-text-secondary">
               <Bell size={20} />
             </div>
             <div>
@@ -335,10 +335,10 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
 
         <Link
           href="/dashboard/documents"
-          className="bg-surface border border-border rounded-xl p-5 flex items-center justify-between hover:border-primary/50 transition-colors group"
+          className="bg-surface border border-border rounded-lg p-5 flex items-center justify-between hover:border-primary/50 transition-colors group"
         >
           <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-lg bg-surface-muted text-text-secondary flex items-center justify-center shrink-0 group-hover:text-primary transition-colors">
+            <div className="flex items-center justify-center shrink-0 text-text-secondary">
               <FileText size={20} />
             </div>
             <div>

@@ -32,13 +32,13 @@ export default async function CustomFieldsPage({
     return (
       <div>
         {fields.length > 0 ? (
-          <div className="bg-surface border border-border rounded-xl overflow-hidden mb-6">
+          <div className="bg-surface border border-border rounded-lg overflow-hidden mb-6">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Label</th>
-                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Type</th>
-                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Required</th>
+                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Label</th>
+                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Type</th>
+                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Required</th>
                   <th className="px-4 py-3"></th>
                 </tr>
               </thead>
@@ -82,7 +82,7 @@ export default async function CustomFieldsPage({
           <p className="text-sm text-text-secondary mb-6">No custom fields defined yet for {entityLabel}.</p>
         )}
 
-        <section className="bg-surface border border-border rounded-xl p-5">
+        <section className="bg-surface border border-border rounded-lg p-5">
           <h3 className="text-sm font-medium text-text-primary mb-4">Add Field</h3>
           <CustomFieldForm entityType={entityType} />
         </section>
@@ -101,7 +101,7 @@ export default async function CustomFieldsPage({
       </p>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">{error}</p>
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
 
       <TabView

@@ -50,13 +50,13 @@ export default async function ApprovalsQueuePage({
       {!error && myBatches.length === 0 && <p className="text-sm text-text-secondary">Nothing waiting on you right now.</p>}
 
       {myBatches.length > 0 && (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden">
+        <div className="bg-surface border border-border rounded-lg overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Class / Subject</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Submitted By</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Stage</th>
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Class / Subject</th>
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Submitted By</th>
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Stage</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>

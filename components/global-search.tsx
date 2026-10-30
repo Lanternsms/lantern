@@ -132,7 +132,7 @@ export function GlobalSearch() {
                   if (items.length === 0) return null
                   return (
                     <div key={section.key} className="py-1">
-                      <p className="px-4 pt-2 pb-1 text-[11px] font-semibold text-text-secondary uppercase tracking-wide">
+                      <p className="px-4 pt-2 pb-1 text-xs font-medium text-text-secondary">
                         {section.label}
                       </p>
                       {items.map((item) => {

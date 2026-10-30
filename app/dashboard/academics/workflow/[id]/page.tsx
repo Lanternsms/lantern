@@ -82,7 +82,7 @@ export default async function WorkflowDetailPage({
       </div>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">{error}</p>
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
 
       {!template.is_active && (
@@ -92,7 +92,7 @@ export default async function WorkflowDetailPage({
       )}
 
       {/* Visual flow */}
-      <section className="bg-surface border border-border rounded-xl p-5 mb-6">
+      <section className="bg-surface border border-border rounded-lg p-5 mb-6">
         <h3 className="text-sm font-medium text-text-primary mb-4">Approval Flow</h3>
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs font-medium bg-secondary/10 text-secondary rounded-lg px-3 py-2">Teacher submits</span>
@@ -116,7 +116,7 @@ export default async function WorkflowDetailPage({
       </section>
 
       {/* Stages */}
-      <section className="bg-surface border border-border rounded-xl p-5 mb-6">
+      <section className="bg-surface border border-border rounded-lg p-5 mb-6">
         <h3 className="text-sm font-medium text-text-primary mb-4">Approval Stages</h3>
 
         {stages && stages.length > 0 && (
@@ -199,7 +199,7 @@ export default async function WorkflowDetailPage({
                     </p>
                   )}
                   {holdersForRole === 0 && (
-                    <p className="text-xs text-amber-700 mt-1 ml-8 flex items-center gap-1">
+                    <p className="text-xs text-warning-text mt-1 ml-8 flex items-center gap-1">
                       <AlertTriangle size={12} />
                       No one holds the {roleLabel(roleName ?? 'selected')} role yet, so results would stall at this stage.
                     </p>
@@ -236,7 +236,7 @@ export default async function WorkflowDetailPage({
       </section>
 
       {/* Rename */}
-      <form action={renameWithId} className="bg-surface border border-border rounded-xl p-5 flex items-end gap-2 mb-6">
+      <form action={renameWithId} className="bg-surface border border-border rounded-lg p-5 flex items-end gap-2 mb-6">
         <div className="flex-1">
           <label className="block text-sm text-text-secondary mb-1.5">Workflow Name</label>
           <input

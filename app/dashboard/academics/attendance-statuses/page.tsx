@@ -33,13 +33,13 @@ export default async function AttendanceStatusesPage({
       </p>
 
       {(error || fetchError) && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">
           {error ?? fetchError?.message}
         </p>
       )}
 
       {!fetchError && statuses?.length === 0 && (
-        <div className="bg-surface border border-border rounded-xl p-8 text-center mb-6">
+        <div className="bg-surface border border-border rounded-lg p-8 text-center mb-6">
           <p className="text-sm text-text-secondary mb-4">
             No attendance categories yet. Start with the standard set, or build your own.
           </p>
@@ -52,12 +52,12 @@ export default async function AttendanceStatusesPage({
       )}
 
       {statuses && statuses.length > 0 && (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden mb-6">
+        <div className="bg-surface border border-border rounded-lg overflow-hidden mb-6">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Label</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Counts as Present</th>
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Label</th>
+                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Counts as Present</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
@@ -101,7 +101,7 @@ export default async function AttendanceStatusesPage({
         </div>
       )}
 
-      <section className="bg-surface border border-border rounded-xl p-5">
+      <section className="bg-surface border border-border rounded-lg p-5">
         <h3 className="text-sm font-medium text-text-primary mb-4">Add Category</h3>
         <form action={createAttendanceStatus} className="flex items-center gap-3">
           <input

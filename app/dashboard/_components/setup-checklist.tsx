@@ -93,7 +93,7 @@ export async function SetupChecklist() {
   // Collapsed state: a small reopenable bar, not nothing.
   if (school.setup_checklist_dismissed_at) {
     return (
-      <div className="flex items-center justify-between border border-border rounded-xl px-4 py-2.5 mb-6 bg-surface">
+      <div className="flex items-center justify-between border border-border rounded-lg px-4 py-2.5 mb-6 bg-surface">
         <span className="text-sm font-medium text-text-primary">Setup Checklist</span>
         <form action={reopenSetupChecklist}>
           <button type="submit" className="text-xs font-medium text-primary hover:underline">Open</button>
@@ -103,7 +103,7 @@ export async function SetupChecklist() {
   }
 
   return (
-    <div className="border border-border rounded-xl p-5 mb-6 bg-surface">
+    <div className="border border-border rounded-lg p-5 mb-6 bg-surface">
       <div className="flex items-center justify-between mb-3">
         <div>
           <h2 className="text-sm font-semibold text-text-primary">Finish setting up your school</h2>
@@ -127,7 +127,7 @@ export async function SetupChecklist() {
             <div className="flex items-center gap-2.5">
               <span
                 className={`flex items-center justify-center w-5 h-5 rounded-full text-xs shrink-0 ${
-                  done[step.key] ? 'bg-emerald-500 text-white' : 'border border-border text-transparent'
+                  done[step.key] ? 'bg-success-text text-white' : 'border border-border text-transparent'
                 }`}
               >
                 ✓

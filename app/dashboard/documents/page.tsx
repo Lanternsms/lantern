@@ -62,7 +62,7 @@ export default async function DocumentsPage() {
         {((documents as unknown as DocumentItem[]) ?? []).map((d: DocumentItem) => {
           const canManage = d.created_by === user.id || canManageAll
           return (
-            <div key={d.id} className="bg-surface border border-border rounded-xl p-4 flex items-start justify-between gap-4">
+            <div key={d.id} className="bg-surface border border-border rounded-lg p-4 flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-sm font-semibold text-text-primary">{d.title}</h2>
                 {d.description && <p className="text-sm text-text-secondary mt-1">{d.description}</p>}

@@ -15,14 +15,14 @@ interface Notification {
 }
 
 const categoryColour: Record<string, string> = {
-  results: 'bg-blue-500',
-  attendance: 'bg-amber-500',
-  fees: 'bg-green-500',
-  learning: 'bg-violet-500',
+  results: 'bg-primary',
+  attendance: 'bg-warning-text',
+  fees: 'bg-success-text',
+  learning: 'bg-primary',
   qa: 'bg-pink-500',
-  announcements: 'bg-sky-500',
-  account: 'bg-orange-500',
-  system: 'bg-slate-500',
+  announcements: 'bg-primary',
+  account: 'bg-warning-text',
+  system: 'bg-text-secondary',
 }
 
 function timeAgo(iso: string) {
@@ -104,10 +104,10 @@ export function NotificationsPageClient({
           <p className="text-base">You&apos;re all caught up!</p>
         </div>
       ) : (
-        <div className="bg-surface border border-border rounded-xl divide-y divide-border overflow-hidden">
+        <div className="bg-surface border border-border rounded-lg divide-y divide-border overflow-hidden">
           {notifications.map(n => {
             const isUnread = !n.read_at
-            const dot = categoryColour[n.category] ?? 'bg-slate-400'
+            const dot = categoryColour[n.category] ?? 'bg-text-secondary'
             const inner = (
               <div
                 className={`flex items-start gap-4 px-5 py-4 hover:bg-surface-muted transition-colors cursor-pointer ${isUnread ? 'bg-primary/5' : ''}`}

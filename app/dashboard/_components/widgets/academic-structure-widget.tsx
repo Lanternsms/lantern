@@ -14,14 +14,14 @@ const ACADEMIC_LINKS = [
     description: 'Grade bands, thresholds & remarks',
     href: '/dashboard/academics/grading',
     icon: Award,
-    color: 'text-violet-600 bg-violet-50 border-violet-200/60',
+    color: 'text-school-ink bg-school-soft border-school-track',
   },
   {
     label: 'Sessions & Terms',
     description: 'Calendar dates and term cycles',
     href: '/dashboard/academics/sessions',
     icon: Calendar,
-    color: 'text-amber-600 bg-amber-50 border-amber-200/60',
+    color: 'text-warning-text bg-warning-bg border-warning-bg',
   },
 ]
 
@@ -31,7 +31,7 @@ export async function AcademicStructureWidget() {
       <div>
         <div className="flex items-center justify-between pb-4 border-b border-border mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center shrink-0 border border-cyan-200/60">
+            <div className="flex items-center justify-center shrink-0 text-text-secondary">
               <School size={20} />
             </div>
             <div>
@@ -54,10 +54,10 @@ export async function AcademicStructureWidget() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="group p-3 rounded-xl border border-border bg-surface-muted/30 hover:bg-surface-muted hover:border-primary/40 transition-all flex items-center justify-between"
+                className="group p-3 rounded-lg border border-border bg-surface-muted/30 hover:bg-surface-muted hover:border-primary/40 transition-all flex items-center justify-between"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border ${item.color}`}>
+                  <div className="flex items-center justify-center shrink-0 text-text-secondary">
                     <Icon size={16} />
                   </div>
                   <div className="min-w-0">

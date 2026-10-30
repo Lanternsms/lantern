@@ -57,10 +57,10 @@ export default async function ResultsHubPage() {
         {/* Result Remarks */}
         <Link
           href="/dashboard/results/remarks"
-          className="group bg-surface border border-border rounded-xl p-5 hover:border-primary/50 hover:shadow-xs transition-all flex flex-col justify-between"
+          className="group bg-surface border border-border rounded-lg p-5 hover:border-primary/50 hover:shadow-xs transition-all flex flex-col justify-between"
         >
           <div>
-            <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-3">
+            <div className="flex items-center justify-center mb-3 shrink-0 text-text-secondary">
               <MessageSquare size={18} />
             </div>
             <h2 className="text-base font-semibold text-text-primary group-hover:text-primary transition-colors mb-1">
@@ -79,7 +79,7 @@ export default async function ResultsHubPage() {
         {/* Class Result Summary */}
         <Link
           href="/dashboard/class-results"
-          className="group bg-surface border border-border rounded-xl p-5 hover:border-primary/50 hover:shadow-xs transition-all flex flex-col justify-between"
+          className="group bg-surface border border-border rounded-lg p-5 hover:border-primary/50 hover:shadow-xs transition-all flex flex-col justify-between"
         >
           <div>
             <div className="w-9 h-9 rounded-lg bg-accent/15 text-accent-hover flex items-center justify-center mb-3">
@@ -101,10 +101,10 @@ export default async function ResultsHubPage() {
         {/* Gradebook */}
         <Link
           href="/dashboard/gradebook"
-          className="group bg-surface border border-border rounded-xl p-5 hover:border-primary/50 hover:shadow-xs transition-all flex flex-col justify-between"
+          className="group bg-surface border border-border rounded-lg p-5 hover:border-primary/50 hover:shadow-xs transition-all flex flex-col justify-between"
         >
           <div>
-            <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-3">
+            <div className="flex items-center justify-center mb-3 shrink-0 text-text-secondary">
               <BookOpen size={18} />
             </div>
             <h2 className="text-base font-semibold text-text-primary group-hover:text-primary transition-colors mb-1">
@@ -123,10 +123,10 @@ export default async function ResultsHubPage() {
         {/* My Submissions */}
         <Link
           href="/dashboard/my-submissions"
-          className="group bg-surface border border-border rounded-xl p-5 hover:border-primary/50 hover:shadow-xs transition-all flex flex-col justify-between"
+          className="group bg-surface border border-border rounded-lg p-5 hover:border-primary/50 hover:shadow-xs transition-all flex flex-col justify-between"
         >
           <div>
-            <div className="w-9 h-9 rounded-lg bg-secondary/15 text-secondary flex items-center justify-center mb-3">
+            <div className="flex items-center justify-center mb-3 shrink-0 text-text-secondary">
               <Clock size={18} />
             </div>
             <h2 className="text-base font-semibold text-text-primary group-hover:text-primary transition-colors mb-1">
@@ -145,7 +145,7 @@ export default async function ResultsHubPage() {
         {/* Approvals Queue */}
         <Link
           href="/dashboard/approvals"
-          className="group bg-surface border border-border rounded-xl p-5 hover:border-primary/50 hover:shadow-xs transition-all flex flex-col justify-between"
+          className="group bg-surface border border-border rounded-lg p-5 hover:border-primary/50 hover:shadow-xs transition-all flex flex-col justify-between"
         >
           <div>
             <div className="flex items-center justify-between mb-3">
@@ -153,7 +153,7 @@ export default async function ResultsHubPage() {
                 <CheckCircle2 size={18} />
               </div>
               {pendingApprovalsCount > 0 && (
-                <span className="text-xs font-medium bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
+                <span className="text-xs font-medium bg-warning-bg text-warning-text px-2 py-0.5 rounded-full">
                   {pendingApprovalsCount} in review
                 </span>
               )}
@@ -175,10 +175,10 @@ export default async function ResultsHubPage() {
         {isAdmin && (
           <Link
             href="/dashboard/academics/results-config"
-            className="group bg-surface border border-border rounded-xl p-5 hover:border-primary/50 hover:shadow-xs transition-all flex flex-col justify-between"
+            className="group bg-surface border border-border rounded-lg p-5 hover:border-primary/50 hover:shadow-xs transition-all flex flex-col justify-between"
           >
             <div>
-              <div className="w-9 h-9 rounded-lg bg-surface-muted text-text-secondary flex items-center justify-center mb-3">
+              <div className="flex items-center justify-center mb-3 shrink-0 text-text-secondary">
                 <Settings size={18} />
               </div>
               <h2 className="text-base font-semibold text-text-primary group-hover:text-primary transition-colors mb-1">

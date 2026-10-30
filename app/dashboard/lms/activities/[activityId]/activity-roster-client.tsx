@@ -260,15 +260,15 @@ export function ActivityRosterClient({
     <div className="space-y-6">
       {/* Assignment Document Brief (if attached) */}
       {!isQuiz && currentBriefName && (
-        <div className="rounded-xl border border-border bg-surface p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+        <div className="rounded-lg border border-border bg-surface p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/10 text-red-600 dark:text-red-400 shrink-0">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-danger-text text-danger-text dark:text-danger-text shrink-0">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
               </svg>
             </div>
             <div className="min-w-0">
-              <div className="text-xs font-semibold text-text-secondary uppercase tracking-wider">Assignment Document (PDF)</div>
+              <div className="text-xs font-semibold text-text-secondary ">Assignment Document (PDF)</div>
               <div className="text-sm font-medium text-text-primary truncate">{currentBriefName}</div>
             </div>
           </div>
@@ -287,20 +287,20 @@ export function ActivityRosterClient({
       )}
 
       {briefError && (
-        <div className="rounded-xl border border-danger-bg bg-danger-bg/20 p-3 text-xs text-danger-text">
+        <div className="rounded-lg border border-danger-bg bg-danger-bg/20 p-3 text-xs text-danger-text">
           {briefError}
         </div>
       )}
 
       {/* Top action bar / summary stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="rounded-xl border border-border bg-surface p-4">
+        <div className="rounded-lg border border-border bg-surface p-4">
           <div className="text-xs text-text-secondary">Enrolled Students</div>
           <div className="mt-1 text-2xl font-bold text-text-primary">{totalEnrolled}</div>
           <div className="text-[11px] text-text-secondary mt-0.5">{session?.name || 'Current Session'}</div>
         </div>
 
-        <div className="rounded-xl border border-border bg-surface p-4">
+        <div className="rounded-lg border border-border bg-surface p-4">
           <div className="text-xs text-text-secondary">Submissions</div>
           <div className="mt-1 text-2xl font-bold text-text-primary">
             {submittedCount} <span className="text-sm font-normal text-text-secondary">/ {totalEnrolled}</span>
@@ -310,7 +310,7 @@ export function ActivityRosterClient({
           </div>
         </div>
 
-        <div className="rounded-xl border border-border bg-surface p-4">
+        <div className="rounded-lg border border-border bg-surface p-4">
           <div className="text-xs text-text-secondary">{isQuiz ? 'Scored' : 'Marked'}</div>
           <div className="mt-1 text-2xl font-bold text-text-primary">
             {markedCount} <span className="text-sm font-normal text-text-secondary">/ {submittedCount}</span>
@@ -320,7 +320,7 @@ export function ActivityRosterClient({
           </div>
         </div>
 
-        <div className="rounded-xl border border-border bg-surface p-4">
+        <div className="rounded-lg border border-border bg-surface p-4">
           <div className="text-xs text-text-secondary">Average Score</div>
           <div className="mt-1 text-2xl font-bold text-text-primary">
             {avgScore} <span className="text-sm font-normal text-text-secondary">/ {activity.max_score}</span>
@@ -394,10 +394,10 @@ export function ActivityRosterClient({
 
       {/* TAB 1: SUBMISSIONS ROSTER */}
       {activeTab === 'roster' && (
-        <div className="rounded-xl border border-border bg-surface overflow-hidden shadow-sm">
+        <div className="rounded-lg border border-border bg-surface overflow-hidden ">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-border bg-surface-muted/50 text-xs font-semibold text-text-secondary uppercase tracking-wider">
+              <thead className="border-b border-border bg-surface-muted/50 text-xs font-semibold text-text-secondary ">
                 <tr>
                   <th className="px-4 py-3">Student</th>
                   <th className="px-4 py-3">Admission No</th>
@@ -440,7 +440,7 @@ export function ActivityRosterClient({
                           </td>
                           <td className="px-4 py-3">
                             {item.hasInProgress ? (
-                              <span className="inline-flex items-center rounded-full bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium text-amber-600 dark:text-amber-400">
+                              <span className="inline-flex items-center rounded-full bg-warning-text px-2 py-0.5 text-[11px] font-medium text-warning-text dark:text-warning-text">
                                 In Progress
                               </span>
                             ) : hasAttempted ? (
@@ -484,7 +484,7 @@ export function ActivityRosterClient({
                                 Marked {sub.is_late && '(Late)'}
                               </span>
                             ) : status === 'submitted' ? (
-                              <span className="inline-flex items-center rounded-full bg-blue-500/10 px-2 py-0.5 text-[11px] font-medium text-blue-600 dark:text-blue-400">
+                              <span className="inline-flex items-center rounded-full bg-primary px-2 py-0.5 text-[11px] font-medium text-school-ink dark:text-school">
                                 Submitted {sub.is_late && '(Late)'}
                               </span>
                             ) : (
@@ -543,7 +543,7 @@ export function ActivityRosterClient({
 
       {/* TAB 3: SETTINGS & RULES */}
       {canManage && activeTab === 'settings' && (
-        <section className="rounded-xl border border-border bg-surface p-6 shadow-sm space-y-5 max-w-2xl">
+        <section className="rounded-lg border border-border bg-surface p-6  space-y-5 max-w-2xl">
           <div>
             <h3 className="text-sm font-semibold text-text-primary">Activity Settings</h3>
             <p className="text-xs text-text-secondary mt-0.5">
@@ -641,7 +641,7 @@ export function ActivityRosterClient({
                 {currentBriefName ? (
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg border border-border bg-surface-muted/40 p-3 text-xs">
                     <div className="flex items-center gap-2 truncate">
-                      <svg className="w-4 h-4 text-red-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-4 h-4 text-danger-text shrink-0" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
                       </svg>
                       <span className="font-medium text-text-primary truncate">{currentBriefName}</span>
@@ -744,7 +744,7 @@ export function ActivityRosterClient({
                 </h3>
                 <p className="text-xs text-text-secondary">
                   Submitted on {new Date(selectedSub.submitted_at || selectedSub.started_at).toLocaleString()}
-                  {selectedSub.is_late && <span className="ml-2 font-semibold text-amber-500">(Late Submission)</span>}
+                  {selectedSub.is_late && <span className="ml-2 font-semibold text-warning-text">(Late Submission)</span>}
                 </p>
               </div>
               <button

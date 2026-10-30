@@ -31,8 +31,8 @@ export function OnboardForm() {
 
   if (result) {
     return (
-      <div className="bg-surface border border-border rounded-xl p-6 space-y-3">
-        <h2 className="text-base font-semibold text-emerald-600">School created</h2>
+      <div className="bg-surface border border-border rounded-lg p-6 space-y-3">
+        <h2 className="text-base font-semibold text-success-text">School created</h2>
         <p className="text-sm text-text-secondary">
           <span className="font-medium text-text-primary">{result.slug}</span> is set up, and an invite email was sent to{' '}
           <span className="font-medium text-text-primary">{result.adminEmail}</span> so they can set their password and sign in.
@@ -51,8 +51,8 @@ export function OnboardForm() {
   }
 
   return (
-    <form action={handleSubmit} className="bg-surface border border-border rounded-xl p-6 space-y-6">
-      {error && <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-3 py-2">{error}</div>}
+    <form action={handleSubmit} className="bg-surface border border-border rounded-lg p-6 space-y-6">
+      {error && <div className="bg-danger-bg border border-danger-bg text-danger-text text-sm rounded-lg px-3 py-2">{error}</div>}
 
       <section className="space-y-3">
         <h2 className="text-sm font-semibold text-text-primary">School</h2>
