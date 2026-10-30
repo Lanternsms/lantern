@@ -78,7 +78,7 @@ export function RemarkPresetPicker({
             className="fixed inset-0 z-20"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 mt-1 w-80 max-h-72 overflow-y-auto bg-surface border border-border rounded-lg shadow-xl z-30 p-2 text-xs">
+          <div className="card absolute right-0 mt-1 w-80 max-h-72 overflow-y-auto shadow-xl z-30 p-2 text-xs">
             <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-border">
               <span className="font-semibold text-text-primary">Quick Remarks</span>
               <button

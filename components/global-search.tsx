@@ -107,7 +107,7 @@ export function GlobalSearch() {
       {isOpen && (
         <div className="fixed inset-0 z-[60] bg-black/30 flex items-start justify-center pt-24 px-4" onClick={close}>
           <div
-            className="w-full max-w-lg bg-surface rounded-xl border border-border shadow-lg overflow-hidden"
+            className="card w-full max-w-lg shadow-lg overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             <input

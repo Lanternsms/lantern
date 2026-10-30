@@ -48,7 +48,7 @@ export default async function DocumentsPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Documents & Downloads</h1>
         {canUpload && (
-          <Link href="/dashboard/documents/new" className="bg-primary text-white rounded-lg px-4 py-2 text-sm font-medium">
+          <Link href="/dashboard/documents/new" className="bg-primary text-white rounded-xl px-4 py-2 text-sm font-medium">
             Upload Document
           </Link>
         )}
@@ -62,7 +62,7 @@ export default async function DocumentsPage() {
         {((documents as unknown as DocumentItem[]) ?? []).map((d: DocumentItem) => {
           const canManage = d.created_by === user.id || canManageAll
           return (
-            <div key={d.id} className="bg-surface border border-border rounded-lg p-4 flex items-start justify-between gap-4">
+            <div key={d.id} className="card p-4 flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-sm font-semibold text-text-primary">{d.title}</h2>
                 {d.description && <p className="text-sm text-text-secondary mt-1">{d.description}</p>}

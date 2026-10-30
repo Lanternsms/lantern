@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { CheckCircle2 } from 'lucide-react'
+import { CheckCircle2 } from '@/components/icons'
 
 export default async function StudentAddedSuccessPage({
   searchParams,
@@ -28,7 +28,7 @@ export default async function StudentAddedSuccessPage({
           {id && (
             <Link
               href={`/dashboard/students/${id}${from ? `?from=${from}` : ''}`}
-              className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors"
+              className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors"
             >
               View Student
             </Link>

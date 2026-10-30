@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { deleteSubject } from '@/app/dashboard/academics/subjects/actions'
 import Link from 'next/link'
-import { Pencil, Trash2 } from 'lucide-react'
+import { Pencil, Trash2 } from '@/components/icons'
 
 export default async function SubjectsPage({
   searchParams,
@@ -26,7 +26,7 @@ export default async function SubjectsPage({
           <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Subjects</h1>
           <p className="text-sm text-text-secondary mt-1">Manage subjects offered at your school.</p>
         </div>
-        <Link href="/dashboard/academics/subjects/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+        <Link href="/dashboard/academics/subjects/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
           + Add Subject
         </Link>
       </div>
@@ -40,7 +40,7 @@ export default async function SubjectsPage({
       {!fetchError && subjects?.length === 0 && <p className="text-sm text-text-secondary">No subjects added yet.</p>}
 
       {subjects && subjects.length > 0 && (
-        <div className="bg-surface border border-border rounded-lg overflow-x-auto">
+        <div className="card overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">

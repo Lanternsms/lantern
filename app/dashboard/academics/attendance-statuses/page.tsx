@@ -6,7 +6,7 @@ import {
   deleteAttendanceStatus,
 } from '@/app/dashboard/academics/attendance-statuses/actions'
 import Link from 'next/link'
-import { Trash2 } from 'lucide-react'
+import { Trash2 } from '@/components/icons'
 
 export default async function AttendanceStatusesPage({
   searchParams,
@@ -39,12 +39,12 @@ export default async function AttendanceStatusesPage({
       )}
 
       {!fetchError && statuses?.length === 0 && (
-        <div className="bg-surface border border-border rounded-lg p-8 text-center mb-6">
+        <div className="card p-8 text-center mb-6">
           <p className="text-sm text-text-secondary mb-4">
             No attendance categories yet. Start with the standard set, or build your own.
           </p>
           <form action={seedDefaultAttendanceStatuses}>
-            <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+            <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
               Create Standard Set (Present, Absent, Late, Excused)
             </button>
           </form>
@@ -52,7 +52,7 @@ export default async function AttendanceStatusesPage({
       )}
 
       {statuses && statuses.length > 0 && (
-        <div className="bg-surface border border-border rounded-lg overflow-hidden mb-6">
+        <div className="card overflow-hidden mb-6">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
@@ -101,7 +101,7 @@ export default async function AttendanceStatusesPage({
         </div>
       )}
 
-      <section className="bg-surface border border-border rounded-lg p-5">
+      <section className="card p-5">
         <h3 className="text-sm font-medium text-text-primary mb-4">Add Category</h3>
         <form action={createAttendanceStatus} className="flex items-center gap-3">
           <input
@@ -114,7 +114,7 @@ export default async function AttendanceStatusesPage({
             <input type="checkbox" name="counts_as_present" className="rounded border-border" />
             Counts as present
           </label>
-          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors whitespace-nowrap">
+          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors whitespace-nowrap">
             Add
           </button>
         </form>

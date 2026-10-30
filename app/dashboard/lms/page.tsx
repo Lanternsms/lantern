@@ -85,7 +85,7 @@ export default async function LmsPage({
             </Link>
             <Link
               href="/dashboard/lms/new"
-              className="bg-primary text-white text-sm font-medium rounded-lg px-4 py-2 hover:bg-primary-hover transition-colors"
+              className="bg-primary text-white text-sm font-medium rounded-xl px-4 py-2 hover:bg-primary-hover transition-colors"
             >
               + New Lesson
             </Link>
@@ -105,7 +105,7 @@ export default async function LmsPage({
           name="class"
           defaultValue={classFilter}
           onChange={undefined}
-          className="rounded-lg border border-border px-3 py-2 text-sm text-text-primary bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
+          className="card px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
         >
           <option value="">All classes</option>
           {(classes ?? []).map((c: { id: string; name: string }) => (
@@ -115,7 +115,7 @@ export default async function LmsPage({
         <select
           name="subject"
           defaultValue={subjectFilter}
-          className="rounded-lg border border-border px-3 py-2 text-sm text-text-primary bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
+          className="card px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
         >
           <option value="">All subjects</option>
           {(subjects ?? []).map((s: { id: string; name: string }) => (
@@ -124,7 +124,7 @@ export default async function LmsPage({
         </select>
         <button
           type="submit"
-          className="rounded-lg border border-border px-3 py-2 text-sm text-text-primary bg-surface hover:bg-surface-muted transition-colors"
+          className="card px-3 py-2 text-sm text-text-primary hover:bg-surface-muted transition-colors"
         >
           Filter
         </button>
@@ -148,7 +148,7 @@ export default async function LmsPage({
               <h2 className="text-sm font-semibold text-text-primary mb-3">{className}</h2>
               <div className="space-y-6">
                 {Array.from(subjectMap.entries()).map(([subjectName, items]) => (
-                  <div key={subjectName} className="bg-surface border border-border rounded-lg overflow-hidden">
+                  <div key={subjectName} className="card overflow-hidden">
                     <div className="px-5 py-3 border-b border-border bg-surface-muted">
                       <h3 className="text-xs font-semibold text-text-secondary ">
                         {subjectName}

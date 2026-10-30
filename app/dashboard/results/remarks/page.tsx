@@ -151,7 +151,7 @@ export default async function RemarksPage({
         </form>
       </div>
 
-      <div className="bg-surface border border-border rounded-lg p-5">
+      <div className="card p-5">
         {(students ?? []).length === 0 ? (
           <p className="text-sm text-text-secondary">No students enrolled in this class/arm yet.</p>
         ) : (
@@ -185,7 +185,7 @@ export default async function RemarksPage({
                           />
                           <button
                             type="submit"
-                            className="self-start px-3 py-2 bg-primary text-white rounded-lg text-xs hover:bg-primary-hover"
+                            className="self-start px-3 py-2 bg-primary text-white rounded-xl text-xs hover:bg-primary-hover"
                           >
                             Save
                           </button>
@@ -215,7 +215,7 @@ export default async function RemarksPage({
                           />
                           <button
                             type="submit"
-                            className="self-start px-3 py-2 bg-primary text-white rounded-lg text-xs hover:bg-primary-hover"
+                            className="self-start px-3 py-2 bg-primary text-white rounded-xl text-xs hover:bg-primary-hover"
                           >
                             Save
                           </button>

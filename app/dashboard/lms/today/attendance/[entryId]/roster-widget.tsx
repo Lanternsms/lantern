@@ -81,7 +81,7 @@ export default function RosterWidget({
 
   if (saved && result) {
     return (
-      <div className="bg-surface border border-border rounded-lg p-8 text-center space-y-4">
+      <div className="card p-8 text-center space-y-4">
         <div className="w-12 h-12 rounded-full bg-success-bg flex items-center justify-center mx-auto">
           <svg className="w-6 h-6 text-success-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
@@ -96,7 +96,7 @@ export default function RosterWidget({
         <button
           type="button"
           onClick={() => router.push('/dashboard/lms/today')}
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-primary hover:bg-primary-hover px-5 py-2.5 rounded-lg transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-primary hover:bg-primary-hover px-5 py-2.5 rounded-xl transition-colors"
         >
           ← Back to Today&apos;s Lessons
         </button>
@@ -118,7 +118,7 @@ export default function RosterWidget({
               type="button"
               onClick={handleMarkAllPresent}
               disabled={isPending}
-              className="text-xs font-medium border border-border rounded-lg px-3 py-2 bg-surface hover:bg-surface-muted transition-colors disabled:opacity-50"
+              className="card text-xs font-medium px-3 py-2 hover:bg-surface-muted transition-colors disabled:opacity-50"
             >
               Mark all present
             </button>
@@ -127,7 +127,7 @@ export default function RosterWidget({
             type="button"
             onClick={handleSave}
             disabled={isPending || markedCount === 0}
-            className="text-xs font-semibold text-white bg-primary hover:bg-primary-hover px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+            className="text-xs font-semibold text-white bg-primary hover:bg-primary-hover px-4 py-2 rounded-xl transition-colors disabled:opacity-50"
           >
             {isPending ? 'Saving…' : 'Save'}
           </button>
@@ -141,7 +141,7 @@ export default function RosterWidget({
       )}
 
       {/* Roster table */}
-      <div className="bg-surface border border-border rounded-lg overflow-hidden">
+      <div className="card overflow-hidden">
         {roster.length === 0 ? (
           <div className="p-8 text-center text-sm text-text-secondary">
             No students enrolled for this class{' '}
@@ -211,7 +211,7 @@ export default function RosterWidget({
           type="button"
           onClick={handleSave}
           disabled={isPending || markedCount === 0}
-          className="text-sm font-semibold text-white bg-primary hover:bg-primary-hover px-6 py-2.5 rounded-lg transition-colors disabled:opacity-50"
+          className="text-sm font-semibold text-white bg-primary hover:bg-primary-hover px-6 py-2.5 rounded-xl transition-colors disabled:opacity-50"
         >
           {isPending ? 'Saving…' : 'Save attendance'}
         </button>

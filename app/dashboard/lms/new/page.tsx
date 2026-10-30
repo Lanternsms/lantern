@@ -46,7 +46,7 @@ export default async function NewLessonPage({
       )}
 
       <form action={createLesson} className="space-y-6">
-        <section className="bg-surface border border-border rounded-lg p-6 space-y-4">
+        <section className="card p-6 space-y-4">
           <h2 className="text-sm font-semibold text-text-primary">Lesson Details</h2>
 
           <div>
@@ -170,7 +170,7 @@ export default async function NewLessonPage({
             </Link>
             <button
               type="submit"
-              className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors"
+              className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors"
             >
               Create Lesson
             </button>

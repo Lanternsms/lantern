@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, Trash2, Link2, UserPlus } from 'lucide-react'
+import { Plus, Trash2, Link2, UserPlus } from '@/components/icons'
 import { GuardianCustomFields } from '@/components/guardian-custom-fields'
 
 type FieldDefinition = {

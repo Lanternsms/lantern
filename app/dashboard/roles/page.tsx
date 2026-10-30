@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
-import { Lock } from 'lucide-react'
+import { Lock } from '@/components/icons'
 
 export default async function RolesPage() {
   const supabase = await createClient()
@@ -33,14 +33,14 @@ export default async function RolesPage() {
             System roles are shared across every school and can&apos;t be edited. Create your own custom roles below.
           </p>
         </div>
-        <Link href="/dashboard/roles/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+        <Link href="/dashboard/roles/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
           + Add Custom Role
         </Link>
       </div>
 
       <section className="mb-8">
         <h2 className="text-sm font-medium text-text-secondary mb-3">System Roles</h2>
-        <div className="bg-surface border border-border rounded-lg overflow-x-auto">
+        <div className="card overflow-x-auto">
           <table className="w-full text-sm">
             <tbody>
               {systemRoles.map((r) => (
@@ -63,7 +63,7 @@ export default async function RolesPage() {
       <section>
         <h2 className="text-sm font-medium text-text-secondary mb-3">Custom Roles</h2>
         {customRoles.length > 0 ? (
-          <div className="bg-surface border border-border rounded-lg overflow-x-auto">
+          <div className="card overflow-x-auto">
             <table className="w-full text-sm">
               <tbody>
                 {customRoles.map((r) => (

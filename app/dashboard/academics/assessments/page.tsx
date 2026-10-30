@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { seedDefaultAssessmentTypes, createAssessmentType, updateAssessmentType, deleteAssessmentType } from '@/app/dashboard/academics/assessments/actions'
 import Link from 'next/link'
-import { Trash2, AlertTriangle, CheckCircle2 } from 'lucide-react'
+import { Trash2, AlertTriangle, CheckCircle2 } from '@/components/icons'
 
 export default async function AssessmentTypesPage({
   searchParams,
@@ -36,12 +36,12 @@ export default async function AssessmentTypesPage({
       )}
 
       {!fetchError && types?.length === 0 && (
-        <div className="bg-surface border border-border rounded-lg p-8 text-center mb-6">
+        <div className="card p-8 text-center mb-6">
           <p className="text-sm text-text-secondary mb-4">
             No assessment types yet. Start with the standard CA1 / CA2 / Exam split, or build your own.
           </p>
           <form action={seedDefaultAssessmentTypes}>
-            <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+            <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
               Create Standard Set (CA1 10% · CA2 10% · Exam 80%)
             </button>
           </form>
@@ -59,7 +59,7 @@ export default async function AssessmentTypesPage({
             Total weight: {totalWeight}%{!isBalanced && ' — this should add up to exactly 100%'}
           </div>
 
-          <div className="bg-surface border border-border rounded-lg overflow-hidden mb-6">
+          <div className="card overflow-hidden mb-6">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border">
@@ -109,7 +109,7 @@ export default async function AssessmentTypesPage({
         </>
       )}
 
-      <section className="bg-surface border border-border rounded-lg p-5">
+      <section className="card p-5">
         <h3 className="text-sm font-medium text-text-primary mb-4">Add Assessment Type</h3>
         <form action={createAssessmentType} className="flex gap-2">
           <input
@@ -128,7 +128,7 @@ export default async function AssessmentTypesPage({
             placeholder="Weight %"
             className="w-28 rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
           />
-          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors whitespace-nowrap">
+          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors whitespace-nowrap">
             Add
           </button>
         </form>

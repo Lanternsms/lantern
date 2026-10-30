@@ -2,9 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { getTodayInLagos } from '../lms/lagos-time'
 import { SetupChecklist } from './setup-checklist'
+import { AdminTodayView, type BoardCell } from './admin-today-view'
 
-const naira = (n: number) => `₦${Math.round(n).toLocaleString('en-NG')}`
-const nairaM = (n: number) => (n >= 1_000_000 ? `₦${(n / 1_000_000).toFixed(2)}m` : naira(n))
 
 function daysAgo(iso: string | null, todayStr: string) {
   if (!iso) return ''
@@ -12,7 +11,7 @@ function daysAgo(iso: string | null, todayStr: string) {
   return d <= 0 ? 'Today' : d === 1 ? '1 day' : `${d} days`
 }
 
-type Cell = { arm: string; cls: string; label: string; pct: number | null; present: number; size: number }
+type Cell = BoardCell
 
 /**
  * The principal's first screen answers one question: is school running normally today?
@@ -43,7 +42,7 @@ export async function AdminDashboard() {
     return (
       <div className="flex flex-col gap-6 px-5 py-8 sm:px-8">
         <SetupChecklist />
-        <section className="rounded-lg border border-border bg-surface p-6">
+        <section className="card p-6">
           <h1 className="text-lg font-semibold">No current session yet</h1>
           <p className="mt-1 max-w-[60ch] text-text-secondary">
             Today’s registers, fees and results appear here once a session and term are set as current.
@@ -96,9 +95,7 @@ export async function AdminDashboard() {
         return { arm: a.id, cls: c.id, label: `${c.name}${a.name}`, size, present: m?.present ?? 0, pct: m ? Math.round((m.present / m.marked) * 100) : null }
       }),
   })).filter((row) => row.cells.length > 0)
-  const maxArms = Math.max(1, ...board.map((r) => r.cells.length))
   const allCells = board.flatMap((r) => r.cells)
-  const open = allCells.filter((c) => c.pct === null)
   const savedCells = allCells.filter((c) => c.pct !== null)
   const presentToday = savedCells.reduce((s, c) => s + c.present, 0)
   const markedToday = (todayRows ?? []).filter((r) => r.arm_id).length
@@ -128,7 +125,6 @@ export async function AdminDashboard() {
     weeks[w] = (weeks[w] ?? 0) + Number(p.amount_paid)
   }
   const weekBars = Array.from({ length: Math.max(weeks.length, 1) }, (_, i) => weeks[i] ?? 0).slice(-10)
-  const weekMax = Math.max(1, ...weekBars)
   const todaysPayments = (payments ?? []).filter((p) => p.paid_at?.slice(0, 10) === today)
 
   // ---- Result batches in review ----
@@ -144,180 +140,32 @@ export async function AdminDashboard() {
   const inReview = batches ?? []
 
   const dateLabel = new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Lagos', weekday: 'long', day: 'numeric', month: 'long' }).format(new Date())
+  const firstWeek = weeks.length - weekBars.length
 
   return (
-    <div className="flex flex-col gap-5 px-5 pb-10 pt-7 sm:px-8 sm:pt-8">
-      <SetupChecklist />
-
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="flex min-w-0 flex-col gap-1.5">
-          <h1 className="text-[28px] font-bold leading-tight tracking-[-0.01em] sm:text-[32px]">{dateLabel}</h1>
-          <p className="text-[15px] text-text-secondary">
-            {currentTerm?.name ?? 'No current term'} · {currentSession.name}
-            {open.length > 0 && savedCells.length > 0 && (
-              <>
-                {' · '}
-                <strong className="font-semibold text-text-primary">
-                  {open.length} register{open.length === 1 ? '' : 's'} still open
-                </strong>
-                {' — '}
-                {open.slice(0, 4).map((c) => c.label).join(', ')}
-                {open.length > 4 ? ` and ${open.length - 4} more` : ''}
-              </>
-            )}
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Link href="/dashboard/announcements/new" className="flex h-9 items-center rounded-md border border-control bg-surface px-3.5 text-sm font-medium hover:bg-raised">
-            Send announcement
-          </Link>
-          <Link href="/dashboard/attendance" className="flex h-9 items-center rounded-md bg-primary px-3.5 text-sm font-semibold text-white hover:bg-primary-hover">
-            Open registers
-          </Link>
-        </div>
-      </div>
-
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_384px]">
-        <div className="flex min-w-0 flex-col gap-4">
-          <section aria-label="Today in numbers" className="grid grid-cols-2 rounded-lg border border-border bg-surface md:grid-cols-4">
-            {[
-              { label: 'Present today', value: markedToday ? presentToday.toLocaleString('en-NG') : '—', unit: markedToday ? ` / ${markedToday.toLocaleString('en-NG')}` : '', note: markedToday ? `${((presentToday / markedToday) * 100).toFixed(1)}% of students in saved registers` : 'No register saved yet today' },
-              { label: 'Registers saved', value: String(savedCells.length), unit: ` / ${allCells.length}`, note: open.length ? `${open.length} still open` : 'All saved', warn: open.length > 0 && savedCells.length > 0 },
-              { label: 'Fees collected', value: nairaM(collected), unit: '', note: billed ? `${Math.round((collected / billed) * 100)}% of ${nairaM(billed)} billed this term` : 'No fee structures this term' },
-              { label: 'Waiting for approval', value: String(inReview.length), unit: '', note: inReview.length === 1 ? 'result batch' : 'result batches' },
-            ].map((k, i) => (
-              <div key={k.label} className={`flex flex-col gap-1.5 px-5 py-4 ${i % 2 ? 'border-l border-border' : ''} ${i > 1 ? 'border-t border-border md:border-t-0' : ''} ${i === 2 ? 'md:border-l' : ''}`}>
-                <span className="text-sm text-text-secondary">{k.label}</span>
-                <span className="text-2xl font-semibold tabular-nums">{k.value}<span className="text-sm font-normal text-text-secondary">{k.unit}</span></span>
-                <span className={`text-xs ${k.warn ? 'text-warning-text' : 'text-text-secondary'}`}>{k.note}</span>
-              </div>
-            ))}
-          </section>
-
-          <section aria-labelledby="registers" className="flex flex-col gap-4 rounded-lg border border-border bg-surface p-5">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <h2 id="registers" className="text-lg font-semibold">Registers this morning</h2>
-                <p className="text-sm text-text-secondary">Each class arm, share of students present</p>
-              </div>
-              <div className="flex flex-wrap items-center gap-4 text-xs text-text-secondary">
-                <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded-[3px] bg-school-track" />Saved</span>
-                <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded-[3px] bg-school" />Below 90% present</span>
-                <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded-[3px] border border-dashed border-text-muted" />Not saved</span>
-              </div>
-            </div>
-            {board.length === 0 ? (
-              <p className="py-6 text-text-secondary">
-                No students are enrolled in a class arm this session yet. <Link href="/dashboard/students" className="font-medium text-primary underline-offset-4 hover:underline">Add students</Link>
-              </p>
-            ) : (
-              <div className="overflow-x-auto">
-                <div className="grid min-w-[480px] items-center gap-1.5" style={{ gridTemplateColumns: `64px repeat(${maxArms}, minmax(0, 1fr))` }}>
-                  {board.map((row) => [
-                    <span key={row.level} className="text-sm font-semibold">{row.level}</span>,
-                    ...Array.from({ length: maxArms }, (_, i) => {
-                      const c = row.cells[i]
-                      if (!c) return <span key={`${row.level}-${i}`} />
-                      const low = c.pct !== null && c.pct < 90
-                      return (
-                        <Link
-                          key={c.arm}
-                          href={`/dashboard/attendance?classId=${c.cls}&armId=${c.arm}&date=${today}`}
-                          aria-label={c.pct === null ? `${c.label} register not saved` : `${c.label}: ${c.present} of ${c.size} present`}
-                          className={`flex h-11 items-center justify-center rounded-md text-sm font-medium tabular-nums transition-[filter] hover:brightness-95 ${
-                            c.pct === null
-                              ? 'border border-dashed border-text-muted bg-surface text-text-secondary'
-                              : low
-                                ? 'bg-school text-white'
-                                : 'bg-school-track text-school-ink'
-                          }`}
-                        >
-                          {c.pct === null ? 'Open' : `${c.pct}%`}
-                        </Link>
-                      )
-                    }),
-                  ])}
-                </div>
-              </div>
-            )}
-          </section>
-
-          <section aria-labelledby="fees-week" className="flex flex-col gap-3.5 rounded-lg border border-border bg-surface p-5">
-            <div className="flex flex-wrap items-baseline justify-between gap-3">
-              <h2 id="fees-week" className="text-lg font-semibold">Fees received by week</h2>
-              <span className="text-sm text-text-secondary">This term · {nairaM(collected)} so far</span>
-            </div>
-            {collected === 0 ? (
-              <p className="py-6 text-text-secondary">No payments recorded this term yet.</p>
-            ) : (
-              <>
-                <div className="flex h-[150px] items-end gap-3 border-b border-border">
-                  {weekBars.map((v, i) => (
-                    <div key={i} className="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
-                      <span className="text-xs tabular-nums text-[#374151]">{v ? (v / 1_000_000).toFixed(2) : '0'}</span>
-                      <span className={`block w-full max-w-14 rounded-t ${i === weekBars.length - 1 ? 'bg-school' : 'bg-control'}`} style={{ height: `${Math.max(2, Math.round((v / weekMax) * 110))}px` }} />
-                    </div>
-                  ))}
-                </div>
-                <div className="flex gap-3 text-center text-xs text-text-secondary">
-                  {weekBars.map((_, i) => <span key={i} className="flex-1">Wk {weeks.length - weekBars.length + i + 1}</span>)}
-                </div>
-                <p className="text-xs text-text-secondary">Amounts in ₦ millions. The current week is in your school colour.</p>
-              </>
-            )}
-          </section>
-        </div>
-
-        <aside className="flex min-w-0 flex-col">
-          <h2 className="mb-2 text-base font-semibold">Waiting for your approval</h2>
-          <div className="rounded-lg border border-border bg-surface px-4 pb-3">
-            {inReview.length === 0 ? (
-              <p className="py-4 text-sm text-text-secondary">Nothing to approve right now.</p>
-            ) : (
-              inReview.slice(0, 5).map((b) => {
-                const age = daysAgo(b.submitted_at, today)
-                return (
-                  <Link key={b.id} href={`/dashboard/approvals/${b.id}`} className="flex min-h-[52px] items-center gap-3 border-b border-rule">
-                    <span className="flex min-w-0 flex-1 flex-col">
-                      <span className="truncate font-medium">{b.subjects?.name ?? 'Subject'} · {b.classes?.name}{b.arms?.name}</span>
-                    </span>
-                    <span className={`whitespace-nowrap text-xs ${age.startsWith('Today') || age === '1 day' ? 'text-text-secondary' : 'text-warning-text'}`}>{age}</span>
-                  </Link>
-                )
-              })
-            )}
-            <Link href="/dashboard/approvals" className="mt-3 flex h-[30px] items-center justify-center rounded-md border border-control text-sm font-medium hover:bg-raised">
-              {inReview.length > 5 ? `View all ${inReview.length}` : 'Open approvals'}
-            </Link>
-          </div>
-
-          <h2 className="mb-2 mt-4 text-base font-semibold">Payments today</h2>
-          <div className="rounded-lg border border-border bg-surface px-4 pb-3">
-            {todaysPayments.length === 0 ? (
-              <p className="py-4 text-sm text-text-secondary">No payments recorded today.</p>
-            ) : (
-              <>
-                {todaysPayments.slice(0, 5).map((p) => (
-                  <div key={p.id} className="flex min-h-12 items-center gap-3 border-b border-rule">
-                    <span className="flex min-w-0 flex-1 flex-col">
-                      <span className="truncate font-medium">{p.students ? `${p.students.first_name} ${p.students.last_name}` : 'Student'}</span>
-                      <span className="text-xs capitalize text-text-secondary">{p.payment_method?.replace(/_/g, ' ') ?? '—'}</span>
-                    </span>
-                    <span className="font-medium tabular-nums">{naira(Number(p.amount_paid))}</span>
-                  </div>
-                ))}
-                <div className="flex justify-between pt-3 text-text-secondary">
-                  <span>Total today</span>
-                  <span className="font-semibold tabular-nums text-text-primary">{naira(todaysPayments.reduce((s, p) => s + Number(p.amount_paid), 0))}</span>
-                </div>
-              </>
-            )}
-            <Link href="/dashboard/fees/record" className="mt-3 flex h-[30px] items-center justify-center rounded-md border border-control text-sm font-medium hover:bg-raised">
-              Record a payment
-            </Link>
-          </div>
-        </aside>
-      </div>
-    </div>
+    <>
+      <div className="px-5 pt-6 sm:px-8 empty:hidden"><SetupChecklist /></div>
+      <AdminTodayView
+        dateLabel={dateLabel}
+        today={today}
+        termLabel={`${currentTerm?.name ?? 'No current term'} · ${currentSession.name}`}
+        board={board}
+        presentToday={presentToday}
+        markedToday={markedToday}
+        billed={billed}
+        collected={collected}
+        weekBars={weekBars.map((amount, i) => ({ label: `Wk ${firstWeek + i + 1}`, amount }))}
+        inReview={inReview.map((b) => {
+          const age = daysAgo(b.submitted_at, today)
+          return { id: b.id, title: `${b.subjects?.name ?? 'Subject'} · ${b.classes?.name ?? ''}${b.arms?.name ?? ''}`, age, overdue: !(age === 'Today' || age === '1 day') }
+        })}
+        payments={todaysPayments.map((p) => ({
+          id: p.id,
+          name: p.students ? `${p.students.first_name} ${p.students.last_name}` : 'Student',
+          method: (({ pos: 'POS', cash: 'Cash', bank_transfer: 'Bank transfer', transfer: 'Bank transfer', cheque: 'Cheque', card: 'Card' } as Record<string, string>)[p.payment_method ?? ''] ?? (p.payment_method ? p.payment_method.replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase()) : '—')),
+          amount: Number(p.amount_paid),
+        }))}
+      />
+    </>
   )
 }

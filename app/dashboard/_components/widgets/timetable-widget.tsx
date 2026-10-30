@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { CalendarDays, Clock, Layers, ChevronRight } from 'lucide-react'
+import { CalendarDays, Clock, Layers, ChevronRight } from '@/components/icons'
 
 const TIMETABLE_LINKS = [
   {
@@ -27,7 +27,7 @@ const TIMETABLE_LINKS = [
 
 export async function TimetableWidget() {
   return (
-    <div className="bg-surface border border-border rounded-2xl p-6 shadow-xs h-full flex flex-col justify-between">
+    <div className="card p-6 h-full flex flex-col justify-between">
       <div>
         <div className="flex items-center justify-between pb-4 border-b border-border mb-4">
           <div className="flex items-center gap-3">

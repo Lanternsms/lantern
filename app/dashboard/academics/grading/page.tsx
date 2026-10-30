@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { setDefaultScale, deleteScale, seedDefaultScale } from '@/app/dashboard/academics/grading/actions'
 import Link from 'next/link'
-import { Trash2 } from 'lucide-react'
+import { Trash2 } from '@/components/icons'
 
 export default async function GradingScalesPage({
   searchParams,
@@ -28,7 +28,7 @@ export default async function GradingScalesPage({
             Define how scores map to grades. One scale must always be marked default.
           </p>
         </div>
-        <Link href="/dashboard/academics/grading/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+        <Link href="/dashboard/academics/grading/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
           + Add Scale
         </Link>
       </div>
@@ -40,12 +40,12 @@ export default async function GradingScalesPage({
       )}
 
       {!fetchError && scales?.length === 0 && (
-        <div className="bg-surface border border-border rounded-lg p-8 text-center">
+        <div className="card p-8 text-center">
           <p className="text-sm text-text-secondary mb-4">
             No grading scales yet. Start with the standard A–F scale, or build your own from scratch.
           </p>
           <form action={seedDefaultScale}>
-            <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+            <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
               Create Standard Scale (A–F)
             </button>
           </form>
@@ -53,7 +53,7 @@ export default async function GradingScalesPage({
       )}
 
       {scales && scales.length > 0 && (
-        <div className="bg-surface border border-border rounded-lg overflow-x-auto">
+        <div className="card overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">

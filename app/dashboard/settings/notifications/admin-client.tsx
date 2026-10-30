@@ -15,7 +15,7 @@ import {
   Send,
   Loader2,
   Check,
-} from 'lucide-react'
+} from '@/components/icons'
 
 export interface ChannelStats {
   sent: number
@@ -86,7 +86,7 @@ export function AdminNotificationSettingsClient({
   return (
     <div className="space-y-8">
       {/* 1. School-Wide Channels Toggle & Test */}
-      <div className="bg-surface border border-border rounded-lg p-6 space-y-6">
+      <div className="card p-6 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 className="text-base font-semibold text-text-primary">
@@ -189,7 +189,7 @@ export function AdminNotificationSettingsClient({
       </div>
 
       {/* 2. Today's Delivery Volume & Health */}
-      <div className="bg-surface border border-border rounded-lg p-6 space-y-4">
+      <div className="card p-6 space-y-4">
         <div>
           <h2 className="text-base font-semibold text-text-primary">Today&apos;s Deliveries</h2>
           <p className="text-xs text-text-secondary mt-0.5">
@@ -205,15 +205,15 @@ export function AdminNotificationSettingsClient({
               <span>Email Channel</span>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-center">
-              <div className="bg-surface p-2.5 rounded-lg border border-border">
+              <div className="card p-2.5">
                 <p className="text-lg font-bold text-success-text">{todayStats.email.sent}</p>
                 <p className="text-[11px] text-text-secondary">Sent</p>
               </div>
-              <div className="bg-surface p-2.5 rounded-lg border border-border">
+              <div className="card p-2.5">
                 <p className="text-lg font-bold text-text-muted">{todayStats.email.skipped}</p>
                 <p className="text-[11px] text-text-secondary">Skipped</p>
               </div>
-              <div className="bg-surface p-2.5 rounded-lg border border-border">
+              <div className="card p-2.5">
                 <p className="text-lg font-bold text-danger-text">{todayStats.email.failed}</p>
                 <p className="text-[11px] text-text-secondary">Failed</p>
               </div>
@@ -227,15 +227,15 @@ export function AdminNotificationSettingsClient({
               <span>Push Channel</span>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-center">
-              <div className="bg-surface p-2.5 rounded-lg border border-border">
+              <div className="card p-2.5">
                 <p className="text-lg font-bold text-success-text">{todayStats.push.sent}</p>
                 <p className="text-[11px] text-text-secondary">Sent</p>
               </div>
-              <div className="bg-surface p-2.5 rounded-lg border border-border">
+              <div className="card p-2.5">
                 <p className="text-lg font-bold text-text-muted">{todayStats.push.skipped}</p>
                 <p className="text-[11px] text-text-secondary">Skipped</p>
               </div>
-              <div className="bg-surface p-2.5 rounded-lg border border-border">
+              <div className="card p-2.5">
                 <p className="text-lg font-bold text-danger-text">{todayStats.push.failed}</p>
                 <p className="text-[11px] text-text-secondary">Failed</p>
               </div>
@@ -245,7 +245,7 @@ export function AdminNotificationSettingsClient({
       </div>
 
       {/* 3. Push Adoption by Kind */}
-      <div className="bg-surface border border-border rounded-lg p-6 space-y-4">
+      <div className="card p-6 space-y-4">
         <div>
           <h2 className="text-base font-semibold text-text-primary">Push Notification Adoption</h2>
           <p className="text-xs text-text-secondary mt-0.5">
@@ -254,7 +254,7 @@ export function AdminNotificationSettingsClient({
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3">
-          <div className="border border-border rounded-lg p-4 bg-surface space-y-1">
+          <div className="card p-4 space-y-1">
             <p className="text-xs font-medium text-text-secondary flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5" /> Parents &amp; Guardians
             </p>
@@ -270,7 +270,7 @@ export function AdminNotificationSettingsClient({
             </p>
           </div>
 
-          <div className="border border-border rounded-lg p-4 bg-surface space-y-1">
+          <div className="card p-4 space-y-1">
             <p className="text-xs font-medium text-text-secondary flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5" /> Students
             </p>
@@ -286,7 +286,7 @@ export function AdminNotificationSettingsClient({
             </p>
           </div>
 
-          <div className="border border-border rounded-lg p-4 bg-surface space-y-1">
+          <div className="card p-4 space-y-1">
             <p className="text-xs font-medium text-text-secondary flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5" /> Staff Members
             </p>
@@ -305,7 +305,7 @@ export function AdminNotificationSettingsClient({
       </div>
 
       {/* 4. Last 20 Failed / Skipped Deliveries */}
-      <div className="bg-surface border border-border rounded-lg p-6 space-y-4">
+      <div className="card p-6 space-y-4">
         <div>
           <h2 className="text-base font-semibold text-text-primary">
             Recent Delivery Exceptions

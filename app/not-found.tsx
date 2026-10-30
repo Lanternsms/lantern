@@ -12,7 +12,7 @@ export default function NotFound() {
         <div className="flex items-center justify-center gap-3 pt-2">
           <Link
             href="/"
-            className="inline-flex items-center text-sm font-medium text-white bg-primary hover:bg-primary-hover px-4 py-2 rounded-lg transition-colors"
+            className="inline-flex items-center text-sm font-medium text-white bg-primary hover:bg-primary-hover px-4 py-2 rounded-xl transition-colors"
           >
             Go home
           </Link>

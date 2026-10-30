@@ -9,7 +9,10 @@
   --color-school-soft: #e8edfb;     /* areas: active nav row, chips */
   --color-school-track: #c9d6f7;    /* progress tracks, saved cells */
   --color-school-ink: #102a77;      /* text on soft/track */
-  --color-ground: #fafbfe;          /* page ground, one step toward the hue */
+  --color-ground: #f2f4f9;          /* page ground, one step toward the hue */
+  --color-school-deep: #0f1d4a;     /* sidebar and bold panels: white on it passes 7:1 */
+  --color-school-deep-raised: #27345c;
+  --color-school-deep-muted: #b2b8c9;
 
   /* Legacy names, kept so every existing page picks up the new look. */
   --color-sidebar: var(--color-ground);
@@ -40,10 +43,22 @@
   --color-danger-text: #b42318;
 
   --font-sans: var(--font-dm-sans), Inter, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), var(--font-dm-sans), sans-serif;
   --font-questrial: var(--font-dm-sans), sans-serif;
 
+  --shadow-card: 0 1px 2px rgb(16 24 40 / 0.04), 0 6px 16px -4px rgb(16 24 40 / 0.06);
+  --shadow-raise: 0 2px 4px rgb(16 24 40 / 0.05), 0 16px 32px -8px rgb(16 24 40 / 0.12);
+  --radius-card: 18px;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* A surface that sits in front of the ground: white, soft two-layer shadow, hairline edge. */
+@utility card {
+  background: var(--color-surface);
+  border: 1px solid rgb(16 24 40 / 0.06);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
 }
 
 @layer base {
@@ -58,6 +73,9 @@
     font-family: var(--font-sans);
   }
   table, input, select { font-variant-numeric: tabular-nums; }
+  h1, h2, .font-display { font-family: var(--font-display); letter-spacing: -0.02em; }
+  ::selection { background: var(--color-school-track); color: var(--color-school-ink); }
+  input, textarea { caret-color: var(--color-primary); }
   :focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;

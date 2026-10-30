@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { BarChart3 } from 'lucide-react'
+import { BarChart3 } from '@/components/icons'
 
 export const metadata = {
   title: 'Class Results | Lantern',
@@ -62,7 +62,7 @@ export default async function ClassResultsIndexPage({
               name="term"
               defaultValue={selectedTermId ?? ''}
               onChange={undefined}
-              className="text-sm border border-border rounded-lg px-3 py-1.5 bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="card text-sm px-3 py-1.5 text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               {terms.map((t) => {
                 const session = t.academic_sessions as { name: string } | null
@@ -76,7 +76,7 @@ export default async function ClassResultsIndexPage({
             </select>
             <button
               type="submit"
-              className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-3 py-1.5 transition-colors"
+              className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-3 py-1.5 transition-colors"
             >
               Go
             </button>
@@ -89,7 +89,7 @@ export default async function ClassResultsIndexPage({
       )}
 
       {selectedTermId && (!assignments || assignments.length === 0) && (
-        <div className="bg-surface border border-border rounded-lg p-12 text-center">
+        <div className="card p-12 text-center">
           <BarChart3 size={36} className="mx-auto text-text-muted mb-3" />
           <p className="text-sm text-text-secondary">
             You are not assigned to teach any subjects in this term.

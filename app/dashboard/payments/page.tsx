@@ -22,7 +22,7 @@ export default async function PaymentsPage() {
 
       <div className="space-y-3">
         {(payments ?? []).map((p: any) => (
-          <div key={p.id} className="bg-surface border border-border rounded-lg p-4 flex items-center justify-between">
+          <div key={p.id} className="card p-4 flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-text-primary">{p.fee_structures?.name}</p>
               <p className="text-xs text-text-secondary">

@@ -118,7 +118,7 @@ export function AssignmentSubmitClient({
   return (
     <div className="space-y-6">
       {/* Overview Banner */}
-      <div className="rounded-2xl border border-border bg-surface p-6  space-y-3">
+      <div className="card p-6 space-y-3">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <span className="text-xs font-semibold text-text-secondary ">
             Assignment for {studentName}
@@ -153,7 +153,7 @@ export function AssignmentSubmitClient({
 
       {/* Assignment Document Card */}
       {activity.attachment_name && (
-        <div className="rounded-2xl border border-border bg-surface p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 ">
+        <div className="card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
             <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-danger-text text-danger-text dark:text-danger-text shrink-0">
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -172,7 +172,7 @@ export function AssignmentSubmitClient({
             type="button"
             onClick={handleDownloadBrief}
             disabled={downloadingBrief}
-            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-border bg-surface px-4 py-2 text-xs font-semibold text-primary hover:bg-surface-muted transition-colors shrink-0 disabled:opacity-50"
+            className="card inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold text-primary hover:bg-surface-muted transition-colors shrink-0 disabled:opacity-50"
           >
             <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -230,7 +230,7 @@ export function AssignmentSubmitClient({
                 href={submission.downloadUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-xs font-medium text-primary hover:bg-surface-muted transition-colors"
+                className="card inline-flex items-center gap-2 px-3 py-2 text-xs font-medium text-primary hover:bg-surface-muted transition-colors"
               >
                 <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -244,7 +244,7 @@ export function AssignmentSubmitClient({
 
       {/* SUBMISSION FORM (IF NOT MARKED) */}
       {!isMarked && (
-        <form onSubmit={handleSubmit} className="rounded-2xl border border-border bg-surface p-6  space-y-5">
+        <form onSubmit={handleSubmit} className="card p-6 space-y-5">
           <div className="flex items-center justify-between border-b border-border pb-3">
             <h2 className="text-base font-semibold text-text-primary">
               {isSubmitted ? 'Edit Your Submission' : 'Submit Your Assignment'}
@@ -288,7 +288,7 @@ export function AssignmentSubmitClient({
             <input
               type="file"
               onChange={e => setSelectedFile(e.target.files?.[0] || null)}
-              className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-xs text-text-primary file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:px-3 file:py-1 file:text-xs file:font-medium file:text-white hover:file:bg-primary/90"
+              className="card w-full px-3 py-2 text-xs text-text-primary file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:px-3 file:py-1 file:text-xs file:font-medium file:text-white hover:file:bg-primary/90"
             />
             {submission?.attachment_path && !selectedFile && (
               <p className="text-[11px] text-text-secondary mt-1">
@@ -300,7 +300,7 @@ export function AssignmentSubmitClient({
           <div className="flex items-center justify-between pt-3 border-t border-border">
             <Link
               href={`/dashboard/lms/learn/${lessonId}?student=${studentId}`}
-              className="rounded-lg border border-border bg-surface px-4 py-2 text-xs font-medium text-text-secondary hover:bg-surface-muted transition-colors"
+              className="card px-4 py-2 text-xs font-medium text-text-secondary hover:bg-surface-muted transition-colors"
             >
               &larr; Back to Activities
             </Link>
@@ -308,7 +308,7 @@ export function AssignmentSubmitClient({
             <button
               type="submit"
               disabled={loading}
-              className="rounded-lg bg-primary px-6 py-2.5 text-xs font-semibold text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
+              className="rounded-xl bg-primary px-6 py-2.5 text-xs font-semibold text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
             >
               {loading ? 'Uploading & Submitting...' : isSubmitted ? 'Save Changes' : 'Submit Assignment'}
             </button>

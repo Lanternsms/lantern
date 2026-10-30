@@ -215,11 +215,11 @@ export default async function FacilitatorTodayPage() {
         </div>
 
         {!session ? (
-          <div className="bg-surface border border-border rounded-lg p-8 text-center text-sm text-text-secondary">
+          <div className="card p-8 text-center text-sm text-text-secondary">
             No active academic session found for this school.
           </div>
         ) : entryCardsData.length === 0 ? (
-          <div className="bg-surface border border-border rounded-lg p-10 text-center space-y-2">
+          <div className="card p-10 text-center space-y-2">
             <p className="text-sm font-medium text-text-primary">No lessons scheduled for you today</p>
             <p className="text-xs text-text-secondary max-w-sm mx-auto">
               You do not have any recorded lesson (LMS) timetable entries scheduled for today.
@@ -255,11 +255,11 @@ export default async function FacilitatorTodayPage() {
         <p className="text-xs text-text-secondary">Your last 10 delivered lessons</p>
 
         {!recentDeliveries || recentDeliveries.length === 0 ? (
-          <div className="bg-surface border border-border rounded-lg p-6 text-center text-xs text-text-muted">
+          <div className="card p-6 text-center text-xs text-text-muted">
             You haven&apos;t marked any lessons as delivered yet.
           </div>
         ) : (
-          <div className="bg-surface border border-border rounded-lg overflow-hidden divide-y divide-border">
+          <div className="card overflow-hidden divide-y divide-border">
             {recentDeliveries.map((item: any) => (
               <div key={item.id} className="flex items-center justify-between gap-4 px-5 py-3 text-xs">
                 <div className="min-w-0">

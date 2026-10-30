@@ -88,7 +88,7 @@ export default async function StudentDetailPage({
       .order('name')
 
   const portalAccessContent = (
-    <div className="bg-surface border border-border rounded-lg p-5">
+    <div className="card p-5">
       <h3 className="text-sm font-medium text-text-primary mb-3">Portal Access</h3>
 
       {linkedProfile ? (
@@ -127,7 +127,7 @@ export default async function StudentDetailPage({
               </select>
               <button
                 type="submit"
-                className="px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-primary-hover"
+                className="px-4 py-2 bg-primary text-white rounded-xl text-sm hover:bg-primary-hover"
               >
                 Invite
               </button>
@@ -163,7 +163,7 @@ export default async function StudentDetailPage({
 
   const overviewContent = (
     <div className="space-y-6">
-      <section className="bg-surface border border-border rounded-lg p-5">
+      <section className="card p-5">
         <h3 className="text-sm font-medium text-text-primary mb-4">Personal Information</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm">
           <div>
@@ -181,7 +181,7 @@ export default async function StudentDetailPage({
         </div>
       </section>
 
-      <section className="bg-surface border border-border rounded-lg p-5">
+      <section className="card p-5">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-medium text-text-primary">Guardian Information</h3>
           <Link href={`/dashboard/guardians/new?student_id=${id}`} className="text-xs text-primary hover:text-primary-hover">
@@ -220,7 +220,7 @@ export default async function StudentDetailPage({
         )}
       </section>
 
-      <section className="bg-surface border border-border rounded-lg p-5">
+      <section className="card p-5">
         <h3 className="text-sm font-medium text-text-primary mb-4">Enrolment History</h3>
         {sortedEnrolments.length > 0 ? (
           <table className="w-full text-sm">
@@ -247,7 +247,7 @@ export default async function StudentDetailPage({
       </section>
 
       {fieldDefs && fieldDefs.length > 0 && (
-        <section className="bg-surface border border-border rounded-lg p-5">
+        <section className="card p-5">
           <h3 className="text-sm font-medium text-text-primary mb-4">Custom Fields</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm">
             {fieldDefs.map((def) => (
@@ -289,7 +289,7 @@ export default async function StudentDetailPage({
       resultsContent = !card || card.subjects.length === 0 ? (
         <p className="text-sm text-text-secondary">No published results for the current term yet.</p>
       ) : (
-        <div className="bg-surface border border-border rounded-lg p-5">
+        <div className="card p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-medium text-text-primary">{card.term.name} Summary</h3>
             <Link href={`/dashboard/students/${id}/report-card`} className="text-xs text-primary hover:text-primary-hover">
@@ -352,7 +352,7 @@ export default async function StudentDetailPage({
   // Attendance Tab
   const attendanceContent = (
     <div className="space-y-6">
-      <div className="bg-surface border border-border rounded-lg p-5 space-y-4">
+      <div className="card p-5 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h3 className="text-sm font-medium text-text-primary flex items-center gap-2">
@@ -368,7 +368,7 @@ export default async function StudentDetailPage({
           {currentEnrolment?.class_id && (
             <Link
               href={`/dashboard/attendance?classId=${currentEnrolment.class_id}${currentEnrolment.arm_id ? `&armId=${currentEnrolment.arm_id}` : ''}`}
-              className="text-xs bg-primary text-white hover:bg-primary-hover px-3 py-1.5 rounded-lg transition-colors font-medium shadow-xs"
+              className="text-xs bg-primary text-white hover:bg-primary-hover px-3 py-1.5 rounded-xl transition-colors font-medium shadow-xs"
             >
               Mark Class Attendance →
             </Link>
@@ -543,7 +543,7 @@ export default async function StudentDetailPage({
   // Fees Tab
   const feesContent = (
     <div className="space-y-6">
-      <div className="bg-surface border border-border rounded-lg p-5 space-y-5">
+      <div className="card p-5 space-y-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h3 className="text-sm font-medium text-text-primary flex items-center gap-2">
@@ -558,7 +558,7 @@ export default async function StudentDetailPage({
           </div>
           <Link
             href={`/dashboard/fees/record?studentId=${id}`}
-            className="text-xs bg-primary text-white hover:bg-primary-hover px-3 py-1.5 rounded-lg transition-colors font-medium shadow-xs"
+            className="text-xs bg-primary text-white hover:bg-primary-hover px-3 py-1.5 rounded-xl transition-colors font-medium shadow-xs"
           >
             + Record Payment
           </Link>
@@ -765,7 +765,7 @@ export default async function StudentDetailPage({
         </div>
         <Link
           href={`/dashboard/students/${id}/edit${from ? `?from=${from}` : ''}`}
-          className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors"
+          className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors"
         >
           Edit Student
         </Link>

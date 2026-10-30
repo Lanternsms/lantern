@@ -70,7 +70,7 @@ export default async function ReportCardPage({
         <PrintButton />
       </div>
 
-      <div className="bg-surface border border-border rounded-lg p-8 print:border-0 print:shadow-none">
+      <div className="card p-8 print:border-0 print:shadow-none">
         <div className="text-center mb-6 pb-6 border-b border-border">
           <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">{school?.name}</h1>
           <p className="text-sm text-text-secondary mt-1">Report Card — {card.term.name}, {card.session.name}</p>

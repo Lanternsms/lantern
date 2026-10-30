@@ -29,7 +29,7 @@ export default async function NewStaffPage({
         <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
 
-      <form action={createStaff} className="bg-surface border border-border rounded-lg p-6 space-y-5">
+      <form action={createStaff} className="card p-6 space-y-5">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm text-text-secondary mb-1.5">First Name *</label>
@@ -80,7 +80,7 @@ export default async function NewStaffPage({
           <CustomFieldInputs definitions={customFields} />
         )}
 
-        <button type="submit" className="w-full bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-lg py-2.5 transition-colors">
+        <button type="submit" className="w-full bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-xl py-2.5 transition-colors">
           Add Staff
         </button>
       </form>

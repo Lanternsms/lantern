@@ -36,7 +36,7 @@ export default async function EditClassPage({
         <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
 
-      <form action={updateClassWithId} className="bg-surface border border-border rounded-lg p-6 space-y-4">
+      <form action={updateClassWithId} className="card p-6 space-y-4">
         <div>
           <label className="block text-sm text-text-secondary mb-1.5">Class Name *</label>
           <input name="name" defaultValue={cls.name} required className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
@@ -52,7 +52,7 @@ export default async function EditClassPage({
             {departments?.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
           </select>
         </div>
-        <button type="submit" className="w-full bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-lg py-2.5 transition-colors">
+        <button type="submit" className="w-full bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-xl py-2.5 transition-colors">
           Save Changes
         </button>
       </form>

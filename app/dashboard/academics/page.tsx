@@ -2,7 +2,7 @@ import Link from 'next/link'
 import {
   CalendarRange, Layers, BookMarked, Building2, GraduationCap,
   ClipboardList, SlidersHorizontal, CalendarCheck, ListPlus, GitBranch,
-} from 'lucide-react'
+} from '@/components/icons'
 
 export default function AcademicsPage() {
   const sections = [

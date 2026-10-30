@@ -5,7 +5,7 @@ import {
   renameTemplate, setActiveTemplate, addStage, updateStage, moveStage, deleteStage,
 } from '@/app/dashboard/academics/workflow/actions'
 import Link from 'next/link'
-import { ArrowRight, ArrowUp, ArrowDown, Trash2, AlertTriangle } from 'lucide-react'
+import { ArrowRight, ArrowUp, ArrowDown, Trash2, AlertTriangle } from '@/components/icons'
 
 function roleLabel(name: string) {
   if (name === 'hod') return 'HOD'
@@ -74,7 +74,7 @@ export default async function WorkflowDetailPage({
           <form action={setActiveTemplate}>
             <input type="hidden" name="template_id" value={id} />
             <input type="hidden" name="back" value={`/dashboard/academics/workflow/${id}`} />
-            <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+            <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
               Make Active
             </button>
           </form>
@@ -92,7 +92,7 @@ export default async function WorkflowDetailPage({
       )}
 
       {/* Visual flow */}
-      <section className="bg-surface border border-border rounded-lg p-5 mb-6">
+      <section className="card p-5 mb-6">
         <h3 className="text-sm font-medium text-text-primary mb-4">Approval Flow</h3>
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs font-medium bg-secondary/10 text-secondary rounded-lg px-3 py-2">Teacher submits</span>
@@ -116,7 +116,7 @@ export default async function WorkflowDetailPage({
       </section>
 
       {/* Stages */}
-      <section className="bg-surface border border-border rounded-lg p-5 mb-6">
+      <section className="card p-5 mb-6">
         <h3 className="text-sm font-medium text-text-primary mb-4">Approval Stages</h3>
 
         {stages && stages.length > 0 && (
@@ -229,14 +229,14 @@ export default async function WorkflowDetailPage({
               <option key={r.id} value={r.id}>{roleLabel(r.name)}</option>
             ))}
           </select>
-          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors whitespace-nowrap">
+          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors whitespace-nowrap">
             Add Stage
           </button>
         </form>
       </section>
 
       {/* Rename */}
-      <form action={renameWithId} className="bg-surface border border-border rounded-lg p-5 flex items-end gap-2 mb-6">
+      <form action={renameWithId} className="card p-5 flex items-end gap-2 mb-6">
         <div className="flex-1">
           <label className="block text-sm text-text-secondary mb-1.5">Workflow Name</label>
           <input

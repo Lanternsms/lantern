@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { updateResultComputationRules } from '@/app/dashboard/academics/results-config/actions'
 import Link from 'next/link'
-import { CheckCircle2 } from 'lucide-react'
+import { CheckCircle2 } from '@/components/icons'
 
 export default async function ResultComputationRulesPage({
   searchParams,
@@ -50,7 +50,7 @@ export default async function ResultComputationRulesPage({
         </div>
       )}
 
-      <form action={updateResultComputationRules} className="bg-surface border border-border rounded-lg p-6 space-y-6">
+      <form action={updateResultComputationRules} className="card p-6 space-y-6">
         <div>
           <label className="flex items-center justify-between">
             <div>
@@ -117,7 +117,7 @@ export default async function ResultComputationRulesPage({
           </label>
         </div>
 
-        <button type="submit" className="w-full bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-lg py-2.5 transition-colors">
+        <button type="submit" className="w-full bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-xl py-2.5 transition-colors">
           Save Settings
         </button>
       </form>

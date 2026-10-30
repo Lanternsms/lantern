@@ -75,7 +75,7 @@ export default async function MyClassPage() {
       </p>
 
       {sections.map((section) => (
-        <div key={section.label} className="bg-surface border border-border rounded-lg overflow-hidden mb-6">
+        <div key={section.label} className="card overflow-hidden mb-6">
           <div className="px-4 py-3 border-b border-border flex items-center justify-between">
             <h2 className="text-sm font-medium text-text-primary">{section.label}</h2>
             <Link

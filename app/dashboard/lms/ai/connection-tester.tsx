@@ -23,7 +23,7 @@ export function AiConnectionTester() {
           id="test-ai-connection-btn"
           onClick={handleTest}
           disabled={isPending}
-          className="px-4 py-2 rounded-lg bg-primary text-white font-medium text-xs hover:bg-primary-hover disabled:opacity-50 transition-colors flex items-center gap-2 "
+          className="px-4 py-2 rounded-xl bg-primary text-white font-medium text-xs hover:bg-primary-hover disabled:opacity-50 transition-colors flex items-center gap-2"
         >
           {isPending ? (
             <>

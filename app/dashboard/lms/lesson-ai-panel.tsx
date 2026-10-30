@@ -396,7 +396,7 @@ export function LessonAiPanel({
         <button
           type="button"
           onClick={() => setIsOpen(true)}
-          className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-lg bg-primary text-white font-medium text-xs hover:bg-primary-hover"
+          className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-primary text-white font-medium text-xs hover:bg-primary-hover"
           title={`Ask ${AI_NAME} about this lesson`}
         >
           <LumiAvatar />
@@ -724,7 +724,7 @@ export function LessonAiPanel({
           <button
             type="submit"
             disabled={!inputValue.trim() || isStreaming || !aiTutorEnabled || !notesReady}
-            className="h-10 px-4 rounded-lg bg-primary text-white font-medium text-xs sm:text-sm hover:bg-primary-hover disabled:opacity-40 transition-colors shrink-0 flex items-center gap-1.5"
+            className="h-10 px-4 rounded-xl bg-primary text-white font-medium text-xs sm:text-sm hover:bg-primary-hover disabled:opacity-40 transition-colors shrink-0 flex items-center gap-1.5"
           >
             <span>Ask</span>
             <span>&rarr;</span>

@@ -21,7 +21,7 @@ export default function ErrorPage({ error, reset }: { error: Error & { digest?: 
         <div className="flex items-center justify-center gap-3 pt-2">
           <button
             onClick={() => reset()}
-            className="inline-flex items-center text-sm font-medium text-white bg-primary hover:bg-primary-hover px-4 py-2 rounded-lg transition-colors"
+            className="inline-flex items-center text-sm font-medium text-white bg-primary hover:bg-primary-hover px-4 py-2 rounded-xl transition-colors"
           >
             Try again
           </button>

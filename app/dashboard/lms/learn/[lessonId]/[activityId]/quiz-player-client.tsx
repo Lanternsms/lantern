@@ -127,7 +127,7 @@ export function QuizPlayerClient({
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-border bg-surface p-12 text-center">
+      <div className="card p-12 text-center">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em]" />
         <p className="mt-3 text-xs text-text-secondary">Loading quiz questions...</p>
       </div>
@@ -136,7 +136,7 @@ export function QuizPlayerClient({
 
   if (error && !submission) {
     return (
-      <div className="rounded-2xl border border-border bg-surface p-8 text-center space-y-4">
+      <div className="card p-8 text-center space-y-4">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-danger-bg text-danger-text">
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -147,7 +147,7 @@ export function QuizPlayerClient({
         <div>
           <Link
             href={`/dashboard/lms/learn/${lessonId}?student=${studentId}`}
-            className="inline-flex items-center rounded-lg bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-primary/90"
+            className="inline-flex items-center rounded-xl bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-primary/90"
           >
             &larr; Back to Lesson Activities
           </Link>
@@ -163,7 +163,7 @@ export function QuizPlayerClient({
 
     return (
       <div className="space-y-6">
-        <div className="rounded-2xl border border-border bg-surface p-8  text-center space-y-4">
+        <div className="card p-8 text-center space-y-4">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-success-bg text-success-text">
             <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
@@ -188,14 +188,14 @@ export function QuizPlayerClient({
           <div className="flex justify-center gap-3 pt-2">
             <Link
               href={`/dashboard/lms/learn/${lessonId}?student=${studentId}`}
-              className="rounded-lg border border-border bg-surface px-4 py-2 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+              className="card px-4 py-2 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
             >
               &larr; Back to Activities
             </Link>
             <button
               type="button"
               onClick={handleRetake}
-              className="rounded-lg bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-primary/90 transition-colors"
+              className="rounded-xl bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-primary/90 transition-colors"
             >
               Take Quiz Again
             </button>
@@ -318,7 +318,7 @@ export function QuizPlayerClient({
             type="button"
             onClick={handleSubmit}
             disabled={submitting}
-            className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
+            className="rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
           >
             {submitting ? 'Submitting...' : 'Submit Quiz'}
           </button>
@@ -336,7 +336,7 @@ export function QuizPlayerClient({
         {questions.map((q, qIdx) => (
           <div
             key={q.id}
-            className="rounded-2xl border border-border bg-surface p-6  space-y-4"
+            className="card p-6 space-y-4"
           >
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-center gap-2">
@@ -387,7 +387,7 @@ export function QuizPlayerClient({
         ))}
       </div>
 
-      <div className="flex items-center justify-between rounded-2xl border border-border bg-surface p-5">
+      <div className="card flex items-center justify-between p-5">
         <span className="text-xs text-text-secondary">
           Completed {answeredCount} of {questions.length} questions
         </span>
@@ -395,7 +395,7 @@ export function QuizPlayerClient({
           type="button"
           onClick={handleSubmit}
           disabled={submitting}
-          className="rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
+          className="rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
         >
           {submitting ? 'Submitting...' : 'Submit Answers & Finish'}
         </button>

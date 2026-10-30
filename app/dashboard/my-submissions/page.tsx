@@ -8,7 +8,7 @@ import {
   RotateCcw,
   FileText,
   ArrowUpRight,
-} from 'lucide-react'
+} from '@/components/icons'
 
 export const metadata = {
   title: 'My Submissions | Lantern',
@@ -202,7 +202,7 @@ export default async function MySubmissionsPage({
       )}
 
       {filtered.length === 0 && (
-        <div className="bg-surface border border-border rounded-lg p-12 text-center">
+        <div className="card p-12 text-center">
           <FileText size={36} className="mx-auto text-text-muted mb-3" />
           <p className="text-sm text-text-secondary">
             {filterStatus
@@ -219,7 +219,7 @@ export default async function MySubmissionsPage({
       )}
 
       {filtered.length > 0 && (
-        <div className="bg-surface border border-border rounded-lg overflow-x-auto">
+        <div className="card overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-surface-muted/40">

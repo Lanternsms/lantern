@@ -114,7 +114,7 @@ export default async function LmsAiAdminPage({
       )}
 
       {/* ── System Status Banner ── */}
-      <div className="rounded-2xl border border-border bg-surface p-5  grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+      <div className="card p-5 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
         <div>
           <span className="text-text-secondary block">Provider & Model</span>
           <span className="font-semibold text-text-primary uppercase">
@@ -136,7 +136,7 @@ export default async function LmsAiAdminPage({
       </div>
 
       {/* ── Test Connection ── */}
-      <div className="rounded-2xl border border-border bg-surface p-5  space-y-3">
+      <div className="card p-5 space-y-3">
         <div>
           <h2 className="text-sm font-semibold text-text-primary">Test AI Connection</h2>
           <p className="text-xs text-text-secondary mt-0.5">
@@ -147,7 +147,7 @@ export default async function LmsAiAdminPage({
       </div>
 
       {/* ── Settings Form ── */}
-      <div className="rounded-2xl border border-border bg-surface p-6  space-y-5">
+      <div className="card p-6 space-y-5">
         <h2 className="text-base font-semibold text-text-primary">School AI Configuration</h2>
 
         <form action={handleSaveSettings} className="space-y-6">
@@ -258,7 +258,7 @@ export default async function LmsAiAdminPage({
           <div className="pt-2">
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-lg bg-primary text-white font-medium text-xs hover:bg-primary-hover  transition-colors"
+              className="px-5 py-2.5 rounded-xl bg-primary text-white font-medium text-xs hover:bg-primary-hover transition-colors"
             >
               Save AI Settings
             </button>
@@ -267,7 +267,7 @@ export default async function LmsAiAdminPage({
       </div>
 
       {/* ── Audit Logs ── */}
-      <div className="rounded-2xl border border-border bg-surface p-6  space-y-4">
+      <div className="card p-6 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 className="text-base font-semibold text-text-primary">Inquiry Audit Log</h2>

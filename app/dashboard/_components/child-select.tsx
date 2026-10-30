@@ -76,7 +76,7 @@ export function ChildrenTermSelect({
     <select
       value={selectedTermId}
       onChange={(e) => handleChange(e.target.value)}
-      className="rounded-lg border border-border px-3 py-1.5 text-sm bg-surface text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
+      className="card px-3 py-1.5 text-sm text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
     >
       {terms.map((t) => (
         <option key={t.id} value={t.id}>

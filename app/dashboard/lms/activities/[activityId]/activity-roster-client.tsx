@@ -260,7 +260,7 @@ export function ActivityRosterClient({
     <div className="space-y-6">
       {/* Assignment Document Brief (if attached) */}
       {!isQuiz && currentBriefName && (
-        <div className="rounded-lg border border-border bg-surface p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+        <div className="card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-danger-text text-danger-text dark:text-danger-text shrink-0">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -276,7 +276,7 @@ export function ActivityRosterClient({
             type="button"
             onClick={handleDownloadBrief}
             disabled={downloadingBrief}
-            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-primary hover:bg-surface-muted transition-colors shrink-0 disabled:opacity-50"
+            className="card inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-primary hover:bg-surface-muted transition-colors shrink-0 disabled:opacity-50"
           >
             <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -294,13 +294,13 @@ export function ActivityRosterClient({
 
       {/* Top action bar / summary stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="rounded-lg border border-border bg-surface p-4">
+        <div className="card p-4">
           <div className="text-xs text-text-secondary">Enrolled Students</div>
           <div className="mt-1 text-2xl font-bold text-text-primary">{totalEnrolled}</div>
           <div className="text-[11px] text-text-secondary mt-0.5">{session?.name || 'Current Session'}</div>
         </div>
 
-        <div className="rounded-lg border border-border bg-surface p-4">
+        <div className="card p-4">
           <div className="text-xs text-text-secondary">Submissions</div>
           <div className="mt-1 text-2xl font-bold text-text-primary">
             {submittedCount} <span className="text-sm font-normal text-text-secondary">/ {totalEnrolled}</span>
@@ -310,7 +310,7 @@ export function ActivityRosterClient({
           </div>
         </div>
 
-        <div className="rounded-lg border border-border bg-surface p-4">
+        <div className="card p-4">
           <div className="text-xs text-text-secondary">{isQuiz ? 'Scored' : 'Marked'}</div>
           <div className="mt-1 text-2xl font-bold text-text-primary">
             {markedCount} <span className="text-sm font-normal text-text-secondary">/ {submittedCount}</span>
@@ -320,7 +320,7 @@ export function ActivityRosterClient({
           </div>
         </div>
 
-        <div className="rounded-lg border border-border bg-surface p-4">
+        <div className="card p-4">
           <div className="text-xs text-text-secondary">Average Score</div>
           <div className="mt-1 text-2xl font-bold text-text-primary">
             {avgScore} <span className="text-sm font-normal text-text-secondary">/ {activity.max_score}</span>
@@ -394,7 +394,7 @@ export function ActivityRosterClient({
 
       {/* TAB 1: SUBMISSIONS ROSTER */}
       {activeTab === 'roster' && (
-        <div className="rounded-lg border border-border bg-surface overflow-hidden ">
+        <div className="card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead className="border-b border-border bg-surface-muted/50 text-xs font-semibold text-text-secondary ">
@@ -512,7 +512,7 @@ export function ActivityRosterClient({
                               <button
                                 type="button"
                                 onClick={() => handleOpenMarking(sub, st)}
-                                className="inline-flex items-center gap-1 rounded-lg border border-border bg-surface px-2.5 py-1 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+                                className="card inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
                               >
                                 {sub.status === 'marked' ? 'Review & Edit' : 'Review & Mark'}
                               </button>
@@ -543,7 +543,7 @@ export function ActivityRosterClient({
 
       {/* TAB 3: SETTINGS & RULES */}
       {canManage && activeTab === 'settings' && (
-        <section className="rounded-lg border border-border bg-surface p-6  space-y-5 max-w-2xl">
+        <section className="card p-6 space-y-5 max-w-2xl">
           <div>
             <h3 className="text-sm font-semibold text-text-primary">Activity Settings</h3>
             <p className="text-xs text-text-secondary mt-0.5">
@@ -679,7 +679,7 @@ export function ActivityRosterClient({
                       type="button"
                       onClick={() => briefInputRef.current?.click()}
                       disabled={uploadingBrief}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-dashed border-border bg-surface px-3 py-2 text-xs font-medium text-primary hover:bg-surface-muted transition-colors disabled:opacity-50"
+                      className="card inline-flex items-center gap-1.5 border-dashed px-3 py-2 text-xs font-medium text-primary hover:bg-surface-muted transition-colors disabled:opacity-50"
                     >
                       <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -724,7 +724,7 @@ export function ActivityRosterClient({
               <button
                 type="submit"
                 disabled={savingSettings}
-                className="rounded-lg bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
+                className="rounded-xl bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
               >
                 {savingSettings ? 'Saving...' : 'Update Settings'}
               </button>
@@ -736,7 +736,7 @@ export function ActivityRosterClient({
       {/* MARKING MODAL FOR ASSIGNMENTS */}
       {selectedSub && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-xl rounded-2xl border border-border bg-surface p-6 shadow-xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
+          <div className="card w-full max-w-xl p-6 shadow-xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-border pb-3">
               <div>
                 <h3 className="text-base font-semibold text-text-primary">
@@ -787,7 +787,7 @@ export function ActivityRosterClient({
                       href={selectedSub.downloadUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-xs font-medium text-primary hover:bg-surface-muted transition-colors"
+                      className="card inline-flex items-center gap-2 px-3 py-2 text-xs font-medium text-primary hover:bg-surface-muted transition-colors"
                     >
                       <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -838,14 +838,14 @@ export function ActivityRosterClient({
                 <button
                   type="button"
                   onClick={() => setSelectedSub(null)}
-                  className="rounded-lg border border-border bg-surface px-4 py-2 text-xs font-medium text-text-secondary hover:bg-surface-muted transition-colors"
+                  className="card px-4 py-2 text-xs font-medium text-text-secondary hover:bg-surface-muted transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={savingMark}
-                  className="rounded-lg bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
+                  className="rounded-xl bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
                 >
                   {savingMark ? 'Saving...' : 'Save & Record Mark'}
                 </button>

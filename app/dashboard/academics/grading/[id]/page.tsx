@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { createGradeBand, deleteGradeBand } from '@/app/dashboard/academics/grading/actions'
 import Link from 'next/link'
-import { Pencil, Trash2 } from 'lucide-react'
+import { Pencil, Trash2 } from '@/components/icons'
 
 export default async function ScaleDetailPage({
   params,
@@ -51,7 +51,7 @@ export default async function ScaleDetailPage({
         <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
 
-      <section className="bg-surface border border-border rounded-lg p-5">
+      <section className="card p-5">
         <h3 className="text-sm font-medium text-text-primary mb-4">Grade Bands</h3>
 
         {bands && bands.length > 0 ? (
@@ -107,7 +107,7 @@ export default async function ScaleDetailPage({
             <label className="block text-xs text-text-secondary mb-1">Remark</label>
             <input name="remark" placeholder="Excellent" className="w-full rounded-lg border border-border px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
           </div>
-          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors h-fit">
+          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors h-fit">
             Add Band
           </button>
         </form>

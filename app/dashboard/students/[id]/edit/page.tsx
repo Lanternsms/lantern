@@ -106,7 +106,7 @@ export default async function EditStudentPage({
 
       <form action={updateStudentWithId} className="space-y-6">
         <input type="hidden" name="from" value={from ?? ''} />
-        <section className="bg-surface border border-border rounded-lg p-6">
+        <section className="card p-6">
           <h2 className="text-sm font-semibold text-text-primary mb-4">Personal Information</h2>
 
           <StudentPhotoUploader initialPhotoUrl={student.photo_url} />
@@ -152,13 +152,13 @@ export default async function EditStudentPage({
           </div>
         </section>
 
-        <section className="bg-surface border border-border rounded-lg p-6">
+        <section className="card p-6">
           <h2 className="text-sm font-semibold text-text-primary">Guardian Information</h2>
           <p className="text-xs text-text-secondary mb-4">At least one guardian is required.</p>
           <GuardianEditRepeater initialGuardians={initialGuardians} customFieldDefs={guardianCustomFields ?? []} />
         </section>
 
-        <section className="bg-surface border border-border rounded-lg p-6">
+        <section className="card p-6">
           <h2 className="text-sm font-semibold text-text-primary mb-4">Enrolment Information</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -191,7 +191,7 @@ export default async function EditStudentPage({
         </section>
 
         {customFields && customFields.length > 0 && (
-          <section className="bg-surface border border-border rounded-lg p-6">
+          <section className="card p-6">
             <h2 className="text-sm font-semibold text-text-primary">Additional Information</h2>
             <p className="text-xs text-text-secondary mb-4">School-configured fields. These can be customised in your school settings.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -206,7 +206,7 @@ export default async function EditStudentPage({
             <Link href={`/dashboard/students/${id}${from ? `?from=${from}` : ''}`} className="text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-surface-muted transition-colors">
               Cancel
             </Link>
-            <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+            <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
               Save Changes
             </button>
           </div>

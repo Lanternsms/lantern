@@ -92,7 +92,7 @@ export default function MarkingGrid({
   }
 
   if (students.length === 0) {
-    return <p className="rounded-lg border border-border bg-surface p-6 text-text-secondary">No students are enrolled in this class arm yet.</p>
+    return <p className="card p-6 text-text-secondary">No students are enrolled in this class arm yet.</p>
   }
 
   const markedCount = students.filter((s) => marks[s.id]).length
@@ -135,7 +135,7 @@ export default function MarkingGrid({
 
       {lastMarkedAt && <p className="text-sm text-text-secondary">Last saved today at {lastMarkedAt}. Changes save over it.</p>}
 
-      <ol className="overflow-hidden rounded-lg border border-border bg-surface">
+      <ol className="card overflow-hidden">
         {students.map((s, i) => {
           const current = marks[s.id]
           return (

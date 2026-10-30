@@ -10,7 +10,7 @@ import {
   reextractNotes,
 } from '../actions'
 import { formatFileSize } from '../video-inspect'
-import { FileText, Upload, RefreshCw, Trash2, CheckCircle2, AlertTriangle, AlertCircle, Loader2 } from 'lucide-react'
+import { FileText, Upload, RefreshCw, Trash2, CheckCircle2, AlertTriangle, AlertCircle, Loader2 } from '@/components/icons'
 
 const MAX_PDF_BYTES = 25 * 1024 * 1024 // 25 MB
 
@@ -227,7 +227,7 @@ export function LessonNotesUpload({
                   setSelectedFile(null)
                 }}
                 disabled={isPending}
-                className="text-xs font-medium text-text-primary hover:text-primary border border-border bg-surface rounded-lg px-2.5 py-1.5 transition-colors"
+                className="card text-xs font-medium text-text-primary hover:text-primary px-2.5 py-1.5 transition-colors"
               >
                 Replace
               </button>
@@ -310,7 +310,7 @@ export function LessonNotesUpload({
           </div>
         </div>
       ) : (
-        <div className="rounded-lg border border-dashed border-border bg-surface p-5 space-y-4">
+        <div className="card border-dashed p-5 space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-semibold text-text-primary">
@@ -416,7 +416,7 @@ export function LessonNotesUpload({
                   type="button"
                   onClick={handleStartUpload}
                   disabled={isUploading || isPending}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-medium hover:bg-primary-hover disabled:opacity-50 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary text-white text-xs font-medium hover:bg-primary-hover disabled:opacity-50 transition-colors"
                 >
                   {isUploading ? (
                     <>

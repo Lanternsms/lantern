@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { Shield, Key, Lock, ArrowUpRight } from 'lucide-react'
+import { Shield, Key, Lock, ArrowUpRight } from '@/components/icons'
 
 export async function RolesWidget() {
   const supabase = await createClient()
@@ -15,7 +15,7 @@ export async function RolesWidget() {
     .eq('school_id', profile.school_id)
 
   return (
-    <div className="bg-surface border border-border rounded-2xl p-6 shadow-xs h-full flex flex-col justify-between">
+    <div className="card p-6 h-full flex flex-col justify-between">
       <div>
         <div className="flex items-center justify-between pb-4 border-b border-border mb-4">
           <div className="flex items-center gap-3">

@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { setActiveTemplate, deleteTemplate, seedWorkflowPreset } from '@/app/dashboard/academics/workflow/actions'
 import Link from 'next/link'
-import { Trash2 } from 'lucide-react'
+import { Trash2 } from '@/components/icons'
 
 export default async function WorkflowListPage({
   searchParams,
@@ -29,7 +29,7 @@ export default async function WorkflowListPage({
             Define who reviews and approves results before they are published. Only the active workflow is used for new submissions.
           </p>
         </div>
-        <Link href="/dashboard/academics/workflow/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+        <Link href="/dashboard/academics/workflow/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
           + New Workflow
         </Link>
       </div>
@@ -41,7 +41,7 @@ export default async function WorkflowListPage({
       )}
 
       {!fetchError && templates?.length === 0 && (
-        <div className="bg-surface border border-border rounded-lg p-8">
+        <div className="card p-8">
           <p className="text-sm text-text-secondary text-center mb-6">
             No approval workflow yet. Start from a preset, or build your own from scratch.
           </p>
@@ -50,7 +50,7 @@ export default async function WorkflowListPage({
               <input type="hidden" name="preset" value="simple" />
               <h3 className="text-sm font-medium text-text-primary mb-1">Simple</h3>
               <p className="text-xs text-text-secondary mb-4">Teacher submits, the principal approves, results are published.</p>
-              <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+              <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
                 Use Simple
               </button>
             </form>
@@ -58,7 +58,7 @@ export default async function WorkflowListPage({
               <input type="hidden" name="preset" value="standard" />
               <h3 className="text-sm font-medium text-text-primary mb-1">Standard</h3>
               <p className="text-xs text-text-secondary mb-4">Teacher submits, the HOD reviews, the principal approves, results are published.</p>
-              <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+              <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
                 Use Standard
               </button>
             </form>
@@ -67,7 +67,7 @@ export default async function WorkflowListPage({
       )}
 
       {templates && templates.length > 0 && (
-        <div className="bg-surface border border-border rounded-lg overflow-x-auto">
+        <div className="card overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">

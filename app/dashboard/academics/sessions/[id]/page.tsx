@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { setCurrentTerm } from '@/app/dashboard/academics/actions'
 import Link from 'next/link'
-import { Pencil } from 'lucide-react'
+import { Pencil } from '@/components/icons'
 
 export default async function SessionDetailPage({
   params,
@@ -38,7 +38,7 @@ export default async function SessionDetailPage({
         )}
       </div>
 
-      <section className="bg-surface border border-border rounded-lg p-5 mb-6">
+      <section className="card p-5 mb-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm">
           <div>
             <p className="text-text-secondary text-xs mb-0.5">Start Date</p>
@@ -59,7 +59,7 @@ export default async function SessionDetailPage({
       </div>
 
       {terms && terms.length > 0 ? (
-        <div className="bg-surface border border-border rounded-lg overflow-x-auto">
+        <div className="card overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
@@ -100,11 +100,11 @@ export default async function SessionDetailPage({
           </table>
         </div>
       ) : (
-        <div className="bg-surface border border-border border-dashed rounded-lg p-8 text-center">
+        <div className="card border-dashed p-8 text-center">
           <p className="text-sm text-text-secondary mb-3">No terms added yet for this session.</p>
           <Link
             href={`/dashboard/academics/sessions/${id}/terms/new`}
-            className="inline-flex items-center text-sm font-medium text-white bg-primary hover:bg-primary-hover px-4 py-2 rounded-lg transition-colors"
+            className="inline-flex items-center text-sm font-medium text-white bg-primary hover:bg-primary-hover px-4 py-2 rounded-xl transition-colors"
           >
             + Add First Term
           </Link>

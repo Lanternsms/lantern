@@ -76,7 +76,7 @@ export async function RoleAwareDashboard() {
 
       {/* ─── Dynamic Widgets Grid ───────────────────────────────────────── */}
       {visibleWidgets.length === 0 ? (
-        <div className="rounded-lg border border-border bg-surface p-8">
+        <div className="card p-8">
           <h2 className="text-base font-semibold text-text-primary">Nothing to show here yet</h2>
           <p className="mt-1 max-w-md text-sm text-text-secondary">
             Your role doesn’t include any of the home screen panels yet. Use the menu to reach your pages, or ask your school admin to adjust your role.

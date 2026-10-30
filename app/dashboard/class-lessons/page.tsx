@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { PlayCircle, BookOpen } from 'lucide-react'
+import { PlayCircle, BookOpen } from '@/components/icons'
 import { LessonPlayerModal } from '../lms/lesson-player-modal'
 import { NotesDownloadButton } from '../lms/notes-download-button'
 import GuardianAskButton from '../_components/guardian-ask-button'
@@ -133,7 +133,7 @@ export default async function ClassLessonsPage() {
 
       {/* Content */}
       {lessonsBySubject.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border bg-surface p-12 text-center space-y-3">
+        <div className="card border-dashed p-12 text-center space-y-3">
           <div className="mx-auto flex items-center justify-center shrink-0 text-text-secondary">
             <BookOpen className="w-6 h-6" />
           </div>
@@ -145,7 +145,7 @@ export default async function ClassLessonsPage() {
       ) : (
         <div className="space-y-6">
           {lessonsBySubject.map((group) => (
-            <div key={group.subjectName} className="rounded-2xl border border-border bg-surface overflow-hidden ">
+            <div key={group.subjectName} className="card overflow-hidden">
               <div className="px-5 py-3.5 border-b border-border bg-surface-muted flex items-center justify-between">
                 <h2 className="text-xs font-bold text-text-secondary ">
                   {group.subjectName}
@@ -183,7 +183,7 @@ export default async function ClassLessonsPage() {
                       <div className="shrink-0 flex items-center gap-2 self-end sm:self-auto flex-wrap justify-end">
                         <Link
                           href={`/dashboard/lms/learn/${lesson.id}?student=${studentRow.id}`}
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors min-h-[44px]"
+                          className="card inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors min-h-[44px]"
                         >
                           Activities
                           {actCount > 0 && (

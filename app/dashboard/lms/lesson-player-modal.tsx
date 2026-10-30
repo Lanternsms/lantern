@@ -102,7 +102,7 @@ export function LessonPlayerModal({
     <>
       <button
         onClick={openModal}
-        className="inline-flex items-center gap-1.5 text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors"
       >
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
           <path d="M3 2.5L11 7L3 11.5V2.5Z" fill="currentColor" />

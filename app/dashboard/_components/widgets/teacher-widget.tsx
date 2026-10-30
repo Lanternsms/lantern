@@ -10,7 +10,7 @@ import {
   MessageSquare,
   BookOpen,
   ChevronRight,
-} from 'lucide-react'
+} from '@/components/icons'
 
 const BASE_TEACHER_ACTIONS = [
   {
@@ -86,7 +86,7 @@ export async function TeacherWidget() {
     })
   }
   return (
-    <div className="bg-surface border border-border rounded-2xl p-6 shadow-xs h-full flex flex-col justify-between">
+    <div className="card p-6 h-full flex flex-col justify-between">
       <div>
         <div className="flex items-center justify-between pb-4 border-b border-border mb-5">
           <div className="flex items-center gap-3">

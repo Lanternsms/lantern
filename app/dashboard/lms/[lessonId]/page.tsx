@@ -180,7 +180,7 @@ export default async function LessonDetailPage({
         )}
 
         {lesson.notes_path && (
-          <section className="bg-surface border border-border rounded-lg p-6">
+          <section className="card p-6">
             <h2 className="text-sm font-semibold text-text-primary mb-3">Lesson Notes</h2>
             <NotesDownloadButton
               lessonId={lessonId}
@@ -270,7 +270,7 @@ export default async function LessonDetailPage({
       )}
 
       {/* ── Video section ── */}
-      <section className="bg-surface border border-border rounded-lg p-6 space-y-4">
+      <section className="card p-6 space-y-4">
         <h2 className="text-sm font-semibold text-text-primary">Video</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
@@ -328,7 +328,7 @@ export default async function LessonDetailPage({
       </section>
 
       {/* ── Lesson Notes section ── */}
-      <section className="bg-surface border border-border rounded-lg p-6 space-y-4">
+      <section className="card p-6 space-y-4">
         <h2 className="text-sm font-semibold text-text-primary">Lesson Notes (PDF)</h2>
         <LessonNotesUpload
           lessonId={lessonId}
@@ -354,7 +354,7 @@ export default async function LessonDetailPage({
 
       {/* ── Attendance section ── */}
       {attendanceSummary.ok && (
-        <section className="bg-surface border border-border rounded-lg p-6 space-y-4">
+        <section className="card p-6 space-y-4">
           <h2 className="text-sm font-semibold text-text-primary">Attendance</h2>
           {attendanceSummary.rows.length === 0 ? (
             <p className="text-sm text-text-secondary">No period attendance has been recorded for this lesson yet.</p>
@@ -423,7 +423,7 @@ export default async function LessonDetailPage({
 
       {/* ── Edit metadata form (canManage only) ── */}
       {canManage && (
-        <section className="bg-surface border border-border rounded-lg p-6 space-y-4">
+        <section className="card p-6 space-y-4">
           <h2 className="text-sm font-semibold text-text-primary">Lesson details</h2>
 
           <form action={updateWithId} className="space-y-4">
@@ -534,7 +534,7 @@ export default async function LessonDetailPage({
             <div className="pt-2">
               <button
                 type="submit"
-                className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors"
+                className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors"
               >
                 Save changes
               </button>
@@ -545,7 +545,7 @@ export default async function LessonDetailPage({
 
       {/* ── Status & delete ── */}
       {canManage && (
-        <section className="bg-surface border border-border rounded-lg p-6 space-y-4">
+        <section className="card p-6 space-y-4">
           <h2 className="text-sm font-semibold text-text-primary">Actions</h2>
           <div className="flex flex-wrap gap-3">
             {lesson.status === 'draft' ? (

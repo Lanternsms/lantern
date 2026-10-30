@@ -58,7 +58,7 @@ export default async function SchoolAuditLogPage({
       </div>
 
       <form className="flex items-center gap-3" method="get">
-        <select name="action" defaultValue={params.action ?? ''} className="border border-border rounded-lg px-3 py-2 text-sm bg-surface text-text-primary">
+        <select name="action" defaultValue={params.action ?? ''} className="card px-3 py-2 text-sm text-text-primary">
           <option value="">All actions</option>
           {distinctActions.map((a) => (
             <option key={a} value={a}>{a}</option>

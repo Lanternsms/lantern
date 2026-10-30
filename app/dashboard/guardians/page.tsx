@@ -39,7 +39,7 @@ export default async function GuardiansPage({
           </p>
         </div>
         {!student_id && (
-          <Link href="/dashboard/guardians/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+          <Link href="/dashboard/guardians/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
             + Add Guardian
           </Link>
         )}
@@ -54,7 +54,7 @@ export default async function GuardiansPage({
           placeholder="Search by name or phone"
           className="flex-1 max-w-sm rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
         />
-        <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+        <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
           Search
         </button>
       </form>
@@ -66,7 +66,7 @@ export default async function GuardiansPage({
       )}
 
       {guardians && guardians.length > 0 ? (
-        <div className="bg-surface border border-border rounded-lg overflow-x-auto">
+        <div className="card overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">

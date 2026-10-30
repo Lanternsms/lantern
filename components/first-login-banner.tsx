@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Bell, Sparkles, X } from 'lucide-react'
+import { Bell, Sparkles, X } from '@/components/icons'
 
 export function FirstLoginBanner({ userId }: { userId: string }) {
   const [visible, setVisible] = useState(false)
@@ -54,7 +54,7 @@ export function FirstLoginBanner({ userId }: { userId: string }) {
           <div className="pt-1.5 flex flex-wrap items-center gap-3">
             <Link
               href="/dashboard/notifications/settings"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-primary hover:bg-primary-hover px-3.5 py-1.5 rounded-lg transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-primary hover:bg-primary-hover px-3.5 py-1.5 rounded-xl transition-colors"
             >
               <Bell className="w-3.5 h-3.5" />
               Manage notifications &amp; install

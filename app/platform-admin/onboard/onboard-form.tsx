@@ -31,7 +31,7 @@ export function OnboardForm() {
 
   if (result) {
     return (
-      <div className="bg-surface border border-border rounded-lg p-6 space-y-3">
+      <div className="card p-6 space-y-3">
         <h2 className="text-base font-semibold text-success-text">School created</h2>
         <p className="text-sm text-text-secondary">
           <span className="font-medium text-text-primary">{result.slug}</span> is set up, and an invite email was sent to{' '}
@@ -51,7 +51,7 @@ export function OnboardForm() {
   }
 
   return (
-    <form action={handleSubmit} className="bg-surface border border-border rounded-lg p-6 space-y-6">
+    <form action={handleSubmit} className="card p-6 space-y-6">
       {error && <div className="bg-danger-bg border border-danger-bg text-danger-text text-sm rounded-lg px-3 py-2">{error}</div>}
 
       <section className="space-y-3">
@@ -120,7 +120,7 @@ export function OnboardForm() {
         <p className="text-[11px] text-text-secondary">Leave term dates blank to reuse the session's dates.</p>
       </section>
 
-      <button type="submit" disabled={isPending} className="w-full bg-primary text-white text-sm font-medium py-2.5 rounded-lg hover:bg-primary-hover disabled:opacity-60 transition-colors">
+      <button type="submit" disabled={isPending} className="w-full bg-primary text-white text-sm font-medium py-2.5 rounded-xl hover:bg-primary-hover disabled:opacity-60 transition-colors">
         {isPending ? 'Creating school…' : 'Create school & invite admin'}
       </button>
     </form>

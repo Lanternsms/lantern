@@ -106,7 +106,7 @@ export function FacilitatorPeriodCard({
   }
 
   return (
-    <div className="bg-surface border border-border rounded-lg p-5 shadow-xs space-y-4">
+    <div className="card p-5 space-y-4">
       {/* Header: Time, Class+Arm, Subject, and Status Chip */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
@@ -277,7 +277,7 @@ export function FacilitatorPeriodCard({
                   type="button"
                   onClick={handleMarkDelivered}
                   disabled={isPending || !selectedLessonId}
-                  className="text-xs font-semibold text-white bg-primary hover:bg-primary-hover px-4 py-2.5 rounded-lg transition-colors disabled:opacity-50"
+                  className="text-xs font-semibold text-white bg-primary hover:bg-primary-hover px-4 py-2.5 rounded-xl transition-colors disabled:opacity-50"
                 >
                   {isPending ? 'Marking…' : 'Mark as delivered'}
                 </button>

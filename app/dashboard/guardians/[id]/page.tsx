@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { User, Users, FileText, Pencil } from 'lucide-react'
+import { User, Users, FileText, Pencil } from '@/components/icons'
 import {
   inviteGuardianPortalAccess,
   linkGuardianProfile,
@@ -68,7 +68,7 @@ export default async function GuardianDetailPage({
         .order('name')
 
   const portalAccessContent = (
-    <div className="bg-surface border border-border rounded-lg p-5">
+    <div className="card p-5">
       <h3 className="text-sm font-medium text-text-primary mb-3">Portal Access</h3>
 
       {linkedProfile ? (
@@ -108,7 +108,7 @@ export default async function GuardianDetailPage({
               </select>
               <button
                 type="submit"
-                className="px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-primary-hover"
+                className="px-4 py-2 bg-primary text-white rounded-xl text-sm hover:bg-primary-hover"
               >
                 Invite
               </button>
@@ -160,14 +160,14 @@ export default async function GuardianDetailPage({
         </div>
         <Link
           href={`/dashboard/guardians/${id}/edit`}
-          className="flex items-center gap-1.5 text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors"
+          className="flex items-center gap-1.5 text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors"
         >
           <Pencil size={14} /> Edit Guardian
         </Link>
       </div>
 
       <div className="space-y-4">
-        <section className="bg-surface border border-border rounded-lg p-5">
+        <section className="card p-5">
           <div className="flex items-center gap-2 mb-4">
             <User size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Contact Information</h3>
@@ -189,7 +189,7 @@ export default async function GuardianDetailPage({
         </section>
 
         {fieldDefs && fieldDefs.length > 0 && (
-          <section className="bg-surface border border-border rounded-lg p-5">
+          <section className="card p-5">
             <div className="flex items-center gap-2 mb-4">
               <FileText size={16} className="text-text-secondary" />
               <h3 className="text-sm font-medium text-text-primary">Custom Fields</h3>
@@ -212,7 +212,7 @@ export default async function GuardianDetailPage({
           </section>
         )}
 
-        <section className="bg-surface border border-border rounded-lg p-5">
+        <section className="card p-5">
           <div className="flex items-center gap-2 mb-4">
             <Users size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Linked Students</h3>

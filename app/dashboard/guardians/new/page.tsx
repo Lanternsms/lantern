@@ -44,7 +44,7 @@ export default async function NewGuardianPage({
         <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
 
-      <form action={createGuardian} className="bg-surface border border-border rounded-lg p-6 space-y-4">
+      <form action={createGuardian} className="card p-6 space-y-4">
         <input type="hidden" name="student_id" value={student_id} />
 
         <div>
@@ -87,7 +87,7 @@ export default async function NewGuardianPage({
           Set as primary contact
         </label>
 
-        <button type="submit" className="w-full bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-lg py-2.5 transition-colors">
+        <button type="submit" className="w-full bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-xl py-2.5 transition-colors">
           Add Guardian
         </button>
       </form>

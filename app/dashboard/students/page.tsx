@@ -89,7 +89,7 @@ export default async function StudentsPage({
           <Link href="/dashboard/students/import" className="text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-surface-muted transition-colors">
             Import
           </Link>
-          <Link href="/dashboard/students/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+          <Link href="/dashboard/students/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
             + Add Student
           </Link>
         </div>
@@ -114,7 +114,7 @@ export default async function StudentsPage({
             <option key={a.id} value={a.id}>{a.name}</option>
           ))}
         </select>
-        <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+        <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
           Filter
         </button>
       </form>
@@ -127,7 +127,7 @@ export default async function StudentsPage({
 
       {students && students.length > 0 && (
         <>
-          <div className="bg-surface border border-border rounded-lg overflow-x-auto">
+          <div className="card overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border">

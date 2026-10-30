@@ -9,7 +9,7 @@ import {
   Clock,
   Settings,
   ArrowRight,
-} from 'lucide-react'
+} from '@/components/icons'
 
 export const metadata = {
   title: 'Results Management | Lantern',

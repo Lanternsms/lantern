@@ -19,7 +19,7 @@ export default async function ClassesPage() {
           <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Classes</h1>
           <p className="text-sm text-text-secondary mt-1">Manage your school&apos;s classes and their arms.</p>
         </div>
-        <Link href="/dashboard/academics/classes/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+        <Link href="/dashboard/academics/classes/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
           + Add Class
         </Link>
       </div>

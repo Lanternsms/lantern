@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { ShieldAlert, CheckCircle2, ArrowRight } from 'lucide-react'
+import { ShieldAlert, CheckCircle2, ArrowRight } from '@/components/icons'
 
 export async function ApprovalsWidget() {
   const supabase = await createClient()
@@ -19,7 +19,7 @@ export async function ApprovalsWidget() {
   const count = pendingCount ?? 0
 
   return (
-    <div className="bg-surface border border-border rounded-2xl p-6 shadow-xs h-full flex flex-col justify-between">
+    <div className="card p-6 h-full flex flex-col justify-between">
       <div>
         <div className="flex items-center justify-between pb-4 border-b border-border mb-4">
           <div className="flex items-center gap-3">
@@ -57,7 +57,7 @@ export async function ApprovalsWidget() {
 
             <Link
               href="/dashboard/approvals"
-              className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-primary-hover transition-colors shadow-xs"
+              className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary-hover transition-colors shadow-xs"
             >
               Open Approvals Queue <ArrowRight size={14} />
             </Link>

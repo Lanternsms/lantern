@@ -68,7 +68,7 @@ export default function HistoryView({ classId, armId }: { classId: string; armId
             type="date"
             value={from}
             onChange={(e) => setFrom(e.target.value)}
-            className="border border-border rounded-lg px-3 py-2 text-sm bg-surface"
+            className="card px-3 py-2 text-sm"
           />
         </div>
         <div>
@@ -77,12 +77,12 @@ export default function HistoryView({ classId, armId }: { classId: string; armId
             type="date"
             value={to}
             onChange={(e) => setTo(e.target.value)}
-            className="border border-border rounded-lg px-3 py-2 text-sm bg-surface"
+            className="card px-3 py-2 text-sm"
           />
         </div>
 
         {/* Highlighted History indicator replacing the old View History button */}
-        <div className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-primary text-white text-sm font-medium  select-none">
+        <div className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-white text-sm font-medium select-none">
           {loading ? (
             <svg className="w-4 h-4 animate-spin text-white" viewBox="0 0 24 24" fill="none">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -108,7 +108,7 @@ export default function HistoryView({ classId, armId }: { classId: string; armId
       </div>
 
       {loading && rows === null ? (
-        <div className="bg-surface border border-border rounded-lg p-8 text-center">
+        <div className="card p-8 text-center">
           <div className="inline-flex items-center gap-2 text-sm text-text-secondary">
             <svg className="w-4 h-4 animate-spin text-primary" viewBox="0 0 24 24" fill="none">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -118,11 +118,11 @@ export default function HistoryView({ classId, armId }: { classId: string; armId
           </div>
         </div>
       ) : rows && rows.length === 0 ? (
-        <div className="bg-surface border border-border rounded-lg p-8 text-center text-sm text-text-secondary">
+        <div className="card p-8 text-center text-sm text-text-secondary">
           No attendance records in this range.
         </div>
       ) : rows && rows.length > 0 ? (
-        <div className="bg-surface border border-border rounded-lg overflow-x-auto">
+        <div className="card overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border text-left text-xs text-text-secondary bg-surface-muted/30">

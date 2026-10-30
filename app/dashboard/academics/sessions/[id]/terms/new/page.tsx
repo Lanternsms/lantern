@@ -22,7 +22,7 @@ export default async function NewTermPage({
         <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
 
-      <form action={createTerm} className="bg-surface border border-border rounded-lg p-6 space-y-4">
+      <form action={createTerm} className="card p-6 space-y-4">
         <input type="hidden" name="session_id" value={id} />
         <div>
           <label className="block text-sm text-text-secondary mb-1.5">Term Name *</label>
@@ -43,7 +43,7 @@ export default async function NewTermPage({
             <input name="end_date" type="date" required className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
           </div>
         </div>
-        <button type="submit" className="w-full bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-lg py-2.5 transition-colors">
+        <button type="submit" className="w-full bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-xl py-2.5 transition-colors">
           Add Term
         </button>
       </form>

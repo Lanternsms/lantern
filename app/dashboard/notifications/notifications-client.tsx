@@ -88,7 +88,7 @@ export function NotificationsPageClient({
           )}
           <Link
             href="/dashboard/notifications/settings"
-            className="text-xs font-medium text-text-secondary hover:text-text-primary px-3 py-1.5 rounded-lg border border-border bg-surface hover:bg-surface-muted transition-colors"
+            className="card text-xs font-medium text-text-secondary hover:text-text-primary px-3 py-1.5 hover:bg-surface-muted transition-colors"
           >
             Settings &amp; App
           </Link>
@@ -104,7 +104,7 @@ export function NotificationsPageClient({
           <p className="text-base">You&apos;re all caught up!</p>
         </div>
       ) : (
-        <div className="bg-surface border border-border rounded-lg divide-y divide-border overflow-hidden">
+        <div className="card divide-y divide-border overflow-hidden">
           {notifications.map(n => {
             const isUnread = !n.read_at
             const dot = categoryColour[n.category] ?? 'bg-text-secondary'

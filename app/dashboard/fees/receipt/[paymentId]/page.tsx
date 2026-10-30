@@ -26,7 +26,7 @@ export default async function ReceiptPage({ params }: { params: Promise<{ paymen
 
   return (
     <div className="p-6">
-      <div id="receipt" className="max-w-md mx-auto bg-surface border border-border rounded-lg p-8 print:border-0 print:shadow-none">
+      <div id="receipt" className="card max-w-md mx-auto p-8 print:border-0 print:shadow-none">
         <div className="text-center mb-6">
           <h1 className="text-lg font-bold text-text-primary">{school?.name ?? 'School'}</h1>
           <p className="text-xs text-text-secondary">Payment Receipt</p>

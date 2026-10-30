@@ -394,7 +394,7 @@ export async function GuardianDashboard({
     return (
       <div className="px-6 py-6 max-w-5xl space-y-6">
         <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Welcome, {guardianRow.first_name}</h1>
-        <div className="bg-surface border border-border rounded-lg p-8 text-center text-sm text-text-secondary">
+        <div className="card p-8 text-center text-sm text-text-secondary">
           No children are linked to your account yet. Contact your school administrator to link your child&apos;s profile.
         </div>
       </div>
@@ -437,7 +437,7 @@ export async function GuardianDashboard({
         </div>
       </div>
 
-      <section aria-labelledby="this-week" className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-5">
+      <section aria-labelledby="this-week" className="card flex flex-col gap-3 p-5">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h2 id="this-week" className="text-lg font-semibold">This week at school</h2>
           {attendanceRate !== null && <span className="text-sm text-text-secondary">{attendanceRate}% present this term</span>}
@@ -461,7 +461,7 @@ export async function GuardianDashboard({
         </ol>
       </section>
 
-      <div className="rounded-2xl border border-border bg-surface px-5 pt-1">
+      <div className="card px-5 pt-1">
         {/* Navigation Tabs */}
         <div className="flex gap-6 overflow-x-auto">
           <Link
@@ -535,7 +535,7 @@ export async function GuardianDashboard({
       {activeTab === 'all' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <Link href={buildUrl({ tab: 'attendance' })} className="border border-border rounded-lg p-4 bg-surface hover:bg-surface-muted/30 transition-colors">
+            <Link href={buildUrl({ tab: 'attendance' })} className="card p-4 hover:bg-surface-muted/30 transition-colors">
               <div className="text-xs text-text-secondary font-medium">Attendance this term</div>
               <div className="text-xl font-bold text-text-primary mt-1">
                 {attendanceRate !== null ? `${attendanceRate}%` : '—'}
@@ -543,7 +543,7 @@ export async function GuardianDashboard({
               <div className="text-[11px] text-text-secondary mt-1">{currentTerm?.name ?? 'This term'}</div>
             </Link>
 
-            <Link href={buildUrl({ tab: 'fees' })} className="border border-border rounded-lg p-4 bg-surface hover:bg-surface-muted/30 transition-colors">
+            <Link href={buildUrl({ tab: 'fees' })} className="card p-4 hover:bg-surface-muted/30 transition-colors">
               <div className="text-xs text-text-secondary font-medium">Fees balance</div>
               <div className={`text-xl font-bold mt-1 ${totalBalance > 0 ? 'text-danger-text' : 'text-success-text'}`}>
                 {formatCurrency(totalBalance)}
@@ -553,7 +553,7 @@ export async function GuardianDashboard({
               </div>
             </Link>
 
-            <Link href={buildUrl({ tab: 'timetable' })} className="border border-border rounded-lg p-4 bg-surface hover:bg-surface-muted/30 transition-colors">
+            <Link href={buildUrl({ tab: 'timetable' })} className="card p-4 hover:bg-surface-muted/30 transition-colors">
               <div className="text-xs text-text-secondary font-medium">Classes today</div>
               <div className="text-xl font-bold text-text-primary mt-1">{todayRows.length}</div>
               <div className="text-[11px] text-text-secondary mt-1">
@@ -561,7 +561,7 @@ export async function GuardianDashboard({
               </div>
             </Link>
 
-            <Link href={buildUrl({ tab: 'results' })} className="border border-border rounded-lg p-4 bg-surface hover:bg-surface-muted/30 transition-colors">
+            <Link href={buildUrl({ tab: 'results' })} className="card p-4 hover:bg-surface-muted/30 transition-colors">
               <div className="text-xs text-text-secondary font-medium">Position in class</div>
               <div className="text-xl font-bold text-text-primary mt-1">
                 {rank ? `${rank.rank} / ${rank.out_of}` : '—'}
@@ -570,7 +570,7 @@ export async function GuardianDashboard({
             </Link>
           </div>
 
-          <div className="bg-surface border border-border rounded-lg p-5 shadow-xs space-y-3">
+          <div className="card p-5 space-y-3">
             <div className="flex items-center justify-between">
               <h2 className="text-base font-semibold text-text-primary">From the school</h2>
               <Link href="/dashboard/announcements" className="text-xs text-primary hover:underline font-semibold">
@@ -596,7 +596,7 @@ export async function GuardianDashboard({
             )}
           </div>
 
-          <div className="bg-surface border border-border rounded-lg p-4">
+          <div className="card p-4">
             <h2 className="text-xs font-semibold text-text-secondary  mb-2">Your contact details</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
               <div>
@@ -614,7 +614,7 @@ export async function GuardianDashboard({
 
       {/* ATTENDANCE */}
       {activeTab === 'attendance' && (
-        <div className="bg-surface border border-border rounded-lg p-5 shadow-xs space-y-4">
+        <div className="card p-5 space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="text-base font-semibold text-text-primary flex items-center gap-2">
@@ -756,7 +756,7 @@ export async function GuardianDashboard({
           )}
 
           {/* Recorded-lesson attendance (separate from daily; does NOT affect rate/counters) */}
-          <div className="bg-surface border border-border rounded-lg p-5 shadow-xs space-y-4 mt-4">
+          <div className="card p-5 space-y-4 mt-4">
             <div>
               <h2 className="text-base font-semibold text-text-primary flex items-center gap-2">
                 <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -837,11 +837,11 @@ export async function GuardianDashboard({
           </h2>
 
           {subjectRows.length === 0 ? (
-            <div className="bg-surface border border-border rounded-lg p-8 text-center text-sm text-text-secondary">
+            <div className="card p-8 text-center text-sm text-text-secondary">
               No published results for {currentTerm?.name ?? 'this term'} yet.
             </div>
           ) : (
-            <div className="bg-surface border border-border rounded-lg overflow-hidden shadow-xs">
+            <div className="card overflow-hidden">
               <table className="w-full text-sm">
                 <thead className="bg-surface-muted text-text-secondary text-xs">
                   <tr>
@@ -870,7 +870,7 @@ export async function GuardianDashboard({
           )}
 
           {remark && (remark.class_teacher_remark || remark.principal_remark) && (
-            <div className="bg-surface border border-border rounded-lg p-5 space-y-3 shadow-xs">
+            <div className="card p-5 space-y-3">
               <h3 className="text-sm font-semibold text-text-primary">Teachers’ remarks</h3>
               {remark.class_teacher_remark && (
                 <p className="text-sm text-text-secondary">
@@ -891,7 +891,7 @@ export async function GuardianDashboard({
 
       {/* FEES */}
       {activeTab === 'fees' && (
-        <div className="bg-surface border border-border rounded-lg p-5 shadow-xs space-y-4">
+        <div className="card p-5 space-y-4">
           <h2 className="text-base font-semibold text-text-primary">Fees — {currentTerm?.academic_sessions?.name ?? 'Current Session'}</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -954,12 +954,12 @@ export async function GuardianDashboard({
       {activeTab === 'lessons' && (
         <div className="space-y-6">
           {lessonsBySubject.length === 0 ? (
-            <div className="bg-surface border border-border rounded-lg p-8 text-center text-sm text-text-secondary">
+            <div className="card p-8 text-center text-sm text-text-secondary">
               No lessons have been published for {selectedChild?.first_name}&apos;s class yet.
             </div>
           ) : (
             lessonsBySubject.map((group) => (
-              <div key={group.subjectName} className="bg-surface border border-border rounded-lg overflow-hidden">
+              <div key={group.subjectName} className="card overflow-hidden">
                 <div className="px-5 py-3 border-b border-border bg-surface-muted">
                   <h3 className="text-xs font-semibold text-text-secondary ">
                     {group.subjectName}
@@ -988,7 +988,7 @@ export async function GuardianDashboard({
                       <div className="shrink-0 flex items-center gap-2 flex-wrap justify-end">
                         <Link
                           href={`/dashboard/lms/learn/${lesson.id}?student=${selectedChild.id}`}
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors min-h-[44px]"
+                          className="card inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors min-h-[44px]"
                         >
                           Activities
                           {(activityCountByLesson.get(lesson.id) ?? 0) > 0 && (
@@ -1033,7 +1033,7 @@ export async function GuardianDashboard({
 
       {/* TIMETABLE */}
       {activeTab === 'timetable' && (
-        <div className="bg-surface border border-border rounded-lg p-5 shadow-xs space-y-3">
+        <div className="card p-5 space-y-3">
           <h2 className="text-base font-semibold text-text-primary flex items-center gap-2">
             <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 1118 0z" />

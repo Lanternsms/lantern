@@ -460,7 +460,7 @@ export function LessonVideoUpload({
 
       {/* Resumable Uploading Progress & Controls */}
       {uploading && (
-        <div className="bg-surface border border-border rounded-lg p-4 space-y-3">
+        <div className="card p-4 space-y-3">
           <div className="flex items-center justify-between text-xs text-text-secondary">
             <span>
               {isPaused ? (
@@ -502,7 +502,7 @@ export function LessonVideoUpload({
               <button
                 type="button"
                 onClick={pauseUpload}
-                className="text-xs px-3 py-1.5 rounded-lg border border-border bg-surface hover:bg-surface-muted text-text-secondary transition-colors"
+                className="card text-xs px-3 py-1.5 hover:bg-surface-muted text-text-secondary transition-colors"
               >
                 Pause
               </button>
@@ -510,7 +510,7 @@ export function LessonVideoUpload({
               <button
                 type="button"
                 onClick={resumeUpload}
-                className="text-xs px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary-hover font-medium transition-colors"
+                className="text-xs px-3 py-1.5 rounded-xl bg-primary text-white hover:bg-primary-hover font-medium transition-colors"
               >
                 Resume
               </button>
@@ -534,7 +534,7 @@ export function LessonVideoUpload({
             type="button"
             onClick={startUpload}
             disabled={isBlocked}
-            className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-5 py-2 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-5 py-2 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Upload video
           </button>

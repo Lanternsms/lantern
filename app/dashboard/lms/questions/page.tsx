@@ -123,7 +123,7 @@ export default async function QuestionsInboxPage({
           {access.isManager && (
             <Link
               href="/dashboard/lms"
-              className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-text-primary bg-surface hover:bg-surface-muted transition-colors"
+              className="card px-3 py-2 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
             >
               Lesson Library
             </Link>
@@ -131,7 +131,7 @@ export default async function QuestionsInboxPage({
           {(access.isFacilitator || access.isManager) && (
             <Link
               href="/dashboard/lms/today"
-              className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-text-primary bg-surface hover:bg-surface-muted transition-colors"
+              className="card px-3 py-2 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
             >
               Today&apos;s Lessons
             </Link>
@@ -185,7 +185,7 @@ export default async function QuestionsInboxPage({
 
       {/* Inbox List */}
       {threads.length === 0 ? (
-        <div className="bg-surface border border-border rounded-lg p-12 text-center space-y-2">
+        <div className="card p-12 text-center space-y-2">
           <div className="w-10 h-10 rounded-full bg-surface-muted flex items-center justify-center mx-auto text-text-muted">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path
@@ -204,7 +204,7 @@ export default async function QuestionsInboxPage({
           </p>
         </div>
       ) : (
-        <div className="bg-surface border border-border rounded-lg overflow-hidden divide-y divide-border">
+        <div className="card overflow-hidden divide-y divide-border">
           {threads.map((thread) => (
             <Link
               key={thread.id}

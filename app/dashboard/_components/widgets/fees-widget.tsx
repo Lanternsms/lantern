@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { Wallet, TrendingUp } from 'lucide-react'
+import { Wallet, TrendingUp } from '@/components/icons'
 
 function formatNaira(amount: number) {
   if (amount >= 1_000_000) return `₦${(amount / 1_000_000).toFixed(2)}M`
@@ -52,7 +52,7 @@ export async function FeesWidget() {
   const outstanding = Math.max(0, expected - collected)
 
   return (
-    <div className="bg-surface border border-border rounded-2xl p-6 shadow-xs h-full flex flex-col justify-between">
+    <div className="card p-6 h-full flex flex-col justify-between">
       <div>
         <div className="flex items-center justify-between pb-4 border-b border-border mb-4">
           <div className="flex items-center gap-3">

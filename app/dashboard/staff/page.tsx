@@ -49,7 +49,7 @@ export default async function StaffPage({
           <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Staff</h1>
           <p className="text-sm text-text-secondary mt-1">Manage staff records across your school.</p>
         </div>
-        <Link href="/dashboard/staff/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+        <Link href="/dashboard/staff/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
           + Add Staff
         </Link>
       </div>
@@ -66,7 +66,7 @@ export default async function StaffPage({
           <option value="">All Departments</option>
           {departments?.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
         </select>
-        <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+        <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
           Filter
         </button>
       </form>
@@ -76,7 +76,7 @@ export default async function StaffPage({
 
       {staff && staff.length > 0 && (
         <>
-          <div className="bg-surface border border-border rounded-lg overflow-x-auto">
+          <div className="card overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border">

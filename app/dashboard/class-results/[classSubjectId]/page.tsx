@@ -254,7 +254,7 @@ export default async function ClassResultDetailPage({
               <select
                 name="term"
                 defaultValue={selectedTerm.id}
-                className="text-sm border border-border rounded-lg px-3 py-1.5 bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                className="card text-sm px-3 py-1.5 text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
                 onChange={undefined}
               >
                 {terms.map((t) => {
@@ -268,7 +268,7 @@ export default async function ClassResultDetailPage({
               </select>
               <button
                 type="submit"
-                className="ml-2 text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-3 py-1.5 transition-colors"
+                className="ml-2 text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-3 py-1.5 transition-colors"
               >
                 Go
               </button>
@@ -288,7 +288,7 @@ export default async function ClassResultDetailPage({
         ].map((card) => (
           <div
             key={card.label}
-            className="bg-surface border border-border rounded-lg px-5 py-4"
+            className="card px-5 py-4"
           >
             <p className="text-xs font-medium text-text-secondary  mb-1">
               {card.label}
@@ -300,7 +300,7 @@ export default async function ClassResultDetailPage({
 
       {/* ── Grade Distribution ── */}
       {gradeLabels.length > 0 && (
-        <div className="bg-surface border border-border rounded-lg p-5 mb-6">
+        <div className="card p-5 mb-6">
           <h2 className="text-sm font-semibold text-text-primary mb-4">Grade Distribution</h2>
           <div className="flex items-end gap-3 flex-wrap">
             {gradeLabels.map((g) => {
@@ -340,7 +340,7 @@ export default async function ClassResultDetailPage({
       )}
 
       {/* ── Student result table ── */}
-      <div className="bg-surface border border-border rounded-lg overflow-hidden">
+      <div className="card overflow-hidden">
         <div className="px-5 py-4 border-b border-border flex items-center justify-between">
           <h2 className="text-sm font-semibold text-text-primary">Student Scores</h2>
           <span className="text-xs text-text-secondary">

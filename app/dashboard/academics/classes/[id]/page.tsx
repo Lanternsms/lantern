@@ -6,7 +6,7 @@ import { assignFormTeacher } from './actions'
 import { TeacherSelect } from '@/components/teacher-select'
 import { getAssignableStaff } from '@/lib/staff'
 import Link from 'next/link'
-import { Pencil, Trash2 } from 'lucide-react'
+import { Pencil, Trash2 } from '@/components/icons'
 
 export default async function ClassDetailPage({
   params,
@@ -113,7 +113,7 @@ export default async function ClassDetailPage({
         </p>
       )}
 
-      <section className="bg-surface border border-border rounded-lg p-5">
+      <section className="card p-5">
         <h3 className="text-sm font-medium text-text-primary mb-4">Arms</h3>
 
         {arms && arms.length > 0 ? (
@@ -143,14 +143,14 @@ export default async function ClassDetailPage({
             placeholder="e.g. A"
             className="flex-1 rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
           />
-          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
             Add Arm
           </button>
         </form>
       </section>
 
       {session && (
-        <section className="bg-surface border border-border rounded-lg p-5 mt-6">
+        <section className="card p-5 mt-6">
           <h3 className="text-sm font-medium text-text-primary mb-4">Form Teacher</h3>
           <div className="space-y-3">
             {armIds.map((armId) => {
@@ -177,7 +177,7 @@ export default async function ClassDetailPage({
                     </select>
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-primary-hover"
+                      className="px-4 py-2 bg-primary text-white rounded-xl text-sm hover:bg-primary-hover"
                     >
                       Save
                     </button>
@@ -189,7 +189,7 @@ export default async function ClassDetailPage({
         </section>
       )}
 
-      <section className="bg-surface border border-border rounded-lg p-5 mt-6">
+      <section className="card p-5 mt-6">
         <h3 className="text-sm font-medium text-text-primary mb-4">Subjects</h3>
 
         {!session && (
@@ -245,7 +245,7 @@ export default async function ClassDetailPage({
               name="teacher_id"
               teachers={teacherOptions}
             />
-            <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors whitespace-nowrap">
+            <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors whitespace-nowrap">
               Add Subject
             </button>
           </form>

@@ -122,7 +122,7 @@ export default async function MyResultsPage({
           <TermSelect terms={terms ?? []} selectedTermId={selectedTermId} />
           <Link
             href={`/dashboard/students/${studentRow.id}/report-card${selectedTermId ? `?term_id=${selectedTermId}` : ''}`}
-            className="inline-flex items-center text-sm font-medium text-white bg-primary hover:bg-primary-hover px-4 py-1.5 rounded-lg transition-colors"
+            className="inline-flex items-center text-sm font-medium text-white bg-primary hover:bg-primary-hover px-4 py-1.5 rounded-xl transition-colors"
           >
             View Full Report Card
           </Link>
@@ -130,11 +130,11 @@ export default async function MyResultsPage({
       </div>
 
       {subjectRows.length === 0 ? (
-        <div className="bg-surface border border-border rounded-lg p-6 text-sm text-text-secondary">
+        <div className="card p-6 text-sm text-text-secondary">
           No published results for {currentTerm?.name ?? 'this term'} yet.
         </div>
       ) : (
-        <div className="bg-surface border border-border rounded-lg overflow-hidden mb-6">
+        <div className="card overflow-hidden mb-6">
           <table className="w-full text-sm">
             <thead className="bg-surface-muted text-text-secondary text-xs">
               <tr>
@@ -163,7 +163,7 @@ export default async function MyResultsPage({
       )}
 
       {remark && (remark.class_teacher_remark || remark.principal_remark) && (
-        <div className="bg-surface border border-border rounded-lg p-5 space-y-3">
+        <div className="card p-5 space-y-3">
           <h2 className="text-sm font-semibold text-text-primary">Report Card Remarks</h2>
           {remark.class_teacher_remark && (
             <p className="text-sm text-text-secondary">

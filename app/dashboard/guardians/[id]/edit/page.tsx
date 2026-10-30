@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { updateGuardian } from '@/app/dashboard/guardians/actions'
 import { CustomFieldInputs } from '@/components/custom-fields'
 import Link from 'next/link'
-import { User, Users } from 'lucide-react'
+import { User, Users } from '@/components/icons'
 
 export default async function EditGuardianPage({
   params,
@@ -70,7 +70,7 @@ export default async function EditGuardianPage({
       )}
 
       <form action={updateGuardianWithId} className="space-y-4">
-        <section className="bg-surface border border-border rounded-lg p-5">
+        <section className="card p-5">
           <div className="flex items-center gap-2 mb-4">
             <User size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Contact Information</h3>
@@ -109,12 +109,12 @@ export default async function EditGuardianPage({
         </section>
 
         {customFields && customFields.length > 0 && (
-          <section className="bg-surface border border-border rounded-lg p-5">
+          <section className="card p-5">
             <CustomFieldInputs definitions={customFields} initialValues={valuesByKey} />
           </section>
         )}
 
-        <section className="bg-surface border border-border rounded-lg p-5">
+        <section className="card p-5">
           <div className="flex items-center gap-2 mb-4">
             <Users size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Linked Students</h3>
@@ -139,7 +139,7 @@ export default async function EditGuardianPage({
           <Link href={`/dashboard/guardians/${id}`} className="text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-surface-muted transition-colors">
             Cancel
           </Link>
-          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
             Save Changes
           </button>
         </div>

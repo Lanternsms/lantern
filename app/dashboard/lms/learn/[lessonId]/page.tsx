@@ -99,7 +99,7 @@ export default async function LearnerLessonActivitiesPage({
   return (
     <div className="px-6 py-8 max-w-4xl mx-auto space-y-6">
       {/* Top breadcrumb & lesson info */}
-      <div className="rounded-2xl border border-border bg-surface p-6  space-y-4">
+      <div className="card p-6 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <Link
             href="/dashboard"
@@ -158,7 +158,7 @@ export default async function LearnerLessonActivitiesPage({
         </div>
 
         {activities.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-border bg-surface p-10 text-center">
+          <div className="card border-dashed p-10 text-center">
             <p className="text-sm font-medium text-text-primary">No activities for this lesson yet</p>
             <p className="text-xs text-text-secondary mt-1">
               Check back later when your teacher publishes a quiz or assignment.
@@ -263,7 +263,7 @@ export default async function LearnerLessonActivitiesPage({
 
                     <Link
                       href={`/dashboard/lms/learn/${lessonId}/${act.id}?student=${studentId}`}
-                      className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-primary/90 transition-colors shrink-0"
+                      className="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-primary/90 transition-colors shrink-0"
                     >
                       {actionButtonLabel} &rarr;
                     </Link>

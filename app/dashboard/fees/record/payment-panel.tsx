@@ -39,7 +39,7 @@ export default function PaymentPanel({
 
   return (
     <div className="space-y-4 max-w-xl">
-      <div className="bg-surface border border-border rounded-lg p-4 space-y-3">
+      <div className="card p-4 space-y-3">
         <h2 className="text-sm font-semibold text-text-primary">Outstanding</h2>
         {unpaid.length === 0 ? (
           <p className="text-sm text-text-secondary">All fee components paid for this term.</p>
@@ -50,14 +50,14 @@ export default function PaymentPanel({
                 <p className="text-sm text-text-primary">{f.name}</p>
                 <p className="text-xs text-text-secondary">₦{Number(f.amount).toLocaleString()}</p>
               </div>
-              <button onClick={() => setPayingId(f.id)} className="text-xs bg-primary text-white rounded-lg px-3 py-1.5">Record Payment</button>
+              <button onClick={() => setPayingId(f.id)} className="text-xs bg-primary text-white rounded-xl px-3 py-1.5">Record Payment</button>
             </div>
           ))
         )}
       </div>
 
       {payingId && (
-        <div className="bg-surface border border-border rounded-lg p-4 space-y-3">
+        <div className="card p-4 space-y-3">
           <h3 className="text-sm font-semibold text-text-primary">
             Confirm payment: {dueItems.find((f) => f.id === payingId)?.name} — ₦{Number(dueItems.find((f) => f.id === payingId)?.amount ?? 0).toLocaleString()}
           </h3>
@@ -78,7 +78,7 @@ export default function PaymentPanel({
           </div>
           {error && <p className="text-sm text-danger-text bg-danger-bg rounded-lg px-3 py-2">{error}</p>}
           <div className="flex gap-3">
-            <button onClick={() => pay(payingId)} disabled={isPending} className="bg-primary text-white rounded-lg px-4 py-2 text-sm font-medium disabled:opacity-50">
+            <button onClick={() => pay(payingId)} disabled={isPending} className="bg-primary text-white rounded-xl px-4 py-2 text-sm font-medium disabled:opacity-50">
               {isPending ? 'Recording…' : 'Confirm & Record Payment'}
             </button>
             <button onClick={() => setPayingId(null)} className="text-sm text-text-secondary hover:underline">Cancel</button>
@@ -87,7 +87,7 @@ export default function PaymentPanel({
       )}
 
       {paid.length > 0 && (
-        <div className="bg-surface border border-border rounded-lg p-4">
+        <div className="card p-4">
           <h2 className="text-sm font-semibold text-text-primary mb-2">Already Paid</h2>
           {paid.map((f) => (
             <div key={f.id} className="text-sm text-text-secondary flex justify-between py-1">

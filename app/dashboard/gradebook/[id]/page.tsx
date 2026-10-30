@@ -3,7 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { notFound } from 'next/navigation'
 import { saveScores, submitForApproval } from '@/app/dashboard/gradebook/actions'
 import Link from 'next/link'
-import { CheckCircle2 } from 'lucide-react'
+import { CheckCircle2 } from '@/components/icons'
 
 type StudentRelation = {
   first_name: string
@@ -129,7 +129,7 @@ export default async function GradebookEntryPage({
         <p className="text-sm text-text-secondary">No students enrolled in this class for the current term.</p>
       ) : (
         <form action={saveScoresWithId}>
-          <div className="bg-surface border border-border rounded-lg overflow-hidden mb-4">
+          <div className="card overflow-hidden mb-4">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border">
@@ -179,7 +179,7 @@ export default async function GradebookEntryPage({
 
       {!isLocked && sortedEnrolments.length > 0 && (
         <form action={submitWithId} className="mt-3">
-          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
             Submit for Approval
           </button>
         </form>

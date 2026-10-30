@@ -34,6 +34,9 @@ export async function ThemeStyle() {
     --color-school-track: ${l.track};
     --color-school-ink: ${l.ink};
     --color-ground: ${l.ground};
+    --color-school-deep: ${l.deep};
+    --color-school-deep-raised: ${l.deepRaised};
+    --color-school-deep-muted: ${l.deepMuted};
   }`
 
   return <style dangerouslySetInnerHTML={{ __html: css }} />

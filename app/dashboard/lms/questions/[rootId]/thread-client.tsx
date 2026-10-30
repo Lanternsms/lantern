@@ -160,7 +160,7 @@ export function ThreadClient({ root, replies, canManage, rootId }: ThreadClientP
       )}
 
       {/* Lesson Details & Preview Banner */}
-      <div className="bg-surface border border-border rounded-lg p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap text-xs">
             {classSubject && (
@@ -232,7 +232,7 @@ export function ThreadClient({ root, replies, canManage, rootId }: ThreadClientP
       </div>
 
       {/* Root Question Card */}
-      <div className="bg-surface border border-border rounded-lg p-6 shadow-xs space-y-4">
+      <div className="card p-6 space-y-4">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm shrink-0">
@@ -274,7 +274,7 @@ export function ThreadClient({ root, replies, canManage, rootId }: ThreadClientP
         </div>
 
         {replies.length === 0 ? (
-          <div className="bg-surface border border-border rounded-lg p-8 text-center text-xs text-text-secondary">
+          <div className="card p-8 text-center text-xs text-text-secondary">
             No replies yet. Type an answer below to respond.
           </div>
         ) : (
@@ -349,7 +349,7 @@ export function ThreadClient({ root, replies, canManage, rootId }: ThreadClientP
       </div>
 
       {/* Reply Form */}
-      <div className="bg-surface border border-border rounded-lg p-6 shadow-xs space-y-3">
+      <div className="card p-6 space-y-3">
         <h3 className="text-sm font-semibold text-text-primary">Reply to Thread</h3>
         <form onSubmit={handleSendReply} className="space-y-3">
           <textarea
@@ -373,7 +373,7 @@ export function ThreadClient({ root, replies, canManage, rootId }: ThreadClientP
             <button
               type="submit"
               disabled={isPending || replyBody.trim().length === 0}
-              className="bg-primary text-white text-xs font-semibold rounded-lg px-4 py-2 hover:bg-primary-hover transition-colors disabled:opacity-50"
+              className="bg-primary text-white text-xs font-semibold rounded-xl px-4 py-2 hover:bg-primary-hover transition-colors disabled:opacity-50"
             >
               {isPending ? 'Sending reply…' : 'Send Reply'}
             </button>

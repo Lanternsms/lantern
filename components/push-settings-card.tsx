@@ -11,7 +11,7 @@ import {
   Loader2,
   Info,
   Laptop,
-} from 'lucide-react'
+} from '@/components/icons'
 import {
   saveSubscription,
   removeSubscription,
@@ -130,14 +130,14 @@ export function PushSettingsCard({
 
   if (!mounted) {
     return (
-      <div className="bg-surface border border-border rounded-lg p-6 animate-pulse h-48" />
+      <div className="card p-6 animate-pulse h-48" />
     )
   }
 
   // State 1: Unsupported browser
   if (!supported) {
     return (
-      <div className="bg-surface border border-border rounded-lg p-6 space-y-3">
+      <div className="card p-6 space-y-3">
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center shrink-0 text-text-secondary">
             <AlertTriangle className="w-5 h-5" />
@@ -156,7 +156,7 @@ export function PushSettingsCard({
   // State 2: iOS not installed as standalone PWA
   if (isIOSWebTab) {
     return (
-      <div className="bg-surface border border-border rounded-lg p-6 space-y-4">
+      <div className="card p-6 space-y-4">
         <div className="flex items-start gap-3.5">
           <div className="flex items-center justify-center shrink-0 text-text-secondary">
             <Smartphone className="w-5 h-5" />
@@ -300,7 +300,7 @@ export function PushSettingsCard({
   return (
     <div className="space-y-6">
       {/* Primary Device Card */}
-      <div className="bg-surface border border-border rounded-lg p-6">
+      <div className="card p-6">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div
@@ -358,7 +358,7 @@ export function PushSettingsCard({
             <button
               onClick={handleEnablePush}
               disabled={isLoading}
-              className="inline-flex items-center gap-2 text-xs font-semibold text-white bg-primary hover:bg-primary-hover px-4 py-2.5 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center gap-2 text-xs font-semibold text-white bg-primary hover:bg-primary-hover px-4 py-2.5 rounded-xl transition-colors cursor-pointer disabled:opacity-50"
             >
               {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Bell className="w-3.5 h-3.5" />}
               Enable push alerts on this device
@@ -397,7 +397,7 @@ export function PushSettingsCard({
 
       {/* Other Registered Devices */}
       {otherDevices.length > 0 && (
-        <div className="bg-surface border border-border rounded-lg p-6 space-y-4">
+        <div className="card p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-sm font-semibold text-text-primary">Registered devices</h3>

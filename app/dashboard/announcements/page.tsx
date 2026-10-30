@@ -24,7 +24,7 @@ export default async function AnnouncementsPage() {
         {canCreate && (
           <Link
             href="/dashboard/announcements/new"
-            className="bg-primary text-white rounded-lg px-4 py-2 text-sm font-medium"
+            className="bg-primary text-white rounded-xl px-4 py-2 text-sm font-medium"
           >
             New Announcement
           </Link>
@@ -39,7 +39,7 @@ export default async function AnnouncementsPage() {
         {(announcements ?? []).map((a: any) => {
           const canManage = a.created_by === user.id || canManageAll
           return (
-            <div key={a.id} className="bg-surface border border-border rounded-lg p-5">
+            <div key={a.id} className="card p-5">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <h2 className="text-sm font-semibold text-text-primary">{a.title}</h2>

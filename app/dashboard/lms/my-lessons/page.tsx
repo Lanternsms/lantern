@@ -41,14 +41,14 @@ export default async function MyLessonsPage() {
       </div>
 
       {lessonList.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border p-12 text-center bg-surface">
+        <div className="card border-dashed p-12 text-center">
           <p className="text-sm font-medium text-text-primary">No recorded lessons yet</p>
           <p className="text-xs text-text-secondary mt-1">
             When lessons are uploaded and assigned to you as the recording teacher, they will appear here.
           </p>
         </div>
       ) : (
-        <div className="rounded-lg border border-border bg-surface overflow-hidden ">
+        <div className="card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead className="border-b border-border bg-surface-muted/50 text-xs font-semibold text-text-secondary ">
@@ -121,7 +121,7 @@ export default async function MyLessonsPage() {
                           )}
                           <Link
                             href={`/dashboard/lms/${lesson.id}`}
-                            className="inline-flex items-center rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+                            className="card inline-flex items-center px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
                           >
                             Manage Activities &rarr;
                           </Link>

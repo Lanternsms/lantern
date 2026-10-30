@@ -125,7 +125,7 @@ export function BrandingEditor({
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_420px]">
-      <div className="flex flex-col gap-6 rounded-lg border border-border bg-surface p-6">
+      <div className="card flex flex-col gap-6 p-6">
         <fieldset className="flex flex-col gap-3">
           <legend className="mb-1 font-semibold">School colour</legend>
           <div role="radiogroup" aria-label="School colour" className="flex flex-wrap gap-2.5">
@@ -166,7 +166,7 @@ export function BrandingEditor({
         <fieldset className="flex flex-col gap-2.5">
           <legend className="mb-1 font-semibold">Crest</legend>
           <div className="flex items-center gap-4">
-            <span className="flex h-[72px] w-[72px] items-center justify-center overflow-hidden rounded-xl border border-border bg-surface p-2">{crest}</span>
+            <span className="card flex h-[72px] w-[72px] items-center justify-center overflow-hidden p-2">{crest}</span>
             <div className="flex flex-col items-start gap-1.5">
               <div className="flex gap-2">
                 <button type="button" onClick={() => fileInputRef.current?.click()} disabled={isRemovingLogo} className="h-9 rounded-md border border-control bg-surface px-3.5 text-sm font-medium hover:bg-raised disabled:opacity-60">
@@ -215,7 +215,7 @@ export function BrandingEditor({
               </span>
             ))}
           </div>
-          <div className="flex flex-col gap-2 rounded-xl border border-border bg-surface p-3.5">
+          <div className="card flex flex-col gap-2 p-3.5">
             <span className="text-sm text-text-secondary">Fees for Kelechi</span>
             <span className="text-[22px] font-semibold tabular-nums">₦35,000</span>
             <span className="block h-1.5 overflow-hidden rounded" style={{ backgroundColor: ladder.track }}>

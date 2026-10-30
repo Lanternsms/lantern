@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { Award, CheckCircle2, Clock } from 'lucide-react'
+import { Award, CheckCircle2, Clock } from '@/components/icons'
 
 export async function ResultsWidget() {
   const supabase = await createClient()
@@ -25,7 +25,7 @@ export async function ResultsWidget() {
   const publishRate = total > 0 ? (published / total) * 100 : 0
 
   return (
-    <div className="bg-surface border border-border rounded-2xl p-6 shadow-xs h-full flex flex-col justify-between">
+    <div className="card p-6 h-full flex flex-col justify-between">
       <div>
         <div className="flex items-center justify-between pb-4 border-b border-border mb-4">
           <div className="flex items-center gap-3">

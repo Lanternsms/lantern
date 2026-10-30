@@ -126,7 +126,7 @@ export default function TimetableGridEditor({
 
     return (
       <>
-        <div className="bg-surface border border-border rounded-lg p-4 space-y-4">
+        <div className="card p-4 space-y-4">
             <div className="flex flex-wrap gap-3">
                 <div>
                     <label className="block text-xs text-text-secondary mb-1">Class</label>
@@ -243,7 +243,7 @@ export default function TimetableGridEditor({
                     />
 
                     {/* Dialog Container */}
-                    <div className="relative bg-surface border border-border rounded-2xl shadow-2xl p-6 max-w-md w-full space-y-4">
+                    <div className="card relative shadow-2xl p-6 max-w-md w-full space-y-4">
                         {/* Header */}
                         <div className="flex items-start justify-between">
                             <div>
@@ -389,7 +389,7 @@ export default function TimetableGridEditor({
                                     type="button"
                                     onClick={() => saveCell()}
                                     disabled={isPending || !cellForm.subjectId}
-                                    className="bg-primary hover:bg-primary-hover text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+                                    className="bg-primary hover:bg-primary-hover text-white rounded-xl px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
                                 >
                                     {isPending ? 'Saving…' : 'Save'}
                                 </button>
@@ -409,7 +409,7 @@ export default function TimetableGridEditor({
             onClick={() => setConflictMessage(null)}
           />
           {/* Dialog */}
-          <div className="relative bg-surface border border-border rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4 space-y-4">
+          <div className="card relative shadow-2xl p-6 max-w-md w-full mx-4 space-y-4">
             {/* Warning icon */}
             <div className="flex items-center gap-3">
               <div className="flex-shrink-0 w-10 h-10 rounded-full bg-warning-bg flex items-center justify-center">

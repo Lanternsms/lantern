@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { setCurrentSession } from '@/app/dashboard/academics/actions'
 import Link from 'next/link'
-import { Pencil, Plus } from 'lucide-react'
+import { Pencil, Plus } from '@/components/icons'
 
 export default async function SessionsPage() {
   const supabase = await createClient()
@@ -36,7 +36,7 @@ export default async function SessionsPage() {
             Manage sessions and terms, add new terms, and set which ones are currently active.
           </p>
         </div>
-        <Link href="/dashboard/academics/sessions/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+        <Link href="/dashboard/academics/sessions/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
           + Add Session
         </Link>
       </div>
@@ -45,7 +45,7 @@ export default async function SessionsPage() {
       {!error && sessions?.length === 0 && <p className="text-sm text-text-secondary">No academic sessions yet.</p>}
 
       {sessions && sessions.length > 0 && (
-        <div className="bg-surface border border-border rounded-lg overflow-x-auto">
+        <div className="card overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">

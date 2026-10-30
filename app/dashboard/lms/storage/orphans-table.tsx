@@ -123,7 +123,7 @@ export function OrphansTable({ orphans }: OrphansTableProps) {
       )}
 
       {/* Table */}
-      <div className="border border-border rounded-lg overflow-hidden bg-surface">
+      <div className="card overflow-hidden">
         {orphans.length === 0 ? (
           <div className="py-12 px-4 text-center space-y-1">
             <p className="text-sm font-medium text-text-primary">No orphaned files</p>
@@ -203,7 +203,7 @@ export function OrphansTable({ orphans }: OrphansTableProps) {
       {/* Confirmation Dialog Modal */}
       {dialogMode && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60">
-          <div className="bg-surface border border-border rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+          <div className="card max-w-md w-full p-6 shadow-2xl space-y-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-danger-bg flex items-center justify-center text-danger-text shrink-0">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

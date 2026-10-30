@@ -155,7 +155,7 @@ interface LargestLessonItem {
       {/* Usage Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Lesson Videos */}
-        <div className="bg-surface border border-border rounded-2xl p-5 shadow-xs space-y-3">
+        <div className="card p-5 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold  text-text-muted">
               Lesson Videos
@@ -177,7 +177,7 @@ interface LargestLessonItem {
         </div>
 
         {/* Assignment Files */}
-        <div className="bg-surface border border-border rounded-2xl p-5 shadow-xs space-y-3">
+        <div className="card p-5 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold  text-text-muted">
               Assignment Files
@@ -199,7 +199,7 @@ interface LargestLessonItem {
         </div>
 
         {/* Total School LMS Storage */}
-        <div className="bg-surface border border-border rounded-2xl p-5 shadow-xs space-y-3">
+        <div className="card p-5 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold  text-text-muted">
               Total Used
@@ -222,7 +222,7 @@ interface LargestLessonItem {
       </div>
 
       {/* Largest Lessons Table */}
-      <section className="bg-surface border border-border rounded-2xl p-6 shadow-xs space-y-4">
+      <section className="card p-6 space-y-4">
         <div>
           <h2 className="text-base font-semibold text-text-primary">Largest Lessons</h2>
           <p className="text-xs text-text-secondary mt-0.5">
@@ -286,7 +286,7 @@ interface LargestLessonItem {
       </section>
 
       {/* Orphaned Files Section */}
-      <section className="bg-surface border border-border rounded-2xl p-6 shadow-xs space-y-4">
+      <section className="card p-6 space-y-4">
         <div>
           <h2 className="text-base font-semibold text-text-primary">Orphaned Files</h2>
           <p className="text-xs text-text-secondary mt-0.5">

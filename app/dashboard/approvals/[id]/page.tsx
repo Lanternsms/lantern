@@ -55,7 +55,7 @@ export default async function ApprovalReviewPage({
 
       {error && <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>}
 
-      <div className="bg-surface border border-border rounded-lg overflow-hidden mb-6">
+      <div className="card overflow-hidden mb-6">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border">
@@ -78,11 +78,11 @@ export default async function ApprovalReviewPage({
         </table>
       </div>
 
-      <form action={decideWithId} className="bg-surface border border-border rounded-lg p-5 space-y-3">
+      <form action={decideWithId} className="card p-5 space-y-3">
         <label className="block text-sm text-text-secondary mb-1.5">Comment (optional)</label>
         <textarea name="comment" rows={2} className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
         <div className="flex gap-3">
-          <button type="submit" name="action" value="approve" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+          <button type="submit" name="action" value="approve" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
             Approve
           </button>
           <button type="submit" name="action" value="return_to_teacher" className="text-sm text-danger-text border border-danger-bg rounded-lg px-4 py-2 hover:bg-danger-bg transition-colors">

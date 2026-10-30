@@ -1,8 +1,14 @@
-import { DM_Sans } from 'next/font/google'
+import { Bricolage_Grotesque, DM_Sans } from 'next/font/google'
 import './globals.css'
 import { OfflineBanner } from '@/components/offline-banner'
 
 import type { Metadata, Viewport } from 'next'
+
+const bricolage = Bricolage_Grotesque({
+  subsets: ['latin'],
+  variable: '--font-bricolage',
+  display: 'swap',
+})
 
 const dmSans = DM_Sans({
   subsets: ['latin'],
@@ -37,7 +43,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={dmSans.variable}>
+    <html lang="en" className={`${dmSans.variable} ${bricolage.variable}`}>
       <body>
         <OfflineBanner />
         {children}

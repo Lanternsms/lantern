@@ -45,7 +45,7 @@ export default function PeriodsManager({ periods }: { periods: Period[] }) {
   }
 
   return (
-    <div className="bg-surface border border-border rounded-lg p-4">
+    <div className="card p-4">
       <button
         onClick={() => setOpen(!open)}
         className="text-sm font-semibold text-text-primary flex items-center gap-2"
@@ -154,7 +154,7 @@ export default function PeriodsManager({ periods }: { periods: Period[] }) {
             <button
               type="submit"
               disabled={isPending}
-              className="bg-primary text-white rounded-lg px-3 py-1.5 text-sm font-medium disabled:opacity-50"
+              className="bg-primary text-white rounded-xl px-3 py-1.5 text-sm font-medium disabled:opacity-50"
             >
               {form.id ? 'Update period' : 'Add period'}
             </button>

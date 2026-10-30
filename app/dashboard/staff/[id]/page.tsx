@@ -2,7 +2,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { User, Briefcase, BookOpen, Pencil } from 'lucide-react'
+import { User, Briefcase, BookOpen, Pencil } from '@/components/icons'
 import { linkStaffProfile, unlinkStaffProfile } from './actions'
 import { getLinkableProfiles } from '@/lib/staff'
 import StaffRolesManager, { RoleItem } from './staff-roles-manager'
@@ -80,7 +80,7 @@ export default async function StaffDetailPage({
   const isActive = staff.status === 'active'
 
   const portalAccessContent = (
-    <div className="bg-surface border border-border rounded-lg p-5">
+    <div className="card p-5">
       <h3 className="text-sm font-medium text-text-primary mb-3">Portal Access</h3>
 
       {linkedProfile ? (
@@ -117,7 +117,7 @@ export default async function StaffDetailPage({
               <select
                 name="profileId"
                 required
-                className="flex-1 rounded-lg border border-border px-3 py-2 text-sm bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                className="card flex-1 px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="">Select a login to link…</option>
                 {linkableProfiles.map((p) => (
@@ -128,7 +128,7 @@ export default async function StaffDetailPage({
               </select>
               <button
                 type="submit"
-                className="px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-primary-hover font-medium transition-colors"
+                className="px-4 py-2 bg-primary text-white rounded-xl text-sm hover:bg-primary-hover font-medium transition-colors"
               >
                 Link
               </button>
@@ -164,14 +164,14 @@ export default async function StaffDetailPage({
         </div>
         <Link
           href={`/dashboard/staff/${id}/edit`}
-          className="flex items-center gap-1.5 text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors"
+          className="flex items-center gap-1.5 text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors"
         >
           <Pencil size={14} /> Edit Staff
         </Link>
       </div>
 
       <div className="space-y-4">
-        <section className="bg-surface border border-border rounded-lg p-5">
+        <section className="card p-5">
           <div className="flex items-center gap-2 mb-4">
             <User size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Contact Information</h3>
@@ -188,7 +188,7 @@ export default async function StaffDetailPage({
           </div>
         </section>
 
-        <section className="bg-surface border border-border rounded-lg p-5">
+        <section className="card p-5">
           <div className="flex items-center gap-2 mb-4">
             <Briefcase size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Employment Information</h3>
@@ -221,7 +221,7 @@ export default async function StaffDetailPage({
           />
         )}
 
-        <section className="bg-surface border border-border rounded-lg p-5">
+        <section className="card p-5">
           <div className="flex items-center gap-2 mb-4">
             <BookOpen size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Classes &amp; Subjects Taught</h3>

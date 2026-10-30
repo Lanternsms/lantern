@@ -47,7 +47,7 @@ export default function StructuresManager({
 
   return (
     <div className="space-y-4">
-      <table className="w-full text-sm bg-surface border border-border rounded-lg overflow-hidden">
+      <table className="card w-full text-sm overflow-hidden">
         <thead>
           <tr className="border-b border-border text-left text-xs text-text-secondary">
             <th className="p-3">Name</th>
@@ -121,7 +121,7 @@ export default function StructuresManager({
             {classes.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
         </div>
-        <button type="submit" disabled={isPending} className="bg-primary text-white rounded-lg px-4 py-2 text-sm font-medium disabled:opacity-50">
+        <button type="submit" disabled={isPending} className="bg-primary text-white rounded-xl px-4 py-2 text-sm font-medium disabled:opacity-50">
           {form.id ? 'Update' : 'Add'}
         </button>
         {form.id && <button type="button" className="text-xs text-text-secondary hover:underline" onClick={resetForm}>Cancel edit</button>}

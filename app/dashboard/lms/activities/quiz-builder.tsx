@@ -190,7 +190,7 @@ export function QuizBuilder({
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-border bg-surface p-4">
+      <div className="card flex flex-wrap items-center justify-between gap-4 p-4">
         <div>
           <div className="text-sm font-semibold text-text-primary">
             Quiz Questions ({questions.length})
@@ -205,7 +205,7 @@ export function QuizBuilder({
             <button
               type="button"
               onClick={handleAddQuestion}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+              className="card inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
             >
               <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -216,7 +216,7 @@ export function QuizBuilder({
               type="button"
               onClick={handleSave}
               disabled={saving}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-1.5 text-xs font-medium text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-1.5 text-xs font-medium text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
             >
               {saving ? 'Saving...' : 'Save All Questions'}
             </button>
@@ -246,7 +246,7 @@ export function QuizBuilder({
         {questions.map((q, qIdx) => (
           <div
             key={qIdx}
-            className="rounded-lg border border-border bg-surface p-5  space-y-4"
+            className="card p-5 space-y-4"
           >
             {/* Question Header */}
             <div className="flex items-center justify-between gap-3 border-b border-border pb-3">
@@ -418,7 +418,7 @@ export function QuizBuilder({
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2 text-sm font-medium text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2 text-sm font-medium text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Save All Questions'}
           </button>

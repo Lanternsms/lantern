@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, ChangeEvent, DragEvent } from 'react'
-import { Camera, UploadCloud, X, RefreshCw } from 'lucide-react'
+import { Camera, UploadCloud, X, RefreshCw } from '@/components/icons'
 
 const MAX_SIZE_BYTES = 5 * 1024 * 1024 // 5MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
@@ -103,7 +103,7 @@ export function StudentPhotoUploader({
       )}
 
       {showPreview ? (
-        <div className="border border-border rounded-lg p-4 bg-surface flex items-center justify-between gap-4">
+        <div className="card p-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="relative w-16 h-16 rounded-full overflow-hidden border border-border shadow-xs bg-surface-muted shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -169,7 +169,7 @@ export function StudentPhotoUploader({
               e.stopPropagation()
               handleChooseClick()
             }}
-            className="mt-1 inline-flex items-center gap-1.5 text-xs font-medium text-white bg-primary hover:bg-primary-hover rounded-lg px-3.5 py-1.5 transition-colors"
+            className="mt-1 inline-flex items-center gap-1.5 text-xs font-medium text-white bg-primary hover:bg-primary-hover rounded-xl px-3.5 py-1.5 transition-colors"
           >
             <UploadCloud size={14} />
             Choose photo

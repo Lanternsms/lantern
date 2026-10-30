@@ -132,6 +132,12 @@ export type SchoolLadder = {
   ink: string
   /** Page ground, one step toward the hue's palest tint. */
   ground: string
+  /** Deep shade of the hue for the sidebar and bold panels; white text on it passes 7:1. */
+  deep: string
+  /** A lifted step of `deep` for the active row and hovers on the deep surface. */
+  deepRaised: string
+  /** Muted text on `deep`. */
+  deepMuted: string
 }
 
 /**
@@ -151,6 +157,10 @@ export function deriveSchoolLadder(hex: string): SchoolLadder {
   for (let w = 0.5; contrastRatio(ink, soft) < 4.5 && w <= 0.9; w += 0.05) {
     ink = mixHex(accent, '#000000', w)
   }
+  let deep = mixHex(accent, '#0A0C12', 0.62)
+  for (let w = 0.66; contrastRatio(deep, '#FFFFFF') < 7 && w <= 0.95; w += 0.04) {
+    deep = mixHex(accent, '#0A0C12', w)
+  }
   return {
     accent,
     action,
@@ -158,6 +168,9 @@ export function deriveSchoolLadder(hex: string): SchoolLadder {
     soft,
     track: mixHex(accent, '#FFFFFF', 0.78),
     ink,
-    ground: mixHex(accent, '#FFFFFF', 0.975),
+    ground: mixHex(accent, '#F4F5F7', 0.955),
+    deep,
+    deepRaised: mixHex(deep, '#FFFFFF', 0.12),
+    deepMuted: mixHex(deep, '#FFFFFF', 0.68),
   }
 }

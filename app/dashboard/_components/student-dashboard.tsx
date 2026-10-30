@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from 'next/link'
-import { Award, Calendar, CreditCard, Bell, FileText, CheckCircle2, PlayCircle } from 'lucide-react'
+import { Award, Calendar, CreditCard, Bell, FileText, CheckCircle2, PlayCircle } from '@/components/icons'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { getTodayInLagos } from '../lms/lagos-time'
@@ -160,7 +160,7 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
         </p>
       )}
 
-      <section aria-labelledby="today-tt" className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-5">
+      <section aria-labelledby="today-tt" className="card flex flex-col gap-3 p-5">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h2 id="today-tt" className="text-lg font-semibold">Today</h2>
           <Link href="/dashboard/my-timetable" className="text-sm font-medium text-primary hover:underline">Full timetable</Link>
@@ -215,13 +215,13 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
         </div>
 
         {lessonsBySubject.length === 0 ? (
-          <div className="bg-surface border border-border rounded-lg p-8 text-center text-sm text-text-secondary">
+          <div className="card p-8 text-center text-sm text-text-secondary">
             No lessons have been published for your class yet.
           </div>
         ) : (
           <div className="space-y-4">
             {lessonsBySubject.map((group) => (
-              <div key={group.subjectName} className="bg-surface border border-border rounded-lg overflow-hidden">
+              <div key={group.subjectName} className="card overflow-hidden">
                 <div className="px-5 py-3 border-b border-border bg-surface-muted">
                   <h3 className="text-xs font-semibold text-text-secondary ">
                     {group.subjectName}
@@ -250,7 +250,7 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
                       <div className="shrink-0 flex items-center gap-2 flex-wrap justify-end">
                         <Link
                           href={`/dashboard/lms/learn/${lesson.id}?student=${student.id}`}
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors min-h-[44px]"
+                          className="card inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors min-h-[44px]"
                         >
                           Activities
                           {(activityCountByLesson.get(lesson.id) ?? 0) > 0 && (
