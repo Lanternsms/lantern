@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
+import { safeSearch } from '@/lib/safe-search'
 
 const PAGE_SIZE = 20
 const avatarColors = ['bg-success-bg text-success-text', 'bg-school-soft text-school-ink', 'bg-warning-bg text-warning-text', 'bg-school-soft text-school-ink', 'bg-pink-100 text-pink-700']
@@ -25,7 +26,7 @@ export default async function StaffPage({
     .select('id, staff_no, first_name, last_name, status, qualification, departments(name)', { count: 'exact' })
 
   if (q) {
-    query = query.or(`first_name.ilike.%${q}%,last_name.ilike.%${q}%,staff_no.ilike.%${q}%`)
+    query = query.or(`first_name.ilike.%${safeSearch(q)}%,last_name.ilike.%${safeSearch(q)}%,staff_no.ilike.%${safeSearch(q)}%`)
   }
   if (departmentFilter) query = query.eq('department_id', departmentFilter)
 

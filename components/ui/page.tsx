@@ -85,10 +85,7 @@ export function StatusPill({ tone, children }: { tone: 'success' | 'warning' | '
   return <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${t}`}>{children}</span>
 }
 
-/** Strips characters that would change a PostgREST or() filter, so search text stays search text. */
-export function safeSearch(q: string) {
-  return q.replace(/[,()*\\%]/g, ' ').trim().slice(0, 80)
-}
+export { safeSearch } from '@/lib/safe-search'
 
 /** A grid of destinations for hub pages (Settings, Academics). */
 export function HubGrid({ items }: { items: { href: string; title: string; description: string; icon: IconSvgElement }[] }) {

@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { linkExistingGuardian } from '@/app/dashboard/guardians/actions'
 import Link from 'next/link'
+import { safeSearch } from '@/lib/safe-search'
 
 export default async function GuardiansPage({
   searchParams,
@@ -16,7 +17,7 @@ export default async function GuardiansPage({
     .order('last_name')
 
   if (q) {
-    query = query.or(`first_name.ilike.%${q}%,last_name.ilike.%${q}%,phone.ilike.%${q}%`)
+    query = query.or(`first_name.ilike.%${safeSearch(q)}%,last_name.ilike.%${safeSearch(q)}%,phone.ilike.%${safeSearch(q)}%`)
   }
 
   const { data: guardians, error: fetchError } = await query

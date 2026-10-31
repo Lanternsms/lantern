@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { randomUUID } from 'crypto'
 import { logSchoolAction } from '@/lib/audit/log-school-actions'
+import { safeSearch } from '@/lib/safe-search'
 
 export async function saveFeeStructure(formData: FormData) {
   const supabase = await createClient()
@@ -60,7 +61,7 @@ export async function searchStudents(query: string) {
   const { data } = await supabase
     .from('students')
     .select('id, first_name, last_name, admission_no')
-    .or(`first_name.ilike.%${query}%,last_name.ilike.%${query}%,admission_no.ilike.%${query}%`)
+    .or(`first_name.ilike.%${safeSearch(query)}%,last_name.ilike.%${safeSearch(query)}%,admission_no.ilike.%${safeSearch(query)}%`)
     .limit(10)
   return data ?? []
 }
