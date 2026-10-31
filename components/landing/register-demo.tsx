@@ -25,7 +25,7 @@ export function RegisterDemo() {
 
   return (
     <div aria-label="Try it: mark a student absent" className="relative flex w-full flex-col items-end gap-4 sm:block sm:min-h-[470px]">
-      <div className="w-full overflow-hidden rounded-2xl bg-white text-[#0c0f14] shadow-[0_24px_48px_-16px_rgb(0_0_0/0.5)] sm:w-[63%] sm:min-w-[330px]">
+      <div className="w-full overflow-hidden rounded-2xl border border-[#e7e7e7] bg-white sm:w-[63%] sm:min-w-[330px]">
         <div className="flex items-center justify-between border-b border-[#efefef] px-4 py-3.5">
           <span className="text-[15px] font-semibold">JSS 2B · register</span>
           <span className="text-[13px] text-[#5c626c] tabular-nums">
@@ -61,7 +61,7 @@ export function RegisterDemo() {
         <p className="px-4 py-2.5 text-[13px] text-[#5c626c]">Tap a student to mark them absent</p>
       </div>
 
-      <div className="h-[300px] w-[230px] rounded-[34px] bg-[#2a2f39] p-2.5 shadow-[0_24px_48px_-12px_rgb(0_0_0/0.6)] sm:absolute sm:bottom-0 sm:right-0">
+      <div className="h-[300px] w-[230px] rounded-[34px] bg-[#0c0f14] p-2.5 sm:absolute sm:bottom-0 sm:right-0">
         <div className="flex h-full flex-col gap-2.5 overflow-hidden rounded-[26px] bg-[#eef0f3] px-3 py-4 text-[#0c0f14]">
           <span className="text-center text-[13px] text-[#5c626c]">{s ? `${s.parent}’s phone` : 'A parent’s phone'}</span>
           {s ? (

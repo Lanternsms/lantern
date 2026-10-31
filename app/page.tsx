@@ -32,11 +32,11 @@ const FAQ = [
 const h2 = 'text-[clamp(30px,3.4vw,42px)] font-bold leading-[1.1] tracking-[-0.02em]'
 const panel = 'rounded-2xl border border-[#e7e7e7] bg-white'
 
-function LanternMark({ size = 24, light = false }: { size?: number; light?: boolean }) {
+function LanternMark({ size = 24 }: { size?: number }) {
   return (
     <svg aria-hidden width={size} height={(size * 28) / 24} viewBox="0 0 24 28">
-      <path d="M8 3h8M12 0v3" stroke={light ? '#fff' : '#0c0f14'} strokeWidth="2" />
-      <path d="M5 6h14l3 4v12l-3 4H5l-3-4V10z" fill={light ? '#fff' : '#0c0f14'} />
+      <path d="M8 3h8M12 0v3" stroke="#0c0f14" strokeWidth="2" />
+      <path d="M5 6h14l3 4v12l-3 4H5l-3-4V10z" fill="#0c0f14" />
       <path d="M12 11c2.6 2.4 2.6 6.6 0 9-2.6-2.4-2.6-6.6 0-9z" fill="#f2b441" />
     </svg>
   )
@@ -45,21 +45,21 @@ function LanternMark({ size = 24, light = false }: { size?: number; light?: bool
 export default function Home() {
   return (
     <div className="bg-[#fafafa] text-[17px] leading-relaxed text-[#0c0f14]">
-      <header className="sticky top-0 z-10 border-b border-white/10 bg-[#0c0f14]/90 text-white backdrop-blur">
+      <header className="sticky top-0 z-10 border-b border-[#e7e7e7] bg-[#fafafa]/90 backdrop-blur">
         <div className="mx-auto flex h-[68px] max-w-[1200px] items-center gap-6 px-5 sm:px-6">
-          <Link href="/" className="flex items-center gap-2.5 font-display text-[19px] font-bold tracking-[-0.01em]">
-            <LanternMark light />
+          <Link href="/" className="flex items-center gap-2.5 text-[19px] font-bold tracking-[-0.01em]">
+            <LanternMark />
             Lantern
           </Link>
-          <nav aria-label="Main" className="hidden flex-1 gap-6 text-[15px] text-[#b8bdc6] md:flex">
+          <nav aria-label="Main" className="hidden flex-1 gap-6 text-[15px] text-[#3d434d] md:flex">
             <a href="#product" className="hover:text-[#0c0f14]">Product</a>
             <a href="#lumi" className="hover:text-[#0c0f14]">LUMI tutor</a>
             <a href="#pricing" className="hover:text-[#0c0f14]">Pricing</a>
             <a href="#faq" className="hover:text-[#0c0f14]">FAQ</a>
           </nav>
           <div className="ml-auto flex items-center gap-4">
-            <Link href="/login" className="text-[15px] text-[#b8bdc6] hover:text-white">Sign in</Link>
-            <a href="#demo" className="press flex h-10 items-center rounded-xl bg-[#f2b441] px-4 text-[15px] font-semibold text-[#1b1405]">
+            <Link href="/login" className="text-[15px] text-[#3d434d] hover:text-[#0c0f14]">Sign in</Link>
+            <a href="#demo" className="press flex h-10 items-center rounded-lg bg-[#0c0f14] px-4 text-[15px] font-semibold text-white">
               Book a demo
             </a>
           </div>
@@ -67,29 +67,29 @@ export default function Home() {
       </header>
 
       <main>
-        <section className="bg-[#0c0f14] text-white"><div className="mx-auto flex max-w-[1200px] flex-wrap items-center gap-14 px-5 pb-24 pt-14 sm:px-6 sm:pt-20">
+        <section className="mx-auto flex max-w-[1200px] flex-wrap items-center gap-14 px-5 pb-22 pt-14 sm:px-6 sm:pt-18">
           <div className="flex min-w-0 flex-[1_1_500px] flex-col gap-6">
             <h1 className="text-[clamp(40px,4.4vw,58px)] font-bold leading-[1.04] tracking-[-0.03em] text-balance">
               Your whole school, in one place.
             </h1>
-            <p className="max-w-[34ch] text-xl text-[#b8bdc6]">
+            <p className="max-w-[34ch] text-xl text-[#3d434d]">
               Registers, results, fees and lessons for Nigerian secondary schools — and every parent hears what happened
               the minute it does.
             </p>
             <div className="flex flex-wrap gap-3">
-              <a href="#demo" className="press flex h-[52px] items-center rounded-xl bg-[#f2b441] px-6 font-semibold text-[#1b1405]">
+              <a href="#demo" className="press flex h-[50px] items-center rounded-[10px] bg-[#0c0f14] px-5.5 font-semibold text-white">
                 Book a 30-minute demo
               </a>
-              <a href="#product" className="press flex h-[52px] items-center rounded-xl border border-white/20 px-5 font-medium text-white hover:bg-white/5">
+              <a href="#product" className="press flex h-[50px] items-center rounded-[10px] border border-[#d4d4d4] bg-white px-5 font-medium">
                 See how it works
               </a>
             </div>
-            <p className="text-sm text-[#8a909a]">Works on any phone — no app download for parents.</p>
+            <p className="text-sm text-[#5c626c]">Works on any phone — no app download for parents.</p>
           </div>
           <div className="min-w-0 flex-[1_1_520px]">
             <RegisterDemo />
           </div>
-        </div></section>
+        </section>
 
         <section aria-label="What Lantern covers" className="border-y border-[#e7e7e7] bg-white">
           <ul className="mx-auto grid max-w-[1200px] grid-cols-2 gap-x-6 gap-y-3 px-5 py-5.5 text-[15px] text-[#3d434d] sm:grid-cols-3 sm:px-6 xl:grid-cols-6">
@@ -232,7 +232,7 @@ export default function Home() {
                 <li>Fees, receipts and balances</li><li>Lessons and the LUMI tutor</li>
                 <li>Unlimited staff and parents</li><li>Setup and import done with you</li>
               </ul>
-              <a href="#demo" className="press flex h-[50px] items-center justify-center rounded-xl bg-[#0c0f14] font-semibold text-white">
+              <a href="#demo" className="press flex h-[50px] items-center justify-center rounded-[10px] bg-[#0c0f14] font-semibold text-white">
                 Get a quote for your school
               </a>
             </div>
@@ -257,8 +257,8 @@ export default function Home() {
             </div>
             <div className="flex flex-wrap gap-3">
               {/* TODO(contact): point these at the real booking link and WhatsApp number. */}
-              <a href="mailto:hello@lantern.ng?subject=Lantern%20demo" className="press flex h-[52px] items-center rounded-xl bg-[#f2b441] px-6 font-bold text-[#1b1405]">Book a demo</a>
-              <a href="#" className="press flex h-[52px] items-center rounded-xl border border-[#3a404b] px-5.5 font-medium text-white">Chat on WhatsApp</a>
+              <a href="mailto:hello@lantern.ng?subject=Lantern%20demo" className="press flex h-[52px] items-center rounded-[10px] bg-[#f2b441] px-6 font-bold text-[#1b1405]">Book a demo</a>
+              <a href="#" className="press flex h-[52px] items-center rounded-[10px] border border-[#3a404b] px-5.5 font-medium text-white">Chat on WhatsApp</a>
             </div>
           </div>
         </section>
