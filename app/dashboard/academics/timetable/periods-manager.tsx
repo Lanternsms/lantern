@@ -57,7 +57,7 @@ export default function PeriodsManager({ periods }: { periods: Period[] }) {
         <div className="mt-4 space-y-4">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-xs text-text-secondary border-b border-border">
+              <tr className="text-left text-xs text-text-secondary border-b border-rule">
                 <th className="py-1 pr-2">Order</th>
                 <th className="py-1 pr-2">Name</th>
                 <th className="py-1 pr-2">Start</th>
@@ -91,7 +91,7 @@ export default function PeriodsManager({ periods }: { periods: Period[] }) {
                       Edit
                     </button>
                     <button
-                      className="text-danger text-xs hover:underline"
+                      className="text-danger-text text-xs hover:underline"
                       onClick={() => startTransition(async () => { await deletePeriod(p.id) })}
                     >
                       Delete
@@ -109,7 +109,7 @@ export default function PeriodsManager({ periods }: { periods: Period[] }) {
                 type="number"
                 value={form.sort_order}
                 onChange={(e) => setForm({ ...form, sort_order: e.target.value })}
-                className="w-20 border border-border rounded-lg px-2 py-1 text-sm bg-background"
+                className="w-20 border border-border rounded-lg px-2 py-1 text-sm bg-surface"
                 required
               />
             </div>
@@ -119,7 +119,7 @@ export default function PeriodsManager({ periods }: { periods: Period[] }) {
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="Period 1 / Break"
-                className="border border-border rounded-lg px-2 py-1 text-sm bg-background"
+                className="border border-border rounded-lg px-2 py-1 text-sm bg-surface"
                 required
               />
             </div>
@@ -129,7 +129,7 @@ export default function PeriodsManager({ periods }: { periods: Period[] }) {
                 type="time"
                 value={form.start_time}
                 onChange={(e) => setForm({ ...form, start_time: e.target.value })}
-                className="border border-border rounded-lg px-2 py-1 text-sm bg-background"
+                className="border border-border rounded-lg px-2 py-1 text-sm bg-surface"
                 required
               />
             </div>
@@ -139,7 +139,7 @@ export default function PeriodsManager({ periods }: { periods: Period[] }) {
                 type="time"
                 value={form.end_time}
                 onChange={(e) => setForm({ ...form, end_time: e.target.value })}
-                className="border border-border rounded-lg px-2 py-1 text-sm bg-background"
+                className="border border-border rounded-lg px-2 py-1 text-sm bg-surface"
                 required
               />
             </div>

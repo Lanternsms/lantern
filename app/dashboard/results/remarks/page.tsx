@@ -21,7 +21,7 @@ export default async function RemarksPage({
 
   if (!profile) {
     return (
-      <div className="px-5 py-7 sm:px-8 sm:py-8">
+      <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
         <p className="text-sm text-text-secondary">Unable to load your profile.</p>
       </div>
     )
@@ -36,7 +36,7 @@ export default async function RemarksPage({
 
   if (!currentTerm) {
     return (
-      <div className="px-5 py-7 sm:px-8 sm:py-8">
+      <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
         <p className="text-sm text-text-secondary">No current term is set for your school.</p>
       </div>
     )
@@ -191,7 +191,7 @@ export default async function RemarksPage({
                           </button>
                         </form>
                       ) : (
-                        <p className="text-sm text-text-primary bg-background rounded-lg px-3 py-2 min-h-[2.5rem]">
+                        <p className="text-sm text-text-primary bg-surface rounded-lg px-3 py-2 min-h-[2.5rem]">
                           {existing?.class_teacher_remark || (
                             <span className="text-text-secondary">No remark yet.</span>
                           )}
@@ -221,7 +221,7 @@ export default async function RemarksPage({
                           </button>
                         </form>
                       ) : (
-                        <p className="text-sm text-text-primary bg-background rounded-lg px-3 py-2 min-h-[2.5rem]">
+                        <p className="text-sm text-text-primary bg-surface rounded-lg px-3 py-2 min-h-[2.5rem]">
                           {existing?.principal_remark || (
                             <span className="text-text-secondary">No remark yet.</span>
                           )}

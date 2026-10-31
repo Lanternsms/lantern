@@ -158,7 +158,7 @@ export function OrphansTable({ orphans }: OrphansTableProps) {
                   return (
                     <tr
                       key={`${item.bucket_id}/${item.name}`}
-                      className={`hover:bg-surface-muted/20 transition-colors ${
+                      className={`hover:bg-school-soft/40 transition-colors ${
                         isSelected ? 'bg-primary/5' : ''
                       }`}
                     >
@@ -231,7 +231,7 @@ export function OrphansTable({ orphans }: OrphansTableProps) {
                 type="button"
                 onClick={() => setDialogMode(null)}
                 disabled={isPending}
-                className="text-xs px-4 py-2 rounded-lg border border-border text-text-secondary hover:bg-surface-muted transition-colors"
+                className="text-xs px-4 py-2 rounded-lg border border-border text-text-secondary hover:bg-school-soft/40 transition-colors"
               >
                 Cancel
               </button>

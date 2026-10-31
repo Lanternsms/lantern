@@ -12,7 +12,7 @@ export default async function NewGuardianPage({
 
   if (!student_id) {
     return (
-      <div className="px-5 py-7 sm:px-8 sm:py-8">
+      <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
         <p className="text-sm text-text-secondary">This form must be opened from a student&apos;s profile.</p>
       </div>
     )
@@ -26,11 +26,10 @@ export default async function NewGuardianPage({
     .order('sort_order')
 
   return (
-    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-lg">
-      <Link href={`/dashboard/students/${student_id}`} className="text-sm text-primary hover:text-primary-hover">
-        ← Back to student
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-lg">
+      <Link href={`/dashboard/students/${student_id}`} className="inline-flex w-fit items-center gap-1 text-sm text-text-secondary hover:text-text-primary">← Back to student
       </Link>
-      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mt-4 mb-6">Add Guardian</h1>
+      <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mt-4 mb-6">Add Guardian</h1>
 
       <p className="text-sm text-text-secondary mb-4">
         Already have this guardian on file for another child?{' '}

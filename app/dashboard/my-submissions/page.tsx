@@ -34,8 +34,8 @@ const statusConfig: Record<
   in_review: {
     label: 'In Review',
     icon: Clock,
-    className: 'text-secondary',
-    badgeClass: 'bg-secondary/10 text-secondary border border-secondary/20',
+    className: 'text-text-secondary',
+    badgeClass: 'bg-raised text-[#374151] border border-border',
   },
   returned: {
     label: 'Returned',
@@ -144,8 +144,8 @@ export default async function MySubmissionsPage({
   ]
 
   return (
-    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-5xl">
-      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-1">My Submissions</h1>
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-5xl">
+      <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mb-1">My Submissions</h1>
       <p className="text-sm text-text-secondary mb-6">
         All result batches you have submitted — track their progress through the approval workflow.
       </p>
@@ -222,20 +222,20 @@ export default async function MySubmissionsPage({
         <div className="card overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border bg-surface-muted/40">
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">
+              <tr className="border-b border-rule bg-surface-muted/40">
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">
                   Class / Subject
                 </th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">
                   Term
                 </th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">
                   Status
                 </th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">
                   Current Stage
                 </th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">
                   Submitted
                 </th>
                 <th className="px-4 py-3" />
@@ -275,11 +275,11 @@ export default async function MySubmissionsPage({
                 return (
                   <tr
                     key={b.id}
-                    className={`border-b border-border last:border-0 hover:bg-surface-muted/30 transition-colors ${
+                    className={`border-b border-border last:border-0 hover:bg-school-soft/40 transition-colors ${
                       b.status === 'returned' ? 'bg-danger-bg' : ''
                     }`}
                   >
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-3.5">
                       <span className="font-medium text-text-primary">
                         {subj?.name}
                       </span>
@@ -289,7 +289,7 @@ export default async function MySubmissionsPage({
                       </span>
                     </td>
 
-                    <td className="px-4 py-3 text-text-secondary">
+                    <td className="px-5 py-3.5 text-text-secondary">
                       {term?.name ?? '—'}
                       {term?.is_current && (
                         <span className="ml-1.5 text-xs bg-primary/10 text-primary rounded-full px-1.5 py-0.5">
@@ -298,11 +298,11 @@ export default async function MySubmissionsPage({
                       )}
                     </td>
 
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-3.5">
                       <StatusBadge status={b.status} />
                     </td>
 
-                    <td className="px-4 py-3 text-text-secondary text-xs">
+                    <td className="px-5 py-3.5 text-text-secondary text-xs">
                       {b.status === 'published' ? (
                         <span className="text-success-text font-medium">✓ Approved</span>
                       ) : b.status === 'returned' ? (
@@ -314,11 +314,11 @@ export default async function MySubmissionsPage({
                       )}
                     </td>
 
-                    <td className="px-4 py-3 text-text-secondary text-xs whitespace-nowrap">
+                    <td className="px-5 py-3.5 text-text-secondary text-xs whitespace-nowrap">
                       {submittedDate}
                     </td>
 
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-5 py-3.5 text-right">
                       {b.status === 'returned' && assignmentId ? (
                         <Link
                           href={`/dashboard/gradebook/${assignmentId}`}

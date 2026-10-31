@@ -42,7 +42,7 @@ export default async function ClassLessonsPage() {
 
   if (!studentRow) {
     return (
-      <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-4xl">
+      <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-4xl">
         <p className="text-sm text-text-secondary">
           No student profile is linked to your account. If you believe this is an error, please contact your school administrator.
         </p>
@@ -162,7 +162,7 @@ export default async function ClassLessonsPage() {
                   return (
                     <div
                       key={lesson.id}
-                      className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-5 py-4 hover:bg-surface-muted/40 transition-colors"
+                      className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-5 py-4 hover:bg-school-soft/40 transition-colors"
                     >
                       <div className="min-w-0 space-y-1">
                         <div className="flex items-center gap-2 flex-wrap">
@@ -183,7 +183,7 @@ export default async function ClassLessonsPage() {
                       <div className="shrink-0 flex items-center gap-2 self-end sm:self-auto flex-wrap justify-end">
                         <Link
                           href={`/dashboard/lms/learn/${lesson.id}?student=${studentRow.id}`}
-                          className="card inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors min-h-[44px]"
+                          className="card inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-school-soft/40 transition-colors min-h-[44px]"
                         >
                           Activities
                           {actCount > 0 && (

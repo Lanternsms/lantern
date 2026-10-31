@@ -35,17 +35,17 @@ export default async function CustomFieldsPage({
           <div className="card overflow-hidden mb-6">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Label</th>
-                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Type</th>
-                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Required</th>
+                <tr className="border-b border-rule">
+                  <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Label</th>
+                  <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Type</th>
+                  <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Required</th>
                   <th className="px-4 py-3"></th>
                 </tr>
               </thead>
               <tbody>
                 {fields.map((f) => (
                   <tr key={f.id} className="border-b border-border last:border-0">
-                    <td className="px-4 py-3" colSpan={4}>
+                    <td className="px-5 py-3.5" colSpan={4}>
                       <div className="flex items-center gap-3">
                         <form action={updateCustomField} className="flex items-center gap-3 flex-1">
                           <input type="hidden" name="field_id" value={f.id} />
@@ -91,11 +91,11 @@ export default async function CustomFieldsPage({
   }
 
   return (
-    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-2xl">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-2xl">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/academics" className="hover:text-primary">Academics</Link> / Custom Fields
       </p>
-      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-1">Custom Fields</h1>
+      <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mb-1">Custom Fields</h1>
       <p className="text-sm text-text-secondary mb-6">
         Add extra fields to student, staff, or guardian records — no code changes required.
       </p>

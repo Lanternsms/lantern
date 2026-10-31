@@ -1,4 +1,6 @@
 import Link from 'next/link'
+import { Megaphone01Icon } from '@hugeicons/core-free-icons'
+import { Avatar, ButtonLink, EmptyState, PageHeader, PageShell } from '@/components/ui/page'
 import { createClient } from '@/lib/supabase/server'
 import DeleteButton from './delete-button'
 
@@ -18,50 +20,43 @@ export default async function AnnouncementsPage() {
   const { data: canManageAll } = await supabase.rpc('has_permission', { perm_code: 'announcements.manage_all' })
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Announcements</h1>
-        {canCreate && (
-          <Link
-            href="/dashboard/announcements/new"
-            className="bg-primary text-white rounded-xl px-4 py-2 text-sm font-medium"
-          >
-            New Announcement
-          </Link>
-        )}
-      </div>
+    <PageShell>
+      <PageHeader
+        title="Announcements"
+        subtitle="Notices sent to staff, students and guardians."
+        actions={canCreate ? <ButtonLink href="/dashboard/announcements/new" icon={Megaphone01Icon}>New announcement</ButtonLink> : undefined}
+      />
 
       {(!announcements || announcements.length === 0) && (
-        <p className="text-sm text-text-secondary">No announcements yet.</p>
+        <EmptyState title="No announcements yet" body="Announcements go to phones and email as soon as you send them." />
       )}
 
-      <div className="space-y-4">
+      <ul className="flex max-w-3xl flex-col gap-4">
         {(announcements ?? []).map((a: any) => {
           const canManage = a.created_by === user.id || canManageAll
           return (
-            <div key={a.id} className="card p-5">
+            <li key={a.id} className="card flex flex-col gap-3 p-5 sm:p-6">
               <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h2 className="text-sm font-semibold text-text-primary">{a.title}</h2>
-                  <p className="text-xs text-text-secondary mt-0.5">
-                    {a.author?.first_name} {a.author?.last_name} ·{' '}
-                    {new Date(a.created_at).toLocaleDateString()} ·{' '}
-                  </p>
+                <div className="flex items-center gap-3">
+                  <Avatar first={a.author?.first_name ?? '?'} last={a.author?.last_name ?? ''} />
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold">{a.author?.first_name} {a.author?.last_name}</span>
+                    <span className="text-xs text-text-secondary">{new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(a.created_at))}</span>
+                  </div>
                 </div>
                 {canManage && (
-                  <div className="flex gap-3 shrink-0">
-                    <Link href={`/dashboard/announcements/${a.id}/edit`} className="text-xs text-primary hover:underline">
-                      Edit
-                    </Link>
+                  <div className="flex shrink-0 items-center gap-3 text-sm">
+                    <Link href={`/dashboard/announcements/${a.id}/edit`} className="font-medium text-primary hover:underline">Edit</Link>
                     <DeleteButton id={a.id} />
                   </div>
                 )}
               </div>
-              <p className="text-sm text-text-primary mt-3 whitespace-pre-wrap">{a.body}</p>
-            </div>
+              <h2 className="font-display text-xl font-semibold leading-snug">{a.title}</h2>
+              <p className="whitespace-pre-wrap text-[15px] leading-relaxed text-[#374151]">{a.body}</p>
+            </li>
           )
         })}
-      </div>
-    </div>
+      </ul>
+    </PageShell>
   )
 }

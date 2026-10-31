@@ -34,7 +34,7 @@ export default function StatusesManager({ statuses }: { statuses: Status[] }) {
     <div className="space-y-4">
       <table className="card w-full text-sm overflow-hidden">
         <thead>
-          <tr className="border-b border-border text-left text-xs text-text-secondary">
+          <tr className="border-b border-rule text-left text-xs text-text-secondary">
             <th className="p-3">Code</th>
             <th className="p-3">Label</th>
             <th className="p-3">Counts as present?</th>
@@ -55,7 +55,7 @@ export default function StatusesManager({ statuses }: { statuses: Status[] }) {
                   Edit
                 </button>
                 <button
-                  className="text-xs text-danger hover:underline"
+                  className="text-xs text-danger-text hover:underline"
                   onClick={() =>
                     startTransition(async () => {
                       const result = await deleteAttendanceStatus(s.id)
@@ -78,7 +78,7 @@ export default function StatusesManager({ statuses }: { statuses: Status[] }) {
             value={form.code}
             onChange={(e) => setForm({ ...form, code: e.target.value })}
             placeholder="present / absent / late"
-            className="border border-border rounded-lg px-3 py-2 text-sm bg-background"
+            className="border border-border rounded-lg px-3 py-2 text-sm bg-surface"
             required
           />
         </div>
@@ -88,7 +88,7 @@ export default function StatusesManager({ statuses }: { statuses: Status[] }) {
             value={form.label}
             onChange={(e) => setForm({ ...form, label: e.target.value })}
             placeholder="Present"
-            className="border border-border rounded-lg px-3 py-2 text-sm bg-background"
+            className="border border-border rounded-lg px-3 py-2 text-sm bg-surface"
             required
           />
         </div>

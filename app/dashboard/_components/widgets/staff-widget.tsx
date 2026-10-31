@@ -51,7 +51,7 @@ export async function StaffWidget() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs">
             <Link
               href="/dashboard/staff/new"
-              className="p-3 rounded-lg border border-border bg-surface-muted/40 hover:bg-surface-muted hover:border-primary/40 transition-colors flex items-center justify-between group"
+              className="p-3 rounded-lg border border-border bg-surface-muted/40 hover:bg-school-soft/40 hover:border-primary/40 transition-colors flex items-center justify-between group"
             >
               <div className="flex items-center gap-2">
                 <UserPlus size={14} className="text-school-ink" />
@@ -61,7 +61,7 @@ export async function StaffWidget() {
             </Link>
             <Link
               href="/dashboard/staff"
-              className="p-3 rounded-lg border border-border bg-surface-muted/40 hover:bg-surface-muted hover:border-primary/40 transition-colors flex items-center justify-between group"
+              className="p-3 rounded-lg border border-border bg-surface-muted/40 hover:bg-school-soft/40 hover:border-primary/40 transition-colors flex items-center justify-between group"
             >
               <div className="flex items-center gap-2">
                 <Briefcase size={14} className="text-text-secondary" />

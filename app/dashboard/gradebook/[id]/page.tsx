@@ -32,7 +32,7 @@ export default async function GradebookEntryPage({
 
   const { data: term } = await supabase.from('terms').select('id, session_id, name').eq('is_current', true).single()
   if (!term) {
-    return <div className="px-5 py-7 sm:px-8 sm:py-8"><p className="text-sm text-text-secondary">No current term is set.</p></div>
+    return <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8"><p className="text-sm text-text-secondary">No current term is set.</p></div>
   }
 
   const { data: rawAssessmentTypes } = await supabase.from('assessment_types').select('id, name')

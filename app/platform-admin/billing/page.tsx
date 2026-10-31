@@ -43,7 +43,7 @@ export default async function BillingPage() {
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
       <div className="flex items-center justify-between mb-2">
-        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Subscription & Billing</h1>
+        <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">Subscription & Billing</h1>
         <form action={lockPlatformAdmin}>
           <button type="submit" className="text-sm text-text-secondary hover:text-text-primary">Lock</button>
         </form>
@@ -68,25 +68,25 @@ export default async function BillingPage() {
               const status = sub?.status ?? 'trialing'
               return (
                 <tr key={school.id}>
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-3.5">
                     <p className="font-medium text-text-primary">{school.name}</p>
                     <p className="text-xs text-text-muted">{school.slug}</p>
                   </td>
-                  <td className="px-4 py-3 capitalize text-text-primary">{sub?.plan ?? 'trial'}</td>
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-3.5 capitalize text-text-primary">{sub?.plan ?? 'trial'}</td>
+                  <td className="px-5 py-3.5">
                     <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium border ${STATUS_STYLES[status] ?? STATUS_STYLES.trialing}`}>
                       {status.replace('_', ' ')}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-text-primary">
+                  <td className="px-5 py-3.5 text-text-primary">
                     {sub?.amount ? `${sub.currency} ${Number(sub.amount).toLocaleString()} / ${sub.billing_cycle}` : '—'}
                   </td>
-                  <td className="px-4 py-3 text-text-primary">
+                  <td className="px-5 py-3.5 text-text-primary">
                     {status === 'trialing'
                       ? sub?.trial_ends_at ? `Trial ends ${sub.trial_ends_at}` : '—'
                       : sub?.current_period_end ?? '—'}
                   </td>
-                  <td className="px-4 py-3 text-right">
+                  <td className="px-5 py-3.5 text-right">
                     <Link href={`/platform-admin/billing/${school.id}`} className="text-sm font-medium text-school-ink hover:underline">
                       Manage
                     </Link>

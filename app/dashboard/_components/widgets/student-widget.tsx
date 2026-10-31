@@ -54,7 +54,7 @@ export async function StudentWidget() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="group p-3.5 rounded-lg border border-border bg-surface-muted/30 hover:bg-surface-muted hover:border-primary/40 transition-all flex flex-col justify-between gap-3"
+                className="group p-3.5 rounded-lg border border-border bg-surface-muted/30 hover:bg-school-soft/40 hover:border-primary/40 transition-all flex flex-col justify-between gap-3"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center justify-center shrink-0 text-text-secondary">

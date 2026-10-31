@@ -19,11 +19,11 @@ export default async function NewStaffPage({
     .order('sort_order')
 
   return (
-    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-2xl">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-2xl">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/staff" className="hover:text-primary">Staff</Link> / Add Staff
       </p>
-      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-6">Add Staff</h1>
+      <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mb-6">Add Staff</h1>
 
       {error && (
         <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>

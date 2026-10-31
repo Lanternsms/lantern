@@ -121,7 +121,7 @@ export function NotificationSettingsClient({
               </thead>
               <tbody className="divide-y divide-border">
                 {prefs.map((row) => (
-                  <tr key={row.category} className="hover:bg-surface-muted/40 transition-colors">
+                  <tr key={row.category} className="hover:bg-school-soft/40 transition-colors">
                     <td className="py-3.5 px-4">
                       <p className="font-semibold text-text-primary capitalize">{row.label}</p>
                       <p className="text-[11px] text-text-secondary mt-0.5 leading-relaxed">

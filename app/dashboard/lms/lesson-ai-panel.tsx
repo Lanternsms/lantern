@@ -416,7 +416,7 @@ export function LessonAiPanel({
   return (
     <div
       className={`rounded-2xl border border-primary/20 bg-surface shadow-xl flex flex-col overflow-hidden transition-all ${
-        isClassProjectorMode ? 'fixed inset-4 z-50 bg-background text-lg shadow-2xl' : 'w-full'
+        isClassProjectorMode ? 'fixed inset-4 z-50 bg-surface text-lg shadow-2xl' : 'w-full'
       } ${className}`}
       style={{ maxHeight: isClassProjectorMode ? 'calc(100vh - 2rem)' : '650px' }}
     >
@@ -428,7 +428,7 @@ export function LessonAiPanel({
             <div className="flex items-center gap-2">
               <h3 className="font-bold text-sm text-text-primary tracking-tight">{AI_NAME}</h3>
               <span className="inline-flex items-center gap-1 rounded-full bg-success-bg px-2 py-0.5 text-[10px] font-semibold text-success-text">
-                <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full bg-success-text animate-pulse" />
                 Notes loaded
               </span>
             </div>
@@ -443,7 +443,7 @@ export function LessonAiPanel({
             <button
               type="button"
               onClick={() => setIsClassProjectorMode(!isClassProjectorMode)}
-              className="text-xs px-2.5 py-1 rounded-lg border border-border text-text-secondary hover:text-text-primary hover:bg-surface-muted transition-colors"
+              className="text-xs px-2.5 py-1 rounded-lg border border-border text-text-secondary hover:text-text-primary hover:bg-school-soft/40 transition-colors"
               title="Toggle Projector Class Mode"
             >
               {isClassProjectorMode ? 'Exit Projector' : 'Projector Mode'}
@@ -453,7 +453,7 @@ export function LessonAiPanel({
           <button
             type="button"
             onClick={() => setIsOpen(false)}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface-muted transition-colors text-sm"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-school-soft/40 transition-colors text-sm"
             aria-label="Close tutor panel"
           >
             ✕
@@ -473,7 +473,7 @@ export function LessonAiPanel({
       <div
         ref={chatScrollRef}
         onScroll={handleChatScroll}
-        className="flex-1 p-5 overflow-y-auto space-y-5 bg-background/50"
+        className="flex-1 p-5 overflow-y-auto space-y-5 bg-surface"
       >
         {/* Empty state */}
         {messages.length === 0 && !isTyping && !streamingContent && (
@@ -550,7 +550,7 @@ export function LessonAiPanel({
                   <button
                     type="button"
                     onClick={() => handleReadAloud(m.id, m.content)}
-                    className="inline-flex items-center gap-1 text-[11px] text-text-secondary hover:text-primary transition-colors py-1 px-2 rounded-lg hover:bg-surface-muted"
+                    className="inline-flex items-center gap-1 text-[11px] text-text-secondary hover:text-primary transition-colors py-1 px-2 rounded-lg hover:bg-school-soft/40"
                     title={speakingMsgId === m.id ? 'Stop reading' : 'Read aloud'}
                   >
                     {speakingMsgId === m.id ? 'Stop' : 'Read aloud'}
@@ -561,7 +561,7 @@ export function LessonAiPanel({
                       type="button"
                       onClick={() => handleEscalateToTeacher(m.content)}
                       disabled={isEscalating}
-                      className="inline-flex items-center gap-1 text-[11px] text-text-secondary hover:text-primary transition-colors py-1 px-2 rounded-lg hover:bg-surface-muted disabled:opacity-50"
+                      className="inline-flex items-center gap-1 text-[11px] text-text-secondary hover:text-primary transition-colors py-1 px-2 rounded-lg hover:bg-school-soft/40 disabled:opacity-50"
                       title="Send this to teacher Q&A"
                     >
                       Ask teacher
@@ -607,7 +607,7 @@ export function LessonAiPanel({
 
         {/* Escalation notice */}
         {escalatedNotice && (
-          <div className="rounded-lg border border-success/30 bg-success-bg p-3 text-xs text-success-text flex items-center justify-between">
+          <div className="rounded-lg border border-success-bg bg-success-bg p-3 text-xs text-success-text flex items-center justify-between">
             <span>{escalatedNotice}</span>
             <button type="button" onClick={() => setEscalatedNotice(null)} className="font-bold ml-2 text-sm">✕</button>
           </div>
@@ -712,7 +712,7 @@ export function LessonAiPanel({
               placeholder={isListening ? 'Listening… speak clearly' : `Ask ${AI_NAME} about this lesson…`}
               disabled={isStreaming || !aiTutorEnabled || !notesReady}
               maxLength={500}
-              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-xs sm:text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
+              className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-xs sm:text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
             />
             {inputValue && (
               <span className="absolute right-3 top-2.5 text-[10px] text-text-secondary">

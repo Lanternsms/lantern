@@ -113,7 +113,7 @@ export async function TeacherWidget() {
               <Link
                 key={action.href}
                 href={action.href}
-                className="group p-3.5 rounded-lg border border-border bg-surface hover:bg-surface-muted/60 hover:border-primary/40 transition-all duration-200 flex items-start gap-3 relative"
+                className="group p-3.5 rounded-lg border border-border bg-surface hover:bg-school-soft/40 hover:border-primary/40 transition-all duration-200 flex items-start gap-3 relative"
               >
                 <div className="flex items-center justify-center shrink-0 text-text-secondary">
                   <Icon size={16} />

@@ -345,7 +345,7 @@ export function LessonNotesUpload({
               />
               <label
                 htmlFor={`notes-upload-${lessonId}`}
-                className="flex flex-col items-center justify-center p-6 border border-dashed border-border rounded-lg bg-surface-muted/20 hover:bg-surface-muted/50 cursor-pointer transition-colors"
+                className="flex flex-col items-center justify-center p-6 border border-dashed border-border rounded-lg bg-surface-muted/20 hover:bg-school-soft/40 cursor-pointer transition-colors"
               >
                 <div className="flex items-center justify-center mb-2 shrink-0 text-text-secondary">
                   <Upload size={18} />

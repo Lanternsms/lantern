@@ -10,21 +10,20 @@ export default async function ClassesPage() {
     .order('level', { ascending: true, nullsFirst: false })
 
   return (
-    <div className="px-5 py-7 sm:px-8 sm:py-8">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/academics" className="hover:text-primary">Academics</Link> / Classes &amp; Arms
       </p>
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Classes</h1>
-          <p className="text-sm text-text-secondary mt-1">Manage your school&apos;s classes and their arms.</p>
+          <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">Classes</h1>
+          <p className="mt-1 text-[15px] text-text-secondary">Manage your school&apos;s classes and their arms.</p>
         </div>
-        <Link href="/dashboard/academics/classes/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
-          + Add Class
+        <Link href="/dashboard/academics/classes/new" className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60">Add Class
         </Link>
       </div>
 
-      {error && <p className="text-sm text-danger-text">Error: {error.message}</p>}
+      {error && <p role="alert" className="rounded-xl bg-danger-bg px-4 py-3 text-sm text-danger-text">Couldn’t load this: {error.message}</p>}
       {!error && classes?.length === 0 && <p className="text-sm text-text-secondary">No classes added yet.</p>}
 
       {classes && classes.length > 0 && (

@@ -150,7 +150,7 @@ export default async function StudentDetailPage({
               </select>
               <button
                 type="submit"
-                className="px-4 py-2 border border-border rounded-lg text-sm hover:bg-background"
+                className="px-4 py-2 border border-border rounded-lg text-sm hover:bg-surface"
               >
                 Link
               </button>
@@ -184,8 +184,7 @@ export default async function StudentDetailPage({
       <section className="card p-5">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-medium text-text-primary">Guardian Information</h3>
-          <Link href={`/dashboard/guardians/new?student_id=${id}`} className="text-xs text-primary hover:text-primary-hover">
-            + Add guardian
+          <Link href={`/dashboard/guardians/new?student_id=${id}`} className="text-xs text-primary hover:text-primary-hover">Add guardian
           </Link>
         </div>
         {guardianLinks && guardianLinks.length > 0 ? (
@@ -439,8 +438,8 @@ export default async function StudentDetailPage({
                   const statusLabel = row.attendance_statuses?.label ?? 'Marked'
 
                   return (
-                    <tr key={row.id} className="border-t border-border hover:bg-surface-muted/20 transition-colors">
-                      <td className="px-4 py-3 font-medium text-text-primary whitespace-nowrap">
+                    <tr key={row.id} className="border-t border-border hover:bg-school-soft/40 transition-colors">
+                      <td className="px-5 py-3.5 font-medium text-text-primary whitespace-nowrap">
                         {new Date(row.date + 'T00:00:00').toLocaleDateString(undefined, {
                           weekday: 'short',
                           year: 'numeric',
@@ -448,21 +447,21 @@ export default async function StudentDetailPage({
                           day: 'numeric',
                         })}
                       </td>
-                      <td className="px-4 py-3 text-text-secondary font-mono text-xs whitespace-nowrap">
+                      <td className="px-5 py-3.5 text-text-secondary font-mono text-xs whitespace-nowrap">
                         {time}
                       </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
+                      <td className="px-5 py-3.5 whitespace-nowrap">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium ${row.subjects ? 'bg-primary/10 text-primary border border-primary/20' : 'text-text-secondary bg-surface-muted border border-border'
                           }`}>
                           {subjectName}
                         </span>
                       </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
+                      <td className="px-5 py-3.5 whitespace-nowrap">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getAttendanceStatusBadge(statusLabel)}`}>
                           {statusLabel}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-text-secondary whitespace-nowrap text-xs">
+                      <td className="px-5 py-3.5 text-text-secondary whitespace-nowrap text-xs">
                         {markerName}
                       </td>
                     </tr>
@@ -617,7 +616,7 @@ export default async function StudentDetailPage({
               {currentTermFees.map((f) => {
                 const isPaid = paidFeeSet.has(f.id)
                 return (
-                  <div key={f.id} className="p-3.5 flex items-center justify-between text-sm hover:bg-surface-muted/20 transition-colors">
+                  <div key={f.id} className="p-3.5 flex items-center justify-between text-sm hover:bg-school-soft/40 transition-colors">
                     <div>
                       <p className="font-medium text-text-primary">{f.name}</p>
                       <p className="text-xs text-text-secondary mt-0.5">
@@ -676,26 +675,26 @@ export default async function StudentDetailPage({
                     const methodLabel = METHOD_LABELS[p.payment_method ?? ''] ?? p.payment_method ?? '—'
 
                     return (
-                      <tr key={p.id} className="border-t border-border hover:bg-surface-muted/20 transition-colors">
-                        <td className="px-4 py-3 font-mono text-xs text-text-secondary whitespace-nowrap">
+                      <tr key={p.id} className="border-t border-border hover:bg-school-soft/40 transition-colors">
+                        <td className="px-5 py-3.5 font-mono text-xs text-text-secondary whitespace-nowrap">
                           #{p.id.slice(0, 8).toUpperCase()}
                         </td>
-                        <td className="px-4 py-3 font-medium text-text-primary whitespace-nowrap">
+                        <td className="px-5 py-3.5 font-medium text-text-primary whitespace-nowrap">
                           {feeName}
                         </td>
-                        <td className="px-4 py-3 font-semibold text-success-text whitespace-nowrap">
+                        <td className="px-5 py-3.5 font-semibold text-success-text whitespace-nowrap">
                           ₦{Number(p.amount_paid).toLocaleString()}
                         </td>
-                        <td className="px-4 py-3 text-text-secondary text-xs whitespace-nowrap">
+                        <td className="px-5 py-3.5 text-text-secondary text-xs whitespace-nowrap">
                           {methodLabel}
                         </td>
-                        <td className="px-4 py-3 text-text-secondary font-mono text-xs whitespace-nowrap">
+                        <td className="px-5 py-3.5 text-text-secondary font-mono text-xs whitespace-nowrap">
                           {p.reference || '—'}
                         </td>
-                        <td className="px-4 py-3 text-text-secondary text-xs whitespace-nowrap">
+                        <td className="px-5 py-3.5 text-text-secondary text-xs whitespace-nowrap">
                           {dateStr}
                         </td>
-                        <td className="px-4 py-3 text-right whitespace-nowrap">
+                        <td className="px-5 py-3.5 text-right whitespace-nowrap">
                           <Link
                             href={`/dashboard/fees/receipt/${p.id}`}
                             className="text-xs text-primary hover:underline font-medium"
@@ -716,7 +715,7 @@ export default async function StudentDetailPage({
   )
 
   return (
-    <div className="px-5 py-7 sm:px-8 sm:py-8">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
       <Link
         href={
           from === 'my-class'
@@ -750,7 +749,7 @@ export default async function StudentDetailPage({
           )}
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">
+              <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">
                 {student.first_name} {student.last_name}
               </h1>
               <span className={`text-xs font-medium rounded-full px-2.5 py-0.5 ${isActive ? 'bg-success-bg text-success-text' : 'bg-danger-bg text-danger-text'}`}>
@@ -765,7 +764,7 @@ export default async function StudentDetailPage({
         </div>
         <Link
           href={`/dashboard/students/${id}/edit${from ? `?from=${from}` : ''}`}
-          className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors"
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
         >
           Edit Student
         </Link>

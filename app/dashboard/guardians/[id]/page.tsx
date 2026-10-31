@@ -131,7 +131,7 @@ export default async function GuardianDetailPage({
               </select>
               <button
                 type="submit"
-                className="px-4 py-2 border border-border rounded-lg text-sm hover:bg-background"
+                className="px-4 py-2 border border-border rounded-lg text-sm hover:bg-surface"
               >
                 Link
               </button>
@@ -143,9 +143,8 @@ export default async function GuardianDetailPage({
   )
 
   return (
-    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-2xl">
-      <Link href="/dashboard/guardians" className="text-sm text-primary hover:text-primary-hover">
-        ← Back to guardians
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-2xl">
+      <Link href="/dashboard/guardians" className="inline-flex w-fit items-center gap-1 text-sm text-text-secondary hover:text-text-primary">← Back to guardians
       </Link>
 
       <div className="flex items-center justify-between mt-4 mb-6">
@@ -154,7 +153,7 @@ export default async function GuardianDetailPage({
             {initials}
           </span>
           <div>
-            <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">{guardian.first_name} {guardian.last_name}</h1>
+            <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">{guardian.first_name} {guardian.last_name}</h1>
             <p className="text-xs text-text-secondary mt-0.5 capitalize">{guardian.relationship ?? 'Guardian'}</p>
           </div>
         </div>
@@ -223,7 +222,7 @@ export default async function GuardianDetailPage({
                 <Link
                   key={i}
                   href={`/dashboard/students/${link.students?.id}?from=guardian&guardianId=${id}`}
-                  className="flex items-center justify-between py-2 px-2 -mx-2 rounded-lg hover:bg-surface-muted transition-colors"
+                  className="flex items-center justify-between py-2 px-2 -mx-2 rounded-lg hover:bg-school-soft/40 transition-colors"
                 >
                   <div>
                     <p className="text-sm text-text-primary">{link.students?.first_name} {link.students?.last_name}</p>

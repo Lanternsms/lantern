@@ -94,7 +94,7 @@ export default async function TimetablePage({
     return (
         <div className="p-6 space-y-6">
             <div>
-                <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Timetable</h1>
+                <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">Timetable</h1>
                 <p className="text-sm text-text-secondary">
                     {session ? `Academic session: ${session.name}` : 'No current academic session set.'}
                 </p>

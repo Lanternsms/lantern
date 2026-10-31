@@ -88,7 +88,7 @@ export function NotificationsPageClient({
           )}
           <Link
             href="/dashboard/notifications/settings"
-            className="card text-xs font-medium text-text-secondary hover:text-text-primary px-3 py-1.5 hover:bg-surface-muted transition-colors"
+            className="card text-xs font-medium text-text-secondary hover:text-text-primary px-3 py-1.5 hover:bg-school-soft/40 transition-colors"
           >
             Settings &amp; App
           </Link>
@@ -110,7 +110,7 @@ export function NotificationsPageClient({
             const dot = categoryColour[n.category] ?? 'bg-text-secondary'
             const inner = (
               <div
-                className={`flex items-start gap-4 px-5 py-4 hover:bg-surface-muted transition-colors cursor-pointer ${isUnread ? 'bg-primary/5' : ''}`}
+                className={`flex items-start gap-4 px-5 py-4 hover:bg-school-soft/40 transition-colors cursor-pointer ${isUnread ? 'bg-primary/5' : ''}`}
                 onClick={() => { if (isUnread) markOneRead(n.id) }}
               >
                 <span className={`mt-2 shrink-0 w-2.5 h-2.5 rounded-full ${dot}`} />

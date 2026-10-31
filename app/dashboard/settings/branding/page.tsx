@@ -29,7 +29,7 @@ export default async function BrandingPage() {
   return (
     <div className="flex max-w-[1100px] flex-col gap-6 px-5 py-7 sm:px-8 sm:py-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Branding</h1>
+        <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">Branding</h1>
         <p className="mt-1 text-[15px] text-text-secondary">
           Staff, students and guardians see your colour and crest everywhere in Lantern.
         </p>

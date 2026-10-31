@@ -27,7 +27,7 @@ export default async function MyResultsPage({
 
   if (!studentRow) {
     return (
-      <div className="px-5 py-7 sm:px-8 sm:py-8">
+      <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
         <p className="text-sm text-text-secondary">
           No student record is linked to your account yet. Contact your school admin.
         </p>
@@ -46,7 +46,7 @@ export default async function MyResultsPage({
 
   if (!selectedTermId) {
     return (
-      <div className="px-5 py-7 sm:px-8 sm:py-8">
+      <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
         <p className="text-sm text-text-secondary">No academic terms have been set up yet.</p>
       </div>
     )
@@ -105,15 +105,15 @@ export default async function MyResultsPage({
   const currentTerm = terms?.find((t) => t.id === selectedTermId)
 
   return (
-    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-4xl">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-4xl">
       <div className="mb-6 flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-1">My Results</h1>
+          <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mb-1">My Results</h1>
           <p className="text-sm text-text-secondary">
             {studentRow.first_name} {studentRow.last_name} &middot; {studentRow.admission_no}
           </p>
           {rank && (
-            <p className="text-sm text-text-secondary mt-1">
+            <p className="mt-1 text-[15px] text-text-secondary">
               Position: <span className="font-semibold text-text-primary">{rank.rank}</span> of {rank.out_of}
             </p>
           )}

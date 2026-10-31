@@ -276,7 +276,7 @@ export function ActivityRosterClient({
             type="button"
             onClick={handleDownloadBrief}
             disabled={downloadingBrief}
-            className="bg-surface border border-control rounded-xl inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-primary hover:bg-surface-muted transition-colors shrink-0 disabled:opacity-50"
+            className="bg-surface border border-control rounded-xl inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-primary hover:bg-school-soft/40 transition-colors shrink-0 disabled:opacity-50"
           >
             <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -382,7 +382,7 @@ export function ActivityRosterClient({
               onClick={handleTogglePublish}
               className={`inline-flex items-center rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                 activity.status === 'published'
-                  ? 'border border-border bg-surface text-text-secondary hover:bg-surface-muted'
+                  ? 'border border-border bg-surface text-text-secondary hover:bg-school-soft/40'
                   : 'bg-success-text text-white hover:opacity-90'
               }`}
             >
@@ -431,14 +431,14 @@ export function ActivityRosterClient({
                     if (isQuiz) {
                       const hasAttempted = item.attemptsCount > 0
                       return (
-                        <tr key={st.id} className="hover:bg-surface-muted/30 transition-colors">
-                          <td className="px-4 py-3 font-medium text-text-primary">
+                        <tr key={st.id} className="hover:bg-school-soft/40 transition-colors">
+                          <td className="px-5 py-3.5 font-medium text-text-primary">
                             {fullName}
                           </td>
-                          <td className="px-4 py-3 text-xs text-text-secondary font-mono">
+                          <td className="px-5 py-3.5 text-xs text-text-secondary font-mono">
                             {st.admission_number || '—'}
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="px-5 py-3.5">
                             {item.hasInProgress ? (
                               <span className="inline-flex items-center rounded-full bg-warning-text px-2 py-0.5 text-[11px] font-medium text-warning-text dark:text-warning-text">
                                 In Progress
@@ -453,10 +453,10 @@ export function ActivityRosterClient({
                               </span>
                             )}
                           </td>
-                          <td className="px-4 py-3 text-xs text-text-secondary">
+                          <td className="px-5 py-3.5 text-xs text-text-secondary">
                             {item.attemptsCount} / {activity.attempts_allowed || 1}
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="px-5 py-3.5">
                             {item.bestScore != null ? (
                               <span className="font-semibold text-text-primary">
                                 {item.bestScore} <span className="text-xs font-normal text-text-secondary">/ {activity.max_score}</span>
@@ -471,14 +471,14 @@ export function ActivityRosterClient({
                       const sub = item.submission
                       const status = sub?.status || 'not_submitted'
                       return (
-                        <tr key={st.id} className="hover:bg-surface-muted/30 transition-colors">
-                          <td className="px-4 py-3 font-medium text-text-primary">
+                        <tr key={st.id} className="hover:bg-school-soft/40 transition-colors">
+                          <td className="px-5 py-3.5 font-medium text-text-primary">
                             {fullName}
                           </td>
-                          <td className="px-4 py-3 text-xs text-text-secondary font-mono">
+                          <td className="px-5 py-3.5 text-xs text-text-secondary font-mono">
                             {st.admission_number || '—'}
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="px-5 py-3.5">
                             {status === 'marked' ? (
                               <span className="inline-flex items-center rounded-full bg-success-bg px-2 py-0.5 text-[11px] font-medium text-success-text">
                                 Marked {sub.is_late && '(Late)'}
@@ -493,12 +493,12 @@ export function ActivityRosterClient({
                               </span>
                             )}
                           </td>
-                          <td className="px-4 py-3 text-xs text-text-secondary">
+                          <td className="px-5 py-3.5 text-xs text-text-secondary">
                             {sub?.submitted_at ? new Date(sub.submitted_at).toLocaleDateString(undefined, {
                               month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
                             }) : '—'}
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="px-5 py-3.5">
                             {sub?.score != null ? (
                               <span className="font-semibold text-text-primary">
                                 {sub.score} <span className="text-xs font-normal text-text-secondary">/ {activity.max_score}</span>
@@ -507,12 +507,12 @@ export function ActivityRosterClient({
                               <span className="text-xs text-text-secondary">—</span>
                             )}
                           </td>
-                          <td className="px-4 py-3 text-right">
+                          <td className="px-5 py-3.5 text-right">
                             {sub ? (
                               <button
                                 type="button"
                                 onClick={() => handleOpenMarking(sub, st)}
-                                className="card inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+                                className="card inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-text-primary hover:bg-school-soft/40 transition-colors"
                               >
                                 {sub.status === 'marked' ? 'Review & Edit' : 'Review & Mark'}
                               </button>
@@ -651,7 +651,7 @@ export function ActivityRosterClient({
                         type="button"
                         onClick={handleDownloadBrief}
                         disabled={downloadingBrief || uploadingBrief}
-                        className="rounded-md border border-border bg-surface px-2.5 py-1 text-xs font-medium text-text-primary hover:bg-surface-muted disabled:opacity-50"
+                        className="rounded-md border border-border bg-surface px-2.5 py-1 text-xs font-medium text-text-primary hover:bg-school-soft/40 disabled:opacity-50"
                       >
                         Download
                       </button>
@@ -659,7 +659,7 @@ export function ActivityRosterClient({
                         type="button"
                         onClick={() => briefInputRef.current?.click()}
                         disabled={uploadingBrief}
-                        className="rounded-md border border-border bg-surface px-2.5 py-1 text-xs font-medium text-text-primary hover:bg-surface-muted disabled:opacity-50"
+                        className="rounded-md border border-border bg-surface px-2.5 py-1 text-xs font-medium text-text-primary hover:bg-school-soft/40 disabled:opacity-50"
                       >
                         {uploadingBrief ? 'Uploading...' : 'Replace'}
                       </button>
@@ -679,7 +679,7 @@ export function ActivityRosterClient({
                       type="button"
                       onClick={() => briefInputRef.current?.click()}
                       disabled={uploadingBrief}
-                      className="card inline-flex items-center gap-1.5 border-dashed px-3 py-2 text-xs font-medium text-primary hover:bg-surface-muted transition-colors disabled:opacity-50"
+                      className="card inline-flex items-center gap-1.5 border-dashed px-3 py-2 text-xs font-medium text-primary hover:bg-school-soft/40 transition-colors disabled:opacity-50"
                     >
                       <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -787,7 +787,7 @@ export function ActivityRosterClient({
                       href={selectedSub.downloadUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="card inline-flex items-center gap-2 px-3 py-2 text-xs font-medium text-primary hover:bg-surface-muted transition-colors"
+                      className="card inline-flex items-center gap-2 px-3 py-2 text-xs font-medium text-primary hover:bg-school-soft/40 transition-colors"
                     >
                       <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -838,7 +838,7 @@ export function ActivityRosterClient({
                 <button
                   type="button"
                   onClick={() => setSelectedSub(null)}
-                  className="card px-4 py-2 text-xs font-medium text-text-secondary hover:bg-surface-muted transition-colors"
+                  className="card px-4 py-2 text-xs font-medium text-text-secondary hover:bg-school-soft/40 transition-colors"
                 >
                   Cancel
                 </button>

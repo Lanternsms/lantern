@@ -42,10 +42,10 @@ export default async function ClassResultsIndexPage({
     : { data: null }
 
   return (
-    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-5xl">
-      <div className="flex items-start justify-between mb-6">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-5xl">
+      <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-1">Class Results</h1>
+          <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mb-1">Class Results</h1>
           <p className="text-sm text-text-secondary">
             Full result summary for your assigned classes — scores, averages, rankings, and grade distributions.
           </p>

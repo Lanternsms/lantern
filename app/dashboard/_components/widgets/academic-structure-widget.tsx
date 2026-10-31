@@ -54,7 +54,7 @@ export async function AcademicStructureWidget() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="group p-3 rounded-lg border border-border bg-surface-muted/30 hover:bg-surface-muted hover:border-primary/40 transition-all flex items-center justify-between"
+                className="group p-3 rounded-lg border border-border bg-surface-muted/30 hover:bg-school-soft/40 hover:border-primary/40 transition-all flex items-center justify-between"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="flex items-center justify-center shrink-0 text-text-secondary">

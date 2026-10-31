@@ -89,7 +89,7 @@ export default function RosterWidget({
         </div>
         <div>
           <p className="text-base font-semibold text-text-primary">Attendance saved!</p>
-          <p className="text-sm text-text-secondary mt-1">
+          <p className="mt-1 text-[15px] text-text-secondary">
             {result.marked} of {result.total} students marked · {result.present} present
           </p>
         </div>
@@ -118,7 +118,7 @@ export default function RosterWidget({
               type="button"
               onClick={handleMarkAllPresent}
               disabled={isPending}
-              className="bg-surface border border-control rounded-xl text-xs font-medium px-3 py-2 hover:bg-surface-muted transition-colors disabled:opacity-50"
+              className="bg-surface border border-control rounded-xl text-xs font-medium px-3 py-2 hover:bg-school-soft/40 transition-colors disabled:opacity-50"
             >
               Mark all present
             </button>
@@ -158,14 +158,14 @@ export default function RosterWidget({
             </thead>
             <tbody className="divide-y divide-border">
               {roster.map((student) => (
-                <tr key={student.id} className="hover:bg-surface-muted/20 transition-colors">
-                  <td className="px-4 py-3 font-medium text-text-primary whitespace-nowrap">
+                <tr key={student.id} className="hover:bg-school-soft/40 transition-colors">
+                  <td className="px-5 py-3.5 font-medium text-text-primary whitespace-nowrap">
                     {student.first_name} {student.last_name}
                   </td>
-                  <td className="px-4 py-3 text-text-secondary font-mono text-xs whitespace-nowrap">
+                  <td className="px-5 py-3.5 text-text-secondary font-mono text-xs whitespace-nowrap">
                     {student.admission_no}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-3.5">
                     <div className="flex flex-wrap gap-1.5" role="group" aria-label="Status">
                       {statuses.map((status) => {
                         const selected = marks[student.id] === status.id

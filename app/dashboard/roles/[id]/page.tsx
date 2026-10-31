@@ -38,16 +38,15 @@ export default async function RoleDetailPage({
   const updateRoleWithId = updateRole.bind(null, id)
 
   return (
-    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-3xl">
-      <Link href="/dashboard/roles" className="text-sm text-primary hover:text-primary-hover">
-        ← Back to roles
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-3xl">
+      <Link href="/dashboard/roles" className="inline-flex w-fit items-center gap-1 text-sm text-text-secondary hover:text-text-primary">← Back to roles
       </Link>
 
       <div className="flex items-center justify-between mt-4 mb-6">
         <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary capitalize">{role.name.replace('_', ' ')}</h1>
+          <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] capitalize">{role.name.replace('_', ' ')}</h1>
           {role.is_system && (
-            <span className="flex items-center gap-1 text-xs font-medium bg-secondary/10 text-secondary rounded-full px-2.5 py-0.5">
+            <span className="flex items-center gap-1 text-xs font-medium bg-raised text-[#374151] rounded-full px-2.5 py-0.5">
               <Lock size={11} /> System Role
             </span>
           )}
@@ -84,7 +83,7 @@ export default async function RoleDetailPage({
               <input name="description" defaultValue={role.description ?? ''} className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
             </div>
           </div>
-          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
+          <button type="submit" className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60">
             Save Details
           </button>
         </form>

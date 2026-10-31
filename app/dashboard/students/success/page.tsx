@@ -17,7 +17,7 @@ export default async function StudentAddedSuccessPage({
           <CheckCircle2 size={28} className="text-success-text" />
         </div>
 
-        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-1">
+        <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mb-1">
           Student added successfully
         </h1>
         <p className="text-sm text-text-secondary mb-6">
@@ -28,14 +28,14 @@ export default async function StudentAddedSuccessPage({
           {id && (
             <Link
               href={`/dashboard/students/${id}${from ? `?from=${from}` : ''}`}
-              className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
             >
               View Student
             </Link>
           )}
           <Link
             href={backHref}
-            className="text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-surface-muted transition-colors"
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-surface px-4 text-sm font-semibold text-text-primary shadow-card ring-1 ring-black/[0.06] hover:bg-raised"
           >
             {backLabel}
           </Link>

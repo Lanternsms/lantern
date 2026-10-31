@@ -78,18 +78,18 @@ export default async function ClassDetailPage({
   }
 
   return (
-    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-2xl">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-2xl">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/academics/classes" className="hover:text-primary">Classes</Link> / {cls.name}
       </p>
 
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">{cls.name}</h1>
-          <p className="text-sm text-text-secondary mt-1">{cls.departments?.name ?? 'No department'}</p>
+          <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">{cls.name}</h1>
+          <p className="mt-1 text-[15px] text-text-secondary">{cls.departments?.name ?? 'No department'}</p>
         </div>
         <div className="flex items-center gap-2">
-          <Link href={`/dashboard/academics/classes/${id}/edit`} className="flex items-center gap-1.5 text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-surface-muted transition-colors">
+          <Link href={`/dashboard/academics/classes/${id}/edit`} className="flex items-center gap-1.5 text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-school-soft/40 transition-colors">
             <Pencil size={14} /> Edit
           </Link>
           {studentCount === 0 && (
@@ -143,7 +143,7 @@ export default async function ClassDetailPage({
             placeholder="e.g. A"
             className="flex-1 rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
           />
-          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
+          <button type="submit" className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60">
             Add Arm
           </button>
         </form>

@@ -93,7 +93,7 @@ export default async function LmsAiAdminPage({
           >
             <span
               className={`w-2 h-2 rounded-full ${
-                settings.enabled && configured ? 'bg-success' : 'bg-text-secondary'
+                settings.enabled && configured ? 'bg-success-text' : 'bg-text-secondary'
               }`}
             />
             {settings.enabled && configured ? 'AI Tutor Active' : 'AI Tutor Inactive'}
@@ -102,7 +102,7 @@ export default async function LmsAiAdminPage({
       </div>
 
       {success && (
-        <div className="rounded-lg border border-success/30 bg-success-bg p-4 text-xs text-success-text font-medium">
+        <div className="rounded-lg border border-success-bg bg-success-bg p-4 text-xs text-success-text font-medium">
           {success}
         </div>
       )}
@@ -152,7 +152,7 @@ export default async function LmsAiAdminPage({
 
         <form action={handleSaveSettings} className="space-y-6">
           <div className="space-y-4">
-            <label className="flex items-start gap-3 p-3.5 rounded-lg border border-border bg-background/50 hover:bg-background cursor-pointer transition-colors">
+            <label className="flex items-start gap-3 p-3.5 rounded-lg border border-border bg-surface hover:bg-surface cursor-pointer transition-colors">
               <input
                 type="checkbox"
                 name="enabled"
@@ -170,7 +170,7 @@ export default async function LmsAiAdminPage({
             </label>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <label className="flex items-start gap-3 p-3.5 rounded-lg border border-border bg-background/50 hover:bg-background cursor-pointer transition-colors">
+              <label className="flex items-start gap-3 p-3.5 rounded-lg border border-border bg-surface hover:bg-surface cursor-pointer transition-colors">
                 <input
                   type="checkbox"
                   name="voice_enabled"
@@ -185,7 +185,7 @@ export default async function LmsAiAdminPage({
                 </div>
               </label>
 
-              <label className="flex items-start gap-3 p-3.5 rounded-lg border border-border bg-background/50 hover:bg-background cursor-pointer transition-colors">
+              <label className="flex items-start gap-3 p-3.5 rounded-lg border border-border bg-surface hover:bg-surface cursor-pointer transition-colors">
                 <input
                   type="checkbox"
                   name="read_aloud_enabled"
@@ -218,7 +218,7 @@ export default async function LmsAiAdminPage({
                   min={1}
                   max={500}
                   defaultValue={settings.daily_limit_per_student}
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-xs text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 <span className="text-[10px] text-text-secondary mt-1 block">Default: 20 questions/day</span>
               </div>
@@ -233,7 +233,7 @@ export default async function LmsAiAdminPage({
                   min={1}
                   max={2000}
                   defaultValue={settings.daily_limit_per_class}
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-xs text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 <span className="text-[10px] text-text-secondary mt-1 block">Default: 150 questions/day</span>
               </div>
@@ -248,7 +248,7 @@ export default async function LmsAiAdminPage({
                   min={10}
                   max={100000}
                   defaultValue={settings.monthly_limit_school}
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-xs text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 <span className="text-[10px] text-text-secondary mt-1 block">Default: 3,000 questions/month</span>
               </div>
@@ -313,7 +313,7 @@ export default async function LmsAiAdminPage({
                 {auditData.logs.map((log: any) => {
                   const isUser = log.role === 'user'
                   return (
-                    <tr key={log.id} className="hover:bg-background/40 transition-colors">
+                    <tr key={log.id} className="hover:bg-surface transition-colors">
                       <td className="py-3 px-4 text-text-secondary whitespace-nowrap">
                         {new Date(log.created_at).toLocaleString([], {
                           month: 'short',

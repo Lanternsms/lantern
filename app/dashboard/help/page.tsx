@@ -25,8 +25,8 @@ export default function HelpPage() {
   return (
     <div className="max-w-3xl mx-auto px-6 py-10 space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Help & Support</h1>
-        <p className="text-sm text-text-secondary mt-1">Answers to common questions, and how to reach us if you&apos;re stuck.</p>
+        <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">Help & Support</h1>
+        <p className="mt-1 text-[15px] text-text-secondary">Answers to common questions, and how to reach us if you&apos;re stuck.</p>
       </div>
 
       <div className="border border-border rounded-lg divide-y divide-border">

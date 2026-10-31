@@ -12,7 +12,7 @@ export default async function NewDocumentPage() {
 
   return (
     <div className="p-6 space-y-4">
-      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Upload Document</h1>
+      <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">Upload Document</h1>
       <UploadForm classes={classes ?? []} />
     </div>
   )

@@ -45,9 +45,9 @@ export default async function ResultsHubPage() {
   const pendingApprovalsCount = pendingBatches?.length ?? 0
 
   return (
-    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-5xl">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-5xl">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-1">Results Management</h1>
+        <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mb-1">Results Management</h1>
         <p className="text-sm text-text-secondary">
           Central hub for grades entry, approvals, report card remarks, and class academic summaries.
         </p>

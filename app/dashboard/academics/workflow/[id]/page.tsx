@@ -58,14 +58,14 @@ export default async function WorkflowDetailPage({
   const renameWithId = renameTemplate.bind(null, id)
 
   return (
-    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-3xl">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-3xl">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/academics/workflow" className="hover:text-primary">Approval Workflow</Link> / {template.name}
       </p>
 
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">{template.name}</h1>
+          <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">{template.name}</h1>
           {template.is_active && (
             <span className="text-xs font-medium bg-success-bg text-success-text rounded-full px-2.5 py-0.5">Active</span>
           )}
@@ -74,7 +74,7 @@ export default async function WorkflowDetailPage({
           <form action={setActiveTemplate}>
             <input type="hidden" name="template_id" value={id} />
             <input type="hidden" name="back" value={`/dashboard/academics/workflow/${id}`} />
-            <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
+            <button type="submit" className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60">
               Make Active
             </button>
           </form>
@@ -95,7 +95,7 @@ export default async function WorkflowDetailPage({
       <section className="card p-5 mb-6">
         <h3 className="text-sm font-medium text-text-primary mb-4">Approval Flow</h3>
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-medium bg-secondary/10 text-secondary rounded-lg px-3 py-2">Teacher submits</span>
+          <span className="text-xs font-medium bg-raised text-[#374151] rounded-lg px-3 py-2">Teacher submits</span>
           {stages?.map((s) => (
             <Fragment key={s.id}>
               <ArrowRight size={14} className="text-text-muted" />
@@ -222,7 +222,7 @@ export default async function WorkflowDetailPage({
             name="approver_role_id"
             required
             defaultValue=""
-            className="rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            className="h-10 rounded-xl border border-control bg-surface px-3 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-4 focus:ring-school-soft"
           >
             <option value="" disabled>Approver role...</option>
             {approverRoles.map((r) => (
@@ -246,7 +246,7 @@ export default async function WorkflowDetailPage({
             className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
-        <button type="submit" className="text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-surface-muted transition-colors">
+        <button type="submit" className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-surface px-4 text-sm font-semibold text-text-primary shadow-card ring-1 ring-black/[0.06] hover:bg-raised">
           Rename
         </button>
       </form>

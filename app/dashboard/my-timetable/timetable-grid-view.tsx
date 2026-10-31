@@ -49,7 +49,7 @@ export default function TimetableGridView({
         <tbody>
           {periods.map((p) =>
             p.is_break ? (
-              <tr key={p.id} className="bg-background">
+              <tr key={p.id} className="bg-surface">
                 <td colSpan={DAYS.length + 1} className="text-center text-xs text-text-secondary p-2 border border-border">
                   {p.name} ({p.start_time}–{p.end_time})
                 </td>

@@ -33,11 +33,11 @@ export default async function NewLessonPage({
   const staff = (staffRows ?? []).filter((s) => s.profile_id)
 
   return (
-    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-2xl">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-2xl">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/lms" className="hover:text-primary">Lessons</Link> / New Lesson
       </p>
-      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-6">New Lesson</h1>
+      <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mb-6">New Lesson</h1>
 
       {error && (
         <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">
@@ -164,13 +164,13 @@ export default async function NewLessonPage({
           <div className="flex gap-3">
             <Link
               href="/dashboard/lms"
-              className="text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-surface-muted transition-colors"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-surface px-4 text-sm font-semibold text-text-primary shadow-card ring-1 ring-black/[0.06] hover:bg-raised"
             >
               Cancel
             </Link>
             <button
               type="submit"
-              className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
             >
               Create Lesson
             </button>

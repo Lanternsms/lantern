@@ -58,7 +58,7 @@ export function AiConnectionTester() {
         <div
           className={`rounded-lg border p-4 text-xs space-y-2 ${
             result.success
-              ? 'border-success/30 bg-success-bg/30'
+              ? 'border-success-bg bg-success-bg/30'
               : 'border-danger-bg bg-danger-bg dark:bg-danger-text'
           }`}
         >

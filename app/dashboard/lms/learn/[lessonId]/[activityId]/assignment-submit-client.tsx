@@ -172,7 +172,7 @@ export function AssignmentSubmitClient({
             type="button"
             onClick={handleDownloadBrief}
             disabled={downloadingBrief}
-            className="bg-surface border border-control rounded-xl inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold text-primary hover:bg-surface-muted transition-colors shrink-0 disabled:opacity-50"
+            className="bg-surface border border-control rounded-xl inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold text-primary hover:bg-school-soft/40 transition-colors shrink-0 disabled:opacity-50"
           >
             <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -230,7 +230,7 @@ export function AssignmentSubmitClient({
                 href={submission.downloadUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="card inline-flex items-center gap-2 px-3 py-2 text-xs font-medium text-primary hover:bg-surface-muted transition-colors"
+                className="card inline-flex items-center gap-2 px-3 py-2 text-xs font-medium text-primary hover:bg-school-soft/40 transition-colors"
               >
                 <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -300,7 +300,7 @@ export function AssignmentSubmitClient({
           <div className="flex items-center justify-between pt-3 border-t border-border">
             <Link
               href={`/dashboard/lms/learn/${lessonId}?student=${studentId}`}
-              className="card px-4 py-2 text-xs font-medium text-text-secondary hover:bg-surface-muted transition-colors"
+              className="card px-4 py-2 text-xs font-medium text-text-secondary hover:bg-school-soft/40 transition-colors"
             >
               &larr; Back to Activities
             </Link>

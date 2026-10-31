@@ -52,7 +52,7 @@ export async function StudentsWidget() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs">
             <Link
               href="/dashboard/students/new"
-              className="p-3 rounded-lg border border-border bg-surface-muted/40 hover:bg-surface-muted hover:border-primary/40 transition-colors flex items-center justify-between group"
+              className="p-3 rounded-lg border border-border bg-surface-muted/40 hover:bg-school-soft/40 hover:border-primary/40 transition-colors flex items-center justify-between group"
             >
               <div className="flex items-center gap-2">
                 <UserPlus size={14} className="text-primary" />
@@ -62,7 +62,7 @@ export async function StudentsWidget() {
             </Link>
             <Link
               href="/dashboard/students/import"
-              className="p-3 rounded-lg border border-border bg-surface-muted/40 hover:bg-surface-muted hover:border-primary/40 transition-colors flex items-center justify-between group"
+              className="p-3 rounded-lg border border-border bg-surface-muted/40 hover:bg-school-soft/40 hover:border-primary/40 transition-colors flex items-center justify-between group"
             >
               <div className="flex items-center gap-2">
                 <Users size={14} className="text-school-ink" />

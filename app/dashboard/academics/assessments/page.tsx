@@ -20,11 +20,11 @@ export default async function AssessmentTypesPage({
   const isBalanced = Math.abs(totalWeight - 100) < 0.01
 
   return (
-    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-2xl">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-2xl">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/academics" className="hover:text-primary">Academics</Link> / Assessment Types
       </p>
-      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-1">Assessment Types</h1>
+      <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mb-1">Assessment Types</h1>
       <p className="text-sm text-text-secondary mb-6">
         Define how each term&apos;s final score is built — e.g. CA1, CA2, and Exam — and what percentage each contributes.
       </p>
@@ -41,7 +41,7 @@ export default async function AssessmentTypesPage({
             No assessment types yet. Start with the standard CA1 / CA2 / Exam split, or build your own.
           </p>
           <form action={seedDefaultAssessmentTypes}>
-            <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
+            <button type="submit" className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60">
               Create Standard Set (CA1 10% · CA2 10% · Exam 80%)
             </button>
           </form>
@@ -62,16 +62,16 @@ export default async function AssessmentTypesPage({
           <div className="card overflow-hidden mb-6">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Name</th>
-                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Weight (%)</th>
+                <tr className="border-b border-rule">
+                  <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Name</th>
+                  <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Weight (%)</th>
                   <th className="px-4 py-3"></th>
                 </tr>
               </thead>
                             <tbody>
                 {types.map((t) => (
                   <tr key={t.id} className="border-b border-border last:border-0">
-                    <td className="px-4 py-3" colSpan={3}>
+                    <td className="px-5 py-3.5" colSpan={3}>
                       <div className="flex items-center gap-2">
                         <form action={updateAssessmentType} className="flex items-center gap-2 flex-1">
                           <input type="hidden" name="type_id" value={t.id} />

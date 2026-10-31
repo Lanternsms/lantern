@@ -205,7 +205,7 @@ export function QuizBuilder({
             <button
               type="button"
               onClick={handleAddQuestion}
-              className="bg-surface border border-control rounded-xl inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+              className="bg-surface border border-control rounded-xl inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-school-soft/40 transition-colors"
             >
               <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -265,7 +265,7 @@ export function QuizBuilder({
                     type="button"
                     onClick={() => handleMoveQuestion(qIdx, 'up')}
                     disabled={qIdx === 0}
-                    className="rounded p-1 text-text-secondary hover:bg-surface-muted disabled:opacity-30"
+                    className="rounded p-1 text-text-secondary hover:bg-school-soft/40 disabled:opacity-30"
                     title="Move up"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -276,7 +276,7 @@ export function QuizBuilder({
                     type="button"
                     onClick={() => handleMoveQuestion(qIdx, 'down')}
                     disabled={qIdx === questions.length - 1}
-                    className="rounded p-1 text-text-secondary hover:bg-surface-muted disabled:opacity-30"
+                    className="rounded p-1 text-text-secondary hover:bg-school-soft/40 disabled:opacity-30"
                     title="Move down"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -371,8 +371,7 @@ export function QuizBuilder({
                   type="button"
                   onClick={() => handleAddOption(qIdx)}
                   className="mt-1 inline-flex items-center gap-1 text-xs text-primary hover:underline"
-                >
-                  + Add option
+                >Add option
                 </button>
               )}
             </div>

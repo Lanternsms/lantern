@@ -93,11 +93,11 @@ export default async function EditStudentPage({
   const updateStudentWithId = updateStudent.bind(null, id)
 
   return (
-    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-3xl">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-3xl">
       <p className="text-sm text-text-secondary mb-1">
         <Link href={`/dashboard/students/${id}${from ? `?from=${from}` : ''}`} className="hover:text-primary">{student.first_name} {student.last_name}</Link> / Edit
       </p>
-      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mb-1">Edit Student</h1>
+      <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mb-1">Edit Student</h1>
       <p className="text-sm text-text-secondary mb-6">Update this student&apos;s record.</p>
 
       {error && (
@@ -203,10 +203,10 @@ export default async function EditStudentPage({
         <div className="flex items-center justify-between">
           <p className="text-xs text-text-muted">Fields marked * are required</p>
           <div className="flex gap-3">
-            <Link href={`/dashboard/students/${id}${from ? `?from=${from}` : ''}`} className="text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-surface-muted transition-colors">
+            <Link href={`/dashboard/students/${id}${from ? `?from=${from}` : ''}`} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-surface px-4 text-sm font-semibold text-text-primary shadow-card ring-1 ring-black/[0.06] hover:bg-raised">
               Cancel
             </Link>
-            <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
+            <button type="submit" className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60">
               Save Changes
             </button>
           </div>

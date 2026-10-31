@@ -393,7 +393,7 @@ export async function GuardianDashboard({
   if (myChildren.length === 0) {
     return (
       <div className="px-6 py-6 max-w-5xl space-y-6">
-        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Welcome, {guardianRow.first_name}</h1>
+        <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">Welcome, {guardianRow.first_name}</h1>
         <div className="card p-8 text-center text-sm text-text-secondary">
           No children are linked to your account yet. Contact your school administrator to link your child&apos;s profile.
         </div>
@@ -536,7 +536,7 @@ export async function GuardianDashboard({
       {activeTab === 'all' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <Link href={buildUrl({ tab: 'attendance' })} className="card p-4 hover:bg-surface-muted/30 transition-colors">
+            <Link href={buildUrl({ tab: 'attendance' })} className="card p-4 hover:bg-school-soft/40 transition-colors">
               <div className="text-xs text-text-secondary font-medium">Attendance this term</div>
               <div className="text-xl font-bold text-text-primary mt-1">
                 {attendanceRate !== null ? `${attendanceRate}%` : '—'}
@@ -544,7 +544,7 @@ export async function GuardianDashboard({
               <div className="text-[11px] text-text-secondary mt-1">{currentTerm?.name ?? 'This term'}</div>
             </Link>
 
-            <Link href={buildUrl({ tab: 'fees' })} className="card p-4 hover:bg-surface-muted/30 transition-colors">
+            <Link href={buildUrl({ tab: 'fees' })} className="card p-4 hover:bg-school-soft/40 transition-colors">
               <div className="text-xs text-text-secondary font-medium">Fees balance</div>
               <div className={`text-xl font-bold mt-1 ${totalBalance > 0 ? 'text-danger-text' : 'text-success-text'}`}>
                 {formatCurrency(totalBalance)}
@@ -554,7 +554,7 @@ export async function GuardianDashboard({
               </div>
             </Link>
 
-            <Link href={buildUrl({ tab: 'timetable' })} className="card p-4 hover:bg-surface-muted/30 transition-colors">
+            <Link href={buildUrl({ tab: 'timetable' })} className="card p-4 hover:bg-school-soft/40 transition-colors">
               <div className="text-xs text-text-secondary font-medium">Classes today</div>
               <div className="text-xl font-bold text-text-primary mt-1">{todayRows.length}</div>
               <div className="text-[11px] text-text-secondary mt-1">
@@ -562,7 +562,7 @@ export async function GuardianDashboard({
               </div>
             </Link>
 
-            <Link href={buildUrl({ tab: 'results' })} className="card p-4 hover:bg-surface-muted/30 transition-colors">
+            <Link href={buildUrl({ tab: 'results' })} className="card p-4 hover:bg-school-soft/40 transition-colors">
               <div className="text-xs text-text-secondary font-medium">Position in class</div>
               <div className="text-xl font-bold text-text-primary mt-1">
                 {rank ? `${rank.rank} / ${rank.out_of}` : '—'}
@@ -728,26 +728,26 @@ export async function GuardianDashboard({
                     const statusLabel = row.attendance_statuses?.label ?? 'Marked'
 
                     return (
-                      <tr key={row.id} className="border-t border-border hover:bg-surface-muted/20 transition-colors">
-                        <td className="px-4 py-3 font-medium text-text-primary whitespace-nowrap">
+                      <tr key={row.id} className="border-t border-border hover:bg-school-soft/40 transition-colors">
+                        <td className="px-5 py-3.5 font-medium text-text-primary whitespace-nowrap">
                           {new Date(row.date + 'T00:00:00').toLocaleDateString(undefined, {
                             weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
                           })}
                         </td>
-                        <td className="px-4 py-3 text-text-secondary font-mono text-xs whitespace-nowrap">{time}</td>
-                        <td className="px-4 py-3 whitespace-nowrap">
+                        <td className="px-5 py-3.5 text-text-secondary font-mono text-xs whitespace-nowrap">{time}</td>
+                        <td className="px-5 py-3.5 whitespace-nowrap">
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium ${
                             row.subjects ? 'bg-primary/10 text-primary border border-primary/20' : 'text-text-secondary bg-surface-muted border border-border'
                           }`}>
                             {subjectName}
                           </span>
                         </td>
-                        <td className="px-4 py-3 whitespace-nowrap">
+                        <td className="px-5 py-3.5 whitespace-nowrap">
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getAttendanceStatusBadge(statusLabel)}`}>
                             {statusLabel}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-text-secondary whitespace-nowrap text-xs">{markerName}</td>
+                        <td className="px-5 py-3.5 text-text-secondary whitespace-nowrap text-xs">{markerName}</td>
                       </tr>
                     )
                   })}
@@ -793,13 +793,13 @@ export async function GuardianDashboard({
                       const subjectObj = Array.isArray(row.subjects) ? row.subjects[0] : row.subjects
                       const subjectName = subjectObj?.name ?? null
                       return (
-                        <tr key={row.id} className="hover:bg-surface-muted/20 transition-colors">
-                          <td className="px-4 py-3 font-medium text-text-primary whitespace-nowrap">
+                        <tr key={row.id} className="hover:bg-school-soft/40 transition-colors">
+                          <td className="px-5 py-3.5 font-medium text-text-primary whitespace-nowrap">
                             {new Date(row.date + 'T00:00:00').toLocaleDateString(undefined, {
                               weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
                             })}
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap">
+                          <td className="px-5 py-3.5 whitespace-nowrap">
                             {subjectName ? (
                               <span className="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-primary/10 text-primary border border-primary/20">
                                 {subjectName}
@@ -808,10 +808,10 @@ export async function GuardianDashboard({
                               <span className="text-text-muted text-xs">—</span>
                             )}
                           </td>
-                          <td className="px-4 py-3 text-text-secondary text-xs max-w-xs truncate">
+                          <td className="px-5 py-3.5 text-text-secondary text-xs max-w-xs truncate">
                             {lessonTitle ?? <span className="text-text-muted">—</span>}
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap">
+                          <td className="px-5 py-3.5 whitespace-nowrap">
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getAttendanceStatusBadge(statusLabel)}`}>
                               {statusLabel}
                             </span>
@@ -854,7 +854,7 @@ export async function GuardianDashboard({
                 </thead>
                 <tbody>
                   {subjectRows.map((row) => (
-                    <tr key={row.subject} className="border-t border-border hover:bg-surface-muted/20 transition-colors">
+                    <tr key={row.subject} className="border-t border-border hover:bg-school-soft/40 transition-colors">
                       <td className="px-4 py-2.5 font-medium text-text-primary">{row.subject}</td>
                       <td className="px-4 py-2.5 text-text-secondary text-xs">
                         {row.scores.map((s) => `${s.label}: ${s.score}`).join('  ·  ')}
@@ -929,10 +929,10 @@ export async function GuardianDashboard({
                 </thead>
                 <tbody>
                   {feeItems.map((item) => (
-                    <tr key={item.id} className="border-t border-border hover:bg-surface-muted/20 transition-colors">
-                      <td className="px-4 py-3 font-medium text-text-primary">{item.name}</td>
-                      <td className="px-4 py-3 text-right text-text-secondary">{formatCurrency(item.amount)}</td>
-                      <td className="px-4 py-3 text-right text-success-text">{formatCurrency(item.paid)}</td>
+                    <tr key={item.id} className="border-t border-border hover:bg-school-soft/40 transition-colors">
+                      <td className="px-5 py-3.5 font-medium text-text-primary">{item.name}</td>
+                      <td className="px-5 py-3.5 text-right text-text-secondary">{formatCurrency(item.amount)}</td>
+                      <td className="px-5 py-3.5 text-right text-success-text">{formatCurrency(item.paid)}</td>
                       <td className={`px-4 py-3 text-right font-semibold ${item.balance > 0 ? 'text-danger-text' : 'text-text-secondary'}`}>
                         {formatCurrency(item.balance)}
                       </td>
@@ -970,7 +970,7 @@ export async function GuardianDashboard({
                   {group.lessons.map((lesson: any) => (
                     <div
                       key={lesson.id}
-                      className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-surface-muted transition-colors"
+                      className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-school-soft/40 transition-colors"
                     >
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
@@ -989,7 +989,7 @@ export async function GuardianDashboard({
                       <div className="shrink-0 flex items-center gap-2 flex-wrap justify-end">
                         <Link
                           href={`/dashboard/lms/learn/${lesson.id}?student=${selectedChild.id}`}
-                          className="card inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors min-h-[44px]"
+                          className="card inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-school-soft/40 transition-colors min-h-[44px]"
                         >
                           Activities
                           {(activityCountByLesson.get(lesson.id) ?? 0) > 0 && (

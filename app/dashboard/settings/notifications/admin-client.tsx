@@ -106,7 +106,7 @@ export function AdminNotificationSettingsClient({
             <button
               onClick={handleSendTestEmail}
               disabled={isTestingEmail || !emailEnabled}
-              className="inline-flex items-center gap-1.5 text-xs font-medium text-text-primary bg-surface-muted hover:bg-surface-muted/80 border border-border px-3.5 py-2 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-text-primary bg-surface-muted hover:bg-school-soft/40 border border-border px-3.5 py-2 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
             >
               {isTestingEmail ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -333,7 +333,7 @@ export function AdminNotificationSettingsClient({
               </thead>
               <tbody className="divide-y divide-border">
                 {recentDeliveries.map((d) => (
-                  <tr key={d.id} className="hover:bg-surface-muted/30">
+                  <tr key={d.id} className="hover:bg-school-soft/40">
                     <td className="py-2.5 px-3 text-text-secondary whitespace-nowrap">
                       {new Date(d.created_at).toLocaleTimeString([], {
                         hour: '2-digit',

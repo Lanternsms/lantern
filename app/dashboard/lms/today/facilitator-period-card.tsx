@@ -224,7 +224,7 @@ export function FacilitatorPeriodCard({
                 <select
                   value={selectedLessonId}
                   onChange={(e) => setSelectedLessonId(e.target.value)}
-                  className="w-full border border-border rounded-lg px-3 py-2 text-xs bg-background text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full border border-border rounded-lg px-3 py-2 text-xs bg-surface text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 >
                   {publishedLessons.map((l) => {
                     const tag = l.id === suggestedLessonId
@@ -269,7 +269,7 @@ export function FacilitatorPeriodCard({
                 )}
                 <Link
                   href={`/dashboard/lms/today/attendance/${timetableEntryId}`}
-                  className="text-xs font-medium border border-border px-3 py-2.5 rounded-lg hover:bg-surface-muted transition-colors"
+                  className="text-xs font-medium border border-border px-3 py-2.5 rounded-lg hover:bg-school-soft/40 transition-colors"
                 >
                   Take attendance
                 </Link>

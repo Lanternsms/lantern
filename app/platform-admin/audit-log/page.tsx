@@ -54,7 +54,7 @@ export default async function AuditLogPage({
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
       <div className="flex items-center justify-between mb-2">
-        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Audit Log</h1>
+        <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">Audit Log</h1>
         <form action={lockPlatformAdmin}>
           <button type="submit" className="text-sm text-text-secondary hover:text-text-primary">Lock</button>
         </form>

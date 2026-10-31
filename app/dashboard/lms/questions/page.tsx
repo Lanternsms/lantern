@@ -114,7 +114,7 @@ export default async function QuestionsInboxPage({
             LMS Questions
           </p>
           <h1 className="text-2xl font-bold text-text-primary mt-0.5">Questions Inbox</h1>
-          <p className="text-sm text-text-secondary mt-1">
+          <p className="mt-1 text-[15px] text-text-secondary">
             Review and respond to questions asked by students and parents about lessons.
           </p>
         </div>
@@ -123,7 +123,7 @@ export default async function QuestionsInboxPage({
           {access.isManager && (
             <Link
               href="/dashboard/lms"
-              className="card px-3 py-2 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+              className="card px-3 py-2 text-xs font-medium text-text-primary hover:bg-school-soft/40 transition-colors"
             >
               Lesson Library
             </Link>
@@ -131,7 +131,7 @@ export default async function QuestionsInboxPage({
           {(access.isFacilitator || access.isManager) && (
             <Link
               href="/dashboard/lms/today"
-              className="card px-3 py-2 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+              className="card px-3 py-2 text-xs font-medium text-text-primary hover:bg-school-soft/40 transition-colors"
             >
               Today&apos;s Lessons
             </Link>
@@ -209,7 +209,7 @@ export default async function QuestionsInboxPage({
             <Link
               key={thread.id}
               href={`/dashboard/lms/questions/${thread.id}`}
-              className="flex items-start justify-between gap-4 p-5 hover:bg-surface-muted transition-colors group"
+              className="flex items-start justify-between gap-4 p-5 hover:bg-school-soft/40 transition-colors group"
             >
               <div className="min-w-0 space-y-1.5 flex-1">
                 {/* Meta line: Class + Subject & Lesson Title */}

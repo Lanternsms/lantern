@@ -27,7 +27,7 @@ export default function ViewButton({ documentId }: { documentId: string }) {
         type="button"
         onClick={handleClick}
         disabled={isPending}
-        className="bg-surface border border-control rounded-xl hover:bg-surface-muted text-text-primary px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50 cursor-pointer"
+        className="bg-surface border border-control rounded-xl hover:bg-school-soft/40 text-text-primary px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50 cursor-pointer"
       >
         {isPending ? 'Opening…' : 'View'}
       </button>

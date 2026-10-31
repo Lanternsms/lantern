@@ -33,7 +33,7 @@ export default async function MyLessonsPage() {
     <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-5xl space-y-6">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">My Recorded Lessons</h1>
+          <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">My Recorded Lessons</h1>
           <p className="text-xs text-text-secondary mt-1">
             Lessons where you are designated as the recording teacher. Manage quizzes and assignments for each lesson.
           </p>
@@ -68,8 +68,8 @@ export default async function MyLessonsPage() {
                   const pubCount = actList.filter((a: any) => a.status === 'published').length
 
                   return (
-                    <tr key={lesson.id} className="hover:bg-surface-muted/30 transition-colors">
-                      <td className="px-4 py-3">
+                    <tr key={lesson.id} className="hover:bg-school-soft/40 transition-colors">
+                      <td className="px-5 py-3.5">
                         <Link
                           href={`/dashboard/lms/${lesson.id}`}
                           className="font-medium text-text-primary hover:text-primary transition-colors"
@@ -82,16 +82,16 @@ export default async function MyLessonsPage() {
                           </div>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-xs text-text-secondary">
+                      <td className="px-5 py-3.5 text-xs text-text-secondary">
                         {lesson.classes?.name || '—'}
                       </td>
-                      <td className="px-4 py-3 text-xs text-text-secondary">
+                      <td className="px-5 py-3.5 text-xs text-text-secondary">
                         {lesson.subjects?.name || '—'}
                       </td>
-                      <td className="px-4 py-3 text-xs text-text-secondary">
+                      <td className="px-5 py-3.5 text-xs text-text-secondary">
                         {lesson.week_no ? `Wk ${lesson.week_no}` : '—'}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-5 py-3.5">
                         <span
                           className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
                             lesson.status === 'published'
@@ -102,7 +102,7 @@ export default async function MyLessonsPage() {
                           {lesson.status}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-xs text-text-secondary">
+                      <td className="px-5 py-3.5 text-xs text-text-secondary">
                         {actList.length > 0 ? (
                           <span>
                             {actList.length} total ({pubCount} published)
@@ -111,7 +111,7 @@ export default async function MyLessonsPage() {
                           <span className="text-text-secondary/60">None</span>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-right">
+                      <td className="px-5 py-3.5 text-right">
                         <div className="flex items-center justify-end gap-2">
                           {lesson.notes_path && (
                             <NotesDownloadButton

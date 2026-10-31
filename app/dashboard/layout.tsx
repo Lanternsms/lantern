@@ -17,7 +17,7 @@ const ALL_NAV_ITEMS: NavItem[] = [
   { label: 'Students', href: '/dashboard/students', permission: 'students.view_all' },
   { label: 'Guardians', href: '/dashboard/guardians', permission: 'students.view_all' },
   { label: 'Staff', href: '/dashboard/staff', permission: 'staff.view_all' },
-  { label: 'Academics', href: '/dashboard/academics', permission: 'academic_structure.manage' },
+  { label: 'Classes and subjects', href: '/dashboard/academics', permission: 'academic_structure.manage' },
   { label: 'Roles and permissions', href: '/dashboard/roles', permission: 'roles.manage' },
   { label: 'Gradebook', href: '/dashboard/gradebook', scope: 'teacher' },
   { label: 'Approvals', href: '/dashboard/approvals', scope: 'approver' },

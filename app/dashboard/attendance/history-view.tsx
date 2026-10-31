@@ -98,7 +98,7 @@ export default function HistoryView({ classId, armId }: { classId: string; armId
 
         <a
           href={`/api/attendance/export?${buildParams().toString()}`}
-          className="inline-flex items-center gap-1.5 border border-border bg-surface hover:bg-surface-muted text-text-primary rounded-lg px-3.5 py-2 text-sm font-medium transition-colors  hover:border-text-secondary/40 active:scale-95"
+          className="inline-flex items-center gap-1.5 border border-border bg-surface hover:bg-school-soft/40 text-text-primary rounded-lg px-3.5 py-2 text-sm font-medium transition-colors  hover:border-text-secondary/40 active:scale-95"
         >
           <svg className="w-4 h-4 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -125,7 +125,7 @@ export default function HistoryView({ classId, armId }: { classId: string; armId
         <div className="card overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border text-left text-xs text-text-secondary bg-surface-muted/30">
+              <tr className="border-b border-rule text-left text-xs text-text-secondary bg-surface-muted/30">
                 <th className="p-3 font-medium">Date</th>
                 <th className="p-3 font-medium">Time</th>
                 <th className="p-3 font-medium">Admission No.</th>
@@ -137,7 +137,7 @@ export default function HistoryView({ classId, armId }: { classId: string; armId
             </thead>
             <tbody>
               {rows.map((r: any) => (
-                <tr key={r.id} className="border-b border-border last:border-0 hover:bg-surface-muted/20 transition-colors">
+                <tr key={r.id} className="border-b border-border last:border-0 hover:bg-school-soft/40 transition-colors">
                   <td className="p-3 text-text-secondary font-mono text-xs">{r.date}</td>
                   <td className="p-3 text-text-secondary font-mono text-xs">{r.time ?? '—'}</td>
                   <td className="p-3 text-text-secondary font-mono text-xs">{r.admission_no || '—'}</td>

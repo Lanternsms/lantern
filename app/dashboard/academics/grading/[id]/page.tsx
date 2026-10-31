@@ -30,19 +30,19 @@ export default async function ScaleDetailPage({
     .order('min_score', { ascending: false })
 
   return (
-    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-2xl">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-2xl">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/academics/grading" className="hover:text-primary">Grading Scales</Link> / {scale.name}
       </p>
 
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">{scale.name}</h1>
+          <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">{scale.name}</h1>
           {scale.is_default && (
             <span className="text-xs font-medium bg-success-bg text-success-text rounded-full px-2.5 py-0.5">Default</span>
           )}
         </div>
-        <Link href={`/dashboard/academics/grading/${id}/edit`} className="flex items-center gap-1.5 text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-surface-muted transition-colors">
+        <Link href={`/dashboard/academics/grading/${id}/edit`} className="flex items-center gap-1.5 text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-school-soft/40 transition-colors">
           <Pencil size={14} /> Rename
         </Link>
       </div>

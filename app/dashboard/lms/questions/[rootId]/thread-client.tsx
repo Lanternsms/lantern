@@ -196,8 +196,8 @@ export function ThreadClient({ root, replies, canManage, rootId }: ThreadClientP
             disabled={isPending}
             className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border transition-colors disabled:opacity-50 ${
               root.status === 'closed'
-                ? 'bg-surface text-text-primary border-border hover:bg-surface-muted'
-                : 'bg-surface text-text-secondary border-border hover:text-text-primary hover:bg-surface-muted'
+                ? 'bg-surface text-text-primary border-border hover:bg-school-soft/40'
+                : 'bg-surface text-text-secondary border-border hover:text-text-primary hover:bg-school-soft/40'
             }`}
           >
             {root.status === 'closed' ? (
@@ -359,7 +359,7 @@ export function ThreadClient({ root, replies, canManage, rootId }: ThreadClientP
             rows={4}
             maxLength={2000}
             placeholder="Write a clear, helpful reply for the student..."
-            className="w-full border border-border rounded-lg p-3 text-sm text-text-primary bg-background focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-text-muted disabled:opacity-60"
+            className="w-full border border-border rounded-lg p-3 text-sm text-text-primary bg-surface focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-text-muted disabled:opacity-60"
           />
 
           <div className="flex items-center justify-between gap-4 flex-wrap">

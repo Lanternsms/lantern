@@ -43,7 +43,7 @@ export default async function ReportCardPage({
 
   if (!selectedTermId) {
     return (
-      <div className="px-5 py-7 sm:px-8 sm:py-8">
+      <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
         <p className="text-sm text-text-secondary">No terms have been set up for your school yet.</p>
       </div>
     )
@@ -72,8 +72,8 @@ export default async function ReportCardPage({
 
       <div className="card p-8 print:border-0 print:shadow-none">
         <div className="text-center mb-6 pb-6 border-b border-border">
-          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">{school?.name}</h1>
-          <p className="text-sm text-text-secondary mt-1">Report Card — {card.term.name}, {card.session.name}</p>
+          <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">{school?.name}</h1>
+          <p className="mt-1 text-[15px] text-text-secondary">Report Card — {card.term.name}, {card.session.name}</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 text-sm mb-6">
@@ -90,7 +90,7 @@ export default async function ReportCardPage({
         ) : (
           <table className="w-full text-sm mb-6">
             <thead>
-              <tr className="border-b border-border text-left text-text-secondary text-xs ">
+              <tr className="border-b border-rule text-left text-text-secondary text-xs ">
                 <th className="py-2">Subject</th>
                 {(card.assessmentNames?.length ? card.assessmentNames : Object.keys(card.subjects[0]?.scores ?? {})).map((name) => (
                   <th key={name} className="py-2">{name}</th>

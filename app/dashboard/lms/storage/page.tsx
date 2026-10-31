@@ -249,8 +249,8 @@ interface LargestLessonItem {
                 </thead>
                 <tbody className="divide-y divide-border">
                   {largestLessons.map((lesson) => (
-                    <tr key={lesson.id} className="hover:bg-surface-muted/20 transition-colors">
-                      <td className="px-4 py-3 font-medium text-text-primary whitespace-nowrap">
+                    <tr key={lesson.id} className="hover:bg-school-soft/40 transition-colors">
+                      <td className="px-5 py-3.5 font-medium text-text-primary whitespace-nowrap">
                         <Link
                           href={`/dashboard/lms/${lesson.id}`}
                           className="hover:text-primary transition-colors hover:underline"
@@ -258,16 +258,16 @@ interface LargestLessonItem {
                           {lesson.title}
                         </Link>
                       </td>
-                      <td className="px-4 py-3 text-text-secondary whitespace-nowrap">
+                      <td className="px-5 py-3.5 text-text-secondary whitespace-nowrap">
                         {lesson.className}
                       </td>
-                      <td className="px-4 py-3 text-text-secondary whitespace-nowrap">
+                      <td className="px-5 py-3.5 text-text-secondary whitespace-nowrap">
                         {lesson.subjectName}
                       </td>
-                      <td className="px-4 py-3 font-mono text-text-primary whitespace-nowrap">
+                      <td className="px-5 py-3.5 font-mono text-text-primary whitespace-nowrap">
                         {lesson.sizeBytes !== null ? formatFileSize(lesson.sizeBytes) : 'unknown'}
                       </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
+                      <td className="px-5 py-3.5 whitespace-nowrap">
                         {lesson.codec ? (
                           <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-surface-muted border border-border text-text-secondary">
                             {formatCodecLabel(lesson.codec as VideoCodec)}

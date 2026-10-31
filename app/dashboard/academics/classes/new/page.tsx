@@ -12,11 +12,10 @@ export default async function NewClassPage({
   const { data: departments } = await supabase.from('departments').select('id, name').order('name')
 
   return (
-    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-lg">
-      <Link href="/dashboard/academics/classes" className="text-sm text-primary hover:text-primary-hover">
-        ← Back to classes
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-lg">
+      <Link href="/dashboard/academics/classes" className="inline-flex w-fit items-center gap-1 text-sm text-text-secondary hover:text-text-primary">← Back to classes
       </Link>
-      <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary mt-4 mb-6">Add Class</h1>
+      <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mt-4 mb-6">Add Class</h1>
 
       {error && (
         <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>

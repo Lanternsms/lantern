@@ -206,7 +206,7 @@ export function ActivityManager({
             <button
               type="button"
               onClick={() => handleOpenCreate('quiz')}
-              className="card inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+              className="card inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-school-soft/40 transition-colors"
             >
               <svg className="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -239,7 +239,7 @@ export function ActivityManager({
           {activities.map(act => (
             <div
               key={act.id}
-              className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 hover:bg-surface-muted/40 transition-colors"
+              className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 hover:bg-school-soft/40 transition-colors"
             >
               <div className="space-y-1.5 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
@@ -303,7 +303,7 @@ export function ActivityManager({
                 {canViewResults && (
                   <Link
                     href={`/dashboard/lms/activities/${act.id}`}
-                    className="card inline-flex items-center px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+                    className="card inline-flex items-center px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-school-soft/40 transition-colors"
                   >
                     {act.kind === 'quiz' ? 'Questions & Submissions' : 'Submissions & Marking'}
                   </Link>
@@ -313,7 +313,7 @@ export function ActivityManager({
                   <button
                     type="button"
                     onClick={() => handleToggleStatus(act)}
-                    className="card inline-flex items-center px-2.5 py-1.5 text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-muted transition-colors"
+                    className="card inline-flex items-center px-2.5 py-1.5 text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-school-soft/40 transition-colors"
                   >
                     {act.status === 'published' ? 'Unpublish' : 'Publish'}
                   </button>
@@ -508,7 +508,7 @@ export function ActivityManager({
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="card px-4 py-2 text-xs font-medium text-text-secondary hover:bg-surface-muted transition-colors"
+                  className="card px-4 py-2 text-xs font-medium text-text-secondary hover:bg-school-soft/40 transition-colors"
                 >
                   Cancel
                 </button>

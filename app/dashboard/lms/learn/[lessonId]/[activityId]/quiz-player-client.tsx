@@ -188,7 +188,7 @@ export function QuizPlayerClient({
           <div className="flex justify-center gap-3 pt-2">
             <Link
               href={`/dashboard/lms/learn/${lessonId}?student=${studentId}`}
-              className="card px-4 py-2 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+              className="card px-4 py-2 text-xs font-medium text-text-primary hover:bg-school-soft/40 transition-colors"
             >
               &larr; Back to Activities
             </Link>
@@ -365,7 +365,7 @@ export function QuizPlayerClient({
                     className={`flex items-center gap-3 rounded-lg border p-3.5 text-sm cursor-pointer transition-all ${
                       isSelected
                         ? 'border-primary bg-primary/5 text-primary font-medium ring-1 ring-primary'
-                        : 'border-border bg-surface hover:bg-surface-muted/50 text-text-primary'
+                        : 'border-border bg-surface hover:bg-school-soft/40 text-text-primary'
                     }`}
                   >
                     <input

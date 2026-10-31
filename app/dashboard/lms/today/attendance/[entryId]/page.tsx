@@ -62,7 +62,7 @@ export default async function PeriodAttendancePage({
             <h1 className="text-xl font-bold text-text-primary">
               {subjectName} — Period Attendance
             </h1>
-            <p className="text-sm text-text-secondary mt-1">
+            <p className="mt-1 text-[15px] text-text-secondary">
               {className}
               {armName ? ` · ${armName}` : ''} &bull;{' '}
               <span className="font-medium">{formattedDate}</span>

@@ -191,7 +191,7 @@ export default async function FacilitatorTodayPage() {
             Facilitator Screen
           </p>
           <h1 className="text-2xl font-bold text-text-primary mt-0.5">Today&apos;s Lessons</h1>
-          <p className="text-sm text-text-secondary mt-1">
+          <p className="mt-1 text-[15px] text-text-secondary">
             {formattedDate} {session && `· ${session.name}`}
           </p>
         </div>

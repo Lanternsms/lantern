@@ -140,9 +140,8 @@ export default async function StaffDetailPage({
   )
 
   return (
-    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-2xl">
-      <Link href="/dashboard/staff" className="text-sm text-primary hover:text-primary-hover">
-        ← Back to staff
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-2xl">
+      <Link href="/dashboard/staff" className="inline-flex w-fit items-center gap-1 text-sm text-text-secondary hover:text-text-primary">← Back to staff
       </Link>
 
       <div className="flex items-center justify-between mt-4 mb-6">
@@ -152,8 +151,8 @@ export default async function StaffDetailPage({
           </span>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">{staff.first_name} {staff.last_name}</h1>
-              <span className={`text-xs font-medium rounded-full px-2.5 py-0.5 ${isActive ? 'bg-success-bg text-success-text' : 'bg-secondary/10 text-secondary'}`}>
+              <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">{staff.first_name} {staff.last_name}</h1>
+              <span className={`text-xs font-medium rounded-full px-2.5 py-0.5 ${isActive ? 'bg-success-bg text-success-text' : 'bg-raised text-[#374151]'}`}>
                 {isActive ? 'Active' : staff.status}
               </span>
             </div>

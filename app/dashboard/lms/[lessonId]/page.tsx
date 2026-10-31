@@ -154,7 +154,7 @@ export default async function LessonDetailPage({
             <Link href="/dashboard/lms/my-lessons" className="hover:text-primary">My Lessons</Link> / {lesson.title}
           </p>
           <div className="flex items-start justify-between gap-4 flex-wrap">
-            <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">{lesson.title}</h1>
+            <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">{lesson.title}</h1>
             <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${
               lesson.status === 'published'
                 ? 'bg-success-bg text-success-text'
@@ -247,7 +247,7 @@ export default async function LessonDetailPage({
           )} / {lesson.title}
         </p>
         <div className="flex items-start justify-between gap-4 flex-wrap">
-          <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">{lesson.title}</h1>
+          <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">{lesson.title}</h1>
           <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${
             lesson.status === 'published'
               ? 'bg-success-bg text-success-text'
@@ -375,18 +375,18 @@ export default async function LessonDetailPage({
                 </thead>
                 <tbody className="divide-y divide-border">
                   {attendanceSummary.rows.map((row) => (
-                    <tr key={row.date} className="hover:bg-surface-muted/20 transition-colors">
-                      <td className="px-4 py-3 font-medium text-text-primary whitespace-nowrap">
+                    <tr key={row.date} className="hover:bg-school-soft/40 transition-colors">
+                      <td className="px-5 py-3.5 font-medium text-text-primary whitespace-nowrap">
                         {new Date(row.date + 'T12:00:00').toLocaleDateString(undefined, {
                           weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
                         })}
                       </td>
-                      <td className="px-4 py-3 text-right text-success-text font-semibold">{row.present}</td>
-                      <td className="px-4 py-3 text-right text-warning-text">{row.late}</td>
-                      <td className="px-4 py-3 text-right text-danger-text">{row.absent}</td>
-                      <td className="px-4 py-3 text-right text-text-secondary">{row.total}</td>
+                      <td className="px-5 py-3.5 text-right text-success-text font-semibold">{row.present}</td>
+                      <td className="px-5 py-3.5 text-right text-warning-text">{row.late}</td>
+                      <td className="px-5 py-3.5 text-right text-danger-text">{row.absent}</td>
+                      <td className="px-5 py-3.5 text-right text-text-secondary">{row.total}</td>
                       {attendanceSummary.canManage && primaryLmsEntryId && (
-                        <td className="px-4 py-3 text-right">
+                        <td className="px-5 py-3.5 text-right">
                           <Link
                             href={`/dashboard/lms/today/attendance/${primaryLmsEntryId}?date=${row.date}`}
                             className="text-xs text-primary hover:underline font-medium"
@@ -534,7 +534,7 @@ export default async function LessonDetailPage({
             <div className="pt-2">
               <button
                 type="submit"
-                className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
               >
                 Save changes
               </button>
@@ -562,7 +562,7 @@ export default async function LessonDetailPage({
               <form action={setDraft}>
                 <button
                   type="submit"
-                  className="text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-surface-muted transition-colors"
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-surface px-4 text-sm font-semibold text-text-primary shadow-card ring-1 ring-black/[0.06] hover:bg-raised"
                 >
                   Unpublish
                 </button>

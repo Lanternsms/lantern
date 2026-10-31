@@ -374,7 +374,7 @@ export function LessonVideoUpload({
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="text-sm border border-border rounded-lg px-4 py-2 text-text-primary hover:bg-surface-muted transition-colors disabled:opacity-50"
+          className="text-sm border border-border rounded-lg px-4 py-2 text-text-primary hover:bg-school-soft/40 transition-colors disabled:opacity-50"
         >
           {file ? 'Change file' : 'Choose video'}
         </button>
@@ -502,7 +502,7 @@ export function LessonVideoUpload({
               <button
                 type="button"
                 onClick={pauseUpload}
-                className="bg-surface border border-control rounded-xl text-xs px-3 py-1.5 hover:bg-surface-muted text-text-secondary transition-colors"
+                className="bg-surface border border-control rounded-xl text-xs px-3 py-1.5 hover:bg-school-soft/40 text-text-secondary transition-colors"
               >
                 Pause
               </button>
