@@ -92,97 +92,131 @@ export default async function GradebookEntryPage({
   const saveScoresWithId = saveScores.bind(null, id)
   const submitWithId = submitForApproval.bind(null, id)
 
+  const rows = sortedEnrolments.map((e) => {
+    const student = (Array.isArray(e.students) ? e.students[0] : e.students) as StudentRelation | null
+    const scores = (assessmentTypes ?? []).map((at) => scoreByKey.get(`${e.student_id}_${at.id}`))
+    const filled = scores.filter((v) => v !== undefined && v !== null)
+    const complete = assessmentTypes ? filled.length === assessmentTypes.length : false
+    const total = filled.reduce((sum: number, v) => sum + Number(v), 0)
+    return { e, student, complete, total, any: filled.length > 0 }
+  })
+  const completeCount = rows.filter((r) => r.complete).length
+  const statusLabel = batch ? batch.status.replace(/_/g, ' ') : 'Not started'
+  const steps = [
+    { label: 'You enter scores', note: `${completeCount} of ${rows.length} complete`, state: isLocked ? 'done' : 'now' },
+    { label: 'Head of department checks', note: '', state: isLocked ? 'now' : 'later' },
+    { label: 'Principal approves', note: '', state: 'later' },
+    { label: 'Guardians see the report card', note: '', state: batch?.status === 'published' ? 'done' : 'later' },
+  ]
+
   return (
-    <div className="px-5 py-7 sm:px-8 sm:py-8">
-      <Link href="/dashboard/gradebook" className="text-sm text-primary hover:text-primary-hover">← Back to gradebook</Link>
-
-      <div className="flex items-center justify-between mt-4 mb-1">
-        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">
-          {cs.subjects?.name} - {cs.classes?.name}{cs.arms?.name ? ` ${cs.arms.name}` : ''}
-        </h1>
-        {batch && (
-          <span className="text-xs font-medium bg-secondary/10 text-secondary rounded-full px-2.5 py-1 capitalize">
-            {batch.status.replace('_', ' ')}
-          </span>
-        )}
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
+      <div className="flex flex-col gap-2">
+        <nav aria-label="Breadcrumb" className="text-sm text-text-secondary">
+          <Link href="/dashboard/gradebook" className="hover:text-text-primary">Gradebook</Link> / {term.name}
+        </nav>
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="text-[28px] font-semibold leading-tight sm:text-[34px]">
+            {cs.subjects?.name} · {cs.classes?.name}{cs.arms?.name ?? ''}
+          </h1>
+          <span className={`rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${
+            batch?.status === 'published' ? 'bg-success-bg text-success-text'
+            : batch?.status === 'returned' ? 'bg-warning-bg text-warning-text'
+            : isLocked ? 'bg-school-soft text-school-ink' : 'bg-raised text-[#374151]'
+          }`}>{statusLabel}</span>
+        </div>
+        <p className="text-[15px] text-text-secondary">
+          {rows.length} students · <strong className="font-semibold text-text-primary">{completeCount} of {rows.length} complete</strong>
+          {completeCount < rows.length && !isLocked ? ` — ${rows.length - completeCount} still missing a score` : ''}
+        </p>
       </div>
-      <p className="text-sm text-text-secondary mb-6">{term.name}</p>
 
-      {error && <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>}
-      {saved && (
-        <p className="flex items-center gap-2 text-sm text-success-text bg-success-bg rounded-lg px-3 py-2 mb-4">
-          <CheckCircle2 size={16} /> Scores saved.
-        </p>
-      )}
-      {submitted && (
-        <p className="flex items-center gap-2 text-sm text-success-text bg-success-bg rounded-lg px-3 py-2 mb-4">
-          <CheckCircle2 size={16} /> Submitted for approval.
-        </p>
-      )}
-      {isLocked && (
-        <p className="text-sm text-text-secondary bg-surface-muted border border-border rounded-lg px-3 py-2 mb-4">
-          This batch has already been submitted and can no longer be edited here.
-        </p>
-      )}
+      {error && <p role="alert" className="rounded-xl bg-danger-bg px-4 py-3 text-sm text-danger-text">{error}</p>}
+      {saved && <p role="status" className="flex items-center gap-2 rounded-xl bg-success-bg px-4 py-3 text-sm text-success-text"><CheckCircle2 size={16} /> Scores saved.</p>}
+      {submitted && <p role="status" className="flex items-center gap-2 rounded-xl bg-success-bg px-4 py-3 text-sm text-success-text"><CheckCircle2 size={16} /> Sent to your head of department.</p>}
+      {isLocked && <p className="rounded-xl bg-school-soft px-4 py-3 text-sm text-school-ink">These scores have been sent up for approval, so they can’t be changed here. Your head of department can return them to you.</p>}
 
-      {sortedEnrolments.length === 0 ? (
-        <p className="text-sm text-text-secondary">No students enrolled in this class for the current term.</p>
+      {rows.length === 0 ? (
+        <p className="card p-6 text-text-secondary">No students are enrolled in this class arm this session.</p>
       ) : (
-        <form action={saveScoresWithId}>
-          <div className="card overflow-hidden mb-4">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">Student</th>
-                  {assessmentTypes?.map((at) => (
-                    <th key={at.id} className="text-left font-medium text-text-secondary px-4 py-3 text-xs ">{at.name}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {sortedEnrolments.map((e) => {
-                  const student = (Array.isArray(e.students) ? e.students[0] : e.students) as StudentRelation | null
-                  return (
-                    <tr key={e.student_id} className="border-b border-border last:border-0">
-                      <td className="px-4 py-3 text-text-primary">
-                        {student ? `${student.first_name} ${student.last_name}` : 'Unknown Student'}
-                        <span className="block text-xs text-text-secondary">{student?.admission_no}</span>
+        <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
+          <form action={saveScoresWithId} className="card flex min-w-0 flex-col">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[560px] text-sm">
+                <thead>
+                  <tr className="text-[13px] text-text-secondary">
+                    <th className="px-5 py-3.5 text-left font-medium">Student</th>
+                    {assessmentTypes?.map((at) => <th key={at.id} className="px-2 py-3.5 text-right font-medium">{at.name}</th>)}
+                    <th className="px-5 py-3.5 text-right font-medium">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map(({ e, student, complete, total, any }) => (
+                    <tr key={e.student_id} className="border-t border-rule">
+                      <td className="px-5 py-2">
+                        <span className="block font-medium">{student ? `${student.first_name} ${student.last_name}` : 'Unknown student'}</span>
+                        <span className={`block text-xs ${complete ? 'text-text-secondary' : 'text-warning-text'}`}>{complete ? student?.admission_no : any ? 'Missing a score' : 'No scores yet'}</span>
                       </td>
-                      {assessmentTypes?.map((at) => (
-                        <td key={at.id} className="px-4 py-3">
-                          <input
-                            type="number"
-                            step="0.1"
-                            min="0"
-                            max="100"
-                            disabled={!!isLocked}
-                            name={`score_${e.student_id}_${at.id}`}
-                            defaultValue={scoreByKey.get(`${e.student_id}_${at.id}`) ?? ''}
-                            className="w-20 rounded-lg border border-border px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary disabled:bg-surface-muted disabled:text-text-muted"
-                          />
-                        </td>
-                      ))}
+                      {assessmentTypes?.map((at) => {
+                        const v = scoreByKey.get(`${e.student_id}_${at.id}`)
+                        const empty = v === undefined || v === null
+                        return (
+                          <td key={at.id} className="px-2 py-2 text-right">
+                            <input
+                              type="number"
+                              inputMode="decimal"
+                              step="0.1"
+                              min="0"
+                              max="100"
+                              aria-label={`${at.name}, ${student?.first_name ?? ''} ${student?.last_name ?? ''}`}
+                              disabled={!!isLocked}
+                              name={`score_${e.student_id}_${at.id}`}
+                              defaultValue={v ?? ''}
+                              className={`h-10 w-[72px] rounded-lg border px-2.5 text-right text-[15px] tabular-nums focus:border-primary focus:outline-none focus:ring-4 focus:ring-school-soft disabled:border-transparent disabled:bg-raised disabled:text-text-secondary ${empty && any && !isLocked ? 'border-danger-text/40 bg-danger-bg/40' : 'border-control bg-surface'}`}
+                            />
+                          </td>
+                        )
+                      })}
+                      <td className="px-5 py-2 text-right font-display text-[17px] font-semibold tabular-nums">{any ? total : '—'}</td>
                     </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {!isLocked && (
+              <div className="sticky bottom-0 flex items-center justify-between gap-3 rounded-b-[18px] border-t border-rule bg-surface/95 px-5 py-3.5 backdrop-blur">
+                <span className="text-sm text-text-secondary">Totals update when you save.</span>
+                <button type="submit" className="h-10 rounded-xl border border-control bg-surface px-4 text-sm font-semibold hover:bg-raised">Save scores</button>
+              </div>
+            )}
+          </form>
 
-          {!isLocked && (
-            <button type="submit" className="text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-surface-muted transition-colors">
-              Save Scores
-            </button>
-          )}
-        </form>
-      )}
-
-      {!isLocked && sortedEnrolments.length > 0 && (
-        <form action={submitWithId} className="mt-3">
-          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
-            Submit for Approval
-          </button>
-        </form>
+          <aside className="flex flex-col gap-4">
+            <section aria-labelledby="chain" className="card p-5">
+              <h2 id="chain" className="mb-4 text-[15px] font-semibold">Where these scores go</h2>
+              <ol className="flex flex-col gap-4">
+                {steps.map((st) => (
+                  <li key={st.label} className="flex gap-3">
+                    <span className={`mt-0.5 h-5 w-5 shrink-0 rounded-full ${st.state === 'done' ? 'bg-primary' : st.state === 'now' ? 'border-[5px] border-primary' : 'border border-control'}`} />
+                    <span className="flex flex-col">
+                      <span className={st.state === 'later' ? 'text-text-secondary' : 'font-semibold'}>{st.label}</span>
+                      {st.note && <span className="text-xs text-text-secondary">{st.note}</span>}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </section>
+            {!isLocked && (
+              <form action={submitWithId} className="flex flex-col gap-2 rounded-[24px] bg-school-deep p-5 text-white shadow-raise">
+                <span className="font-semibold">Ready to send?</span>
+                <span className="text-sm text-school-deep-muted">
+                  {completeCount === rows.length ? 'Every student has a complete set of scores.' : `${rows.length - completeCount} student${rows.length - completeCount === 1 ? '' : 's'} still missing a score. Save first, then send.`}
+                </span>
+                <button type="submit" className="mt-2 h-11 rounded-xl bg-white text-sm font-semibold text-school-deep hover:bg-school-soft">Send to head of department</button>
+              </form>
+            )}
+          </aside>
+        </div>
       )}
     </div>
   )
