@@ -30,7 +30,7 @@ export default async function PlatformAdminGatePage({
           name="password"
           placeholder="Password"
           autoFocus
-          className="card w-full px-3 py-2 text-sm text-text-primary"
+          className="bg-surface border border-control rounded-xl w-full px-3 py-2 text-sm text-text-primary"
         />
         <button type="submit" className="w-full bg-primary text-white text-sm font-medium py-2 rounded-xl hover:bg-primary-hover transition-colors">
           Unlock

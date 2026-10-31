@@ -117,7 +117,7 @@ export default async function StaffDetailPage({
               <select
                 name="profileId"
                 required
-                className="card flex-1 px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                className="bg-surface border border-control rounded-xl flex-1 px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="">Select a login to link…</option>
                 {linkableProfiles.map((p) => (

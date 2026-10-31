@@ -118,7 +118,7 @@ export default function RosterWidget({
               type="button"
               onClick={handleMarkAllPresent}
               disabled={isPending}
-              className="card text-xs font-medium px-3 py-2 hover:bg-surface-muted transition-colors disabled:opacity-50"
+              className="bg-surface border border-control rounded-xl text-xs font-medium px-3 py-2 hover:bg-surface-muted transition-colors disabled:opacity-50"
             >
               Mark all present
             </button>

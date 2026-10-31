@@ -46,12 +46,12 @@ export default function UploadForm({ classes }: { classes: ClassRow[] }) {
     <form onSubmit={handleSubmit} className="space-y-4 max-w-xl">
       <div>
         <label className="block text-xs text-text-secondary mb-1">Title</label>
-        <input name="title" required className="card w-full px-3 py-2 text-sm" />
+        <input name="title" required className="bg-surface border border-control rounded-xl w-full px-3 py-2 text-sm" />
       </div>
 
       <div>
         <label className="block text-xs text-text-secondary mb-1">Description (optional)</label>
-        <textarea name="description" rows={3} className="card w-full px-3 py-2 text-sm" />
+        <textarea name="description" rows={3} className="bg-surface border border-control rounded-xl w-full px-3 py-2 text-sm" />
       </div>
 
       <div>

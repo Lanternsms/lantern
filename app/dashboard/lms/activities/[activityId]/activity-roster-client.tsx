@@ -276,7 +276,7 @@ export function ActivityRosterClient({
             type="button"
             onClick={handleDownloadBrief}
             disabled={downloadingBrief}
-            className="card inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-primary hover:bg-surface-muted transition-colors shrink-0 disabled:opacity-50"
+            className="bg-surface border border-control rounded-xl inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-primary hover:bg-surface-muted transition-colors shrink-0 disabled:opacity-50"
           >
             <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />

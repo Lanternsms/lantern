@@ -121,9 +121,9 @@ export default async function MyLessonsPage() {
                           )}
                           <Link
                             href={`/dashboard/lms/${lesson.id}`}
-                            className="card inline-flex items-center px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+                            className="inline-flex h-8 items-center rounded-lg bg-raised px-3 text-xs font-semibold text-text-primary hover:bg-school-soft hover:text-school-ink"
                           >
-                            Manage Activities &rarr;
+                            Activities &rarr;
                           </Link>
                         </div>
                       </td>

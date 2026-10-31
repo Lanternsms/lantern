@@ -2,6 +2,8 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getLmsAccess } from '@/lib/lms/access'
+import { Add01Icon, PlayIcon, SparklesIcon } from '@hugeicons/core-free-icons'
+import { Icon } from '@/components/icon'
 
 export const dynamic = 'force-dynamic'
 
@@ -70,126 +72,88 @@ export default async function LmsPage({
     classMap.get(subjectName)!.push(l)
   }
 
+  const all = (lessons ?? []) as Lesson[]
+  const published = all.filter((l) => l.status === 'published').length
+  const field = 'h-10 rounded-xl border border-control bg-surface px-3 text-sm focus:border-primary focus:outline-none focus:ring-4 focus:ring-school-soft'
+
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <h1 className="text-2xl font-bold tracking-[-0.01em] text-text-primary">Lessons</h1>
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-[30px] font-semibold leading-tight sm:text-[36px]">Lessons</h1>
+          <p className="text-[15px] text-text-secondary">{all.length} lesson{all.length === 1 ? '' : 's'} · {published} published to students</p>
+        </div>
         {access.isManager && (
-          <div className="flex items-center gap-2">
-            <Link
-              href="/dashboard/lms/ai"
-              className="border border-primary/20 bg-primary/5 text-primary text-sm font-medium rounded-lg px-3.5 py-2 hover:bg-primary/10 transition-colors inline-flex items-center gap-1.5"
-            >
-              <span>✨ Lumi AI Tutor</span>
+          <div className="flex flex-wrap items-center gap-2">
+            <Link href="/dashboard/lms/ai" className="flex h-10 items-center gap-2 rounded-xl bg-surface px-4 text-sm font-medium shadow-card ring-1 ring-black/[0.06] hover:bg-raised">
+              <Icon icon={SparklesIcon} size={17} className="text-school" /> LUMI tutor settings
             </Link>
-            <Link
-              href="/dashboard/lms/new"
-              className="bg-primary text-white text-sm font-medium rounded-xl px-4 py-2 hover:bg-primary-hover transition-colors"
-            >
-              + New Lesson
+            <Link href="/dashboard/lms/new" className="flex h-10 items-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover">
+              <Icon icon={Add01Icon} size={17} /> New lesson
             </Link>
           </div>
         )}
       </div>
 
-      {errorMsg && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2">
-          {errorMsg}
-        </p>
-      )}
+      {errorMsg && <p role="alert" className="rounded-xl bg-danger-bg px-4 py-3 text-sm text-danger-text">{errorMsg}</p>}
 
-      {/* Filters */}
-      <form className="flex gap-3 flex-wrap">
-        <select
-          name="class"
-          defaultValue={classFilter}
-          onChange={undefined}
-          className="card px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
-        >
+      <form className="flex flex-wrap items-center gap-2">
+        <label className="sr-only" htmlFor="f-class">Class</label>
+        <select id="f-class" name="class" defaultValue={classFilter} className={field}>
           <option value="">All classes</option>
-          {(classes ?? []).map((c: { id: string; name: string }) => (
-            <option key={c.id} value={c.id}>{c.name}</option>
-          ))}
+          {(classes ?? []).map((c: { id: string; name: string }) => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
-        <select
-          name="subject"
-          defaultValue={subjectFilter}
-          className="card px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
-        >
+        <label className="sr-only" htmlFor="f-subject">Subject</label>
+        <select id="f-subject" name="subject" defaultValue={subjectFilter} className={field}>
           <option value="">All subjects</option>
-          {(subjects ?? []).map((s: { id: string; name: string }) => (
-            <option key={s.id} value={s.id}>{s.name}</option>
-          ))}
+          {(subjects ?? []).map((s: { id: string; name: string }) => <option key={s.id} value={s.id}>{s.name}</option>)}
         </select>
-        <button
-          type="submit"
-          className="card px-3 py-2 text-sm text-text-primary hover:bg-surface-muted transition-colors"
-        >
-          Filter
-        </button>
-        {(classFilter || subjectFilter) && (
-          <Link
-            href="/dashboard/lms"
-            className="rounded-lg px-3 py-2 text-sm text-text-secondary hover:text-primary transition-colors"
-          >
-            Clear
-          </Link>
-        )}
+        <button type="submit" className="h-10 rounded-xl bg-raised px-4 text-sm font-medium hover:bg-school-soft hover:text-school-ink">Filter</button>
+        {(classFilter || subjectFilter) && <Link href="/dashboard/lms" className="px-2 text-sm text-text-secondary hover:text-text-primary">Clear</Link>}
       </form>
 
-      {/* Grouped lesson list */}
       {grouped.size === 0 ? (
-        <p className="text-sm text-text-secondary">No lessons found.</p>
+        <div className="card flex flex-col items-start gap-2 p-8">
+          <span className="font-display text-lg font-semibold">{classFilter || subjectFilter ? 'No lessons match these filters' : 'No lessons yet'}</span>
+          <span className="max-w-[52ch] text-text-secondary">Record a lesson on a phone or upload a video, then attach the notes so LUMI can answer students’ questions from them.</span>
+        </div>
       ) : (
-        <div className="space-y-8">
+        <div className="flex flex-col gap-8">
           {Array.from(grouped.entries()).map(([className, subjectMap]) => (
-            <div key={className}>
-              <h2 className="text-sm font-semibold text-text-primary mb-3">{className}</h2>
-              <div className="space-y-6">
+            <section key={className} aria-labelledby={`c-${className}`} className="flex flex-col gap-3">
+              <h2 id={`c-${className}`} className="text-lg font-semibold">{className}</h2>
+              <div className="grid gap-4 lg:grid-cols-2">
                 {Array.from(subjectMap.entries()).map(([subjectName, items]) => (
                   <div key={subjectName} className="card overflow-hidden">
-                    <div className="px-5 py-3 border-b border-border bg-surface-muted">
-                      <h3 className="text-xs font-semibold text-text-secondary ">
-                        {subjectName}
-                      </h3>
+                    <div className="flex items-center justify-between px-5 pb-2 pt-4">
+                      <h3 className="font-semibold">{subjectName}</h3>
+                      <span className="text-xs text-text-secondary">{items.length} lesson{items.length === 1 ? '' : 's'}</span>
                     </div>
-                    <div className="divide-y divide-border">
+                    <ul>
                       {items.map((lesson) => (
-                        <Link
-                          key={lesson.id}
-                          href={`/dashboard/lms/${lesson.id}`}
-                          className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-surface-muted transition-colors"
-                        >
-                          <div className="min-w-0">
-                            <p className="text-sm font-medium text-text-primary truncate">{lesson.title}</p>
-                            <p className="text-xs text-text-secondary mt-0.5 truncate">
-                              {lesson.topic && <span>{lesson.topic} · </span>}
-                              {lesson.recorder
-                                ? `${lesson.recorder.first_name} ${lesson.recorder.last_name}`
-                                : '—'}
-                            </p>
-                          </div>
-                          <div className="flex items-center gap-3 shrink-0">
-                            {lesson.week_no != null && (
-                              <span className="text-xs text-text-muted">Wk {lesson.week_no}</span>
-                            )}
-                            <span className="text-xs text-text-muted">{formatDuration(lesson.duration_seconds)}</span>
-                            <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                              lesson.status === 'published'
-                                ? 'bg-success-bg text-success-text'
-                                : 'bg-surface-muted text-text-secondary border border-border'
-                            }`}>
+                        <li key={lesson.id}>
+                          <Link href={`/dashboard/lms/${lesson.id}`} className="flex items-center gap-4 px-5 py-3 transition-colors hover:bg-school-soft/40">
+                            <span className="relative flex h-14 w-24 shrink-0 items-end justify-end overflow-hidden rounded-xl bg-school-deep p-1.5">
+                              <Icon icon={PlayIcon} size={18} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white/85" />
+                              <span className="rounded bg-black/40 px-1 text-[11px] font-semibold tabular-nums text-white">{formatDuration(lesson.duration_seconds)}</span>
+                            </span>
+                            <span className="flex min-w-0 flex-1 flex-col">
+                              <span className="truncate font-medium">{lesson.title}</span>
+                              <span className="truncate text-xs text-text-secondary">
+                                {lesson.week_no != null ? `Week ${lesson.week_no} · ` : ''}{lesson.topic ? `${lesson.topic} · ` : ''}{lesson.recorder ? `${lesson.recorder.first_name} ${lesson.recorder.last_name}` : '—'}
+                              </span>
+                            </span>
+                            <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${lesson.status === 'published' ? 'bg-success-bg text-success-text' : 'bg-raised text-[#374151]'}`}>
                               {lesson.status}
                             </span>
-                          </div>
-                        </Link>
+                          </Link>
+                        </li>
                       ))}
-                    </div>
+                    </ul>
                   </div>
                 ))}
               </div>
-            </div>
+            </section>
           ))}
         </div>
       )}

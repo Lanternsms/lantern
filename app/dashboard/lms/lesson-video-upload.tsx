@@ -502,7 +502,7 @@ export function LessonVideoUpload({
               <button
                 type="button"
                 onClick={pauseUpload}
-                className="card text-xs px-3 py-1.5 hover:bg-surface-muted text-text-secondary transition-colors"
+                className="bg-surface border border-control rounded-xl text-xs px-3 py-1.5 hover:bg-surface-muted text-text-secondary transition-colors"
               >
                 Pause
               </button>

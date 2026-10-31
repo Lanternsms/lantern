@@ -70,7 +70,7 @@ export function NotesDownloadButton({
         onClick={handleDownload}
         disabled={isPending}
         aria-label={label ?? `Download notes (${sizeLabel})`}
-        className="card min-h-[44px] min-w-[44px] inline-flex items-center justify-center gap-2 px-3.5 py-2 text-xs font-medium text-text-primary hover:bg-surface-muted active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed select-none"
+        className="bg-surface border border-control rounded-xl min-h-[44px] min-w-[44px] inline-flex items-center justify-center gap-2 px-3.5 py-2 text-xs font-medium text-text-primary hover:bg-surface-muted active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed select-none"
       >
         {isPending ? (
           <>

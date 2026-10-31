@@ -254,7 +254,7 @@ export default async function ClassResultDetailPage({
               <select
                 name="term"
                 defaultValue={selectedTerm.id}
-                className="card text-sm px-3 py-1.5 text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                className="bg-surface border border-control rounded-xl text-sm px-3 py-1.5 text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
                 onChange={undefined}
               >
                 {terms.map((t) => {

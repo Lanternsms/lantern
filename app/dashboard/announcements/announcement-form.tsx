@@ -47,7 +47,7 @@ export default function AnnouncementForm({
           name="title"
           defaultValue={initial?.title}
           required
-          className="card w-full px-3 py-2 text-sm"
+          className="bg-surface border border-control rounded-xl w-full px-3 py-2 text-sm"
         />
       </div>
 
@@ -58,7 +58,7 @@ export default function AnnouncementForm({
           defaultValue={initial?.body}
           required
           rows={6}
-          className="card w-full px-3 py-2 text-sm"
+          className="bg-surface border border-control rounded-xl w-full px-3 py-2 text-sm"
         />
       </div>
 

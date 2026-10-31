@@ -62,7 +62,7 @@ export default async function ClassResultsIndexPage({
               name="term"
               defaultValue={selectedTermId ?? ''}
               onChange={undefined}
-              className="card text-sm px-3 py-1.5 text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="bg-surface border border-control rounded-xl text-sm px-3 py-1.5 text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               {terms.map((t) => {
                 const session = t.academic_sessions as { name: string } | null
