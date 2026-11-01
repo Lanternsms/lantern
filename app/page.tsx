@@ -184,9 +184,9 @@ export default function Home() {
         </section>
 
         <section aria-label="Classrooms" className="grid grid-cols-1 sm:grid-cols-3">
-          <Image src="/landing/student-smiling.jpg" alt="A smiling secondary school student at her desk, classmates behind her" width={1920} height={1322} sizes="(min-width: 640px) 33vw, 100vw" className="h-[300px] w-full object-cover sm:h-[380px]" />
-          <Image src="/landing/student-blackboard.jpg" alt="A student writing answers on the classroom blackboard" width={1920} height={1279} sizes="(min-width: 640px) 33vw, 100vw" className="h-[300px] w-full object-cover sm:h-[380px]" />
-          <Image src="/landing/students-reading.jpg" alt="Three students in uniform reading a textbook together in front of the blackboard" width={1920} height={1279} sizes="(min-width: 640px) 33vw, 100vw" className="h-[300px] w-full object-cover sm:h-[380px]" />
+          <Image src="/landing/library-study.jpg" alt="A student working on his laptop in a bright, modern school library" width={1920} height={1280} sizes="(min-width: 640px) 33vw, 100vw" className="h-[300px] w-full object-cover sm:h-[380px]" />
+          <Image src="/landing/teacher-laptops.jpg" alt="A teacher guiding students working on laptops in a modern classroom" width={1920} height={1280} sizes="(min-width: 640px) 33vw, 100vw" className="h-[300px] w-full object-cover sm:h-[380px]" />
+          <Image src="/landing/pupils-laptop.jpg" alt="Two pupils sharing a laptop on the school stairs" width={1920} height={1280} sizes="(min-width: 640px) 33vw, 100vw" className="h-[300px] w-full object-cover sm:h-[380px]" />
         </section>
 
         <section className="mx-auto flex max-w-[1200px] flex-col gap-10 px-5 py-28 sm:px-6">
@@ -266,7 +266,7 @@ export default function Home() {
             <Link href="/terms" className="hover:text-[#182350]">Terms</Link>
           </nav>
           <p className="basis-full text-[13px]">
-            Photos: Wikimedia Commons (CC0).
+            Photos: Pexels (free to use).
           </p>
         </div>
       </footer>
