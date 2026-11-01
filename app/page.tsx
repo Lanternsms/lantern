@@ -177,7 +177,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="lumi" className="mt-18 bg-[#182350] text-[#f5f3ee]">
+        <section id="lumi" className="mt-18 border-y border-[#e7e9ef] bg-[#f4f5f9] text-[#182350]">
           <div className="mx-auto max-w-[1200px] px-5 py-26 sm:px-6">
             <LumiDemo />
           </div>
@@ -241,15 +241,15 @@ export default function Home() {
         </section>
 
         <section id="demo" className="mx-auto mb-26 max-w-[1200px] px-5 sm:px-6">
-          <div className="flex flex-wrap items-center justify-between gap-8 rounded-[20px] bg-[#182350] px-7 py-12 text-white sm:px-10 sm:py-14">
+          <div className="flex flex-wrap items-center justify-between gap-8 rounded-[20px] border border-[#e2e5ee] bg-white px-7 py-12 text-[#182350] sm:px-10 sm:py-14">
             <div className="flex max-w-[560px] flex-col gap-2.5">
               <h2 className={h2}>See it with your own data.</h2>
-              <p className="text-[#c9ccd2]">A 30-minute call. Bring a class list and we’ll set it up while you watch.</p>
+              <p className="text-[#5c626c]">A 30-minute call. Bring a class list and we’ll set it up while you watch.</p>
             </div>
             <div className="flex flex-wrap gap-3">
               {/* TODO(contact): point these at the real booking link and WhatsApp number. */}
-              <a href="mailto:hello@lantern.ng?subject=Lantern%20demo" className="press flex h-[52px] items-center rounded-[10px] bg-[#b9915e] px-6 font-bold text-[#182350]">Book a demo</a>
-              <a href="#" className="press flex h-[52px] items-center rounded-[10px] border border-[#3a404b] px-5.5 font-medium text-white">Chat on WhatsApp</a>
+              <a href="mailto:hello@lantern.ng?subject=Lantern%20demo" className="press flex h-[52px] items-center rounded-[10px] bg-[#182350] px-6 font-bold text-white">Book a demo</a>
+              <a href="#" className="press flex h-[52px] items-center rounded-[10px] border border-[#d5d9e3] px-5.5 font-medium text-[#182350] hover:border-[#182350]">Chat on WhatsApp</a>
             </div>
           </div>
         </section>
