@@ -184,9 +184,9 @@ export default function Home() {
         </section>
 
         <section aria-label="Classrooms" className="grid grid-cols-1 sm:grid-cols-3">
-          <Image src="/landing/students-writing.jpg" alt="Two secondary school students in white shirts and ties writing in their exercise books" width={1920} height={1280} sizes="(min-width: 640px) 33vw, 100vw" className="h-[300px] w-full object-cover sm:h-[380px]" />
-          <Image src="/landing/library-computers.jpg" alt="Pupils at computers in a school library while their teacher helps them" width={1920} height={1285} sizes="(min-width: 640px) 33vw, 100vw" className="h-[300px] w-full object-cover sm:h-[380px]" />
-          <Image src="/landing/digital-classroom.jpg" alt="Young pupils in blue uniforms working on laptops with their teacher" width={1920} height={1440} sizes="(min-width: 640px) 33vw, 100vw" className="h-[300px] w-full object-cover sm:h-[380px]" />
+          <Image src="/landing/student-smiling.jpg" alt="A smiling secondary school student at her desk, classmates behind her" width={1920} height={1322} sizes="(min-width: 640px) 33vw, 100vw" className="h-[300px] w-full object-cover sm:h-[380px]" />
+          <Image src="/landing/student-blackboard.jpg" alt="A student writing answers on the classroom blackboard" width={1920} height={1279} sizes="(min-width: 640px) 33vw, 100vw" className="h-[300px] w-full object-cover sm:h-[380px]" />
+          <Image src="/landing/students-reading.jpg" alt="Three students in uniform reading a textbook together in front of the blackboard" width={1920} height={1279} sizes="(min-width: 640px) 33vw, 100vw" className="h-[300px] w-full object-cover sm:h-[380px]" />
         </section>
 
         <section className="mx-auto flex max-w-[1200px] flex-col gap-10 px-5 py-28 sm:px-6">
@@ -266,8 +266,7 @@ export default function Home() {
             <Link href="/terms" className="hover:text-[#182350]">Terms</Link>
           </nav>
           <p className="basis-full text-[13px]">
-            Photos via Wikimedia Commons: “Follow up trainings section of secondary school students” by Yemi festus (CC BY-SA 4.0);
-            “My CorelDraw practical class” by Chichriso (CC BY-SA 4.0); “Introducing digital classroom” by Advancedsolver (CC BY-SA 4.0).
+            Photos: Wikimedia Commons (CC0).
           </p>
         </div>
       </footer>
