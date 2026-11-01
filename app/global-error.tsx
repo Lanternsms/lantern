@@ -9,7 +9,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
             <p style={{ fontSize: 13, fontWeight: 600, color: '#dc2626', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               Critical error
             </p>
-            <h1 style={{ fontSize: 22, fontWeight: 600, color: '#023879', margin: '8px 0' }}>
+            <h1 style={{ fontSize: 22, fontWeight: 600, color: '#182350', margin: '8px 0' }}>
               Lantern hit a critical error
             </h1>
             <p style={{ fontSize: 14, color: '#6b7280', marginBottom: 16 }}>
@@ -22,7 +22,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
             )}
             <button
               onClick={() => reset()}
-              style={{ background: '#023879', color: '#fff', fontSize: 14, fontWeight: 500, padding: '10px 20px', borderRadius: 8, border: 'none', cursor: 'pointer' }}
+              style={{ background: '#182350', color: '#fff', fontSize: 14, fontWeight: 500, padding: '10px 20px', borderRadius: 8, border: 'none', cursor: 'pointer' }}
             >
               Reload
             </button>

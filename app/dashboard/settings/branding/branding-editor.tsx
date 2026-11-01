@@ -14,7 +14,7 @@ type Theme = {
 }
 
 const SWATCHES = [
-  ['Lantern blue', '#023879'], ['Royal blue', '#1D4ED8'], ['Emerald', '#0E7C66'], ['Raspberry', '#B8336A'], ['Amber', '#B45309'],
+  ['Lantern navy', '#182350'], ['Royal blue', '#1D4ED8'], ['Emerald', '#0E7C66'], ['Raspberry', '#B8336A'], ['Amber', '#B45309'],
   ['Maroon', '#7F1D1D'], ['Navy', '#1E3A5F'], ['Forest', '#166534'], ['Gold', '#E0B100'],
 ] as const
 

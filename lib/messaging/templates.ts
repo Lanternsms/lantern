@@ -53,18 +53,18 @@ function renderEmailHtml(params: {
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 520px; background-color: #ffffff; border-radius: 12px; border: 1px solid #e5e7eb; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
           <!-- Header -->
           <tr>
-            <td style="padding: 24px 32px; background-color: #023879; text-align: left;">
+            <td style="padding: 24px 32px; background-color: #182350; text-align: left;">
               <span style="font-size: 18px; font-weight: 700; color: #ffffff; letter-spacing: -0.01em;">${escapeHtml(schoolName || 'Lantern')}</span>
             </td>
           </tr>
           <!-- Body -->
           <tr>
             <td style="padding: 32px;">
-              <h1 style="margin: 0 0 16px; font-size: 20px; font-weight: 600; color: #023879; line-height: 1.3;">${escapeHtml(title)}</h1>
+              <h1 style="margin: 0 0 16px; font-size: 20px; font-weight: 600; color: #182350; line-height: 1.3;">${escapeHtml(title)}</h1>
               <p style="margin: 0 0 28px; font-size: 15px; line-height: 1.5; color: #4b5563;">${escapeHtml(lead)}</p>
               <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                 <tr>
-                  <td align="center" style="border-radius: 8px; background-color: #023879;">
+                  <td align="center" style="border-radius: 8px; background-color: #182350;">
                     <a href="${actionUrl}" style="display: inline-block; padding: 12px 24px; font-size: 14px; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 8px;">${escapeHtml(actionText)} &rarr;</a>
                   </td>
                 </tr>
@@ -77,7 +77,7 @@ function renderEmailHtml(params: {
           <!-- Footer -->
           <tr>
             <td style="padding: 20px 32px; background-color: #f8f9fb; border-top: 1px solid #e5e7eb; text-align: left; font-size: 12px; color: #6b7280; line-height: 1.6;">
-              <a href="${manageUrl}" style="color: #023879; text-decoration: underline; font-weight: 500;">Manage notification preferences</a>
+              <a href="${manageUrl}" style="color: #182350; text-decoration: underline; font-weight: 500;">Manage notification preferences</a>
               ${unsubUrl ? `&nbsp;&bull;&nbsp;<a href="${unsubUrl}" style="color: #6b7280; text-decoration: underline;">Unsubscribe from this category</a>` : ''}
               <div style="margin-top: 8px; color: #9ca3af;">Sent by ${escapeHtml(schoolName || 'Lantern')} via Lantern School Management</div>
             </td>

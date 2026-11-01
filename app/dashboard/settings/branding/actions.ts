@@ -17,12 +17,12 @@ export async function saveBranding(formData: FormData) {
   if (!profile) return { error: 'Profile not found.' }
 
   const theme = {
-    primary: String(formData.get('primary') || '#023879'),
-    sidebar: String(formData.get('sidebar') || '#071d39'),
-    accent: String(formData.get('accent') || '#fdb104'),
+    primary: String(formData.get('primary') || '#182350'),
+    sidebar: String(formData.get('sidebar') || '#131c40'),
+    accent: String(formData.get('accent') || '#b9915e'),
     text_on_primary: String(formData.get('text_on_primary') || '#ffffff'),
     text_on_sidebar: String(formData.get('text_on_sidebar') || '#ffffff'),
-    text_on_accent: String(formData.get('text_on_accent') || '#023879'),
+    text_on_accent: String(formData.get('text_on_accent') || '#182350'),
   }
 
   let logo_url: string | undefined

@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
   <div style="max-width: 440px; margin: 0 auto; background: white; padding: 32px; border-radius: 12px; border: 1px solid #e5e7eb;">
     <h2 style="color: #dc2626; margin-top: 0;">Unsubscribe Link Invalid</h2>
     <p style="color: #6b7280; font-size: 14px;">${res.error || 'This link is invalid or has expired.'}</p>
-    <a href="/login" style="display: inline-block; margin-top: 16px; background: #023879; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-size: 14px;">Go to Lantern</a>
+    <a href="/login" style="display: inline-block; margin-top: 16px; background: #182350; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-size: 14px;">Go to Lantern</a>
   </div>
 </body>
 </html>`,
@@ -75,10 +75,10 @@ export async function GET(request: NextRequest) {
 <head><title>Unsubscribed – Lantern</title><meta name="viewport" content="width=device-width, initial-scale=1"></head>
 <body style="font-family: -apple-system, sans-serif; background: #f8f9fb; padding: 40px 16px; text-align: center; color: #1f2430;">
   <div style="max-width: 440px; margin: 0 auto; background: white; padding: 32px; border-radius: 12px; border: 1px solid #e5e7eb;">
-    <h2 style="color: #023879; margin-top: 0;">Unsubscribed</h2>
+    <h2 style="color: #182350; margin-top: 0;">Unsubscribed</h2>
     <p style="color: #4b5563; font-size: 14px;">You will no longer receive <strong>${res.category}</strong> email alerts from your school.</p>
     <p style="color: #6b7280; font-size: 13px;">You can update your notification settings anytime inside your account.</p>
-    <a href="/dashboard/notifications/settings" style="display: inline-block; margin-top: 16px; background: #023879; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-size: 14px;">Manage Notification Settings</a>
+    <a href="/dashboard/notifications/settings" style="display: inline-block; margin-top: 16px; background: #182350; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-size: 14px;">Manage Notification Settings</a>
   </div>
 </body>
 </html>`,

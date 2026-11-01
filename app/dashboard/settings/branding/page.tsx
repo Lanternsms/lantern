@@ -5,12 +5,12 @@ import { redirect } from 'next/navigation'
 import { BrandingEditor } from './branding-editor'
 
 const FALLBACK_THEME = {
-  primary: '#023879',
-  sidebar: '#071d39',
-  accent: '#fdb104',
+  primary: '#182350',
+  sidebar: '#131c40',
+  accent: '#b9915e',
   text_on_primary: '#ffffff',
   text_on_sidebar: '#ffffff',
-  text_on_accent: '#023879',
+  text_on_accent: '#182350',
 }
 
 export default async function BrandingPage() {
