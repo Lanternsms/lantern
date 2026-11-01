@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { deriveSchoolLadder } from '@/lib/theme/color-utils'
+import { contrastRatio, deriveSchoolLadder, isValidHex, mixHex } from '@/lib/theme/color-utils'
 
 /**
  * Writes the school's colour ladder into CSS variables. A school picks one colour
@@ -24,7 +24,15 @@ export async function ThemeStyle() {
     .single()
 
   const theme = (school?.theme ?? {}) as Record<string, string>
-  const l = deriveSchoolLadder(theme.primary || '#1D4ED8')
+  const l = deriveSchoolLadder(theme.primary || '#182350')
+  // A school that chose its own sidebar colour keeps it; it is darkened only if white
+  // text on it would fail 7:1, so the menu stays readable.
+  const chosenSidebar = isValidHex(theme.sidebar ?? '') ? theme.sidebar : null
+  let deep = chosenSidebar ?? l.deep
+  for (let w = 0.05; contrastRatio(deep, '#FFFFFF') < 7 && w <= 0.9; w += 0.05) {
+    deep = mixHex(chosenSidebar ?? l.deep, '#000000', w)
+  }
+  const accent = isValidHex(theme.accent ?? '') ? theme.accent : null
 
   const css = `:root {
     --color-school: ${l.accent};
@@ -34,9 +42,9 @@ export async function ThemeStyle() {
     --color-school-track: ${l.track};
     --color-school-ink: ${l.ink};
     --color-ground: ${l.ground};
-    --color-school-deep: ${l.deep};
-    --color-school-deep-raised: ${l.deepRaised};
-    --color-school-deep-muted: ${l.deepMuted};
+    --color-school-deep: ${deep};
+    --color-school-deep-raised: ${mixHex(deep, '#FFFFFF', 0.12)};
+    --color-school-deep-muted: ${mixHex(deep, '#FFFFFF', 0.68)};${accent ? `\n    --color-accent: ${accent};` : ''}
   }`
 
   return <style dangerouslySetInnerHTML={{ __html: css }} />

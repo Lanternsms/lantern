@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 import { BrandingEditor } from './branding-editor'
 
 const FALLBACK_THEME = {
-  primary: '#1D4ED8',
+  primary: '#182350',
   sidebar: '#131c40',
   accent: '#b9915e',
   text_on_primary: '#ffffff',

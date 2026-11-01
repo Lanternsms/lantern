@@ -14,7 +14,7 @@ type Theme = {
 }
 
 const SWATCHES = [
-  ['Royal blue', '#1D4ED8'], ['Emerald', '#0E7C66'], ['Raspberry', '#B8336A'], ['Amber', '#B45309'],
+  ['Lantern navy', '#182350'], ['Royal blue', '#1D4ED8'], ['Emerald', '#0E7C66'], ['Raspberry', '#B8336A'], ['Amber', '#B45309'],
   ['Maroon', '#7F1D1D'], ['Navy', '#1E3A5F'], ['Forest', '#166534'], ['Gold', '#E0B100'],
 ] as const
 
@@ -95,8 +95,8 @@ export function BrandingEditor({
     // written so older readers of schools.theme keep working.
     const formData = new FormData()
     formData.set('primary', primary)
-    formData.set('sidebar', ladder.ground)
-    formData.set('accent', primary)
+    formData.set('sidebar', initialTheme.sidebar || ladder.deep)
+    formData.set('accent', initialTheme.accent || primary)
     formData.set('text_on_primary', '#ffffff')
     formData.set('text_on_sidebar', '#111827')
     formData.set('text_on_accent', '#ffffff')

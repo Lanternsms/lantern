@@ -178,7 +178,7 @@ export function DashboardShell({
 
   const crest = logoUrl ? (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={logoUrl} alt="" className="h-9 w-9 shrink-0 rounded-lg bg-white object-contain p-0.5" />
+    <img src={logoUrl} alt={schoolName} className="h-10 w-auto max-w-[150px] shrink-0 object-contain" />
   ) : (
     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white">
       <svg aria-hidden width="20" height="23" viewBox="0 0 30 34">

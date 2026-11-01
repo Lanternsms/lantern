@@ -61,8 +61,8 @@ export function RegisterDemo() {
         <p className="px-4 py-2.5 text-[13px] text-[#5c626c]">Tap a student to mark them absent</p>
       </div>
 
-      <div className="h-[300px] w-[230px] rounded-[34px] bg-[#0c0f14] p-2.5 sm:absolute sm:bottom-0 sm:right-0">
-        <div className="flex h-full flex-col gap-2.5 overflow-hidden rounded-[26px] bg-[#eef0f3] px-3 py-4 text-[#0c0f14]">
+      <div className="h-[300px] w-[230px] rounded-[34px] bg-[#182350] p-2.5 sm:absolute sm:bottom-0 sm:right-0">
+        <div className="flex h-full flex-col gap-2.5 overflow-hidden rounded-[26px] bg-[#eef0f3] px-3 py-4 text-[#182350]">
           <span className="text-center text-[13px] text-[#5c626c]">{s ? `${s.parent}’s phone` : 'A parent’s phone'}</span>
           {s ? (
             <div

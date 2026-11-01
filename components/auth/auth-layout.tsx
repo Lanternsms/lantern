@@ -4,9 +4,9 @@ import Link from 'next/link'
 /** Shared form styles for every page that runs before anyone is signed in. */
 export const authLabel = 'flex flex-col gap-1.5 text-sm font-medium text-text-primary'
 export const authInput =
-  'h-11 w-full rounded-lg border border-control bg-white px-3 text-[15px] font-normal text-text-primary placeholder:text-text-muted focus:border-[#0c0f14] focus:outline-none focus:ring-2 focus:ring-[#0c0f14]/15'
+  'h-11 w-full rounded-lg border border-control bg-white px-3 text-[15px] font-normal text-text-primary placeholder:text-text-muted focus:border-[#182350] focus:outline-none focus:ring-2 focus:ring-[#182350]/15'
 export const authButton =
-  'flex h-11 w-full items-center justify-center rounded-lg bg-[#0c0f14] text-[15px] font-semibold text-white hover:bg-[#262b34] disabled:cursor-not-allowed disabled:opacity-60'
+  'flex h-11 w-full items-center justify-center rounded-lg bg-[#182350] text-[15px] font-semibold text-white hover:bg-[#26346e] disabled:cursor-not-allowed disabled:opacity-60'
 export const authError = 'rounded-lg bg-danger-bg px-3 py-2.5 text-sm text-danger-text'
 export const authLink = 'font-medium text-text-primary underline decoration-control underline-offset-4 hover:decoration-text-primary'
 
@@ -27,11 +27,7 @@ export function AuthLayout({
     <div className="flex min-h-screen bg-[#fafafa] text-text-primary">
       <div className="flex min-w-0 flex-1 flex-col px-5 py-6 sm:px-10">
         <Link href="/" className="flex items-center gap-2.5 self-start text-[17px] font-bold tracking-[-0.01em]">
-          <svg aria-hidden width="20" height="23" viewBox="0 0 24 28">
-            <path d="M8 3h8M12 0v3" stroke="#0c0f14" strokeWidth="2" />
-            <path d="M5 6h14l3 4v12l-3 4H5l-3-4V10z" fill="#0c0f14" />
-            <path d="M12 11c2.6 2.4 2.6 6.6 0 9-2.6-2.4-2.6-6.6 0-9z" fill="#f2b441" />
-          </svg>
+          <Image src="/icon-192.png" alt="" width={28} height={28} className="h-7 w-7" priority />
           Lantern
         </Link>
         <main className="mx-auto flex w-full max-w-[380px] flex-1 flex-col justify-center gap-7 py-12">
@@ -56,7 +52,7 @@ export function AuthLayout({
           priority
           className="object-cover"
         />
-        <figcaption className="absolute inset-x-6 bottom-6 rounded-xl bg-[#0c0f14]/80 px-4 py-3 text-[15px] leading-snug text-white">
+        <figcaption className="absolute inset-x-6 bottom-6 rounded-xl bg-[#182350]/80 px-4 py-3 text-[15px] leading-snug text-white">
           Registers, results, fees and lessons — one place for the whole school.
         </figcaption>
       </figure>
