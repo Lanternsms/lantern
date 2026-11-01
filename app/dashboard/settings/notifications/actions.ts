@@ -84,7 +84,7 @@ export async function sendTestEmailToCaller() {
 <html>
 <body style="font-family: sans-serif; background-color: #f8f9fb; padding: 24px; color: #1f2430;">
   <div style="max-width: 480px; margin: 0 auto; background: white; padding: 24px; border-radius: 12px; border: 1px solid #e5e7eb;">
-    <h2 style="color: #182350; margin-top: 0;">Email Delivery Test Successful</h2>
+    <h2 style="color: #023879; margin-top: 0;">Email Delivery Test Successful</h2>
     <p style="font-size: 14px; color: #4b5563; line-height: 1.5;">
       This email confirms that transactional email delivery is active and functioning properly for <strong>${schoolName}</strong>.
     </p>

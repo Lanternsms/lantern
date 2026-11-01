@@ -3,21 +3,21 @@
 @theme {
   /* School colour ladder. ThemeStyle overrides these per school from one chosen colour;
      these defaults are what a school sees before it picks one. */
-  --color-school: #182350;          /* full colour: small marks only */
-  --color-primary: #182350;         /* action shade: buttons and links, always 4.5:1 with white */
-  --color-primary-hover: #141e44;
-  --color-school-soft: #e8e9ee;     /* areas: active nav row, chips */
-  --color-school-track: #c9ccd6;    /* progress tracks, saved cells */
-  --color-school-ink: #0d132c;      /* text on soft/track */
-  --color-ground: #f2f3f6;          /* page ground, one step toward the hue */
-  --color-school-deep: #131c40;     /* sidebar and bold panels: white on it passes 7:1 */
-  --color-school-deep-raised: #2b3353;
-  --color-school-deep-muted: #b2b8c9;
+  --color-school: #023879;          /* full colour: small marks only */
+  --color-primary: #023879;         /* action shade: buttons and links, always 4.5:1 with white */
+  --color-primary-hover: #023067;
+  --color-school-soft: #e6ebf2;     /* areas: active nav row, chips */
+  --color-school-track: #c7d3e2;    /* progress tracks, saved cells */
+  --color-school-ink: #011f43;      /* text on soft/track */
+  --color-ground: #e9ecf1;          /* page ground, one step toward the hue */
+  --color-school-deep: #071d39;     /* sidebar and bold panels: white on it passes 7:1 */
+  --color-school-deep-raised: #253851;
+  --color-school-deep-muted: #b0b7c0;
 
   /* Legacy names, kept so every existing page picks up the new look. */
   --color-sidebar: var(--color-ground);
   --color-sidebar-active: var(--color-school-soft);
-  --color-accent: #b9915e;
+  --color-accent: #fdb104;
   --color-accent-hover: var(--color-primary-hover);
   --color-text-on-sidebar: #111827;
   --color-text-on-primary: #ffffff;

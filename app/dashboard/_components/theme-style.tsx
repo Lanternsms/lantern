@@ -24,15 +24,19 @@ export async function ThemeStyle() {
     .single()
 
   const theme = (school?.theme ?? {}) as Record<string, string>
-  const l = deriveSchoolLadder(theme.primary || '#182350')
+  // Values the old theme system saved as its defaults are not a school's choice;
+  // they fall back to Lantern's brand blue from the logo.
+  const OLD_DEFAULTS = new Set(['#182350', '#131c40', '#b9915e'])
+  const chosen = (v?: string) => (v && isValidHex(v) && !OLD_DEFAULTS.has(v.toLowerCase()) ? v : undefined)
+  const l = deriveSchoolLadder(chosen(theme.primary) || '#023879')
   // A school that chose its own sidebar colour keeps it; it is darkened only if white
   // text on it would fail 7:1, so the menu stays readable.
-  const chosenSidebar = isValidHex(theme.sidebar ?? '') ? theme.sidebar : null
+  const chosenSidebar = chosen(theme.sidebar) ?? null
   let deep = chosenSidebar ?? l.deep
   for (let w = 0.05; contrastRatio(deep, '#FFFFFF') < 7 && w <= 0.9; w += 0.05) {
     deep = mixHex(chosenSidebar ?? l.deep, '#000000', w)
   }
-  const accent = isValidHex(theme.accent ?? '') ? theme.accent : null
+  const accent = chosen(theme.accent) ?? null
 
   const css = `:root {
     --color-school: ${l.accent};

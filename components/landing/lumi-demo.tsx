@@ -38,7 +38,7 @@ export function LumiDemo() {
                 aria-pressed={on}
                 onClick={() => setIntent(c.key)}
                 className={`h-[38px] rounded-full border px-3.5 text-sm font-medium ${
-                  on ? 'border-[#b9915e] bg-[#b9915e] text-[#182350]' : 'border-[#3a404b] text-[#eef0f3] hover:border-[#5a606b]'
+                  on ? 'border-[#fdb104] bg-[#fdb104] text-[#0c0f14]' : 'border-[#3a404b] text-[#eef0f3] hover:border-[#5a606b]'
                 }`}
               >
                 {c.label}
@@ -49,7 +49,7 @@ export function LumiDemo() {
       </div>
       <div data-ui className="flex min-w-0 flex-[1_1_480px] flex-col gap-3.5 rounded-2xl border border-[#262b34] bg-[#171b22] p-5">
         <span className="text-[13px] text-[#9aa0aa]">LUMI · from Mr. Bello’s notes on “Adding unlike fractions”</span>
-        <span className="self-end rounded-[14px_14px_4px_14px] bg-[#b9915e] px-3.5 py-2.5 text-[15px] font-medium text-[#182350]">
+        <span className="self-end rounded-[14px_14px_4px_14px] bg-[#fdb104] px-3.5 py-2.5 text-[15px] font-medium text-[#0c0f14]">
           How do I add 1/3 and 1/4?
         </span>
         <span

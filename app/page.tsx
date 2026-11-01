@@ -35,7 +35,7 @@ const panel = 'rounded-2xl border border-[#e7e7e7] bg-white'
 
 export default function Home() {
   return (
-    <div className="bg-[#fafafa] text-[17px] leading-relaxed text-[#182350]">
+    <div className="bg-[#fafafa] text-[17px] leading-relaxed text-[#0c0f14]">
       <header className="sticky top-0 z-10 border-b border-[#e7e7e7] bg-[#fafafa]/90 backdrop-blur">
         <div className="mx-auto flex h-[68px] max-w-[1200px] items-center gap-6 px-5 sm:px-6">
           <Link href="/" className="flex items-center gap-2.5 text-[19px] font-bold tracking-[-0.01em]">
@@ -43,14 +43,14 @@ export default function Home() {
             Lantern
           </Link>
           <nav aria-label="Main" className="hidden flex-1 gap-6 text-[15px] text-[#3d434d] md:flex">
-            <a href="#product" className="hover:text-[#182350]">Product</a>
-            <a href="#lumi" className="hover:text-[#182350]">LUMI tutor</a>
-            <a href="#pricing" className="hover:text-[#182350]">Pricing</a>
-            <a href="#faq" className="hover:text-[#182350]">FAQ</a>
+            <a href="#product" className="hover:text-[#0c0f14]">Product</a>
+            <a href="#lumi" className="hover:text-[#0c0f14]">LUMI tutor</a>
+            <a href="#pricing" className="hover:text-[#0c0f14]">Pricing</a>
+            <a href="#faq" className="hover:text-[#0c0f14]">FAQ</a>
           </nav>
           <div className="ml-auto flex items-center gap-4">
-            <Link href="/login" className="text-[15px] text-[#3d434d] hover:text-[#182350]">Sign in</Link>
-            <a href="#demo" className="press flex h-10 items-center rounded-lg bg-[#182350] px-4 text-[15px] font-semibold text-white">
+            <Link href="/login" className="text-[15px] text-[#3d434d] hover:text-[#0c0f14]">Sign in</Link>
+            <a href="#demo" className="press flex h-10 items-center rounded-lg bg-[#023879] px-4 text-[15px] font-semibold text-white">
               Book a demo
             </a>
           </div>
@@ -68,7 +68,7 @@ export default function Home() {
               the minute it does.
             </p>
             <div className="flex flex-wrap gap-3">
-              <a href="#demo" className="press flex h-[50px] items-center rounded-[10px] bg-[#182350] px-5.5 font-semibold text-white">
+              <a href="#demo" className="press flex h-[50px] items-center rounded-[10px] bg-[#023879] px-5.5 font-semibold text-white">
                 Book a 30-minute demo
               </a>
               <a href="#product" className="press flex h-[50px] items-center rounded-[10px] border border-[#d4d4d4] bg-white px-5 font-medium">
@@ -84,12 +84,12 @@ export default function Home() {
 
         <section aria-label="What Lantern covers" className="border-y border-[#e7e7e7] bg-white">
           <ul className="mx-auto grid max-w-[1200px] grid-cols-2 gap-x-6 gap-y-3 px-5 py-5.5 text-[15px] text-[#3d434d] sm:grid-cols-3 sm:px-6 xl:grid-cols-6">
-            <li><strong className="text-[#182350]">Registers</strong> by 8am</li>
-            <li><strong className="text-[#182350]">Results</strong> with approval</li>
-            <li><strong className="text-[#182350]">Report cards</strong> in one click</li>
-            <li><strong className="text-[#182350]">Fees</strong> and receipts</li>
-            <li><strong className="text-[#182350]">Lessons</strong> with LUMI</li>
-            <li><strong className="text-[#182350]">Your</strong> colours and crest</li>
+            <li><strong className="text-[#0c0f14]">Registers</strong> by 8am</li>
+            <li><strong className="text-[#0c0f14]">Results</strong> with approval</li>
+            <li><strong className="text-[#0c0f14]">Report cards</strong> in one click</li>
+            <li><strong className="text-[#0c0f14]">Fees</strong> and receipts</li>
+            <li><strong className="text-[#0c0f14]">Lessons</strong> with LUMI</li>
+            <li><strong className="text-[#0c0f14]">Your</strong> colours and crest</li>
           </ul>
         </section>
 
@@ -114,7 +114,7 @@ export default function Home() {
                     p === null ? (
                       <span key={`${r}${c}`} className="flex h-[34px] items-center justify-center rounded-md border border-dashed border-[#a3a7ae] text-[#5c626c]">Open</span>
                     ) : (
-                      <span key={`${r}${c}`} className={`flex h-[34px] items-center justify-center rounded-md font-medium ${p < 90 ? 'bg-[#1d4ed8] text-white' : 'bg-[#dbe3fd] text-[#1e3a8a]'}`}>
+                      <span key={`${r}${c}`} className={`flex h-[34px] items-center justify-center rounded-md font-medium ${p < 90 ? 'bg-[#023879] text-white' : 'bg-[#dbe3fd] text-[#1e3a8a]'}`}>
                         {p}%
                       </span>
                     ),
@@ -165,7 +165,7 @@ export default function Home() {
                 <span className="text-sm text-[#5c626c]">Collected this term</span>
                 <span className="text-[34px] font-bold tracking-[-0.02em] tabular-nums">₦18.42m</span>
                 <span className="text-sm text-[#5c626c]">68% of ₦27.10m billed</span>
-                <span className="mt-2 block h-2 overflow-hidden rounded bg-[#e8edfb]"><span className="block h-full w-[68%] bg-[#1d4ed8]" /></span>
+                <span className="mt-2 block h-2 overflow-hidden rounded bg-[#e8edfb]"><span className="block h-full w-[68%] bg-[#023879]" /></span>
               </div>
               <div className={`${panel} flex flex-[1_1_240px] flex-col gap-1 p-5 text-sm tabular-nums`}>
                 <span className="text-[#5c626c]">Receipt GFC-2026-0412</span>
@@ -177,7 +177,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="lumi" className="mt-18 bg-[#182350] text-[#f5f3ee]">
+        <section id="lumi" className="mt-18 bg-[#023879] text-[#f5f3ee]">
           <div className="mx-auto max-w-[1200px] px-5 py-26 sm:px-6">
             <LumiDemo />
           </div>
@@ -223,7 +223,7 @@ export default function Home() {
                 <li>Fees, receipts and balances</li><li>Lessons and the LUMI tutor</li>
                 <li>Unlimited staff and parents</li><li>Setup and import done with you</li>
               </ul>
-              <a href="#demo" className="press flex h-[50px] items-center justify-center rounded-[10px] bg-[#182350] font-semibold text-white">
+              <a href="#demo" className="press flex h-[50px] items-center justify-center rounded-[10px] bg-[#023879] font-semibold text-white">
                 Get a quote for your school
               </a>
             </div>
@@ -241,14 +241,14 @@ export default function Home() {
         </section>
 
         <section id="demo" className="mx-auto mb-26 max-w-[1200px] px-5 sm:px-6">
-          <div className="flex flex-wrap items-center justify-between gap-8 rounded-[20px] bg-[#182350] px-7 py-12 text-white sm:px-10 sm:py-14">
+          <div className="flex flex-wrap items-center justify-between gap-8 rounded-[20px] bg-[#023879] px-7 py-12 text-white sm:px-10 sm:py-14">
             <div className="flex max-w-[560px] flex-col gap-2.5">
               <h2 className={h2}>See it with your own data.</h2>
               <p className="text-[#c9ccd2]">A 30-minute call. Bring a class list and we’ll set it up while you watch.</p>
             </div>
             <div className="flex flex-wrap gap-3">
               {/* TODO(contact): point these at the real booking link and WhatsApp number. */}
-              <a href="mailto:hello@lantern.ng?subject=Lantern%20demo" className="press flex h-[52px] items-center rounded-[10px] bg-[#b9915e] px-6 font-bold text-[#182350]">Book a demo</a>
+              <a href="mailto:hello@lantern.ng?subject=Lantern%20demo" className="press flex h-[52px] items-center rounded-[10px] bg-[#fdb104] px-6 font-bold text-[#0c0f14]">Book a demo</a>
               <a href="#" className="press flex h-[52px] items-center rounded-[10px] border border-[#3a404b] px-5.5 font-medium text-white">Chat on WhatsApp</a>
             </div>
           </div>
@@ -257,13 +257,13 @@ export default function Home() {
 
       <footer className="border-t border-[#e7e7e7]">
         <div className="mx-auto flex max-w-[1200px] flex-wrap justify-between gap-x-12 gap-y-6 px-5 py-10 text-[15px] text-[#5c626c] sm:px-6">
-          <span className="flex flex-col gap-1"><strong className="text-[#182350]">Lantern</strong>Lagos, Nigeria</span>
+          <span className="flex flex-col gap-1"><strong className="text-[#0c0f14]">Lantern</strong>Lagos, Nigeria</span>
           <nav aria-label="Footer" className="flex flex-wrap gap-5">
-            <a href="#product" className="hover:text-[#182350]">Product</a>
-            <a href="#pricing" className="hover:text-[#182350]">Pricing</a>
-            <Link href="/login" className="hover:text-[#182350]">Sign in</Link>
-            <Link href="/privacy" className="hover:text-[#182350]">Privacy</Link>
-            <Link href="/terms" className="hover:text-[#182350]">Terms</Link>
+            <a href="#product" className="hover:text-[#0c0f14]">Product</a>
+            <a href="#pricing" className="hover:text-[#0c0f14]">Pricing</a>
+            <Link href="/login" className="hover:text-[#0c0f14]">Sign in</Link>
+            <Link href="/privacy" className="hover:text-[#0c0f14]">Privacy</Link>
+            <Link href="/terms" className="hover:text-[#0c0f14]">Terms</Link>
           </nav>
           <p className="basis-full text-[13px]">
             Photos via Wikimedia Commons: “Follow up trainings section of secondary school students” by Yemi festus (CC BY-SA 4.0);
