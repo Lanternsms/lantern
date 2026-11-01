@@ -43,19 +43,16 @@ export function AuthLayout({
           <Link href="/terms" className="hover:text-text-primary">Terms</Link>
         </p>
       </div>
-      <figure className="relative m-0 hidden flex-1 lg:block">
-        <Image
-          src="/landing/digital-classroom.jpg"
-          alt="Pupils in blue uniforms working on laptops while their teacher leans in to help"
-          fill
-          sizes="50vw"
-          priority
-          className="object-cover"
-        />
-        <figcaption className="absolute inset-x-6 bottom-6 rounded-xl bg-[#023879]/80 px-4 py-3 text-[15px] leading-snug text-white">
-          Registers, results, fees and lessons — one place for the whole school.
-        </figcaption>
-      </figure>
+      <aside aria-hidden className="relative hidden flex-1 flex-col justify-between overflow-hidden bg-[#023879] p-12 text-white lg:flex">
+        <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white">
+          <Image src="/icon-192.png" alt="" width={48} height={48} className="h-12 w-12" />
+        </span>
+        <div className="flex max-w-[420px] flex-col gap-4">
+          <p className="font-display text-[40px] font-semibold leading-[1.1]">Your whole school, in one place.</p>
+          <p className="text-lg text-white/75">Registers, results, fees and lessons — and every parent hears what happened the minute it does.</p>
+        </div>
+        <span className="h-1 w-16 rounded-full bg-[#fdb104]" />
+      </aside>
     </div>
   )
 }
