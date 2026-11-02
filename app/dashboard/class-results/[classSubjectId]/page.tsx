@@ -351,7 +351,7 @@ export default async function ClassResultDetailPage({
             No published results for this subject and term yet.
           </p>
         ) : (
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto"><table className="w-full text-sm">
             <thead>
               <tr className="border-b border-rule bg-surface-muted/50">
                 <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px] w-8">
@@ -419,7 +419,7 @@ export default async function ClassResultDetailPage({
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
         )}
       </div>
 

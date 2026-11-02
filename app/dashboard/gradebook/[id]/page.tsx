@@ -184,7 +184,7 @@ export default async function GradebookEntryPage({
               </table>
             </div>
             {!isLocked && (
-              <div className="sticky bottom-0 flex items-center justify-between gap-3 rounded-b-[18px] border-t border-rule bg-surface/95 px-5 py-3.5 backdrop-blur">
+              <div className="sticky bottom-[calc(4.5rem+env(safe-area-inset-bottom))] lg:bottom-0 flex items-center justify-between gap-3 rounded-b-[18px] border-t border-rule bg-surface/95 px-5 py-3.5 backdrop-blur">
                 <span className="text-sm text-text-secondary">Totals update when you save.</span>
                 <button type="submit" className="h-10 rounded-xl border border-control bg-surface px-4 text-sm font-semibold hover:bg-raised">Save scores</button>
               </div>

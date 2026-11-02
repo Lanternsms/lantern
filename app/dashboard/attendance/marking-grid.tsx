@@ -145,7 +145,7 @@ export default function MarkingGrid({
                 <span className="font-medium">{s.first_name} {s.last_name}</span>
                 <span className={`text-xs ${current ? 'text-text-secondary' : 'text-warning-text'}`}>{current ? s.admission_no : 'Not marked yet'}</span>
               </span>
-              <div role="radiogroup" aria-label={`${s.first_name} ${s.last_name}`} className="flex gap-0.5 rounded-lg bg-raised p-[3px]">
+              <div role="radiogroup" aria-label={`${s.first_name} ${s.last_name}`} className="flex w-full gap-0.5 rounded-lg bg-raised p-[3px] sm:w-auto">
                 {statuses.map((st) => {
                   const selected = current === st.id
                   return (
@@ -155,7 +155,7 @@ export default function MarkingGrid({
                       role="radio"
                       aria-checked={selected}
                       onClick={() => setMark(s.id, st.id)}
-                      className={`h-[34px] min-w-[72px] rounded-md px-2.5 text-sm font-medium ${selected ? SELECTED[tone(st.label)] : 'text-[#374151] hover:bg-surface'}`}
+                      className={`h-11 min-w-[72px] flex-1 rounded-md px-2.5 sm:h-[34px] sm:flex-none text-sm font-medium ${selected ? SELECTED[tone(st.label)] : 'text-[#374151] hover:bg-surface'}`}
                     >
                       {st.label}
                     </button>
@@ -170,7 +170,7 @@ export default function MarkingGrid({
       {error && <p role="alert" className="rounded-lg bg-danger-bg px-3 py-2.5 text-sm text-danger-text">{error}</p>}
       {savedMessage && <p role="status" className="rounded-lg bg-success-bg px-3 py-2.5 text-sm text-success-text">{savedMessage}</p>}
 
-      <div className="sticky bottom-0 -mx-1 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-surface/95 px-4 py-3 backdrop-blur">
+      <div className="sticky bottom-[calc(4.5rem+env(safe-area-inset-bottom))] lg:bottom-0 -mx-1 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-surface/95 px-4 py-3 backdrop-blur">
         <span className="text-sm text-text-secondary">{left ? `${markedCount} of ${students.length} marked` : `All ${students.length} marked`}</span>
         <button
           type="button"

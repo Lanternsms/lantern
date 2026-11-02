@@ -59,6 +59,17 @@ const SETUP_HREFS = new Set([
   '/dashboard/fees/structures', '/dashboard/lms/storage', '/dashboard/settings',
 ])
 
+// Phone tab bar: Today plus the three most frequent jobs this person has, in this order.
+const TAB_PRIORITY = [
+  '/dashboard/attendance', '/dashboard/gradebook', '/dashboard/fees/record', '/dashboard/payments',
+  '/dashboard/approvals', '/dashboard/class-lessons', '/dashboard/lms/today', '/dashboard/my-results',
+  '/dashboard/my-timetable', '/dashboard/students', '/dashboard/announcements',
+]
+const SHORT: Record<string, string> = {
+  '/dashboard/class-lessons': 'Lessons', "/dashboard/lms/today": 'Lessons', '/dashboard/my-results': 'Results',
+  '/dashboard/my-timetable': 'Timetable', '/dashboard/announcements': 'News',
+}
+
 /** The nav item whose href is the longest prefix of the current path is the active one. */
 function activeHref(pathname: string, items: NavItem[]) {
   let best = ''
@@ -97,6 +108,11 @@ export function DashboardShell({
   const current = activeHref(pathname, items)
   const daily = items.filter((i) => !SETUP_HREFS.has(i.href))
   const setup = items.filter((i) => SETUP_HREFS.has(i.href))
+  const tabs = [
+    ...items.filter((i) => i.href === '/dashboard'),
+    ...TAB_PRIORITY.map((h) => items.find((i) => i.href === h)).filter((i): i is NavItem => !!i).slice(0, 3),
+  ]
+  const onTab = tabs.some((t) => t.href === current)
   const currentLabel = items.find((i) => i.href === current)?.label ?? ''
 
   useEffect(() => {
@@ -246,10 +262,8 @@ export function DashboardShell({
       </header>
 
       <header className="sticky top-0 z-20 flex h-14 items-center gap-2 bg-school-deep px-2 text-white lg:hidden">
-        <button onClick={() => setIsOpen(true)} aria-label="Open menu" aria-expanded={isOpen} className="flex h-11 w-11 items-center justify-center rounded-lg">
-          <Icon icon={Menu01Icon} size={22} />
-        </button>
-        <span className="min-w-0 flex-1 truncate font-display text-[15px] font-semibold">{currentLabel || schoolName}</span>
+        <span className="ml-2 flex h-8 shrink-0 items-center [&_img]:h-8">{crest}</span>
+        <span className="ml-1 min-w-0 flex-1 truncate font-display text-[15px] font-semibold">{currentLabel || schoolName}</span>
         <span className="rounded-lg bg-white/95 text-text-primary">{notificationBell}</span>
       </header>
 
@@ -270,7 +284,51 @@ export function DashboardShell({
         {sidebar(true)}
       </aside>
 
-      <main className="min-w-0 lg:pl-[264px]">{children}</main>
+      {/* Phones: the daily jobs sit under the thumb; everything else is behind More. */}
+      <nav
+        aria-label="Quick"
+        className="fixed inset-x-0 bottom-0 z-30 border-t border-black/[0.06] bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden"
+      >
+        <div className="mx-auto flex max-w-xl">
+          {tabs.map((t) => {
+            const on = t.href === current
+            return (
+              <Link
+                key={t.href}
+                href={t.href}
+                onClick={(e) => {
+                  if (e.metaKey || e.ctrlKey || e.shiftKey) return
+                  e.preventDefault()
+                  navigate(t.href)
+                }}
+                aria-current={on ? 'page' : undefined}
+                className={`relative flex h-16 flex-1 flex-col items-center justify-center gap-1 text-[11.5px] font-medium ${on ? 'text-school-ink' : 'text-text-secondary'}`}
+              >
+                <span className={`flex h-8 w-14 items-center justify-center rounded-full transition-colors duration-150 ${on ? 'bg-school-soft' : ''}`}>
+                  <Icon icon={ICONS[t.href] ?? File01Icon} size={22} />
+                </span>
+                <span className="max-w-full truncate px-1">{SHORT[t.href] ?? (t.href === '/dashboard' ? 'Today' : t.label)}</span>
+                {typeof t.badge === 'number' && t.badge > 0 && (
+                  <span className="absolute left-1/2 top-2 ml-2 min-w-[18px] rounded-full bg-school px-1 text-center text-[10px] font-semibold leading-[18px] text-white tabular-nums">{t.badge}</span>
+                )}
+              </Link>
+            )
+          })}
+          <button
+            type="button"
+            onClick={() => setIsOpen(true)}
+            aria-expanded={isOpen}
+            className={`flex h-16 flex-1 flex-col items-center justify-center gap-1 text-[11.5px] font-medium ${!onTab && current ? 'text-school-ink' : 'text-text-secondary'}`}
+          >
+            <span className={`flex h-8 w-14 items-center justify-center rounded-full ${!onTab && current ? 'bg-school-soft' : ''}`}>
+              <Icon icon={Menu01Icon} size={22} />
+            </span>
+            More
+          </button>
+        </div>
+      </nav>
+
+      <main className="min-w-0 pb-[calc(5rem+env(safe-area-inset-bottom))] lg:pb-0 lg:pl-[264px]">{children}</main>
     </div>
   )
 }

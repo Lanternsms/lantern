@@ -5,7 +5,7 @@ import { Icon } from '@/components/icon'
 /** Shared building blocks for inner pages, so every list and form page has one voice. */
 
 export const field =
-  'h-10 rounded-xl border border-control bg-surface px-3 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-4 focus:ring-school-soft'
+  'h-11 sm:h-10 rounded-xl border border-control bg-surface px-3 text-base sm:text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-4 focus:ring-school-soft'
 
 const BTN = {
   primary: 'bg-primary text-white hover:bg-primary-hover',

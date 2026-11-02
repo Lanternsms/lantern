@@ -53,7 +53,7 @@ export default async function AttendanceStatusesPage({
 
       {statuses && statuses.length > 0 && (
         <div className="card overflow-hidden mb-6">
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto"><table className="w-full text-sm">
             <thead>
               <tr className="border-b border-rule">
                 <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Label</th>
@@ -97,7 +97,7 @@ export default async function AttendanceStatusesPage({
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
         </div>
       )}
 
