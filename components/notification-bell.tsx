@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback, useTransition } from 'react'
+import { useState, useEffect, useRef, useCallback, useTransition, useMemo } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 
@@ -46,7 +46,14 @@ export function NotificationBell({
   const [loading, setLoading] = useState(false)
   const [, startTransition] = useTransition()
   const dropdownRef = useRef<HTMLDivElement>(null)
-  const supabase = createClient()
+  // Unique channel name per mount — prevents StrictMode's double-invoke from
+  // trying to attach postgres_changes to an already-subscribed channel.
+  const channelId = useRef(`user_notifications_realtime_${crypto.randomUUID()}`)
+  // Stabilise the client so it never changes between renders.
+  // A new object on every render would invalidate the useEffect dep and try
+  // to attach postgres_changes to an already-subscribed channel.
+  const supabaseRef = useRef(createClient())
+  const supabase = useMemo(() => supabaseRef.current, [])
 
   const fetchUnreadCount = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -75,7 +82,7 @@ export function NotificationBell({
   // Real-time subscription for new notifications
   useEffect(() => {
     const channel = supabase
-      .channel('user_notifications_realtime')
+      .channel(channelId.current)
       .on(
         'postgres_changes',
         {
