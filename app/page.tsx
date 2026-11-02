@@ -47,7 +47,7 @@ export default function Home() {
           </nav>
           <div className="ml-auto flex items-center gap-4">
             <Link href="/login" className="text-[15px] text-[#3d434d] hover:text-[#182350]">Sign in</Link>
-            <a href="#demo" className="press flex h-10 items-center rounded-lg bg-[#182350] px-4 text-[15px] font-semibold text-white">
+            <a href="/book-demo" className="press flex h-10 items-center rounded-lg bg-[#182350] px-4 text-[15px] font-semibold text-white">
               Book a demo
             </a>
           </div>
@@ -65,7 +65,7 @@ export default function Home() {
               the minute it does.
             </p>
             <div className="flex flex-wrap gap-3">
-              <a href="#demo" className="press flex h-[50px] items-center rounded-[10px] bg-[#182350] px-5.5 font-semibold text-white">
+              <a href="/book-demo" className="press flex h-[50px] items-center rounded-[10px] bg-[#182350] px-5.5 font-semibold text-white">
                 Book a 30-minute demo
               </a>
               <a href="#product" className="press flex h-[50px] items-center rounded-[10px] border border-[#d4d4d4] bg-white px-5 font-medium">
@@ -215,7 +215,7 @@ export default function Home() {
                 <li>Fees, receipts and balances</li><li>Timetables and announcements</li>
                 <li>Unlimited staff and parents</li><li>Setup and import done with you</li>
               </ul>
-              <a href="#demo" className="press flex h-[50px] items-center justify-center rounded-[10px] bg-[#182350] font-semibold text-white">
+              <a href="/book-demo" className="press flex h-[50px] items-center justify-center rounded-[10px] bg-[#182350] font-semibold text-white">
                 Get a quote for your school
               </a>
             </div>
@@ -239,9 +239,8 @@ export default function Home() {
               <p className="text-[#5c626c]">A 30-minute call. Bring a class list and we’ll set it up while you watch.</p>
             </div>
             <div className="flex flex-wrap gap-3">
-              {/* TODO(contact): point these at the real booking link and WhatsApp number. */}
-              <a href="mailto:hello@lantern.ng?subject=Lantern%20demo" className="press flex h-[52px] items-center rounded-[10px] bg-[#182350] px-6 font-bold text-white">Book a demo</a>
-              <a href="#" className="press flex h-[52px] items-center rounded-[10px] border border-[#d5d9e3] px-5.5 font-medium text-[#182350] hover:border-[#182350]">Chat on WhatsApp</a>
+              <Link href="/book-demo" className="press flex h-[52px] items-center rounded-[10px] bg-[#182350] px-6 font-bold text-white">Book a demo</Link>
+              <a href="mailto:hello@lantern.ng?subject=Lantern%20demo" className="press flex h-[52px] items-center rounded-[10px] border border-[#d5d9e3] px-5.5 font-medium text-[#182350] hover:border-[#182350]">Email us</a>
             </div>
           </div>
         </section>
