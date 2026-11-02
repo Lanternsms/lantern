@@ -7,3 +7,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+# Brand colours are locked
+
+Navy `#182350`, deep navy `#131c40`, gold `#b9915e`. Approved by the owner. Never change them; see PRODUCT.md → Brand Commitments.

@@ -147,6 +147,8 @@ export async function AdminDashboard() {
       <div className="px-5 pt-6 sm:px-8 empty:hidden"><SetupChecklist /></div>
       <AdminTodayView
         dateLabel={dateLabel}
+        totalStudents={enrolments?.length ?? 0}
+        classRoll={(classes ?? []).map((c) => ({ id: c.id, name: c.name, count: rollByClass.get(c.id) ?? 0 }))}
         today={today}
         termLabel={`${currentTerm?.name ?? 'No current term'} · ${currentSession.name}`}
         board={board}
