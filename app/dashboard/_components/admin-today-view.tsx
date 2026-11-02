@@ -119,6 +119,17 @@ export function AdminTodayView(d: AdminTodayData) {
         </section>
 
         <div className="grid gap-5 sm:grid-cols-2 xl:col-span-4 xl:grid-cols-1">
+          <section aria-labelledby="students-h" className="card flex flex-col gap-3 p-5 sm:col-span-2 xl:col-span-1">
+            <div className="flex items-center justify-between">
+              <h2 id="students-h" className="text-[15px] font-semibold">Students</h2>
+              <Link href="/dashboard/students" className="text-sm font-medium text-primary hover:underline">View all</Link>
+            </div>
+            <p className="font-display text-[40px] font-semibold leading-none tracking-[-0.03em] tabular-nums">{d.totalStudents.toLocaleString('en-NG')}</p>
+            <p className="text-sm text-text-secondary">
+              Enrolled this session across {d.classRoll.filter((c) => c.count > 0).length} {d.classRoll.filter((c) => c.count > 0).length === 1 ? 'class' : 'classes'}
+            </p>
+          </section>
+
           <section aria-labelledby="fees-h" className="card flex flex-col gap-3 p-5">
             <div className="flex items-center justify-between">
               <h2 id="fees-h" className="text-[15px] font-semibold">Fees this term</h2>
@@ -207,18 +218,7 @@ export function AdminTodayView(d: AdminTodayData) {
             </ul>
           )}
         </section>
-        <section aria-labelledby="students-h" className="card flex flex-col gap-3 p-5 sm:p-6 xl:col-span-4">
-          <div className="flex items-center justify-between">
-            <h2 id="students-h" className="text-[15px] font-semibold">Students</h2>
-            <Link href="/dashboard/students" className="text-sm font-medium text-primary hover:underline">View all</Link>
-          </div>
-          <p className="font-display text-[44px] font-semibold leading-none tracking-[-0.03em] tabular-nums">{d.totalStudents.toLocaleString('en-NG')}</p>
-          <p className="text-sm text-text-secondary">
-            Enrolled this session across {d.classRoll.filter((c) => c.count > 0).length} {d.classRoll.filter((c) => c.count > 0).length === 1 ? 'class' : 'classes'}
-          </p>
-        </section>
-
-        <section aria-labelledby="classes-h" className="card flex flex-col gap-4 p-5 sm:p-6 xl:col-span-8">
+        <section aria-labelledby="classes-h" className="card flex flex-col gap-4 p-5 sm:p-6 xl:col-span-12">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2 id="classes-h" className="text-[17px] font-semibold">Students per class</h2>
             <span className="text-sm text-text-secondary">This session</span>
