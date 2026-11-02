@@ -8,6 +8,8 @@ import { LessonPlayerModal } from '../lms/lesson-player-modal'
 import { NotesDownloadButton } from '../lms/notes-download-button'
 import GuardianAskButton from './guardian-ask-button';
 import { LMS_ENABLED } from '@/lib/features'
+import { Icon } from '@/components/icon'
+import { Certificate01Icon, PlayCircleIcon, RankingIcon, TimeScheduleIcon, UserCheck01Icon, Wallet01Icon } from '@hugeicons/core-free-icons'
 
 
 function formatDuration(seconds: number | null): string {
@@ -537,17 +539,19 @@ export async function GuardianDashboard({
       {activeTab === 'all' && (
         <div className="space-y-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <Link href={buildUrl({ tab: 'attendance' })} className="card p-4 hover:bg-school-soft/40 transition-colors">
-              <div className="text-xs text-text-secondary font-medium">Attendance this term</div>
-              <div className="text-xl font-bold text-text-primary mt-1">
+            <Link href={buildUrl({ tab: 'attendance' })} className="card flex flex-col gap-1 p-4 transition-transform duration-100 active:scale-[0.98] hover:bg-school-soft/40 sm:p-5">
+              <span className="mb-1.5 flex h-9 w-9 items-center justify-center rounded-xl bg-school-soft text-school-ink"><Icon icon={UserCheck01Icon} size={19} /></span>
+              <div className="text-[13px] text-text-secondary font-medium">Attendance this term</div>
+              <div className="font-display text-2xl font-semibold tabular-nums text-text-primary">
                 {attendanceRate !== null ? `${attendanceRate}%` : '—'}
               </div>
               <div className="text-xs text-text-secondary mt-1">{currentTerm?.name ?? 'This term'}</div>
             </Link>
 
-            <Link href={buildUrl({ tab: 'fees' })} className="card p-4 hover:bg-school-soft/40 transition-colors">
-              <div className="text-xs text-text-secondary font-medium">Fees balance</div>
-              <div className={`text-xl font-bold mt-1 ${totalBalance > 0 ? 'text-danger-text' : 'text-success-text'}`}>
+            <Link href={buildUrl({ tab: 'fees' })} className="card flex flex-col gap-1 p-4 transition-transform duration-100 active:scale-[0.98] hover:bg-school-soft/40 sm:p-5">
+              <span className="mb-1.5 flex h-9 w-9 items-center justify-center rounded-xl bg-school-soft text-school-ink"><Icon icon={Wallet01Icon} size={19} /></span>
+              <div className="text-[13px] text-text-secondary font-medium">Fees balance</div>
+              <div className={`font-display text-2xl font-semibold tabular-nums ${totalBalance > 0 ? 'text-danger-text' : 'text-success-text'}`}>
                 {formatCurrency(totalBalance)}
               </div>
               <div className="text-xs text-text-secondary mt-1">
@@ -555,17 +559,19 @@ export async function GuardianDashboard({
               </div>
             </Link>
 
-            <Link href={buildUrl({ tab: 'timetable' })} className="card p-4 hover:bg-school-soft/40 transition-colors">
-              <div className="text-xs text-text-secondary font-medium">Classes today</div>
-              <div className="text-xl font-bold text-text-primary mt-1">{todayRows.length}</div>
+            <Link href={buildUrl({ tab: 'timetable' })} className="card flex flex-col gap-1 p-4 transition-transform duration-100 active:scale-[0.98] hover:bg-school-soft/40 sm:p-5">
+              <span className="mb-1.5 flex h-9 w-9 items-center justify-center rounded-xl bg-school-soft text-school-ink"><Icon icon={TimeScheduleIcon} size={19} /></span>
+              <div className="text-[13px] text-text-secondary font-medium">Classes today</div>
+              <div className="font-display text-2xl font-semibold tabular-nums text-text-primary">{todayRows.length}</div>
               <div className="text-xs text-text-secondary mt-1">
                 {todayRows[0]?.subject_name ? `Starts with ${todayRows[0].subject_name}` : 'No classes today'}
               </div>
             </Link>
 
-            <Link href={buildUrl({ tab: 'results' })} className="card p-4 hover:bg-school-soft/40 transition-colors">
-              <div className="text-xs text-text-secondary font-medium">Position in class</div>
-              <div className="text-xl font-bold text-text-primary mt-1">
+            <Link href={buildUrl({ tab: 'results' })} className="card flex flex-col gap-1 p-4 transition-transform duration-100 active:scale-[0.98] hover:bg-school-soft/40 sm:p-5">
+              <span className="mb-1.5 flex h-9 w-9 items-center justify-center rounded-xl bg-school-soft text-school-ink"><Icon icon={RankingIcon} size={19} /></span>
+              <div className="text-[13px] text-text-secondary font-medium">Position in class</div>
+              <div className="font-display text-2xl font-semibold tabular-nums text-text-primary">
                 {rank ? `${rank.rank} / ${rank.out_of}` : '—'}
               </div>
               <div className="text-xs text-text-secondary mt-1">{currentTerm?.name ?? 'This term'}</div>
@@ -574,7 +580,7 @@ export async function GuardianDashboard({
 
           <div className="card p-5 space-y-3">
             <div className="flex items-center justify-between">
-              <h2 className="text-base font-semibold text-text-primary">From the school</h2>
+              <h2 className="text-[17px] font-semibold text-text-primary">From the school</h2>
               <Link href="/dashboard/announcements" className="text-xs text-primary hover:underline font-semibold">
                 View all →
               </Link>
@@ -588,7 +594,7 @@ export async function GuardianDashboard({
                     <div className="flex items-baseline justify-between gap-3">
                       <h3 className="text-sm font-semibold text-text-primary">{a.title}</h3>
                       <span className="text-[11px] text-text-secondary whitespace-nowrap">
-                        {a.published_at ? new Date(a.published_at).toLocaleDateString() : ''}
+                        {a.published_at ? new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Lagos', day: 'numeric', month: 'short' }).format(new Date(a.published_at)) : ''}
                       </span>
                     </div>
                     <p className="text-sm text-text-secondary mt-1 line-clamp-2">{a.body}</p>
@@ -619,11 +625,9 @@ export async function GuardianDashboard({
         <div className="card p-5 space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-base font-semibold text-text-primary flex items-center gap-2">
-                <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                </svg>
-                Attendance Records
+              <h2 className="flex items-center gap-2 text-[17px] font-semibold text-text-primary">
+                <Icon icon={UserCheck01Icon} size={20} className="text-school-ink" />
+                Attendance
               </h2>
               <p className="text-xs text-text-secondary mt-0.5">
                 {attScope === 'all'
@@ -635,7 +639,7 @@ export async function GuardianDashboard({
             <div className="flex items-center gap-1.5 bg-surface-muted p-1 rounded-lg text-xs font-medium border border-border">
               <Link
                 href={buildUrl({ attScope: 'term' })}
-                className={`px-3 py-1 rounded-md transition-colors ${
+                className={`flex h-9 items-center px-3 rounded-md transition-colors ${
                   attScope !== 'all' ? 'bg-surface text-primary shadow-xs font-semibold' : 'text-text-secondary hover:text-text-primary'
                 }`}
               >
@@ -643,7 +647,7 @@ export async function GuardianDashboard({
               </Link>
               <Link
                 href={buildUrl({ attScope: 'all' })}
-                className={`px-3 py-1 rounded-md transition-colors ${
+                className={`flex h-9 items-center px-3 rounded-md transition-colors ${
                   attScope === 'all' ? 'bg-surface text-primary shadow-xs font-semibold' : 'text-text-secondary hover:text-text-primary'
                 }`}
               >
@@ -760,10 +764,8 @@ export async function GuardianDashboard({
           {/* Recorded-lesson attendance (separate from daily; does NOT affect rate/counters) */}
           {LMS_ENABLED && <div className="card p-5 space-y-4 mt-4">
             <div>
-              <h2 className="text-base font-semibold text-text-primary flex items-center gap-2">
-                <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.069A1 1 0 0121 8.882v6.236a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" />
-                </svg>
+              <h2 className="flex items-center gap-2 text-[17px] font-semibold text-text-primary">
+                <Icon icon={PlayCircleIcon} size={20} className="text-school-ink" />
                 Recorded-lesson attendance
               </h2>
               <p className="text-xs text-text-secondary mt-0.5">Attendance marked during LMS recorded-lesson periods (most recent 20)</p>
@@ -831,11 +833,9 @@ export async function GuardianDashboard({
       {/* RESULTS */}
       {activeTab === 'results' && (
         <div className="space-y-4">
-          <h2 className="text-base font-semibold text-text-primary flex items-center gap-2">
-            <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
-            Academic Results ({currentTerm?.name ?? 'This Term'})
+          <h2 className="flex items-center gap-2 text-[17px] font-semibold text-text-primary">
+            <Icon icon={Certificate01Icon} size={20} className="text-school-ink" />
+                Results · {currentTerm?.name ?? 'This term'}
           </h2>
 
           {subjectRows.length === 0 ? (
@@ -894,12 +894,12 @@ export async function GuardianDashboard({
       {/* FEES */}
       {activeTab === 'fees' && (
         <div className="card p-5 space-y-4">
-          <h2 className="text-base font-semibold text-text-primary">Fees — {currentTerm?.academic_sessions?.name ?? 'Current Session'}</h2>
+          <h2 className="text-[17px] font-semibold text-text-primary">Fees — {currentTerm?.academic_sessions?.name ?? 'Current Session'}</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="border border-border rounded-lg p-3.5 bg-surface-muted/30">
               <div className="text-xs text-text-secondary font-medium">Total Billed</div>
-              <div className="text-xl font-bold text-text-primary mt-1">{formatCurrency(totalBilled)}</div>
+              <div className="font-display text-2xl font-semibold tabular-nums text-text-primary">{formatCurrency(totalBilled)}</div>
             </div>
             <div className="border border-border rounded-lg p-3.5 bg-surface-muted/30">
               <div className="text-xs text-text-secondary font-medium">Total Paid</div>
@@ -907,7 +907,7 @@ export async function GuardianDashboard({
             </div>
             <div className="border border-border rounded-lg p-3.5 bg-surface-muted/30">
               <div className="text-xs text-text-secondary font-medium">Balance</div>
-              <div className={`text-xl font-bold mt-1 ${totalBalance > 0 ? 'text-danger-text' : 'text-success-text'}`}>
+              <div className={`font-display text-2xl font-semibold tabular-nums ${totalBalance > 0 ? 'text-danger-text' : 'text-success-text'}`}>
                 {formatCurrency(totalBalance)}
               </div>
             </div>
@@ -1036,11 +1036,9 @@ export async function GuardianDashboard({
       {/* TIMETABLE */}
       {activeTab === 'timetable' && (
         <div className="card p-5 space-y-3">
-          <h2 className="text-base font-semibold text-text-primary flex items-center gap-2">
-            <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 1118 0z" />
-            </svg>
-            Class Timetable
+          <h2 className="flex items-center gap-2 text-[17px] font-semibold text-text-primary">
+            <Icon icon={TimeScheduleIcon} size={20} className="text-school-ink" />
+                Timetable
           </h2>
           <TimetableGridView periods={timetablePeriods} rows={timetableRows} mode="student" />
         </div>
