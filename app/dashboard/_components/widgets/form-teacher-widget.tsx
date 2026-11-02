@@ -57,7 +57,7 @@ export async function FormTeacherWidget() {
               className="p-3 rounded-lg border border-border bg-surface-muted/40 hover:bg-school-soft/40 hover:border-primary/40 transition-colors flex flex-col gap-1.5"
             >
               <CheckSquare size={16} className="text-school-ink" />
-              <span className="font-semibold text-text-primary">Daily Register</span>
+              <span className="font-semibold text-text-primary">Daily attendance</span>
             </Link>
             <Link
               href="/dashboard/results/remarks"

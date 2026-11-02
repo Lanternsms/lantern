@@ -5,11 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { IconSvgElement } from '@hugeicons/react'
 import {
-  Analytics01Icon, BookOpen01Icon, Calendar03Icon, CalendarCheckIn01Icon, Cancel01Icon, CheckListIcon,
-  File01Icon, Folder01Icon, HardDriveIcon, HelpCircleIcon, Home01Icon, Invoice01Icon, Key01Icon, LicenseIcon,
-  Logout01Icon, Megaphone01Icon, Menu01Icon, Message01Icon, Mortarboard01Icon, Note01Icon, PlayCircleIcon,
-  Settings01Icon, ShieldUserIcon, Tag01Icon, TaskDone01Icon, UserGroupIcon, UserIcon, UserMultipleIcon,
-  Wallet01Icon,
+  BookOpen01Icon, Cancel01Icon, Certificate01Icon, CheckmarkBadge01Icon, Coins01Icon, Comment01Icon, DashboardSquare01Icon, File01Icon, Folder01Icon, HardDriveIcon, HelpCircleIcon, Logout01Icon, Megaphone01Icon, Menu01Icon, Message01Icon, Money03Icon, NoteEditIcon, PlayCircleIcon, RankingIcon, School01Icon, Settings01Icon, ShieldUserIcon, StudentsIcon, Tag01Icon, TaskDone01Icon, TeacherIcon, TimeScheduleIcon, UserAccountIcon, UserCheck01Icon, UserGroupIcon, UserMultipleIcon, Wallet01Icon,
 } from '@hugeicons/core-free-icons'
 import { signOut } from '@/app/auth/actions'
 import { removeSubscription } from '@/app/dashboard/notifications/actions'
@@ -20,28 +16,28 @@ import { Icon } from '@/components/icon'
 type NavItem = { label: string; href: string; badge?: number | string | null }
 
 const ICONS: Record<string, IconSvgElement> = {
-  '/dashboard': Home01Icon,
-  '/dashboard/students': UserGroupIcon,
-  '/dashboard/guardians': UserIcon,
-  '/dashboard/staff': UserMultipleIcon,
-  '/dashboard/academics': Mortarboard01Icon,
+  '/dashboard': DashboardSquare01Icon,
+  '/dashboard/students': StudentsIcon,
+  '/dashboard/guardians': UserGroupIcon,
+  '/dashboard/staff': TeacherIcon,
+  '/dashboard/academics': School01Icon,
   '/dashboard/roles': ShieldUserIcon,
-  '/dashboard/gradebook': Note01Icon,
-  '/dashboard/approvals': TaskDone01Icon,
-  '/dashboard/academics/timetable': Calendar03Icon,
-  '/dashboard/my-timetable': Calendar03Icon,
+  '/dashboard/gradebook': NoteEditIcon,
+  '/dashboard/approvals': CheckmarkBadge01Icon,
+  '/dashboard/academics/timetable': TimeScheduleIcon,
+  '/dashboard/my-timetable': TimeScheduleIcon,
   '/dashboard/class-lessons': PlayCircleIcon,
-  '/dashboard/class-results': Analytics01Icon,
-  '/dashboard/results/remarks': Message01Icon,
-  '/dashboard/my-submissions': CheckListIcon,
-  '/dashboard/my-class': UserGroupIcon,
-  '/dashboard/results': LicenseIcon,
-  '/dashboard/my-results': LicenseIcon,
-  '/dashboard/users': Key01Icon,
-  '/dashboard/attendance': CalendarCheckIn01Icon,
+  '/dashboard/class-results': RankingIcon,
+  '/dashboard/results/remarks': Comment01Icon,
+  '/dashboard/my-submissions': TaskDone01Icon,
+  '/dashboard/my-class': UserMultipleIcon,
+  '/dashboard/results': Certificate01Icon,
+  '/dashboard/my-results': Certificate01Icon,
+  '/dashboard/users': UserAccountIcon,
+  '/dashboard/attendance': UserCheck01Icon,
   '/dashboard/attendance/settings': Tag01Icon,
-  '/dashboard/fees/structures': Wallet01Icon,
-  '/dashboard/fees/record': Invoice01Icon,
+  '/dashboard/fees/structures': Coins01Icon,
+  '/dashboard/fees/record': Money03Icon,
   '/dashboard/payments': Wallet01Icon,
   '/dashboard/announcements': Megaphone01Icon,
   '/dashboard/documents': Folder01Icon,
@@ -307,7 +303,7 @@ export function DashboardShell({
                 <span className={`flex h-8 w-14 items-center justify-center rounded-full transition-colors duration-150 ${on ? 'bg-school-soft' : ''}`}>
                   <Icon icon={ICONS[t.href] ?? File01Icon} size={22} />
                 </span>
-                <span className="max-w-full truncate px-1">{SHORT[t.href] ?? (t.href === '/dashboard' ? 'Today' : t.label)}</span>
+                <span className="max-w-full truncate px-1">{SHORT[t.href] ?? t.label}</span>
                 {typeof t.badge === 'number' && t.badge > 0 && (
                   <span className="absolute left-1/2 top-2 ml-2 min-w-[18px] rounded-full bg-school px-1 text-center text-[10px] font-semibold leading-[18px] text-white tabular-nums">{t.badge}</span>
                 )}

@@ -18,7 +18,7 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: 'Lantern',
-  description: 'Registers, results, fees and lessons for Nigerian secondary schools, in one place.',
+  description: 'Attendance, results and fees for Nigerian secondary schools, in one place.',
   manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,

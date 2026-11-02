@@ -102,7 +102,7 @@ export async function AttendanceWidget() {
       <div className="pt-4 mt-2 border-t border-border flex items-center justify-between text-xs text-text-secondary">
         <span>Daily &amp; Period Tracking</span>
         <Link href="/dashboard/attendance" className="font-semibold text-primary hover:underline">
-          View register history →
+          View attendance history →
         </Link>
       </div>
     </div>

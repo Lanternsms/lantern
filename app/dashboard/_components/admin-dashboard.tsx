@@ -45,7 +45,7 @@ export async function AdminDashboard() {
         <section className="card p-6">
           <h1 className="text-lg font-semibold">No current session yet</h1>
           <p className="mt-1 max-w-[60ch] text-text-secondary">
-            Today’s registers, fees and results appear here once a session and term are set as current.
+            Today’s attendance, fees and results appear here once a session and term are set as current.
           </p>
           <Link href="/dashboard/academics/sessions" className="mt-4 inline-flex h-9 items-center rounded-md bg-primary px-3.5 text-sm font-semibold text-white hover:bg-primary-hover">
             Set up the session
@@ -147,6 +147,10 @@ export async function AdminDashboard() {
       <div className="px-5 pt-6 sm:px-8 empty:hidden"><SetupChecklist /></div>
       <AdminTodayView
         dateLabel={dateLabel}
+        greeting={(() => {
+          const h = Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Lagos', hour: '2-digit', hour12: false }).format(new Date()))
+          return `${h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'}${profile.first_name ? `, ${profile.first_name}` : ''}`
+        })()}
         totalStudents={enrolments?.length ?? 0}
         classRoll={(classes ?? []).map((c) => ({ id: c.id, name: c.name, count: rollByClass.get(c.id) ?? 0 }))}
         today={today}

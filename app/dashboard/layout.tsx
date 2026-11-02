@@ -6,6 +6,7 @@ import { getMyAccessContext, canSee, type NavGate } from '@/lib/permissions'
 import { ThemeStyle } from './_components/theme-style'
 import { getOpenQuestionCount } from './lms/questions/actions'
 import { getLmsAccess } from '@/lib/lms/access'
+import { LMS_ENABLED } from '@/lib/features'
 import { NotificationBellServer } from './_components/notification-bell-server'
 import { PushSync } from '@/components/push-sync'
 import { FirstLoginBanner } from '@/components/first-login-banner'
@@ -13,7 +14,7 @@ import { FirstLoginBanner } from '@/components/first-login-banner'
 type NavItem = { label: string; href: string } & NavGate
 
 const ALL_NAV_ITEMS: NavItem[] = [
-  { label: 'Today', href: '/dashboard' },
+  { label: 'Dashboard', href: '/dashboard' },
   { label: 'Students', href: '/dashboard/students', permission: 'students.view_all' },
   { label: 'Guardians', href: '/dashboard/guardians', permission: 'students.view_all' },
   { label: 'Staff', href: '/dashboard/staff', permission: 'staff.view_all' },
@@ -24,16 +25,16 @@ const ALL_NAV_ITEMS: NavItem[] = [
   { label: 'Timetable', href: '/dashboard/academics/timetable', permission: 'timetable.manage' },
   { label: 'My timetable', href: '/dashboard/my-timetable', scope: 'teacher' },
   { label: 'My timetable', href: '/dashboard/my-timetable', scope: 'student' },
-  { label: 'Lessons', href: '/dashboard/class-lessons', scope: 'student' },
   { label: 'Class results', href: '/dashboard/class-results', scope: 'teacher' },
   { label: 'Result remarks', href: '/dashboard/results/remarks', scope: 'teacher' },
   { label: 'My submissions', href: '/dashboard/my-submissions', scope: 'teacher' },
   { label: 'My class', href: '/dashboard/my-class', scope: 'formTeacher' },
   { label: 'Results', href: '/dashboard/results', permission: 'results.view_all' },
+  { label: 'Lessons', href: '/dashboard/class-lessons', scope: 'student' },
   { label: 'My results', href: '/dashboard/my-results', scope: 'student' },
   { label: 'Users', href: '/dashboard/users', permission: ['users.invite', 'users.edit', 'users.view_all'] },
-  { label: 'Registers', href: '/dashboard/attendance', permission: ['attendance.manage', 'attendance.view_all'] },
-  { label: 'Registers', href: '/dashboard/attendance', scope: 'teacher' },
+  { label: 'Attendance', href: '/dashboard/attendance', permission: ['attendance.manage', 'attendance.view_all'] },
+  { label: 'Attendance', href: '/dashboard/attendance', scope: 'teacher' },
   { label: 'Attendance statuses', href: '/dashboard/attendance/settings', permission: 'settings.manage' },
   { label: 'Fee structures', href: '/dashboard/fees/structures', permission: 'fees.manage' },
   { label: 'Fees', href: '/dashboard/fees/record', permission: 'fees.manage' },
@@ -64,7 +65,9 @@ export default async function DashboardLayout({
     supabase.from('profiles').select('first_name, last_name').eq('id', user.id).single(),
     supabase.from('schools').select('name, logo_url').single(),
     getMyAccessContext(supabase),
-    getLmsAccess(supabase, user),
+    LMS_ENABLED
+      ? getLmsAccess(supabase, user)
+      : Promise.resolve({ isManager: false, isFacilitator: false, recordedLessonCount: 0 } as Awaited<ReturnType<typeof getLmsAccess>>),
   ])
 
   const hasRecordedLesson = lmsAccess.recordedLessonCount > 0
@@ -84,6 +87,7 @@ export default async function DashboardLayout({
 
   const visibleItems: { label: string; href: string; badge?: number | string | null }[] = ALL_NAV_ITEMS
     .filter((item) => canSee(ctx, item))
+    .filter((item) => LMS_ENABLED || item.href !== '/dashboard/class-lessons')
 
   // Construct LMS navigation items according to role access rules
   const lmsNavItems: { label: string; href: string; badge?: number | string | null }[] = []

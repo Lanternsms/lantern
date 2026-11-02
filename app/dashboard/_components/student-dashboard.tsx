@@ -1,9 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from 'next/link'
-import { Award, Calendar, CreditCard, Bell, FileText, CheckCircle2, PlayCircle } from '@/components/icons'
+import { PlayCircle } from '@/components/icons'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { getTodayInLagos } from '../lms/lagos-time'
+import { LMS_ENABLED } from '@/lib/features'
+import { Icon as HIcon } from '@/components/icon'
+import { Certificate01Icon, Folder01Icon, Megaphone01Icon, TimeScheduleIcon, Wallet01Icon } from '@hugeicons/core-free-icons'
 import { LessonPlayerModal } from '../lms/lesson-player-modal'
 import { NotesDownloadButton } from '../lms/notes-download-button'
 
@@ -53,7 +56,7 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
   // Fetch published lessons for this student's class
   let lessonsBySubject: { subjectName: string; lessons: any[] }[] = []
   const activityCountByLesson = new Map<string, number>()
-  if (currentEnrolment?.class_id) {
+  if (LMS_ENABLED && currentEnrolment?.class_id) {
     const admin = createAdminClient()
     const { data: rawLessons } = await (admin as any)
       .from('lms_lessons')
@@ -186,21 +189,22 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
         </p>
       )}
 
-      <nav aria-label="Your pages" className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+      <nav aria-label="Your pages" className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {[
-          { href: '/dashboard/my-results', label: 'Results', note: 'Term scores and report cards', Icon: Award },
-          { href: '/dashboard/my-timetable', label: 'Timetable', note: 'Your week, period by period', Icon: Calendar },
-          { href: '/dashboard/payments', label: 'Fees', note: 'Bills, payments and receipts', Icon: CreditCard },
-        ].map(({ href, label, note, Icon }) => (
-          <Link key={href} href={href} className="card flex items-center gap-3 px-4 py-4 transition-transform hover:-translate-y-px">
-            <Icon aria-hidden size={18} strokeWidth={1.6} className="shrink-0 text-text-secondary" />
-            <span className="flex min-w-0 flex-col"><span className="font-semibold">{label}</span><span className="truncate text-sm text-text-secondary">{note}</span></span>
+          { href: '/dashboard/my-results', label: 'Results', note: 'Scores and report cards', icon: Certificate01Icon },
+          { href: '/dashboard/my-timetable', label: 'Timetable', note: 'Your week, period by period', icon: TimeScheduleIcon },
+          { href: '/dashboard/payments', label: 'Fees', note: 'Bills and receipts', icon: Wallet01Icon },
+          { href: '/dashboard/announcements', label: 'Announcements', note: 'News from school', icon: Megaphone01Icon },
+        ].map((t) => (
+          <Link key={t.href} href={t.href} className="card group flex min-h-[112px] flex-col justify-between gap-3 p-4 transition-transform duration-100 active:scale-[0.98] sm:p-5">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-school-soft text-school-ink"><HIcon icon={t.icon} size={21} /></span>
+            <span className="flex flex-col"><span className="text-[15px] font-semibold group-hover:text-primary">{t.label}</span><span className="text-[13px] text-text-secondary">{t.note}</span></span>
           </Link>
         ))}
       </nav>
 
-      {/* Recorded Lessons Library */}
-      <div>
+      {/* Recorded Lessons Library (paused with LMS) */}
+      {LMS_ENABLED && <div>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-base font-semibold text-text-primary flex items-center gap-2">
             <PlayCircle size={18} className="text-primary" />
@@ -280,42 +284,11 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
             ))}
           </div>
         )}
-      </div>
+      </div>}
 
-      {/* School Resources & Announcements */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Link
-          href="/dashboard/announcements"
-          className="bg-surface border border-border rounded-lg p-5 flex items-center justify-between hover:border-primary/50 transition-colors group"
-        >
-          <div className="flex items-center gap-3.5">
-            <div className="flex items-center justify-center shrink-0 text-text-secondary">
-              <Bell size={20} />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-text-primary">School Announcements</p>
-              <p className="text-xs text-text-muted mt-0.5">Stay updated on events, circulars, and notices</p>
-            </div>
-          </div>
-          <span className="text-xs font-medium text-primary">Browse →</span>
-        </Link>
-
-        <Link
-          href="/dashboard/documents"
-          className="bg-surface border border-border rounded-lg p-5 flex items-center justify-between hover:border-primary/50 transition-colors group"
-        >
-          <div className="flex items-center gap-3.5">
-            <div className="flex items-center justify-center shrink-0 text-text-secondary">
-              <FileText size={20} />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-text-primary">School Documents</p>
-              <p className="text-xs text-text-muted mt-0.5">Forms, syllabus, and study materials</p>
-            </div>
-          </div>
-          <span className="text-xs font-medium text-primary">Browse →</span>
-        </Link>
-      </div>
+      <Link href="/dashboard/documents" className="flex items-center gap-2 self-start text-sm font-medium text-text-secondary hover:text-primary">
+        <HIcon icon={Folder01Icon} size={17} /> School documents
+      </Link>
     </div>
   )
 }

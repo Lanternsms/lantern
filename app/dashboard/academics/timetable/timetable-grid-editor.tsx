@@ -1,4 +1,5 @@
 'use client'
+import { LMS_ENABLED } from '@/lib/features'
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
@@ -207,7 +208,7 @@ export default function TimetableGridEditor({
                                                         <div>
                                                             <div className="flex items-center gap-1.5 flex-wrap">
                                                                 <span className="text-xs font-medium text-text-primary">{subject?.name}</span>
-                                                                {entry.delivery_mode === 'lms' && (
+                                                                {LMS_ENABLED && entry.delivery_mode === 'lms' && (
                                                                     <span className="inline-block text-[9px] font-semibold  px-1 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
                                                                         LMS
                                                                     </span>
@@ -280,7 +281,7 @@ export default function TimetableGridEditor({
                         )}
 
                         <div className="space-y-3">
-                            <div>
+                            <div className={LMS_ENABLED ? '' : 'hidden'}>
                                 <label className="block text-xs font-medium text-text-secondary mb-1">Delivery</label>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                     <label

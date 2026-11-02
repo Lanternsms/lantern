@@ -1,3 +1,4 @@
+import { LMS_ENABLED } from '@/lib/features'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { after } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
@@ -81,6 +82,7 @@ function dayStr(tz: string) {
 }
 
 export async function POST(req: Request) {
+  if (!LMS_ENABLED) return Response.json({ error: 'LUMI is paused' }, { status: 404 })
   // 1. Parse & validate body
   let body: z.infer<typeof bodySchema>
   try {
