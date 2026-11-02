@@ -86,7 +86,7 @@ export default function MarkingGrid({
       if (result.error) {
         setError(result.error)
       } else {
-        setSavedMessage(`Register saved at ${new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}. Guardians of absent and late students are being told.`)
+        setSavedMessage(`Attendance saved at ${new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}. Guardians of absent and late students are being told.`)
       }
     })
   }
@@ -120,7 +120,7 @@ export default function MarkingGrid({
             <label className="flex h-9 items-center gap-2 rounded-md border border-control bg-surface px-2.5 text-sm text-text-secondary">
               Subject
               <select value={subjectId} onChange={(e) => setSubjectId(e.target.value)} className="bg-transparent font-medium text-text-primary focus:outline-none">
-                <option value="">Daily register</option>
+                <option value="">Daily attendance</option>
                 {teachableSubjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
               </select>
             </label>
@@ -178,7 +178,7 @@ export default function MarkingGrid({
           disabled={isPending}
           className={`flex h-11 items-center gap-2 rounded-md px-5 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60 ${left ? 'bg-raised text-text-secondary' : 'bg-primary text-white hover:bg-primary-hover'}`}
         >
-          {isPending ? 'Saving…' : left ? `Mark ${left} more to save` : 'Save register'}
+          {isPending ? 'Saving…' : left ? `Mark ${left} more to save` : 'Save attendance'}
         </button>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { Award, Calendar, CreditCard, Bell, FileText, CheckCircle2, PlayCircle }
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { getTodayInLagos } from '../lms/lagos-time'
+import { LMS_ENABLED } from '@/lib/features'
 import { LessonPlayerModal } from '../lms/lesson-player-modal'
 import { NotesDownloadButton } from '../lms/notes-download-button'
 
@@ -53,7 +54,7 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
   // Fetch published lessons for this student's class
   let lessonsBySubject: { subjectName: string; lessons: any[] }[] = []
   const activityCountByLesson = new Map<string, number>()
-  if (currentEnrolment?.class_id) {
+  if (LMS_ENABLED && currentEnrolment?.class_id) {
     const admin = createAdminClient()
     const { data: rawLessons } = await (admin as any)
       .from('lms_lessons')
@@ -199,8 +200,8 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
         ))}
       </nav>
 
-      {/* Recorded Lessons Library */}
-      <div>
+      {/* Recorded Lessons Library (paused with LMS) */}
+      {LMS_ENABLED && <div>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-base font-semibold text-text-primary flex items-center gap-2">
             <PlayCircle size={18} className="text-primary" />
@@ -280,7 +281,7 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
             ))}
           </div>
         )}
-      </div>
+      </div>}
 
       {/* School Resources & Announcements */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

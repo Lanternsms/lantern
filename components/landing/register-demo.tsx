@@ -27,7 +27,7 @@ export function RegisterDemo() {
     <div aria-label="Try it: mark a student absent" className="relative flex w-full flex-col items-end gap-4 sm:block sm:min-h-[470px]">
       <div className="w-full overflow-hidden rounded-2xl border border-[#e7e7e7] bg-white sm:w-[63%] sm:min-w-[330px]">
         <div className="flex items-center justify-between border-b border-[#efefef] px-4 py-3.5">
-          <span className="text-[15px] font-semibold">JSS 2B · register</span>
+          <span className="text-[15px] font-semibold">JSS 2B · attendance</span>
           <span className="text-[13px] text-[#5c626c] tabular-nums">
             {STUDENTS.length - out.length} of {STUDENTS.length} present
           </span>

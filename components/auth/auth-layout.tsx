@@ -49,7 +49,7 @@ export function AuthLayout({
         </span>
         <div className="flex max-w-[420px] flex-col gap-4">
           <p className="font-display text-[40px] font-semibold leading-[1.1]">Your whole school, in one place.</p>
-          <p className="text-lg text-white/75">Registers, results, fees and lessons — and every parent hears what happened the minute it does.</p>
+          <p className="text-lg text-white/75">Attendance, results and fees — and every parent hears what happened the minute it does.</p>
         </div>
         <span className="h-1 w-16 rounded-full bg-[#b9915e]" />
       </aside>

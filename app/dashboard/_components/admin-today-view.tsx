@@ -1,12 +1,13 @@
 import Link from 'next/link'
 import {
-  ArrowRight01Icon, CalendarCheckIn01Icon, Invoice01Icon, Megaphone01Icon,
+  ArrowRight01Icon, Invoice01Icon, Megaphone01Icon, Money03Icon, UserCheck01Icon,
 } from '@hugeicons/core-free-icons'
 import { Icon } from '@/components/icon'
 
 export type BoardCell = { arm: string; cls: string; label: string; pct: number | null; present: number; size: number }
 export type AdminTodayData = {
   dateLabel: string
+  greeting?: string
   totalStudents: number
   classRoll: { id: string; name: string; count: number }[]
   today: string
@@ -44,8 +45,8 @@ export function AdminTodayView(d: AdminTodayData) {
     <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="flex flex-col gap-1">
-          <h1 className="text-[30px] font-semibold leading-[1.05] sm:text-[40px]">{d.dateLabel}</h1>
-          <p className="text-[15px] text-text-secondary">{d.termLabel}</p>
+          <h1 className="text-[30px] font-semibold leading-[1.05] sm:text-[40px]">{d.greeting ?? d.dateLabel}</h1>
+          <p className="text-[15px] text-text-secondary">{d.greeting ? `${d.dateLabel} · ${d.termLabel}` : d.termLabel}</p>
         </div>
         <Link href="/dashboard/announcements/new" className="hidden h-10 items-center sm:flex gap-2 rounded-xl bg-surface px-4 text-sm font-medium shadow-card ring-1 ring-black/[0.06] hover:bg-raised">
           <Icon icon={Megaphone01Icon} size={17} />
@@ -56,8 +57,8 @@ export function AdminTodayView(d: AdminTodayData) {
       {/* Phones: the three jobs an admin does standing up, one tap each. */}
       <nav aria-label="Quick actions" className="-mt-1 grid grid-cols-3 gap-2.5 sm:hidden">
         {[
-          { href: '/dashboard/attendance', label: 'Registers', icon: CalendarCheckIn01Icon },
-          { href: '/dashboard/fees/record', label: 'Record fee', icon: Invoice01Icon },
+          { href: '/dashboard/attendance', label: 'Attendance', icon: UserCheck01Icon },
+          { href: '/dashboard/fees/record', label: 'Record fee', icon: Money03Icon },
           { href: '/dashboard/announcements/new', label: 'Announce', icon: Megaphone01Icon },
         ].map((a) => (
           <Link key={a.href} href={a.href} className="flex h-[76px] flex-col items-center justify-center gap-1.5 rounded-2xl bg-surface text-[13px] font-medium shadow-card ring-1 ring-black/[0.05] active:scale-[0.97] active:bg-school-soft transition-transform duration-100">
@@ -78,22 +79,22 @@ export function AdminTodayView(d: AdminTodayData) {
               </p>
               <p className="text-[15px] text-school-deep-muted">
                 {d.markedToday
-                  ? `${d.presentToday.toLocaleString('en-NG')} of ${d.markedToday.toLocaleString('en-NG')} students in ${saved} saved register${saved === 1 ? "" : "s"}`
-                  : 'No register saved yet today'}
+                  ? `${d.presentToday.toLocaleString('en-NG')} of ${d.markedToday.toLocaleString('en-NG')} students, across ${saved} ${saved === 1 ? "class" : "classes"}`
+                  : 'No attendance taken yet today'}
               </p>
             </div>
             <div className="flex flex-col items-start gap-3 sm:items-end">
               {open.length > 0 ? (
                 <p className="max-w-[260px] text-[15px] leading-snug sm:text-right">
-                  <strong className="font-semibold">{open.length} register{open.length === 1 ? '' : 's'} still open</strong>
+                  <strong className="font-semibold">{open.length} {open.length === 1 ? 'class' : 'classes'} still to take attendance</strong>
                   <span className="text-school-deep-muted"> — {open.slice(0, 3).map((c) => c.label).join(', ')}{open.length > 3 ? ` and ${open.length - 3} more` : ''}</span>
                 </p>
               ) : (
-                <p className="text-[15px] font-semibold">Every register is saved.</p>
+                <p className="text-[15px] font-semibold">Every class has taken attendance.</p>
               )}
               <Link href="/dashboard/attendance" className="flex h-11 items-center gap-2 rounded-xl bg-white px-4.5 text-sm font-semibold text-school-deep transition-transform hover:-translate-y-px">
-                <Icon icon={CalendarCheckIn01Icon} size={18} className="text-school" />
-                Open registers
+                <Icon icon={UserCheck01Icon} size={18} className="text-school" />
+                Open attendance
               </Link>
             </div>
           </div>
@@ -111,7 +112,7 @@ export function AdminTodayView(d: AdminTodayData) {
                       <Link
                         key={c.arm}
                         href={`/dashboard/attendance?classId=${c.cls}&armId=${c.arm}&date=${d.today}`}
-                        aria-label={c.pct === null ? `${c.label} register not saved` : `${c.label}: ${c.present} of ${c.size} present`}
+                        aria-label={c.pct === null ? `${c.label} attendance not taken` : `${c.label}: ${c.present} of ${c.size} present`}
                         title={c.label}
                         className={`flex h-9 items-center justify-center rounded-md text-[11px] font-semibold tabular-nums transition-transform hover:-translate-y-px sm:h-10 sm:rounded-lg sm:text-[13px] ${
                           c.pct === null
@@ -127,7 +128,7 @@ export function AdminTodayView(d: AdminTodayData) {
                   }),
                 ])}
               </div>
-              <p className="mt-3 text-xs text-school-deep-muted">White cells are below 90% present. Tap any class arm to open its register.</p>
+              <p className="mt-3 text-xs text-school-deep-muted">White cells are below 90% present. Tap a class to open its attendance.</p>
             </div>
           )}
         </section>

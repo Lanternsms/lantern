@@ -2,12 +2,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { RegisterDemo } from '@/components/landing/register-demo'
-import { LumiDemo } from '@/components/landing/lumi-demo'
 
 export const metadata: Metadata = {
   title: 'Lantern — your whole school, in one place',
   description:
-    'Registers, results, fees and lessons for Nigerian secondary schools. Every parent hears what happened the minute it does.',
+    'Attendance, results and fees for Nigerian secondary schools. Every parent hears what happened the minute it does.',
 }
 
 const PCT = [
@@ -25,8 +24,7 @@ const FAQ = [
   { q: 'What about our existing records?', a: 'Send a spreadsheet of students, guardians and classes. We import it with you and you check it before your first day.' },
   { q: 'Can it use our school’s colours and crest?', a: 'Yes. Staff, students and parents all see your colour and crest on every screen.' },
   { q: 'Who can change a result after approval?', a: 'Only the principal can reopen a published result, and every change is kept in the audit log.' },
-  { q: 'Does LUMI make things up?', a: 'LUMI answers only from the notes the teacher attached. If the notes don’t cover it, LUMI says so and suggests asking the teacher.' },
-  { q: 'What if our internet is slow?', a: 'Pages are light, and the register still works offline — it saves when the connection comes back.' },
+  { q: 'What if our internet is slow?', a: 'Pages are light, and attendance still works offline — it saves when the connection comes back.' },
 ]
 
 const h2 = 'text-[clamp(30px,3.4vw,42px)] font-bold leading-[1.1] tracking-[-0.02em]'
@@ -44,7 +42,6 @@ export default function Home() {
           </Link>
           <nav aria-label="Main" className="hidden flex-1 gap-6 text-[15px] text-[#3d434d] md:flex">
             <a href="#product" className="hover:text-[#182350]">Product</a>
-            <a href="#lumi" className="hover:text-[#182350]">LUMI tutor</a>
             <a href="#pricing" className="hover:text-[#182350]">Pricing</a>
             <a href="#faq" className="hover:text-[#182350]">FAQ</a>
           </nav>
@@ -64,7 +61,7 @@ export default function Home() {
               Your whole school, in one place.
             </h1>
             <p className="max-w-[34ch] text-xl text-[#3d434d]">
-              Registers, results, fees and lessons for Nigerian secondary schools — and every parent hears what happened
+              Attendance, results and fees for Nigerian secondary schools — and every parent hears what happened
               the minute it does.
             </p>
             <div className="flex flex-wrap gap-3">
@@ -84,11 +81,11 @@ export default function Home() {
 
         <section aria-label="What Lantern covers" className="border-y border-[#e7e7e7] bg-white">
           <ul className="mx-auto grid max-w-[1200px] grid-cols-2 gap-x-6 gap-y-3 px-5 py-5.5 text-[15px] text-[#3d434d] sm:grid-cols-3 sm:px-6 xl:grid-cols-6">
-            <li><strong className="text-[#182350]">Registers</strong> by 8am</li>
+            <li><strong className="text-[#182350]">Attendance</strong> by 8am</li>
             <li><strong className="text-[#182350]">Results</strong> with approval</li>
             <li><strong className="text-[#182350]">Report cards</strong> in one click</li>
             <li><strong className="text-[#182350]">Fees</strong> and receipts</li>
-            <li><strong className="text-[#182350]">Lessons</strong> with LUMI</li>
+            <li><strong className="text-[#182350]">Parents</strong> told instantly</li>
             <li><strong className="text-[#182350]">Your</strong> colours and crest</li>
           </ul>
         </section>
@@ -98,13 +95,13 @@ export default function Home() {
             <div className="flex min-w-0 flex-[1_1_380px] flex-col gap-4">
               <h2 className={h2}>The whole morning at a glance.</h2>
               <p className="max-w-[44ch] text-[#3d434d]">
-                Every class arm’s register on one board, the ones still open marked plainly, fees received this week, and
+                Every class’s attendance on one board, the ones still to mark shown plainly, fees received this week, and
                 the result batches waiting for a signature.
               </p>
             </div>
             <div data-ui className={`${panel} flex min-w-0 flex-[1_1_560px] flex-col gap-3.5 p-5`}>
               <div className="flex flex-wrap justify-between gap-2">
-                <span className="font-semibold">Registers this morning</span>
+                <span className="font-semibold">Attendance this morning</span>
                 <span className="text-sm font-medium text-[#92400e]">3 still open at 9:40am</span>
               </div>
               <div className="grid grid-cols-[48px_repeat(6,minmax(0,1fr))] items-center gap-1.5 text-[13px] tabular-nums sm:grid-cols-[56px_repeat(6,minmax(0,1fr))]">
@@ -177,11 +174,6 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="lumi" className="mt-18 border-y border-[#e7e9ef] bg-[#f4f5f9] text-[#182350]">
-          <div className="mx-auto max-w-[1200px] px-5 py-26 sm:px-6">
-            <LumiDemo />
-          </div>
-        </section>
 
         <section aria-label="Classrooms" className="grid grid-cols-1 sm:grid-cols-3">
           <Image src="/landing/library-study.jpg" alt="A student working on his laptop in a bright, modern school library" width={1920} height={1280} sizes="(min-width: 640px) 33vw, 100vw" className="h-[300px] w-full object-cover sm:h-[380px]" />
@@ -195,7 +187,7 @@ export default function Home() {
             {[
               ['Day 1–2', 'Send us your class lists', 'A spreadsheet is fine. We import students, guardians and classes, and you check them.'],
               ['Day 3–4', 'Set your school’s rules', 'Terms, grading scale, CA weighting, fee structures, who approves results — and your colours.'],
-              ['Day 5', 'Invite staff and parents', 'Everyone gets an invite by email or SMS, and teachers start marking registers the same day.'],
+              ['Day 5', 'Invite staff and parents', 'Everyone gets an invite by email or SMS, and teachers start taking attendance the same day.'],
             ].map(([when, title, body]) => (
               <li key={title} className="flex flex-col gap-2 border-t border-[#d4d4d4] pt-4.5">
                 <span className="text-[15px] text-[#5c626c]">{when}</span>
@@ -219,8 +211,8 @@ export default function Home() {
                 <span className="text-[#5c626c]">per student, per term</span>
               </div>
               <ul className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-x-5 gap-y-2.5 text-base">
-                <li>Registers and attendance alerts</li><li>Scores, approval and report cards</li>
-                <li>Fees, receipts and balances</li><li>Lessons and the LUMI tutor</li>
+                <li>Attendance and instant alerts</li><li>Scores, approval and report cards</li>
+                <li>Fees, receipts and balances</li><li>Timetables and announcements</li>
                 <li>Unlimited staff and parents</li><li>Setup and import done with you</li>
               </ul>
               <a href="#demo" className="press flex h-[50px] items-center justify-center rounded-[10px] bg-[#182350] font-semibold text-white">

@@ -7,6 +7,7 @@ import TimetableGridView, { TimetableRow } from '../my-timetable/timetable-grid-
 import { LessonPlayerModal } from '../lms/lesson-player-modal'
 import { NotesDownloadButton } from '../lms/notes-download-button'
 import GuardianAskButton from './guardian-ask-button';
+import { LMS_ENABLED } from '@/lib/features'
 
 
 function formatDuration(seconds: number | null): string {
@@ -50,7 +51,7 @@ export async function GuardianDashboard({
   const { child: childParam, student: studentParam, term: termParam, tab: tabParam, attScope: attScopeParam } = searchParams
 
   // Validate tab against known list; ignore unknown tabs and fall back to default 'all'
-  const VALID_TABS = new Set(['all', 'attendance', 'results', 'fees', 'timetable', 'lessons'])
+  const VALID_TABS = new Set(['all', 'attendance', 'results', 'fees', 'timetable', ...(LMS_ENABLED ? ['lessons'] : [])])
   const normalizedTab = (tabParam || '').toLowerCase()
   const activeTab = VALID_TABS.has(normalizedTab) ? normalizedTab : 'all'
   const attScope = attScopeParam || 'term'
@@ -132,7 +133,7 @@ export async function GuardianDashboard({
 
   // LMS period attendance (separate — does NOT feed daily counters or rate)
   let lmsPeriodAttendance: any[] = []
-  if (selectedChild) {
+  if (LMS_ENABLED && selectedChild) {
     const { data: lmsPeriodData } = await (admin as any)
       .from('lms_period_attendance')
       .select('id, date, status_id, attendance_statuses(label, code, counts_as_present), subjects(name), lms_lessons(title)')
@@ -289,7 +290,7 @@ export async function GuardianDashboard({
   const activityCountByLesson = new Map<string, number>()
   const lessonHasBrief = new Map<string, boolean>()
 
-  if (selectedChild && enrolment?.class_id) {
+  if (LMS_ENABLED && selectedChild && enrolment?.class_id) {
     const { count } = await (admin as any)
       .from('lms_lessons')
       .select('id', { count: 'exact', head: true })
@@ -371,7 +372,7 @@ export async function GuardianDashboard({
   const todayCode = (todayRecord?.attendance_statuses?.code ?? '').toLowerCase()
   const markerName = todayRecord?.marker ? `${todayRecord.marker.first_name ?? ''} ${todayRecord.marker.last_name ?? ''}`.trim() : null
   const headline = !todayRecord
-    ? `${firstName}’s register hasn’t been marked yet today.`
+    ? `${firstName}’s attendance hasn’t been taken yet today.`
     : todayCode === 'absent'
       ? `${firstName} was marked absent today.`
       : todayCode === 'late'
@@ -519,7 +520,7 @@ export async function GuardianDashboard({
           >
             Timetable
           </Link>
-          {(lessonCount > 0 || activeTab === 'lessons') && (
+          {LMS_ENABLED && (lessonCount > 0 || activeTab === 'lessons') && (
             <Link
               href={buildUrl({ tab: 'lessons' })}
               className={`py-3 text-sm border-b-2 transition-colors whitespace-nowrap ${
@@ -757,7 +758,7 @@ export async function GuardianDashboard({
           )}
 
           {/* Recorded-lesson attendance (separate from daily; does NOT affect rate/counters) */}
-          <div className="card p-5 space-y-4 mt-4">
+          {LMS_ENABLED && <div className="card p-5 space-y-4 mt-4">
             <div>
               <h2 className="text-base font-semibold text-text-primary flex items-center gap-2">
                 <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -823,7 +824,7 @@ export async function GuardianDashboard({
                 </table>
               </div>
             )}
-          </div>
+          </div>}
         </div>
       )}
 
