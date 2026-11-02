@@ -135,7 +135,7 @@ export default async function MyResultsPage({
         </div>
       ) : (
         <div className="card overflow-hidden mb-6">
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto"><table className="w-full text-sm">
             <thead className="bg-surface-muted text-text-secondary text-xs">
               <tr>
                 <th className="text-left px-4 py-2.5">Subject</th>
@@ -158,7 +158,7 @@ export default async function MyResultsPage({
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
         </div>
       )}
 

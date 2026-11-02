@@ -33,7 +33,7 @@ export default async function CustomFieldsPage({
       <div>
         {fields.length > 0 ? (
           <div className="card overflow-hidden mb-6">
-            <table className="w-full text-sm">
+            <div className="overflow-x-auto"><table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-rule">
                   <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Label</th>
@@ -76,7 +76,7 @@ export default async function CustomFieldsPage({
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table></div>
           </div>
         ) : (
           <p className="text-sm text-text-secondary mb-6">No custom fields defined yet for {entityLabel}.</p>

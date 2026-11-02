@@ -56,7 +56,7 @@ export default async function ScaleDetailPage({
 
         {bands && bands.length > 0 ? (
           <div className="mb-5">
-            <table className="w-full text-sm">
+            <div className="overflow-x-auto"><table className="w-full text-sm">
               <thead>
                 <tr className="text-left text-text-secondary text-xs ">
                   <th className="pb-2 font-medium">Score Range</th>
@@ -83,7 +83,7 @@ export default async function ScaleDetailPage({
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table></div>
           </div>
         ) : (
           <p className="text-sm text-text-muted mb-5">No grade bands yet. Add ranges below to cover 0–100.</p>

@@ -321,7 +321,7 @@ export function AdminNotificationSettingsClient({
           </div>
         ) : (
           <div className="border border-border rounded-lg overflow-hidden">
-            <table className="w-full text-left text-xs">
+            <div className="overflow-x-auto"><table className="w-full text-left text-xs">
               <thead className="bg-surface-muted border-b border-border text-text-secondary font-medium">
                 <tr>
                   <th className="py-2.5 px-3">Time</th>
@@ -367,7 +367,7 @@ export function AdminNotificationSettingsClient({
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table></div>
           </div>
         )}
       </div>

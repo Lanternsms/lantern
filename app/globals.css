@@ -76,6 +76,11 @@
   h1, h2, .font-display { font-family: var(--font-display); letter-spacing: -0.02em; }
   ::selection { background: var(--color-school-track); color: var(--color-school-ink); }
   input, textarea { caret-color: var(--color-primary); }
+  /* Phones: 16px stops iOS zooming into a field on focus. */
+  @media (max-width: 639px) {
+    input:not([type='checkbox']):not([type='radio']), select, textarea { font-size: 16px; }
+  }
+  html { -webkit-tap-highlight-color: transparent; }
   :focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;

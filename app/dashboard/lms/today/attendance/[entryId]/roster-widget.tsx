@@ -148,7 +148,7 @@ export default function RosterWidget({
             {/* arm-specific message omitted intentionally */}
           </div>
         ) : (
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto"><table className="w-full text-sm">
             <thead className="bg-surface-muted/40 text-text-secondary text-xs border-b border-border">
               <tr>
                 <th className="text-left px-4 py-2.5 font-medium">Student</th>
@@ -198,7 +198,7 @@ export default function RosterWidget({
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
         )}
       </div>
 

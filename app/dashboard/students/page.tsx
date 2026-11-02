@@ -117,7 +117,28 @@ export default async function StudentsPage({
 
       {students && students.length > 0 && (
         <div className="card overflow-hidden">
-          <div className="overflow-x-auto">
+          {/* Phones: one tappable row per student instead of a sideways-scrolling table. */}
+          <ul className="sm:hidden">
+            {students.map((s) => {
+              const enrolment = s.enrolments?.[0]
+              const isActive = s.status === 'active'
+              return (
+                <li key={s.id} className="border-b border-rule last:border-0">
+                  <Link href={`/dashboard/students/${s.id}`} className="flex min-h-16 items-center gap-3 px-4 py-2.5 active:bg-school-soft/50">
+                    <Avatar first={s.first_name} last={s.last_name} photo={s.photo_url} />
+                    <span className="flex min-w-0 flex-1 flex-col">
+                      <span className="truncate text-[15px] font-medium">{s.first_name} {s.last_name}</span>
+                      <span className="truncate text-[13px] tabular-nums text-text-secondary">
+                        {[`${enrolment?.classes?.name ?? ''}${enrolment?.arms?.name ?? ''}`, s.admission_no].filter(Boolean).join(' · ')}
+                      </span>
+                    </span>
+                    {!isActive && <StatusPill tone="danger">{s.status}</StatusPill>}
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
+          <div className="hidden overflow-x-auto sm:block">
             <table className="w-full min-w-[640px] text-sm">
               <thead>
                 <tr className="text-[13px] text-text-secondary">

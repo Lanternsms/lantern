@@ -47,7 +47,7 @@ export default function StructuresManager({
 
   return (
     <div className="space-y-4">
-      <table className="card w-full text-sm overflow-hidden">
+      <div className="overflow-x-auto"><table className="card w-full text-sm overflow-hidden">
         <thead>
           <tr className="border-b border-rule text-left text-xs text-text-secondary">
             <th className="p-3">Name</th>
@@ -89,7 +89,7 @@ export default function StructuresManager({
             </tr>
           ))}
         </tbody>
-      </table>
+      </table></div>
 
       <form onSubmit={submit} className="flex flex-wrap items-end gap-3 border-t border-border pt-4">
         <div>

@@ -84,7 +84,7 @@ export default async function MyClassPage() {
             >Add Student
             </Link>
           </div>
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto"><table className="w-full text-sm">
             <thead>
               <tr className="border-b border-rule">
                 <th className="text-left font-medium text-text-secondary px-4 py-2 text-xs ">
@@ -125,7 +125,7 @@ export default async function MyClassPage() {
                 )
               })}
             </tbody>
-          </table>
+          </table></div>
         </div>
       ))}
     </div>

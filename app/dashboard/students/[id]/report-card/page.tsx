@@ -88,7 +88,7 @@ export default async function ReportCardPage({
         {card.subjects.length === 0 ? (
           <p className="text-sm text-text-secondary">No published results for this term yet.</p>
         ) : (
-          <table className="w-full text-sm mb-6">
+          <div className="overflow-x-auto"><table className="w-full text-sm mb-6">
             <thead>
               <tr className="border-b border-rule text-left text-text-secondary text-xs ">
                 <th className="py-2">Subject</th>
@@ -113,7 +113,7 @@ export default async function ReportCardPage({
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
         )}
 
         {card.subjects.length > 0 && (

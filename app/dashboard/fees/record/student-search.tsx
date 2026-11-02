@@ -30,7 +30,7 @@ export default function StudentSearch({ selectedStudent }: { selectedStudent: Fo
           <span className="truncate font-semibold">{selectedStudent.first_name} {selectedStudent.last_name}</span>
           <span className="text-xs text-text-secondary">{selectedStudent.admission_no}</span>
         </span>
-        <button type="button" onClick={() => router.push('/dashboard/fees/record')} className="flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-sm text-text-secondary hover:bg-raised hover:text-text-primary">
+        <button type="button" onClick={() => router.push('/dashboard/fees/record')} className="flex h-11 items-center gap-1.5 rounded-lg px-3 text-sm text-text-secondary hover:bg-raised hover:text-text-primary">
           <Icon icon={Cancel01Icon} size={16} /> Change
         </button>
       </div>
@@ -58,7 +58,7 @@ export default function StudentSearch({ selectedStudent }: { selectedStudent: Fo
               <button
                 type="button"
                 onClick={() => { router.push(`/dashboard/fees/record?studentId=${s.id}`); setResults([]); setQuery('') }}
-                className="flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-left hover:bg-school-soft"
+                className="flex min-h-12 w-full items-center gap-3 rounded-lg px-2.5 py-2 text-left hover:bg-school-soft active:bg-school-soft"
               >
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-raised text-xs font-semibold">{s.first_name[0]}{s.last_name[0]}</span>
                 <span className="flex-1 font-medium">{s.first_name} {s.last_name}</span>

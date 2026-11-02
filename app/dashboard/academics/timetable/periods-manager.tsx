@@ -55,7 +55,7 @@ export default function PeriodsManager({ periods }: { periods: Period[] }) {
 
       {open && (
         <div className="mt-4 space-y-4">
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto"><table className="w-full text-sm">
             <thead>
               <tr className="text-left text-xs text-text-secondary border-b border-rule">
                 <th className="py-1 pr-2">Order</th>
@@ -100,7 +100,7 @@ export default function PeriodsManager({ periods }: { periods: Period[] }) {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
 
           <form onSubmit={submit} className="flex flex-wrap items-end gap-3 border-t border-border pt-4">
             <div>

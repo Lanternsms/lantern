@@ -47,11 +47,25 @@ export function AdminTodayView(d: AdminTodayData) {
           <h1 className="text-[30px] font-semibold leading-[1.05] sm:text-[40px]">{d.dateLabel}</h1>
           <p className="text-[15px] text-text-secondary">{d.termLabel}</p>
         </div>
-        <Link href="/dashboard/announcements/new" className="flex h-10 items-center gap-2 rounded-xl bg-surface px-4 text-sm font-medium shadow-card ring-1 ring-black/[0.06] hover:bg-raised">
+        <Link href="/dashboard/announcements/new" className="hidden h-10 items-center sm:flex gap-2 rounded-xl bg-surface px-4 text-sm font-medium shadow-card ring-1 ring-black/[0.06] hover:bg-raised">
           <Icon icon={Megaphone01Icon} size={17} />
           Send announcement
         </Link>
       </div>
+
+      {/* Phones: the three jobs an admin does standing up, one tap each. */}
+      <nav aria-label="Quick actions" className="-mt-1 grid grid-cols-3 gap-2.5 sm:hidden">
+        {[
+          { href: '/dashboard/attendance', label: 'Registers', icon: CalendarCheckIn01Icon },
+          { href: '/dashboard/fees/record', label: 'Record fee', icon: Invoice01Icon },
+          { href: '/dashboard/announcements/new', label: 'Announce', icon: Megaphone01Icon },
+        ].map((a) => (
+          <Link key={a.href} href={a.href} className="flex h-[76px] flex-col items-center justify-center gap-1.5 rounded-2xl bg-surface text-[13px] font-medium shadow-card ring-1 ring-black/[0.05] active:scale-[0.97] active:bg-school-soft transition-transform duration-100">
+            <span className="text-school-ink"><Icon icon={a.icon} size={22} /></span>
+            {a.label}
+          </Link>
+        ))}
+      </nav>
 
       <div className="grid gap-5 xl:grid-cols-12">
         {/* The deep panel: today, at the size it deserves. */}
@@ -64,7 +78,7 @@ export function AdminTodayView(d: AdminTodayData) {
               </p>
               <p className="text-[15px] text-school-deep-muted">
                 {d.markedToday
-                  ? `${d.presentToday.toLocaleString('en-NG')} of ${d.markedToday.toLocaleString('en-NG')} students in ${saved} saved registers`
+                  ? `${d.presentToday.toLocaleString('en-NG')} of ${d.markedToday.toLocaleString('en-NG')} students in ${saved} saved register${saved === 1 ? "" : "s"}`
                   : 'No register saved yet today'}
               </p>
             </div>
