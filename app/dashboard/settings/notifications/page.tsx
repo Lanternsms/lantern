@@ -151,7 +151,7 @@ export default async function AdminNotificationsPage() {
   return (
     <div className="px-6 py-8 max-w-5xl mx-auto space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-text-primary">
+        <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">
           Notification Delivery &amp; Settings
         </h1>
         <p className="text-xs text-text-secondary mt-1">

@@ -11,7 +11,7 @@ export default function DeleteButton({ id }: { id: string }) {
     return (
       <span className="text-xs flex items-center gap-2">
         <button
-          className="text-danger hover:underline"
+          className="text-danger-text hover:underline"
           disabled={isPending}
           onClick={() => startTransition(() => deleteDocument(id))}
         >
@@ -25,7 +25,7 @@ export default function DeleteButton({ id }: { id: string }) {
   }
 
   return (
-    <button className="text-xs text-danger hover:underline" onClick={() => setConfirming(true)}>
+    <button className="text-xs text-danger-text hover:underline" onClick={() => setConfirming(true)}>
       Delete
     </button>
   )

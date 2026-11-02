@@ -1,31 +1,21 @@
 export const dynamic = 'force-dynamic'
 
-import Link from 'next/link'
+import { Agreement01Icon, CalendarCheckIn01Icon, ColorsIcon, Notification01Icon, Wallet01Icon } from '@hugeicons/core-free-icons'
+import { HubGrid, PageHeader, PageShell } from '@/components/ui/page'
 
 export default function SettingsHubPage() {
-  const sections = [
-    { href: '/dashboard/settings/notifications', title: 'Notification Channels', description: 'Manage outbound email & push channels, and monitor delivery health.' },
-    { href: '/dashboard/settings/branding', title: 'Branding & Theme', description: "Logo, colors, and how your school's portal looks." },
-    { href: '/dashboard/attendance/settings', title: 'Attendance Categories', description: 'Configure the attendance status options teachers can mark.' },
-    { href: '/dashboard/settings/billing', title: 'Billing', description: 'Manage your subscription and billing information.' },
-    { href: '/dashboard/settings/audit-log', title: 'Audit-Log', description: 'View a log of all actions taken in the portal.' }
-  ]
-
   return (
-    <div className="px-6 py-6 max-w-3xl space-y-4">
-      <h1 className="text-xl font-semibold text-text-primary">Settings</h1>
-      <div className="grid gap-3 sm:grid-cols-2">
-        {sections.map((s) => (
-          <Link
-            key={s.href}
-            href={s.href}
-            className="block bg-surface border border-border rounded-xl p-4 hover:border-primary/40 transition-colors"
-          >
-            <h2 className="text-sm font-semibold text-text-primary">{s.title}</h2>
-            <p className="text-xs text-text-secondary mt-1">{s.description}</p>
-          </Link>
-        ))}
-      </div>
-    </div>
+    <PageShell>
+      <PageHeader title="School settings" subtitle="How Lantern looks and behaves for everyone at your school." />
+      <HubGrid
+        items={[
+          { href: '/dashboard/settings/branding', title: 'Branding', description: 'Your school colour and crest, on every screen.', icon: ColorsIcon },
+          { href: '/dashboard/settings/notifications', title: 'Notifications', description: 'Email and phone alerts, and whether they’re being delivered.', icon: Notification01Icon },
+          { href: '/dashboard/attendance/settings', title: 'Attendance statuses', description: 'The options teachers can mark, beyond present and absent.', icon: CalendarCheckIn01Icon },
+          { href: '/dashboard/settings/billing', title: 'Billing', description: 'Your Lantern subscription and invoices.', icon: Wallet01Icon },
+          { href: '/dashboard/settings/audit-log', title: 'Audit log', description: 'Every change made in Lantern, who made it and when.', icon: Agreement01Icon },
+        ]}
+      />
+    </PageShell>
   )
 }

@@ -5,7 +5,7 @@ import { PwaInstallPrompt } from '@/components/pwa-install-prompt'
 import { PushSettingsCard } from '@/components/push-settings-card'
 import { savePreferences, type UserSubscriptionInfo } from '../actions'
 import type { Category } from '@/lib/notifications/types'
-import { Check, Lock, ShieldCheck } from 'lucide-react'
+import { Check, Lock, ShieldCheck } from '@/components/icons'
 
 export interface CategoryPrefState {
   category: Category
@@ -81,7 +81,7 @@ export function NotificationSettingsClient({
       </div>
 
       {/* Category Notification Preferences Matrix */}
-      <div className="bg-surface border border-border rounded-xl p-6 space-y-6">
+      <div className="card p-6 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 className="text-base font-semibold text-text-primary">
@@ -101,17 +101,17 @@ export function NotificationSettingsClient({
             <button
               onClick={handleSave}
               disabled={isPending}
-              className="text-xs font-semibold text-white bg-primary hover:bg-primary-hover px-4 py-2 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+              className="text-xs font-semibold text-white bg-primary hover:bg-primary-hover px-4 py-2 rounded-xl transition-colors cursor-pointer disabled:opacity-50"
             >
               {isPending ? 'Saving…' : 'Save preferences'}
             </button>
           </div>
         </div>
 
-        <div className="border border-border rounded-xl overflow-hidden">
+        <div className="border border-border rounded-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-surface-muted border-b border-border text-text-secondary uppercase tracking-wider font-semibold">
+              <thead className="bg-surface-muted border-b border-border text-text-secondary  font-semibold">
                 <tr>
                   <th className="py-3 px-4 min-w-[200px]">Category</th>
                   <th className="py-3 px-4 text-center w-28">In-app</th>
@@ -121,7 +121,7 @@ export function NotificationSettingsClient({
               </thead>
               <tbody className="divide-y divide-border">
                 {prefs.map((row) => (
-                  <tr key={row.category} className="hover:bg-surface-muted/40 transition-colors">
+                  <tr key={row.category} className="hover:bg-school-soft/40 transition-colors">
                     <td className="py-3.5 px-4">
                       <p className="font-semibold text-text-primary capitalize">{row.label}</p>
                       <p className="text-[11px] text-text-secondary mt-0.5 leading-relaxed">
@@ -150,7 +150,7 @@ export function NotificationSettingsClient({
                       <select
                         value={row.push === null ? 'default' : row.push ? 'on' : 'off'}
                         onChange={(e) => handlePushChange(row.category, e.target.value)}
-                        className="text-xs rounded-lg border border-border bg-surface px-2.5 py-1.5 text-text-primary focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
+                        className="card text-xs px-2.5 py-1.5 text-text-primary focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
                       >
                         <option value="default">
                           Default ({row.push_default_label || 'On'})
@@ -170,7 +170,7 @@ export function NotificationSettingsClient({
                         <select
                           value={row.email === null ? 'default' : row.email ? 'on' : 'off'}
                           onChange={(e) => handleEmailChange(row.category, e.target.value)}
-                          className="text-xs rounded-lg border border-border bg-surface px-2.5 py-1.5 text-text-primary focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
+                          className="card text-xs px-2.5 py-1.5 text-text-primary focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
                         >
                           <option value="default">
                             Default ({row.email_default_label || 'On'})

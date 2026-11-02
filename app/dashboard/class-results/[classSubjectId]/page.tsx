@@ -83,9 +83,8 @@ export default async function ClassResultDetailPage({
 
   if (!selectedTerm) {
     return (
-      <div className="px-8 py-8">
-        <Link href="/dashboard/class-results" className="text-sm text-primary hover:text-primary-hover">
-          ← Back to Class Results
+      <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
+        <Link href="/dashboard/class-results" className="inline-flex w-fit items-center gap-1 text-sm text-text-secondary hover:text-text-primary">← Back to Class Results
         </Link>
         <p className="text-sm text-text-secondary mt-6">No current term is configured.</p>
       </div>
@@ -119,11 +118,10 @@ export default async function ClassResultDetailPage({
 
   if (!enrolments || enrolments.length === 0) {
     return (
-      <div className="px-8 py-8">
-        <Link href="/dashboard/class-results" className="text-sm text-primary hover:text-primary-hover">
-          ← Back to Class Results
+      <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
+        <Link href="/dashboard/class-results" className="inline-flex w-fit items-center gap-1 text-sm text-text-secondary hover:text-text-primary">← Back to Class Results
         </Link>
-        <h1 className="text-xl font-semibold text-text-primary mt-4 mb-1">
+        <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mt-4 mb-1">
           {(cs.subjects as { name: string } | null)?.name} —{' '}
           {(cs.classes as { name: string } | null)?.name}
           {(cs.arms as { name: string } | null)?.name
@@ -224,7 +222,7 @@ export default async function ClassResultDetailPage({
   }
 
   return (
-    <div className="px-8 py-8 max-w-6xl print:px-4 print:py-4">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-6xl print:px-4 print:py-4">
       {/* ── Breadcrumb ── */}
       <Link
         href="/dashboard/class-results"
@@ -236,7 +234,7 @@ export default async function ClassResultDetailPage({
       {/* ── Header ── */}
       <div className="flex items-start justify-between mt-4 mb-6 print:mt-0">
         <div>
-          <h1 className="text-xl font-semibold text-text-primary">
+          <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">
             {subjectName} — {classLabel}
           </h1>
           <p className="text-sm text-text-secondary mt-0.5">
@@ -254,7 +252,7 @@ export default async function ClassResultDetailPage({
               <select
                 name="term"
                 defaultValue={selectedTerm.id}
-                className="text-sm border border-border rounded-lg px-3 py-1.5 bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                className="bg-surface border border-control rounded-xl text-sm px-3 py-1.5 text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
                 onChange={undefined}
               >
                 {terms.map((t) => {
@@ -268,7 +266,7 @@ export default async function ClassResultDetailPage({
               </select>
               <button
                 type="submit"
-                className="ml-2 text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-3 py-1.5 transition-colors"
+                className="ml-2 text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-3 py-1.5 transition-colors"
               >
                 Go
               </button>
@@ -288,9 +286,9 @@ export default async function ClassResultDetailPage({
         ].map((card) => (
           <div
             key={card.label}
-            className="bg-surface border border-border rounded-xl px-5 py-4"
+            className="card px-5 py-4"
           >
-            <p className="text-xs font-medium text-text-secondary uppercase tracking-wide mb-1">
+            <p className="text-xs font-medium text-text-secondary  mb-1">
               {card.label}
             </p>
             <p className="text-2xl font-bold text-text-primary">{card.value}</p>
@@ -300,7 +298,7 @@ export default async function ClassResultDetailPage({
 
       {/* ── Grade Distribution ── */}
       {gradeLabels.length > 0 && (
-        <div className="bg-surface border border-border rounded-xl p-5 mb-6">
+        <div className="card p-5 mb-6">
           <h2 className="text-sm font-semibold text-text-primary mb-4">Grade Distribution</h2>
           <div className="flex items-end gap-3 flex-wrap">
             {gradeLabels.map((g) => {
@@ -340,7 +338,7 @@ export default async function ClassResultDetailPage({
       )}
 
       {/* ── Student result table ── */}
-      <div className="bg-surface border border-border rounded-xl overflow-hidden">
+      <div className="card overflow-hidden">
         <div className="px-5 py-4 border-b border-border flex items-center justify-between">
           <h2 className="text-sm font-semibold text-text-primary">Student Scores</h2>
           <span className="text-xs text-text-secondary">
@@ -355,20 +353,20 @@ export default async function ClassResultDetailPage({
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border bg-surface-muted/50">
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide w-8">
+              <tr className="border-b border-rule bg-surface-muted/50">
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px] w-8">
                   #
                 </th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">
                   Student
                 </th>
-                <th className="text-right font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">
+                <th className="text-right font-medium text-text-secondary px-4 py-3 text-xs ">
                   Score
                 </th>
-                <th className="text-center font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">
+                <th className="text-center font-medium text-text-secondary px-4 py-3 text-xs ">
                   Grade
                 </th>
-                <th className="text-center font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">
+                <th className="text-center font-medium text-text-secondary px-4 py-3 text-xs ">
                   Rank
                 </th>
               </tr>
@@ -381,15 +379,15 @@ export default async function ClassResultDetailPage({
                     idx % 2 === 0 ? '' : 'bg-surface-muted/20'
                   }`}
                 >
-                  <td className="px-4 py-3 text-text-muted text-xs">{idx + 1}</td>
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-3.5 text-text-muted text-xs">{idx + 1}</td>
+                  <td className="px-5 py-3.5">
                     <span className="font-medium text-text-primary">{s.name}</span>
                     <span className="block text-xs text-text-secondary">{s.admissionNo}</span>
                   </td>
                   <td className={`px-4 py-3 text-right tabular-nums ${scoreColour(s.grandTotal)}`}>
                     {totalsMap.has(s.studentId) ? s.grandTotal.toFixed(1) : '—'}
                   </td>
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-5 py-3.5 text-center">
                     {s.grade ? (
                       <span className="inline-flex items-center justify-center text-xs font-semibold bg-primary/10 text-primary rounded-full px-2.5 py-0.5">
                         {s.grade}
@@ -398,16 +396,16 @@ export default async function ClassResultDetailPage({
                       <span className="text-text-muted text-xs">—</span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-5 py-3.5 text-center">
                     {s.rank !== null ? (
                       <span
                         className={`text-xs font-semibold ${
                           s.rank === 1
-                            ? 'text-yellow-600'
+                            ? 'text-warning-text'
                             : s.rank === 2
-                            ? 'text-slate-500'
+                            ? 'text-text-secondary'
                             : s.rank === 3
-                            ? 'text-amber-700'
+                            ? 'text-warning-text'
                             : 'text-text-secondary'
                         }`}
                       >

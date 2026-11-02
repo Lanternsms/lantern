@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { updateResultComputationRules } from '@/app/dashboard/academics/results-config/actions'
 import Link from 'next/link'
-import { CheckCircle2 } from 'lucide-react'
+import { CheckCircle2 } from '@/components/icons'
 
 export default async function ResultComputationRulesPage({
   searchParams,
@@ -32,17 +32,17 @@ export default async function ResultComputationRulesPage({
   }
 
   return (
-    <div className="px-8 py-8 max-w-lg">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-lg">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/academics" className="hover:text-primary">Academics</Link> / Result Rules
       </p>
-      <h1 className="text-xl font-semibold text-text-primary mb-1">Result Computation Rules</h1>
+      <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mb-1">Result Computation Rules</h1>
       <p className="text-sm text-text-secondary mb-6">
         Control how class positions are calculated, and who can see them once results are published.
       </p>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">{error}</p>
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
       {success && (
         <div className="flex items-center gap-2 text-sm text-success-text bg-success-bg rounded-lg px-3 py-2 mb-4">
@@ -50,7 +50,7 @@ export default async function ResultComputationRulesPage({
         </div>
       )}
 
-      <form action={updateResultComputationRules} className="bg-surface border border-border rounded-xl p-6 space-y-6">
+      <form action={updateResultComputationRules} className="card p-6 space-y-6">
         <div>
           <label className="flex items-center justify-between">
             <div>
@@ -117,7 +117,7 @@ export default async function ResultComputationRulesPage({
           </label>
         </div>
 
-        <button type="submit" className="w-full bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-lg py-2.5 transition-colors">
+        <button type="submit" className="w-full bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-xl py-2.5 transition-colors">
           Save Settings
         </button>
       </form>

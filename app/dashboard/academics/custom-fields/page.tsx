@@ -3,7 +3,7 @@ import { updateCustomField, deleteCustomField } from '@/app/dashboard/academics/
 import { CustomFieldForm } from '@/components/custom-field-form'
 import { TabView } from '@/components/tab-view'
 import Link from 'next/link'
-import { Trash2 } from 'lucide-react'
+import { Trash2 } from '@/components/icons'
 
 const FIELD_TYPE_LABELS: Record<string, string> = {
   text: 'Text',
@@ -32,20 +32,20 @@ export default async function CustomFieldsPage({
     return (
       <div>
         {fields.length > 0 ? (
-          <div className="bg-surface border border-border rounded-xl overflow-hidden mb-6">
+          <div className="card overflow-hidden mb-6">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Label</th>
-                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Type</th>
-                  <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Required</th>
+                <tr className="border-b border-rule">
+                  <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Label</th>
+                  <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Type</th>
+                  <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Required</th>
                   <th className="px-4 py-3"></th>
                 </tr>
               </thead>
               <tbody>
                 {fields.map((f) => (
                   <tr key={f.id} className="border-b border-border last:border-0">
-                    <td className="px-4 py-3" colSpan={4}>
+                    <td className="px-5 py-3.5" colSpan={4}>
                       <div className="flex items-center gap-3">
                         <form action={updateCustomField} className="flex items-center gap-3 flex-1">
                           <input type="hidden" name="field_id" value={f.id} />
@@ -82,7 +82,7 @@ export default async function CustomFieldsPage({
           <p className="text-sm text-text-secondary mb-6">No custom fields defined yet for {entityLabel}.</p>
         )}
 
-        <section className="bg-surface border border-border rounded-xl p-5">
+        <section className="card p-5">
           <h3 className="text-sm font-medium text-text-primary mb-4">Add Field</h3>
           <CustomFieldForm entityType={entityType} />
         </section>
@@ -91,17 +91,17 @@ export default async function CustomFieldsPage({
   }
 
   return (
-    <div className="px-8 py-8 max-w-2xl">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-2xl">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/academics" className="hover:text-primary">Academics</Link> / Custom Fields
       </p>
-      <h1 className="text-xl font-semibold text-text-primary mb-1">Custom Fields</h1>
+      <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mb-1">Custom Fields</h1>
       <p className="text-sm text-text-secondary mb-6">
         Add extra fields to student, staff, or guardian records — no code changes required.
       </p>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">{error}</p>
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
 
       <TabView

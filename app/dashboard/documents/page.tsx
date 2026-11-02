@@ -46,9 +46,9 @@ export default async function DocumentsPage() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-text-primary">Documents & Downloads</h1>
+        <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">Documents & Downloads</h1>
         {canUpload && (
-          <Link href="/dashboard/documents/new" className="bg-primary text-white rounded-lg px-4 py-2 text-sm font-medium">
+          <Link href="/dashboard/documents/new" className="bg-primary text-white rounded-xl px-4 py-2 text-sm font-medium">
             Upload Document
           </Link>
         )}
@@ -62,10 +62,10 @@ export default async function DocumentsPage() {
         {((documents as unknown as DocumentItem[]) ?? []).map((d: DocumentItem) => {
           const canManage = d.created_by === user.id || canManageAll
           return (
-            <div key={d.id} className="bg-surface border border-border rounded-xl p-4 flex items-start justify-between gap-4">
+            <div key={d.id} className="card p-4 flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-sm font-semibold text-text-primary">{d.title}</h2>
-                {d.description && <p className="text-sm text-text-secondary mt-1">{d.description}</p>}
+                {d.description && <p className="mt-1 text-[15px] text-text-secondary">{d.description}</p>}
                 <p className="text-xs text-text-secondary mt-1">
                   {d.author?.first_name} {d.author?.last_name} · {new Date(d.created_at).toLocaleDateString()} ·{' '}
                   {formatSize(d.file_size)} 

@@ -110,3 +110,67 @@ export function deriveNeutralRamp(primaryHex: string): NeutralRamp {
     textMuted: hslToHex(h, sat(0.25, 0.1), 0.60),
   }
 }
+/** Mixes `hex` toward `target` by `amount` (0 = hex, 1 = target). */
+export function mixHex(hex: string, target: string, amount: number): string {
+  const a = hexToRgb(hex)
+  const b = hexToRgb(target)
+  return `#${a
+    .map((v, i) => Math.round(v * (1 - amount) + b[i] * amount).toString(16).padStart(2, '0'))
+    .join('')}`
+}
+
+export type SchoolLadder = {
+  /** The school's colour as chosen — small marks only (crest, data, active icon). */
+  accent: string
+  /** The accent darkened until white text on it passes 4.5:1 — buttons, links. */
+  action: string
+  actionHover: string
+  /** Pale tints for areas: active nav row, chips, progress tracks. */
+  soft: string
+  track: string
+  /** Dark ink of the hue for text that sits on `soft`/`track`. */
+  ink: string
+  /** Page ground, one step toward the hue's palest tint. */
+  ground: string
+  /** Deep shade of the hue for the sidebar and bold panels; white text on it passes 7:1. */
+  deep: string
+  /** A lifted step of `deep` for the active row and hovers on the deep surface. */
+  deepRaised: string
+  /** Muted text on `deep`. */
+  deepMuted: string
+}
+
+/**
+ * Builds the colour ladder every screen uses from the one colour a school picks.
+ * The full colour only ever lands on small marks; areas take pale tints of it, and
+ * anything carrying white text is darkened until it passes WCAG AA, so a school can
+ * choose gold or sky blue without making its buttons unreadable.
+ */
+export function deriveSchoolLadder(hex: string): SchoolLadder {
+  const accent = isValidHex(hex) ? hex : '#1D4ED8'
+  let action = accent
+  for (let w = 0.05; contrastRatio(action, '#FFFFFF') < 4.5 && w <= 0.8; w += 0.05) {
+    action = mixHex(accent, '#000000', w)
+  }
+  const soft = mixHex(accent, '#FFFFFF', 0.9)
+  let ink = mixHex(accent, '#000000', 0.45)
+  for (let w = 0.5; contrastRatio(ink, soft) < 4.5 && w <= 0.9; w += 0.05) {
+    ink = mixHex(accent, '#000000', w)
+  }
+  let deep = mixHex(accent, '#0A0C12', 0.62)
+  for (let w = 0.66; contrastRatio(deep, '#FFFFFF') < 7 && w <= 0.95; w += 0.04) {
+    deep = mixHex(accent, '#0A0C12', w)
+  }
+  return {
+    accent,
+    action,
+    actionHover: mixHex(action, '#000000', 0.15),
+    soft,
+    track: mixHex(accent, '#FFFFFF', 0.78),
+    ink,
+    ground: mixHex(accent, '#F4F5F7', 0.955),
+    deep,
+    deepRaised: mixHex(deep, '#FFFFFF', 0.12),
+    deepMuted: mixHex(deep, '#FFFFFF', 0.68),
+  }
+}

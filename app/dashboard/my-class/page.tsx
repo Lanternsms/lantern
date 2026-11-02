@@ -23,7 +23,7 @@ export default async function MyClassPage() {
 
   if (!currentSession) {
     return (
-      <div className="px-8 py-8">
+      <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
         <p className="text-sm text-text-secondary">No current session is set.</p>
       </div>
     )
@@ -38,8 +38,8 @@ export default async function MyClassPage() {
 
   if (!myAssignments || myAssignments.length === 0) {
     return (
-      <div className="px-8 py-8">
-        <h1 className="text-xl font-semibold text-text-primary mb-2">My Class</h1>
+      <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
+        <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mb-2">My Class</h1>
         <p className="text-sm text-text-secondary">You&apos;re not assigned as a form/class teacher this session.</p>
       </div>
     )
@@ -68,33 +68,32 @@ export default async function MyClassPage() {
   )
 
   return (
-    <div className="px-8 py-8">
-      <h1 className="text-xl font-semibold text-text-primary mb-1">My Class</h1>
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
+      <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mb-1">My Class</h1>
       <p className="text-sm text-text-secondary mb-6">
         Students in the class(es) you&apos;re the form teacher for.
       </p>
 
       {sections.map((section) => (
-        <div key={section.label} className="bg-surface border border-border rounded-xl overflow-hidden mb-6">
+        <div key={section.label} className="card overflow-hidden mb-6">
           <div className="px-4 py-3 border-b border-border flex items-center justify-between">
             <h2 className="text-sm font-medium text-text-primary">{section.label}</h2>
             <Link
               href={`/dashboard/students/new?classId=${section.classId}&armId=${section.armId ?? ''}`}
               className="text-sm text-primary hover:text-primary-hover"
-            >
-              + Add Student
+            >Add Student
             </Link>
           </div>
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border">
-                <th className="text-left font-medium text-text-secondary px-4 py-2 text-xs uppercase tracking-wide">
+              <tr className="border-b border-rule">
+                <th className="text-left font-medium text-text-secondary px-4 py-2 text-xs ">
                   Name
                 </th>
-                <th className="text-left font-medium text-text-secondary px-4 py-2 text-xs uppercase tracking-wide">
+                <th className="text-left font-medium text-text-secondary px-4 py-2 text-xs ">
                   Admission No.
                 </th>
-                <th className="text-left font-medium text-text-secondary px-4 py-2 text-xs uppercase tracking-wide">
+                <th className="text-left font-medium text-text-secondary px-4 py-2 text-xs ">
                   Status
                 </th>
               </tr>
@@ -112,7 +111,7 @@ export default async function MyClassPage() {
                 if (!s) return null
                 return (
                   <tr key={s.id} className="border-b border-border last:border-0">
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-3.5">
                       <Link
                         href={`/dashboard/students/${s.id}?from=my-class`}
                         className="text-primary hover:text-primary-hover font-medium"
@@ -120,8 +119,8 @@ export default async function MyClassPage() {
                         {s.first_name} {s.last_name}
                       </Link>
                     </td>
-                    <td className="px-4 py-3 text-text-secondary">{s.admission_no}</td>
-                    <td className="px-4 py-3 text-text-secondary capitalize">{s.status}</td>
+                    <td className="px-5 py-3.5 text-text-secondary">{s.admission_no}</td>
+                    <td className="px-5 py-3.5 text-text-secondary capitalize">{s.status}</td>
                   </tr>
                 )
               })}

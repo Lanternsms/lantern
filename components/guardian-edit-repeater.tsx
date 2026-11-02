@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, Trash2 } from 'lucide-react'
+import { Plus, Trash2 } from '@/components/icons'
 import { GuardianCustomFields } from '@/components/guardian-custom-fields'
 
 type FieldDefinition = {
@@ -120,7 +120,7 @@ export function GuardianEditRepeater({
           <Plus size={16} /> Add another guardian
         </button>
         {rows.length > 1 && (
-          <button type="button" onClick={removeRow} className="flex items-center gap-2 text-sm text-danger-text hover:text-red-700">
+          <button type="button" onClick={removeRow} className="flex items-center gap-2 text-sm text-danger-text hover:text-danger-text">
             <Trash2 size={16} /> Remove guardian
           </button>
         )}

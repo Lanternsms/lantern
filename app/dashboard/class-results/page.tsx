@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { BarChart3 } from 'lucide-react'
+import { BarChart3 } from '@/components/icons'
 
 export const metadata = {
   title: 'Class Results | Lantern',
@@ -42,10 +42,10 @@ export default async function ClassResultsIndexPage({
     : { data: null }
 
   return (
-    <div className="px-8 py-8 max-w-5xl">
-      <div className="flex items-start justify-between mb-6">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-5xl">
+      <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold text-text-primary mb-1">Class Results</h1>
+          <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mb-1">Class Results</h1>
           <p className="text-sm text-text-secondary">
             Full result summary for your assigned classes — scores, averages, rankings, and grade distributions.
           </p>
@@ -62,7 +62,7 @@ export default async function ClassResultsIndexPage({
               name="term"
               defaultValue={selectedTermId ?? ''}
               onChange={undefined}
-              className="text-sm border border-border rounded-lg px-3 py-1.5 bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="bg-surface border border-control rounded-xl text-sm px-3 py-1.5 text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               {terms.map((t) => {
                 const session = t.academic_sessions as { name: string } | null
@@ -76,7 +76,7 @@ export default async function ClassResultsIndexPage({
             </select>
             <button
               type="submit"
-              className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-3 py-1.5 transition-colors"
+              className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-3 py-1.5 transition-colors"
             >
               Go
             </button>
@@ -89,7 +89,7 @@ export default async function ClassResultsIndexPage({
       )}
 
       {selectedTermId && (!assignments || assignments.length === 0) && (
-        <div className="bg-surface border border-border rounded-xl p-12 text-center">
+        <div className="card p-12 text-center">
           <BarChart3 size={36} className="mx-auto text-text-muted mb-3" />
           <p className="text-sm text-text-secondary">
             You are not assigned to teach any subjects in this term.
@@ -103,7 +103,7 @@ export default async function ClassResultsIndexPage({
             <Link
               key={a.id}
               href={`/dashboard/class-results/${a.id}${selectedTermId ? `?term=${selectedTermId}` : ''}`}
-              className="group bg-surface border border-border rounded-xl p-5 hover:border-primary/50 hover:shadow-sm transition-all"
+              className="group bg-surface border border-border rounded-lg p-5 hover:border-primary/50 hover: transition-all"
             >
               <div className="flex items-start justify-between">
                 <div>

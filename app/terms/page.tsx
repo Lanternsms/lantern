@@ -3,7 +3,7 @@ export default function TermsPage() {
     <div className="max-w-3xl mx-auto px-6 py-16 space-y-8 text-text-primary">
       <div>
         <h1 className="text-2xl font-semibold">Terms of Service</h1>
-        <p className="text-sm text-text-secondary mt-1">Last updated: [DATE]</p>
+        <p className="mt-1 text-[15px] text-text-secondary">Last updated: [DATE]</p>
       </div>
 
       <section className="space-y-2">

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { Wallet, TrendingUp } from 'lucide-react'
+import { Wallet, TrendingUp } from '@/components/icons'
 
 function formatNaira(amount: number) {
   if (amount >= 1_000_000) return `₦${(amount / 1_000_000).toFixed(2)}M`
@@ -52,11 +52,11 @@ export async function FeesWidget() {
   const outstanding = Math.max(0, expected - collected)
 
   return (
-    <div className="bg-surface border border-border rounded-2xl p-6 shadow-xs h-full flex flex-col justify-between">
+    <div className="card p-6 h-full flex flex-col justify-between">
       <div>
         <div className="flex items-center justify-between pb-4 border-b border-border mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-200/60">
+            <div className="flex items-center justify-center shrink-0 text-text-secondary">
               <Wallet size={20} />
             </div>
             <div>
@@ -81,7 +81,7 @@ export async function FeesWidget() {
               <span className="text-xs text-text-secondary ml-2 font-medium">collected this term</span>
             </div>
             <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-surface-muted text-text-secondary border border-border">
-              <TrendingUp size={12} className="text-emerald-500" />
+              <TrendingUp size={12} className="text-success-text" />
               {totalEnrolled} students
             </span>
           </div>
@@ -89,23 +89,23 @@ export async function FeesWidget() {
           {/* Progress bar */}
           <div className="w-full bg-border/60 rounded-full h-2.5 overflow-hidden">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-amber-500 to-emerald-500 transition-all duration-500"
+              className="h-full rounded-full bg-school transition-all duration-500"
               style={{ width: `${Math.min(100, Math.max(0, rate))}%` }}
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-2.5 pt-1 text-xs">
-            <div className="p-3 rounded-xl bg-surface-muted/50 border border-border/80">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5 pt-1 text-xs">
+            <div className="p-3 rounded-lg bg-surface-muted/50 border border-border/80">
               <span className="text-text-secondary block mb-0.5">Expected</span>
               <span className="text-sm font-bold text-text-primary">{formatNaira(expected)}</span>
             </div>
-            <div className="p-3 rounded-xl bg-surface-muted/50 border border-border/80">
+            <div className="p-3 rounded-lg bg-surface-muted/50 border border-border/80">
               <span className="text-text-secondary block mb-0.5">Collected</span>
-              <span className="text-sm font-bold text-emerald-600">{formatNaira(collected)}</span>
+              <span className="text-sm font-bold text-success-text">{formatNaira(collected)}</span>
             </div>
-            <div className="p-3 rounded-xl bg-surface-muted/50 border border-border/80">
+            <div className="p-3 rounded-lg bg-surface-muted/50 border border-border/80">
               <span className="text-text-secondary block mb-0.5">Outstanding</span>
-              <span className={`text-sm font-bold ${outstanding > 0 ? 'text-red-600' : 'text-text-primary'}`}>
+              <span className={`text-sm font-bold ${outstanding > 0 ? 'text-danger-text' : 'text-text-primary'}`}>
                 {formatNaira(outstanding)}
               </span>
             </div>

@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { linkExistingGuardian } from '@/app/dashboard/guardians/actions'
 import Link from 'next/link'
+import { safeSearch } from '@/lib/safe-search'
 
 export default async function GuardiansPage({
   searchParams,
@@ -16,31 +17,29 @@ export default async function GuardiansPage({
     .order('last_name')
 
   if (q) {
-    query = query.or(`first_name.ilike.%${q}%,last_name.ilike.%${q}%,phone.ilike.%${q}%`)
+    query = query.or(`first_name.ilike.%${safeSearch(q)}%,last_name.ilike.%${safeSearch(q)}%,phone.ilike.%${safeSearch(q)}%`)
   }
 
   const { data: guardians, error: fetchError } = await query
 
   return (
-    <div className="px-8 py-8">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
       {student_id && (
-        <Link href={`/dashboard/students/${student_id}`} className="text-sm text-primary hover:text-primary-hover">
-          ← Back to student
+        <Link href={`/dashboard/students/${student_id}`} className="inline-flex w-fit items-center gap-1 text-sm text-text-secondary hover:text-text-primary">← Back to student
         </Link>
       )}
 
       <div className="flex items-start justify-between mt-4 mb-6">
         <div>
-          <h1 className="text-xl font-semibold text-text-primary">Guardians</h1>
-          <p className="text-sm text-text-secondary mt-1">
+          <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">Guardians</h1>
+          <p className="mt-1 text-[15px] text-text-secondary">
             {student_id
               ? 'Find an existing guardian to link to this student.'
               : 'All guardians on record across your school.'}
           </p>
         </div>
         {!student_id && (
-          <Link href="/dashboard/guardians/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
-            + Add Guardian
+          <Link href="/dashboard/guardians/new" className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60">Add Guardian
           </Link>
         )}
       </div>
@@ -54,37 +53,37 @@ export default async function GuardiansPage({
           placeholder="Search by name or phone"
           className="flex-1 max-w-sm rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
         />
-        <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+        <button type="submit" className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60">
           Search
         </button>
       </form>
 
       {(error || fetchError) && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">
           {error ?? fetchError?.message}
         </p>
       )}
 
       {guardians && guardians.length > 0 ? (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden">
+        <div className="card overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border">
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Name</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Relationship</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Phone</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Email</th>
+              <tr className="border-b border-rule">
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Name</th>
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Relationship</th>
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Phone</th>
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Email</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
             <tbody>
               {guardians.map((g) => (
-                <tr key={g.id} className="border-b border-border last:border-0 hover:bg-surface-muted">
-                  <td className="px-4 py-3 text-text-primary">{g.first_name} {g.last_name}</td>
-                  <td className="px-4 py-3 text-text-secondary capitalize">{g.relationship ?? '—'}</td>
-                  <td className="px-4 py-3 text-text-secondary">{g.phone ?? '—'}</td>
-                  <td className="px-4 py-3 text-text-secondary">{g.email ?? '—'}</td>
-                  <td className="px-4 py-3 text-right">
+                <tr key={g.id} className="border-b border-border last:border-0 hover:bg-school-soft/40">
+                  <td className="px-5 py-3.5 text-text-primary">{g.first_name} {g.last_name}</td>
+                  <td className="px-5 py-3.5 text-text-secondary capitalize">{g.relationship ?? '—'}</td>
+                  <td className="px-5 py-3.5 text-text-secondary">{g.phone ?? '—'}</td>
+                  <td className="px-5 py-3.5 text-text-secondary">{g.email ?? '—'}</td>
+                  <td className="px-5 py-3.5 text-right">
                     {student_id ? (
                       <form action={linkExistingGuardian}>
                         <input type="hidden" name="student_id" value={student_id} />

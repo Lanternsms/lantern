@@ -99,7 +99,7 @@ export default async function LearnerLessonActivitiesPage({
   return (
     <div className="px-6 py-8 max-w-4xl mx-auto space-y-6">
       {/* Top breadcrumb & lesson info */}
-      <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm space-y-4">
+      <div className="card p-6 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <Link
             href="/dashboard"
@@ -158,7 +158,7 @@ export default async function LearnerLessonActivitiesPage({
         </div>
 
         {activities.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-border bg-surface p-10 text-center">
+          <div className="card border-dashed p-10 text-center">
             <p className="text-sm font-medium text-text-primary">No activities for this lesson yet</p>
             <p className="text-xs text-text-secondary mt-1">
               Check back later when your teacher publishes a quiz or assignment.
@@ -186,7 +186,7 @@ export default async function LearnerLessonActivitiesPage({
               if (isQuiz) {
                 if (hasInProgress) {
                   statusChip = (
-                    <span className="inline-flex items-center rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-600 dark:text-amber-400">
+                    <span className="inline-flex items-center rounded-full bg-warning-text px-2.5 py-0.5 text-xs font-medium text-warning-text dark:text-warning-text">
                       In Progress
                     </span>
                   )
@@ -214,7 +214,7 @@ export default async function LearnerLessonActivitiesPage({
                   actionButtonLabel = 'View Feedback'
                 } else if (latestSub?.status === 'submitted') {
                   statusChip = (
-                    <span className="inline-flex items-center rounded-full bg-blue-500/10 px-2.5 py-0.5 text-xs font-medium text-blue-600 dark:text-blue-400">
+                    <span className="inline-flex items-center rounded-full bg-primary px-2.5 py-0.5 text-xs font-medium text-school-ink dark:text-school">
                       Submitted (Awaiting Marking)
                     </span>
                   )
@@ -225,16 +225,16 @@ export default async function LearnerLessonActivitiesPage({
               return (
                 <div
                   key={act.id}
-                  className="rounded-2xl border border-border bg-surface p-5 shadow-sm space-y-4 hover:border-primary/40 transition-colors"
+                  className="rounded-2xl border border-border bg-surface p-5  space-y-4 hover:border-primary/40 transition-colors"
                 >
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span
-                          className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider ${
+                          className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-bold  ${
                             isQuiz
-                              ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                              : 'bg-purple-500/10 text-purple-600 dark:text-purple-400'
+                              ? 'bg-primary text-school-ink dark:text-school'
+                              : 'bg-primary text-school-ink dark:text-school'
                           }`}
                         >
                           {act.kind}
@@ -243,7 +243,7 @@ export default async function LearnerLessonActivitiesPage({
                         {statusChip}
                         {act.hasBrief && (
                           <span
-                            className="inline-flex items-center gap-1 rounded-md bg-red-500/10 px-2 py-0.5 text-[11px] font-semibold text-red-600 dark:text-red-400"
+                            className="inline-flex items-center gap-1 rounded-md bg-danger-text px-2 py-0.5 text-[11px] font-semibold text-danger-text dark:text-danger-text"
                             title={act.briefName || 'Assignment Document PDF'}
                           >
                             <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">

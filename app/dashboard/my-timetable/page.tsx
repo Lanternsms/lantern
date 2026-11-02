@@ -57,7 +57,7 @@ export default async function MyTimetablePage() {
 
     return (
       <div className="p-6 space-y-4">
-        <h1 className="text-xl font-semibold text-text-primary">My Timetable</h1>
+        <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">My Timetable</h1>
         <TimetableGridView periods={periods ?? []} rows={rows} mode="teacher" />
       </div>
     )
@@ -117,7 +117,7 @@ export default async function MyTimetablePage() {
 
     return (
       <div className="p-6 space-y-4">
-        <h1 className="text-xl font-semibold text-text-primary">My Timetable</h1>
+        <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">My Timetable</h1>
         <TimetableGridView periods={periods ?? []} rows={rows} mode="student" />
       </div>
     )

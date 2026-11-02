@@ -10,7 +10,7 @@ export default async function AttendanceSettingsPage() {
 
   return (
     <div className="p-6 space-y-4">
-      <h1 className="text-xl font-semibold text-text-primary">Attendance Categories</h1>
+      <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">Attendance Categories</h1>
       <p className="text-sm text-text-secondary">
         Define the statuses teachers can mark. "Counts as present" affects future attendance-rate calculations.
       </p>

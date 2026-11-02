@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { setCurrentSession } from '@/app/dashboard/academics/actions'
 import Link from 'next/link'
-import { Pencil, Plus } from 'lucide-react'
+import { Pencil, Plus } from '@/components/icons'
 
 export default async function SessionsPage() {
   const supabase = await createClient()
@@ -25,34 +25,33 @@ export default async function SessionsPage() {
     .order('start_date', { ascending: false })
 
   return (
-    <div className="px-8 py-8">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/academics" className="hover:text-primary">Academics</Link> / Sessions &amp; Terms
       </p>
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold text-text-primary">Academic Sessions &amp; Terms</h1>
-          <p className="text-sm text-text-secondary mt-1">
+          <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">Academic Sessions &amp; Terms</h1>
+          <p className="mt-1 text-[15px] text-text-secondary">
             Manage sessions and terms, add new terms, and set which ones are currently active.
           </p>
         </div>
-        <Link href="/dashboard/academics/sessions/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
-          + Add Session
+        <Link href="/dashboard/academics/sessions/new" className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60">Add Session
         </Link>
       </div>
 
-      {error && <p className="text-sm text-danger-text">Error: {error.message}</p>}
+      {error && <p role="alert" className="rounded-xl bg-danger-bg px-4 py-3 text-sm text-danger-text">Couldn’t load this: {error.message}</p>}
       {!error && sessions?.length === 0 && <p className="text-sm text-text-secondary">No academic sessions yet.</p>}
 
       {sessions && sessions.length > 0 && (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden">
+        <div className="card overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border">
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Session</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Dates</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Status</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Terms</th>
+              <tr className="border-b border-rule">
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Session</th>
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Dates</th>
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Status</th>
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Terms</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
@@ -61,16 +60,16 @@ export default async function SessionsPage() {
                 const sortedTerms = [...(s.terms ?? [])].sort((a, b) => a.start_date.localeCompare(b.start_date))
 
                 return (
-                  <tr key={s.id} className="border-b border-border last:border-0 hover:bg-surface-muted align-top">
-                    <td className="px-4 py-3">
+                  <tr key={s.id} className="border-b border-border last:border-0 hover:bg-school-soft/40 align-top">
+                    <td className="px-5 py-3.5">
                       <Link href={`/dashboard/academics/sessions/${s.id}`} className="text-text-primary font-medium hover:text-primary">
                         {s.name}
                       </Link>
                     </td>
-                    <td className="px-4 py-3 text-text-secondary text-xs whitespace-nowrap">
+                    <td className="px-5 py-3.5 text-text-secondary text-xs whitespace-nowrap">
                       {s.start_date} &rarr; {s.end_date}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-3.5">
                       {s.is_current ? (
                         <span className="text-xs font-medium bg-success-bg text-success-text rounded-full px-2.5 py-1">Current</span>
                       ) : (
@@ -82,7 +81,7 @@ export default async function SessionsPage() {
                         </form>
                       )}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-3.5">
                       <div className="flex flex-wrap items-center gap-1.5">
                         {sortedTerms.length > 0 ? (
                           sortedTerms.map((t) => (
@@ -111,7 +110,7 @@ export default async function SessionsPage() {
                         </Link>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-5 py-3.5 text-right">
                       <Link href={`/dashboard/academics/sessions/${s.id}/edit`} className="text-text-secondary hover:text-primary inline-flex p-1">
                         <Pencil size={14} />
                       </Link>

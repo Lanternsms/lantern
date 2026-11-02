@@ -10,7 +10,7 @@ import {
   MessageSquare,
   BookOpen,
   ChevronRight,
-} from 'lucide-react'
+} from '@/components/icons'
 
 const BASE_TEACHER_ACTIONS = [
   {
@@ -18,28 +18,28 @@ const BASE_TEACHER_ACTIONS = [
     description: 'Roll call for class & subject periods',
     href: '/dashboard/attendance',
     icon: CheckSquare,
-    color: 'text-emerald-600 bg-emerald-50 border-emerald-200/60 dark:bg-emerald-950/40',
+    color: 'text-success-text bg-success-bg border-success-bg dark:bg-success-text',
   },
   {
     label: 'Gradebook',
     description: 'Input assessment & test scores',
     href: '/dashboard/gradebook',
     icon: FileSpreadsheet,
-    color: 'text-blue-600 bg-blue-50 border-blue-200/60 dark:bg-blue-950/40',
+    color: 'text-school-ink bg-school-soft border-school-track dark:bg-school-ink',
   },
   {
     label: 'My Timetable',
     description: 'Weekly schedule & classroom venues',
     href: '/dashboard/my-timetable',
     icon: Calendar,
-    color: 'text-amber-600 bg-amber-50 border-amber-200/60 dark:bg-amber-950/40',
+    color: 'text-warning-text bg-warning-bg border-warning-bg dark:bg-warning-text',
   },
   {
     label: 'Class Results',
     description: 'Review student performance & totals',
     href: '/dashboard/class-results',
     icon: Award,
-    color: 'text-violet-600 bg-violet-50 border-violet-200/60 dark:bg-violet-950/40',
+    color: 'text-school-ink bg-school-soft border-school-track dark:bg-school-ink',
   },
   {
     label: 'Result Remarks',
@@ -66,7 +66,7 @@ export async function TeacherWidget() {
       description: 'LMS lessons & student activities',
       href: '/dashboard/lms',
       icon: BookOpen,
-      color: 'text-sky-600 bg-sky-50 border-sky-200/60 dark:bg-sky-950/40',
+      color: 'text-school-ink bg-school-soft border-school-track dark:bg-school-ink',
     })
   } else if (access && access.recordedLessonCount > 0) {
     actions.push({
@@ -74,7 +74,7 @@ export async function TeacherWidget() {
       description: 'Your recorded lessons & activities',
       href: '/dashboard/lms/my-lessons',
       icon: BookOpen,
-      color: 'text-sky-600 bg-sky-50 border-sky-200/60 dark:bg-sky-950/40',
+      color: 'text-school-ink bg-school-soft border-school-track dark:bg-school-ink',
     })
   } else if (access?.isFacilitator) {
     actions.push({
@@ -82,15 +82,15 @@ export async function TeacherWidget() {
       description: 'Scheduled LMS periods for today',
       href: '/dashboard/lms/today',
       icon: BookOpen,
-      color: 'text-sky-600 bg-sky-50 border-sky-200/60 dark:bg-sky-950/40',
+      color: 'text-school-ink bg-school-soft border-school-track dark:bg-school-ink',
     })
   }
   return (
-    <div className="bg-surface border border-border rounded-2xl p-6 shadow-xs h-full flex flex-col justify-between">
+    <div className="card p-6 h-full flex flex-col justify-between">
       <div>
         <div className="flex items-center justify-between pb-4 border-b border-border mb-5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 border border-primary/20">
+            <div className="flex items-center justify-center shrink-0 text-text-secondary">
               <GraduationCap size={20} />
             </div>
             <div>
@@ -113,9 +113,9 @@ export async function TeacherWidget() {
               <Link
                 key={action.href}
                 href={action.href}
-                className="group p-3.5 rounded-xl border border-border bg-surface hover:bg-surface-muted/60 hover:border-primary/40 transition-all duration-200 flex items-start gap-3 relative"
+                className="group p-3.5 rounded-lg border border-border bg-surface hover:bg-school-soft/40 hover:border-primary/40 transition-all duration-200 flex items-start gap-3 relative"
               >
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border ${action.color}`}>
+                <div className="flex items-center justify-center shrink-0 text-text-secondary">
                   <Icon size={16} />
                 </div>
                 <div className="min-w-0 flex-1">

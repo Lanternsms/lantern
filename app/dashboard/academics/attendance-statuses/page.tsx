@@ -6,7 +6,7 @@ import {
   deleteAttendanceStatus,
 } from '@/app/dashboard/academics/attendance-statuses/actions'
 import Link from 'next/link'
-import { Trash2 } from 'lucide-react'
+import { Trash2 } from '@/components/icons'
 
 export default async function AttendanceStatusesPage({
   searchParams,
@@ -22,29 +22,29 @@ export default async function AttendanceStatusesPage({
     .order('label')
 
   return (
-    <div className="px-8 py-8 max-w-2xl">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-2xl">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/academics" className="hover:text-primary">Academics</Link> / Attendance Categories
       </p>
-      <h1 className="text-xl font-semibold text-text-primary mb-1">Attendance Categories</h1>
+      <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mb-1">Attendance Categories</h1>
       <p className="text-sm text-text-secondary mb-6">
         Define the options teachers can choose from when marking attendance, and whether each one
         counts toward a student&apos;s attendance rate.
       </p>
 
       {(error || fetchError) && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">
           {error ?? fetchError?.message}
         </p>
       )}
 
       {!fetchError && statuses?.length === 0 && (
-        <div className="bg-surface border border-border rounded-xl p-8 text-center mb-6">
+        <div className="card p-8 text-center mb-6">
           <p className="text-sm text-text-secondary mb-4">
             No attendance categories yet. Start with the standard set, or build your own.
           </p>
           <form action={seedDefaultAttendanceStatuses}>
-            <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+            <button type="submit" className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60">
               Create Standard Set (Present, Absent, Late, Excused)
             </button>
           </form>
@@ -52,19 +52,19 @@ export default async function AttendanceStatusesPage({
       )}
 
       {statuses && statuses.length > 0 && (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden mb-6">
+        <div className="card overflow-hidden mb-6">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border">
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Label</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Counts as Present</th>
+              <tr className="border-b border-rule">
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Label</th>
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Counts as Present</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
             <tbody>
               {statuses.map((s) => (
                 <tr key={s.id} className="border-b border-border last:border-0">
-                  <td className="px-4 py-3" colSpan={3}>
+                  <td className="px-5 py-3.5" colSpan={3}>
                     <div className="flex items-center gap-3">
                       <form action={updateAttendanceStatus} className="flex items-center gap-3 flex-1">
                         <input type="hidden" name="status_id" value={s.id} />
@@ -101,7 +101,7 @@ export default async function AttendanceStatusesPage({
         </div>
       )}
 
-      <section className="bg-surface border border-border rounded-xl p-5">
+      <section className="card p-5">
         <h3 className="text-sm font-medium text-text-primary mb-4">Add Category</h3>
         <form action={createAttendanceStatus} className="flex items-center gap-3">
           <input
@@ -114,7 +114,7 @@ export default async function AttendanceStatusesPage({
             <input type="checkbox" name="counts_as_present" className="rounded border-border" />
             Counts as present
           </label>
-          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors whitespace-nowrap">
+          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors whitespace-nowrap">
             Add
           </button>
         </form>

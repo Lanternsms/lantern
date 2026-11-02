@@ -187,11 +187,11 @@ export default async function FacilitatorTodayPage() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <p className="text-xs text-text-secondary uppercase tracking-wider font-semibold">
+          <p className="text-xs text-text-secondary  font-semibold">
             Facilitator Screen
           </p>
           <h1 className="text-2xl font-bold text-text-primary mt-0.5">Today&apos;s Lessons</h1>
-          <p className="text-sm text-text-secondary mt-1">
+          <p className="mt-1 text-[15px] text-text-secondary">
             {formattedDate} {session && `· ${session.name}`}
           </p>
         </div>
@@ -215,11 +215,11 @@ export default async function FacilitatorTodayPage() {
         </div>
 
         {!session ? (
-          <div className="bg-surface border border-border rounded-xl p-8 text-center text-sm text-text-secondary">
+          <div className="card p-8 text-center text-sm text-text-secondary">
             No active academic session found for this school.
           </div>
         ) : entryCardsData.length === 0 ? (
-          <div className="bg-surface border border-border rounded-xl p-10 text-center space-y-2">
+          <div className="card p-10 text-center space-y-2">
             <p className="text-sm font-medium text-text-primary">No lessons scheduled for you today</p>
             <p className="text-xs text-text-secondary max-w-sm mx-auto">
               You do not have any recorded lesson (LMS) timetable entries scheduled for today.
@@ -255,11 +255,11 @@ export default async function FacilitatorTodayPage() {
         <p className="text-xs text-text-secondary">Your last 10 delivered lessons</p>
 
         {!recentDeliveries || recentDeliveries.length === 0 ? (
-          <div className="bg-surface border border-border rounded-xl p-6 text-center text-xs text-text-muted">
+          <div className="card p-6 text-center text-xs text-text-muted">
             You haven&apos;t marked any lessons as delivered yet.
           </div>
         ) : (
-          <div className="bg-surface border border-border rounded-xl overflow-hidden divide-y divide-border">
+          <div className="card overflow-hidden divide-y divide-border">
             {recentDeliveries.map((item: any) => (
               <div key={item.id} className="flex items-center justify-between gap-4 px-5 py-3 text-xs">
                 <div className="min-w-0">

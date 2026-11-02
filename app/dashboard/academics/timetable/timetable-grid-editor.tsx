@@ -126,14 +126,14 @@ export default function TimetableGridEditor({
 
     return (
       <>
-        <div className="bg-surface border border-border rounded-xl p-4 space-y-4">
+        <div className="card p-4 space-y-4">
             <div className="flex flex-wrap gap-3">
                 <div>
                     <label className="block text-xs text-text-secondary mb-1">Class</label>
                     <select
                         value={selectedClassId}
                         onChange={(e) => handleClassChange(e.target.value)}
-                        className="border border-border rounded-lg px-3 py-2 text-sm bg-background"
+                        className="border border-border rounded-lg px-3 py-2 text-sm bg-surface"
                     >
                         <option value="">Select a class…</option>
                         {classes.map((c) => (
@@ -147,7 +147,7 @@ export default function TimetableGridEditor({
                         <select
                             value={selectedArmId ?? ''}
                             onChange={(e) => handleArmChange(e.target.value)}
-                            className="border border-border rounded-lg px-3 py-2 text-sm bg-background"
+                            className="border border-border rounded-lg px-3 py-2 text-sm bg-surface"
                         >
                             <option value="">Select an arm…</option>
                             {arms.map((a) => (
@@ -182,7 +182,7 @@ export default function TimetableGridEditor({
                         <tbody>
                             {periods.map((p) =>
                                 p.is_break ? (
-                                    <tr key={p.id} className="bg-background">
+                                    <tr key={p.id} className="bg-surface">
                                         <td colSpan={DAYS.length + 1} className="text-center text-xs text-text-secondary p-2 border border-border">
                                             {p.name} ({p.start_time}–{p.end_time})
                                         </td>
@@ -201,14 +201,14 @@ export default function TimetableGridEditor({
                                                 <td
                                                     key={d.value}
                                                     onClick={() => openCell(d.value, p.id)}
-                                                    className="p-2 border border-border cursor-pointer hover:bg-background align-top"
+                                                    className="p-2 border border-border cursor-pointer hover:bg-surface align-top"
                                                 >
                                                     {entry ? (
                                                         <div>
                                                             <div className="flex items-center gap-1.5 flex-wrap">
                                                                 <span className="text-xs font-medium text-text-primary">{subject?.name}</span>
                                                                 {entry.delivery_mode === 'lms' && (
-                                                                    <span className="inline-block text-[9px] font-semibold uppercase tracking-wider px-1 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
+                                                                    <span className="inline-block text-[9px] font-semibold  px-1 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
                                                                         LMS
                                                                     </span>
                                                                 )}
@@ -243,7 +243,7 @@ export default function TimetableGridEditor({
                     />
 
                     {/* Dialog Container */}
-                    <div className="relative bg-surface border border-border rounded-2xl shadow-2xl p-6 max-w-md w-full space-y-4">
+                    <div className="card relative shadow-2xl p-6 max-w-md w-full space-y-4">
                         {/* Header */}
                         <div className="flex items-start justify-between">
                             <div>
@@ -266,7 +266,7 @@ export default function TimetableGridEditor({
                                     setWarning(null)
                                 }}
                                 disabled={isPending}
-                                className="text-text-secondary hover:text-text-primary p-1 rounded-lg hover:bg-surface-muted transition-colors"
+                                className="text-text-secondary hover:text-text-primary p-1 rounded-lg hover:bg-school-soft/40 transition-colors"
                                 aria-label="Close"
                             >
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -282,12 +282,12 @@ export default function TimetableGridEditor({
                         <div className="space-y-3">
                             <div>
                                 <label className="block text-xs font-medium text-text-secondary mb-1">Delivery</label>
-                                <div className="grid grid-cols-2 gap-2">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                     <label
                                         className={`flex items-center gap-2 p-2 rounded-lg border text-xs cursor-pointer transition-colors ${
                                             cellForm.deliveryMode === 'live'
                                                 ? 'border-primary bg-primary/5 text-primary font-medium'
-                                                : 'border-border text-text-secondary hover:bg-surface-muted'
+                                                : 'border-border text-text-secondary hover:bg-school-soft/40'
                                         }`}
                                     >
                                         <input
@@ -304,7 +304,7 @@ export default function TimetableGridEditor({
                                         className={`flex items-center gap-2 p-2 rounded-lg border text-xs cursor-pointer transition-colors ${
                                             cellForm.deliveryMode === 'lms'
                                                 ? 'border-primary bg-primary/5 text-primary font-medium'
-                                                : 'border-border text-text-secondary hover:bg-surface-muted'
+                                                : 'border-border text-text-secondary hover:bg-school-soft/40'
                                         }`}
                                     >
                                         <input
@@ -325,7 +325,7 @@ export default function TimetableGridEditor({
                                 <select
                                     value={cellForm.subjectId}
                                     onChange={(e) => setCellForm({ ...cellForm, subjectId: e.target.value })}
-                                    className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                                    className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-surface text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
                                 >
                                     <option value="">Select subject…</option>
                                     {subjects.map((s) => (
@@ -341,7 +341,7 @@ export default function TimetableGridEditor({
                                 <select
                                     value={cellForm.teacherId}
                                     onChange={(e) => setCellForm({ ...cellForm, teacherId: e.target.value })}
-                                    className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                                    className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-surface text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
                                 >
                                     <option value="">
                                         {cellForm.deliveryMode === 'lms' ? 'No facilitator yet' : 'No teacher yet'}
@@ -354,7 +354,7 @@ export default function TimetableGridEditor({
                                     cellForm.teacherId &&
                                     facilitatorProfileIds.length > 0 &&
                                     !facilitatorProfileIds.includes(cellForm.teacherId) && (
-                                        <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-2">
+                                        <p className="text-xs text-warning-text bg-warning-bg border border-warning-bg rounded-lg px-3 py-2 mt-2">
                                             Notice: This staff member does not have the lms.facilitate permission via their roles.
                                         </p>
                                     )}
@@ -368,7 +368,7 @@ export default function TimetableGridEditor({
                                         type="button"
                                         onClick={clearCell}
                                         disabled={isPending}
-                                        className="text-danger text-xs font-medium hover:underline disabled:opacity-50"
+                                        className="text-danger-text text-xs font-medium hover:underline disabled:opacity-50"
                                     >
                                         Remove
                                     </button>
@@ -381,7 +381,7 @@ export default function TimetableGridEditor({
                                         setEditingCell(null)
                                         setWarning(null)
                                     }}
-                                    className="text-text-secondary hover:text-text-primary px-3 py-2 text-sm rounded-lg hover:bg-surface-muted transition-colors"
+                                    className="text-text-secondary hover:text-text-primary px-3 py-2 text-sm rounded-lg hover:bg-school-soft/40 transition-colors"
                                 >
                                     Cancel
                                 </button>
@@ -389,7 +389,7 @@ export default function TimetableGridEditor({
                                     type="button"
                                     onClick={() => saveCell()}
                                     disabled={isPending || !cellForm.subjectId}
-                                    className="bg-primary hover:bg-primary-hover text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+                                    className="bg-primary hover:bg-primary-hover text-white rounded-xl px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
                                 >
                                     {isPending ? 'Saving…' : 'Save'}
                                 </button>
@@ -409,7 +409,7 @@ export default function TimetableGridEditor({
             onClick={() => setConflictMessage(null)}
           />
           {/* Dialog */}
-          <div className="relative bg-surface border border-border rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4 space-y-4">
+          <div className="card relative shadow-2xl p-6 max-w-md w-full mx-4 space-y-4">
             {/* Warning icon */}
             <div className="flex items-center gap-3">
               <div className="flex-shrink-0 w-10 h-10 rounded-full bg-warning-bg flex items-center justify-center">
@@ -432,7 +432,7 @@ export default function TimetableGridEditor({
               <button
                 onClick={() => setConflictMessage(null)}
                 disabled={isPending}
-                className="flex-1 border border-border rounded-lg px-4 py-2 text-sm font-medium text-text-primary hover:bg-surface-muted transition-colors disabled:opacity-50"
+                className="flex-1 border border-border rounded-lg px-4 py-2 text-sm font-medium text-text-primary hover:bg-school-soft/40 transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>

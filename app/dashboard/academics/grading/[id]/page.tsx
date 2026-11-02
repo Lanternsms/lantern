@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { createGradeBand, deleteGradeBand } from '@/app/dashboard/academics/grading/actions'
 import Link from 'next/link'
-import { Pencil, Trash2 } from 'lucide-react'
+import { Pencil, Trash2 } from '@/components/icons'
 
 export default async function ScaleDetailPage({
   params,
@@ -30,35 +30,35 @@ export default async function ScaleDetailPage({
     .order('min_score', { ascending: false })
 
   return (
-    <div className="px-8 py-8 max-w-2xl">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-2xl">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/academics/grading" className="hover:text-primary">Grading Scales</Link> / {scale.name}
       </p>
 
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <h1 className="text-xl font-semibold text-text-primary">{scale.name}</h1>
+          <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">{scale.name}</h1>
           {scale.is_default && (
             <span className="text-xs font-medium bg-success-bg text-success-text rounded-full px-2.5 py-0.5">Default</span>
           )}
         </div>
-        <Link href={`/dashboard/academics/grading/${id}/edit`} className="flex items-center gap-1.5 text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-surface-muted transition-colors">
+        <Link href={`/dashboard/academics/grading/${id}/edit`} className="flex items-center gap-1.5 text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-school-soft/40 transition-colors">
           <Pencil size={14} /> Rename
         </Link>
       </div>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">{error}</p>
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
 
-      <section className="bg-surface border border-border rounded-xl p-5">
+      <section className="card p-5">
         <h3 className="text-sm font-medium text-text-primary mb-4">Grade Bands</h3>
 
         {bands && bands.length > 0 ? (
           <div className="mb-5">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-text-secondary text-xs uppercase tracking-wide">
+                <tr className="text-left text-text-secondary text-xs ">
                   <th className="pb-2 font-medium">Score Range</th>
                   <th className="pb-2 font-medium">Grade</th>
                   <th className="pb-2 font-medium">Remark</th>
@@ -107,7 +107,7 @@ export default async function ScaleDetailPage({
             <label className="block text-xs text-text-secondary mb-1">Remark</label>
             <input name="remark" placeholder="Excellent" className="w-full rounded-lg border border-border px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
           </div>
-          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors h-fit">
+          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors h-fit">
             Add Band
           </button>
         </form>

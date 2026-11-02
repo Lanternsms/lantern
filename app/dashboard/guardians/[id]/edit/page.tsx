@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { updateGuardian } from '@/app/dashboard/guardians/actions'
 import { CustomFieldInputs } from '@/components/custom-fields'
 import Link from 'next/link'
-import { User, Users } from 'lucide-react'
+import { User, Users } from '@/components/icons'
 
 export default async function EditGuardianPage({
   params,
@@ -50,32 +50,31 @@ export default async function EditGuardianPage({
   const updateGuardianWithId = updateGuardian.bind(null, id)
 
   return (
-    <div className="px-8 py-8 max-w-2xl">
-      <Link href={`/dashboard/guardians/${id}`} className="text-sm text-primary hover:text-primary-hover">
-        ← Back to guardian
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-2xl">
+      <Link href={`/dashboard/guardians/${id}`} className="inline-flex w-fit items-center gap-1 text-sm text-text-secondary hover:text-text-primary">← Back to guardian
       </Link>
 
       <div className="flex items-center gap-3 mt-4 mb-6">
-        <span className="w-11 h-11 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm font-medium">
+        <span className="w-11 h-11 rounded-full bg-school-soft text-school-ink flex items-center justify-center text-sm font-medium">
           {initials}
         </span>
         <div>
-          <h1 className="text-lg font-semibold text-text-primary">Edit Guardian</h1>
+          <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">Edit Guardian</h1>
           <p className="text-xs text-text-secondary mt-0.5">{guardian.first_name} {guardian.last_name}</p>
         </div>
       </div>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">{error}</p>
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
 
       <form action={updateGuardianWithId} className="space-y-4">
-        <section className="bg-surface border border-border rounded-xl p-5">
+        <section className="card p-5">
           <div className="flex items-center gap-2 mb-4">
             <User size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Contact Information</h3>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm text-text-secondary mb-1.5">First Name *</label>
               <input name="first_name" defaultValue={guardian.first_name} required className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
@@ -109,12 +108,12 @@ export default async function EditGuardianPage({
         </section>
 
         {customFields && customFields.length > 0 && (
-          <section className="bg-surface border border-border rounded-xl p-5">
+          <section className="card p-5">
             <CustomFieldInputs definitions={customFields} initialValues={valuesByKey} />
           </section>
         )}
 
-        <section className="bg-surface border border-border rounded-xl p-5">
+        <section className="card p-5">
           <div className="flex items-center gap-2 mb-4">
             <Users size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Linked Students</h3>
@@ -136,10 +135,10 @@ export default async function EditGuardianPage({
         </section>
 
         <div className="flex justify-end gap-3">
-          <Link href={`/dashboard/guardians/${id}`} className="text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-surface-muted transition-colors">
+          <Link href={`/dashboard/guardians/${id}`} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-surface px-4 text-sm font-semibold text-text-primary shadow-card ring-1 ring-black/[0.06] hover:bg-raised">
             Cancel
           </Link>
-          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+          <button type="submit" className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60">
             Save Changes
           </button>
         </div>

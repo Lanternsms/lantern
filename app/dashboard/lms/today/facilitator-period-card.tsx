@@ -106,7 +106,7 @@ export function FacilitatorPeriodCard({
   }
 
   return (
-    <div className="bg-surface border border-border rounded-xl p-5 shadow-xs space-y-4">
+    <div className="card p-5 space-y-4">
       {/* Header: Time, Class+Arm, Subject, and Status Chip */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
@@ -123,20 +123,20 @@ export function FacilitatorPeriodCard({
 
         <div className="flex flex-col items-end gap-1.5">
           {isDeliveredToday ? (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-success-bg text-success-text border border-success-bg">
+              <span className="w-1.5 h-1.5 rounded-full bg-success-text" />
               Delivered today
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-warning-bg text-warning-text border border-warning-bg">
+              <span className="w-1.5 h-1.5 rounded-full bg-warning-text" />
               Not yet
             </span>
           )}
           {attendanceChip !== null && (
             <Link
               href={`/dashboard/lms/today/attendance/${timetableEntryId}`}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 transition-colors"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-school-soft text-school-ink border border-school-track hover:bg-school-soft transition-colors"
             >
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
@@ -148,7 +148,7 @@ export function FacilitatorPeriodCard({
       </div>
 
       {error && (
-        <p className="text-xs text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2">
+        <p className="text-xs text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2">
           {error}
         </p>
       )}
@@ -208,7 +208,7 @@ export function FacilitatorPeriodCard({
                     type="button"
                     onClick={handleUndo}
                     disabled={isPending}
-                    className="text-xs text-danger-text hover:underline border border-red-200 px-3 py-2 rounded-lg bg-danger-bg/40 hover:bg-danger-bg transition-colors disabled:opacity-50"
+                    className="text-xs text-danger-text hover:underline border border-danger-bg px-3 py-2 rounded-lg bg-danger-bg/40 hover:bg-danger-bg transition-colors disabled:opacity-50"
                   >
                     {isPending ? 'Undoing…' : 'Undo delivery'}
                   </button>
@@ -224,7 +224,7 @@ export function FacilitatorPeriodCard({
                 <select
                   value={selectedLessonId}
                   onChange={(e) => setSelectedLessonId(e.target.value)}
-                  className="w-full border border-border rounded-lg px-3 py-2 text-xs bg-background text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full border border-border rounded-lg px-3 py-2 text-xs bg-surface text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 >
                   {publishedLessons.map((l) => {
                     const tag = l.id === suggestedLessonId
@@ -269,7 +269,7 @@ export function FacilitatorPeriodCard({
                 )}
                 <Link
                   href={`/dashboard/lms/today/attendance/${timetableEntryId}`}
-                  className="text-xs font-medium border border-border px-3 py-2.5 rounded-lg hover:bg-surface-muted transition-colors"
+                  className="text-xs font-medium border border-border px-3 py-2.5 rounded-lg hover:bg-school-soft/40 transition-colors"
                 >
                   Take attendance
                 </Link>
@@ -277,7 +277,7 @@ export function FacilitatorPeriodCard({
                   type="button"
                   onClick={handleMarkDelivered}
                   disabled={isPending || !selectedLessonId}
-                  className="text-xs font-semibold text-white bg-primary hover:bg-primary-hover px-4 py-2.5 rounded-lg transition-colors disabled:opacity-50"
+                  className="text-xs font-semibold text-white bg-primary hover:bg-primary-hover px-4 py-2.5 rounded-xl transition-colors disabled:opacity-50"
                 >
                   {isPending ? 'Marking…' : 'Mark as delivered'}
                 </button>

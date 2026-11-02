@@ -39,7 +39,7 @@ export default async function ActivityDetailPage({
   const libraryLabel = access.isManager ? 'Lessons' : 'My Lessons'
 
   return (
-    <div className="px-8 py-8 max-w-5xl space-y-6">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-5xl space-y-6">
       {/* Breadcrumb + Header */}
       <div>
         <p className="text-sm text-text-secondary mb-1">
@@ -52,15 +52,15 @@ export default async function ActivityDetailPage({
           <div>
             <div className="flex items-center gap-2.5">
               <span
-                className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold uppercase tracking-wider ${
+                className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold  ${
                   activity.kind === 'quiz'
-                    ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                    : 'bg-purple-500/10 text-purple-600 dark:text-purple-400'
+                    ? 'bg-primary text-school-ink dark:text-school'
+                    : 'bg-primary text-school-ink dark:text-school'
                 }`}
               >
                 {activity.kind}
               </span>
-              <h1 className="text-xl font-semibold text-text-primary">{activity.title}</h1>
+              <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">{activity.title}</h1>
               <span
                 className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                   activity.status === 'published'
@@ -87,7 +87,7 @@ export default async function ActivityDetailPage({
 
           <Link
             href={`/dashboard/lms/${activity.lesson_id}`}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+            className="card inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-school-soft/40 transition-colors"
           >
             &larr; Back to Lesson
           </Link>

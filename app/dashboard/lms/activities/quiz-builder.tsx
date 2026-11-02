@@ -190,7 +190,7 @@ export function QuizBuilder({
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-border bg-surface p-4">
+      <div className="card flex flex-wrap items-center justify-between gap-4 p-4">
         <div>
           <div className="text-sm font-semibold text-text-primary">
             Quiz Questions ({questions.length})
@@ -205,7 +205,7 @@ export function QuizBuilder({
             <button
               type="button"
               onClick={handleAddQuestion}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+              className="bg-surface border border-control rounded-xl inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-school-soft/40 transition-colors"
             >
               <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -216,7 +216,7 @@ export function QuizBuilder({
               type="button"
               onClick={handleSave}
               disabled={saving}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-1.5 text-xs font-medium text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-1.5 text-xs font-medium text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
             >
               {saving ? 'Saving...' : 'Save All Questions'}
             </button>
@@ -225,7 +225,7 @@ export function QuizBuilder({
       </div>
 
       {hasSubmissions && (
-        <div className="rounded-lg border border-amber-500/20 bg-amber-500/10 p-3 text-xs text-amber-700 dark:text-amber-300">
+        <div className="rounded-lg border border-warning-text bg-warning-text p-3 text-xs text-warning-text dark:text-warning-text">
           Submissions have already been received for this quiz. Questions and point values can no longer be edited.
         </div>
       )}
@@ -246,7 +246,7 @@ export function QuizBuilder({
         {questions.map((q, qIdx) => (
           <div
             key={qIdx}
-            className="rounded-xl border border-border bg-surface p-5 shadow-sm space-y-4"
+            className="card p-5 space-y-4"
           >
             {/* Question Header */}
             <div className="flex items-center justify-between gap-3 border-b border-border pb-3">
@@ -254,7 +254,7 @@ export function QuizBuilder({
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
                   {qIdx + 1}
                 </span>
-                <span className="text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                <span className="text-xs font-semibold  text-text-secondary">
                   Question {qIdx + 1}
                 </span>
               </div>
@@ -265,7 +265,7 @@ export function QuizBuilder({
                     type="button"
                     onClick={() => handleMoveQuestion(qIdx, 'up')}
                     disabled={qIdx === 0}
-                    className="rounded p-1 text-text-secondary hover:bg-surface-muted disabled:opacity-30"
+                    className="rounded p-1 text-text-secondary hover:bg-school-soft/40 disabled:opacity-30"
                     title="Move up"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -276,7 +276,7 @@ export function QuizBuilder({
                     type="button"
                     onClick={() => handleMoveQuestion(qIdx, 'down')}
                     disabled={qIdx === questions.length - 1}
-                    className="rounded p-1 text-text-secondary hover:bg-surface-muted disabled:opacity-30"
+                    className="rounded p-1 text-text-secondary hover:bg-school-soft/40 disabled:opacity-30"
                     title="Move down"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -371,8 +371,7 @@ export function QuizBuilder({
                   type="button"
                   onClick={() => handleAddOption(qIdx)}
                   className="mt-1 inline-flex items-center gap-1 text-xs text-primary hover:underline"
-                >
-                  + Add option
+                >Add option
                 </button>
               )}
             </div>
@@ -418,7 +417,7 @@ export function QuizBuilder({
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2 text-sm font-medium text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2 text-sm font-medium text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Save All Questions'}
           </button>

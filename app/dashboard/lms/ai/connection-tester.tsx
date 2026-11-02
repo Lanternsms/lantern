@@ -23,7 +23,7 @@ export function AiConnectionTester() {
           id="test-ai-connection-btn"
           onClick={handleTest}
           disabled={isPending}
-          className="px-4 py-2 rounded-xl bg-primary text-white font-medium text-xs hover:bg-primary-hover disabled:opacity-50 transition-colors flex items-center gap-2 shadow-sm"
+          className="px-4 py-2 rounded-xl bg-primary text-white font-medium text-xs hover:bg-primary-hover disabled:opacity-50 transition-colors flex items-center gap-2"
         >
           {isPending ? (
             <>
@@ -43,7 +43,7 @@ export function AiConnectionTester() {
             className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${
               result.success
                 ? 'bg-success-bg text-success-text'
-                : 'bg-red-500/10 text-red-700 dark:text-red-300'
+                : 'bg-danger-text text-danger-text dark:text-danger-text'
             }`}
           >
             {result.success ? '✓ Connected' : '✕ Failed'}
@@ -56,10 +56,10 @@ export function AiConnectionTester() {
 
       {result && !isPending && (
         <div
-          className={`rounded-xl border p-4 text-xs space-y-2 ${
+          className={`rounded-lg border p-4 text-xs space-y-2 ${
             result.success
-              ? 'border-success/30 bg-success-bg/30'
-              : 'border-red-300 bg-red-50 dark:bg-red-950/30'
+              ? 'border-success-bg bg-success-bg/30'
+              : 'border-danger-bg bg-danger-bg dark:bg-danger-text'
           }`}
         >
           {/* Provider + Model */}
@@ -94,7 +94,7 @@ export function AiConnectionTester() {
               {result.errorStatus !== undefined && (
                 <div className="text-[11px]">
                   <span className="text-text-secondary">Status: </span>
-                  <span className="font-mono font-semibold text-red-700 dark:text-red-300">
+                  <span className="font-mono font-semibold text-danger-text dark:text-danger-text">
                     {String(result.errorStatus)}
                   </span>
                 </div>
@@ -102,7 +102,7 @@ export function AiConnectionTester() {
               {result.errorMessage && (
                 <div>
                   <span className="text-text-secondary text-[11px] block mb-0.5">Error message</span>
-                  <span className="font-mono text-[11px] text-red-700 dark:text-red-300 break-words whitespace-pre-wrap">
+                  <span className="font-mono text-[11px] text-danger-text dark:text-danger-text break-words whitespace-pre-wrap">
                     {result.errorMessage}
                   </span>
                 </div>

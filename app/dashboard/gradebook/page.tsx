@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
+import { ArrowRight01Icon } from '@hugeicons/core-free-icons'
+import { Icon } from '@/components/icon'
 
 export default async function GradebookListPage() {
   const supabase = await createClient()
@@ -16,23 +18,33 @@ export default async function GradebookListPage() {
     : { data: null }
 
   return (
-    <div className="px-8 py-8">
-      <h1 className="text-xl font-semibold text-text-primary mb-1">Gradebook</h1>
-      <p className="text-sm text-text-secondary mb-6">Your classes for the current term.</p>
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-[30px] font-semibold leading-tight sm:text-[36px]">Gradebook</h1>
+        <p className="text-[15px] text-text-secondary">The subjects you teach this term. Open one to enter scores.</p>
+      </div>
 
-      {!term && <p className="text-sm text-text-secondary">No current term is set for your school.</p>}
+      {!term && <p className="card p-6 text-text-secondary">No current term is set for your school yet.</p>}
       {term && (!assignments || assignments.length === 0) && (
-        <p className="text-sm text-text-secondary">You are not assigned to teach any subjects this term.</p>
+        <p className="card p-6 text-text-secondary">You aren’t assigned to teach any subjects this term. Ask your school admin to add you under Classes and subjects.</p>
       )}
 
-      <div className="grid grid-cols-3 gap-4">
+      <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {assignments?.map((a) => (
-          <Link key={a.id} href={`/dashboard/gradebook/${a.id}`} className="bg-surface border border-border rounded-xl p-5 hover:border-primary/40 transition-colors">
-            <h3 className="text-sm font-semibold text-text-primary">{a.subjects?.name}</h3>
-            <p className="text-xs text-text-secondary mt-1">{a.classes?.name}{a.arms?.name ? ` ${a.arms.name}` : ''}</p>
-          </Link>
+          <li key={a.id}>
+            <Link href={`/dashboard/gradebook/${a.id}`} className="card group flex items-center gap-4 p-5 transition-transform duration-200 hover:-translate-y-0.5">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-school-deep font-display text-lg font-semibold text-white">
+                {(a.subjects?.name ?? '?').slice(0, 2)}
+              </span>
+              <span className="flex min-w-0 flex-1 flex-col">
+                <span className="truncate font-display text-[17px] font-semibold">{a.subjects?.name}</span>
+                <span className="text-sm text-text-secondary">{a.classes?.name}{a.arms?.name ?? ''}</span>
+              </span>
+              <Icon icon={ArrowRight01Icon} size={18} className="text-text-secondary transition-transform group-hover:translate-x-0.5" />
+            </Link>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   )
 }

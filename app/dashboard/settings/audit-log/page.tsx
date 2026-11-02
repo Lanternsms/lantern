@@ -53,12 +53,12 @@ export default async function SchoolAuditLogPage({
   return (
     <div className="max-w-3xl mx-auto px-6 py-10 space-y-4">
       <div>
-        <h1 className="text-xl font-semibold text-text-primary">Audit Log</h1>
-        <p className="text-sm text-text-secondary mt-1">A record of changes made by your staff and admins.</p>
+        <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">Audit Log</h1>
+        <p className="mt-1 text-[15px] text-text-secondary">A record of changes made by your staff and admins.</p>
       </div>
 
       <form className="flex items-center gap-3" method="get">
-        <select name="action" defaultValue={params.action ?? ''} className="border border-border rounded-lg px-3 py-2 text-sm bg-surface text-text-primary">
+        <select name="action" defaultValue={params.action ?? ''} className="bg-surface border border-control rounded-xl px-3 py-2 text-sm text-text-primary">
           <option value="">All actions</option>
           {distinctActions.map((a) => (
             <option key={a} value={a}>{a}</option>
@@ -69,7 +69,7 @@ export default async function SchoolAuditLogPage({
         </button>
       </form>
 
-      <div className="border border-border rounded-xl divide-y divide-border">
+      <div className="border border-border rounded-lg divide-y divide-border">
         {rows.map((row) => (
           <details key={row.id} className="px-4 py-3">
             <summary className="flex items-center justify-between cursor-pointer list-none">

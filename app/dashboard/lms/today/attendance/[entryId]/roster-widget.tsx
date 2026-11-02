@@ -81,22 +81,22 @@ export default function RosterWidget({
 
   if (saved && result) {
     return (
-      <div className="bg-surface border border-border rounded-xl p-8 text-center space-y-4">
-        <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mx-auto">
-          <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="card p-8 text-center space-y-4">
+        <div className="w-12 h-12 rounded-full bg-success-bg flex items-center justify-center mx-auto">
+          <svg className="w-6 h-6 text-success-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
           </svg>
         </div>
         <div>
           <p className="text-base font-semibold text-text-primary">Attendance saved!</p>
-          <p className="text-sm text-text-secondary mt-1">
+          <p className="mt-1 text-[15px] text-text-secondary">
             {result.marked} of {result.total} students marked · {result.present} present
           </p>
         </div>
         <button
           type="button"
           onClick={() => router.push('/dashboard/lms/today')}
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-primary hover:bg-primary-hover px-5 py-2.5 rounded-lg transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-primary hover:bg-primary-hover px-5 py-2.5 rounded-xl transition-colors"
         >
           ← Back to Today&apos;s Lessons
         </button>
@@ -118,7 +118,7 @@ export default function RosterWidget({
               type="button"
               onClick={handleMarkAllPresent}
               disabled={isPending}
-              className="text-xs font-medium border border-border rounded-lg px-3 py-2 bg-surface hover:bg-surface-muted transition-colors disabled:opacity-50"
+              className="bg-surface border border-control rounded-xl text-xs font-medium px-3 py-2 hover:bg-school-soft/40 transition-colors disabled:opacity-50"
             >
               Mark all present
             </button>
@@ -127,7 +127,7 @@ export default function RosterWidget({
             type="button"
             onClick={handleSave}
             disabled={isPending || markedCount === 0}
-            className="text-xs font-semibold text-white bg-primary hover:bg-primary-hover px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+            className="text-xs font-semibold text-white bg-primary hover:bg-primary-hover px-4 py-2 rounded-xl transition-colors disabled:opacity-50"
           >
             {isPending ? 'Saving…' : 'Save'}
           </button>
@@ -135,13 +135,13 @@ export default function RosterWidget({
       </div>
 
       {error && (
-        <p className="text-xs text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2">
+        <p className="text-xs text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2">
           {error}
         </p>
       )}
 
       {/* Roster table */}
-      <div className="bg-surface border border-border rounded-xl overflow-hidden">
+      <div className="card overflow-hidden">
         {roster.length === 0 ? (
           <div className="p-8 text-center text-sm text-text-secondary">
             No students enrolled for this class{' '}
@@ -158,14 +158,14 @@ export default function RosterWidget({
             </thead>
             <tbody className="divide-y divide-border">
               {roster.map((student) => (
-                <tr key={student.id} className="hover:bg-surface-muted/20 transition-colors">
-                  <td className="px-4 py-3 font-medium text-text-primary whitespace-nowrap">
+                <tr key={student.id} className="hover:bg-school-soft/40 transition-colors">
+                  <td className="px-5 py-3.5 font-medium text-text-primary whitespace-nowrap">
                     {student.first_name} {student.last_name}
                   </td>
-                  <td className="px-4 py-3 text-text-secondary font-mono text-xs whitespace-nowrap">
+                  <td className="px-5 py-3.5 text-text-secondary font-mono text-xs whitespace-nowrap">
                     {student.admission_no}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-3.5">
                     <div className="flex flex-wrap gap-1.5" role="group" aria-label="Status">
                       {statuses.map((status) => {
                         const selected = marks[student.id] === status.id
@@ -174,11 +174,11 @@ export default function RosterWidget({
                         let colorClass = 'border-border text-text-secondary hover:border-primary hover:text-primary'
                         if (selected) {
                           if (status.counts_as_present || code === 'present' || label.includes('present')) {
-                            colorClass = 'border-emerald-500 bg-emerald-50 text-emerald-700 font-semibold'
+                            colorClass = 'border-success-text bg-success-bg text-success-text font-semibold'
                           } else if (code === 'late' || label.includes('late')) {
-                            colorClass = 'border-amber-500 bg-amber-50 text-amber-700 font-semibold'
+                            colorClass = 'border-warning-text bg-warning-bg text-warning-text font-semibold'
                           } else {
-                            colorClass = 'border-red-400 bg-red-50 text-red-700 font-semibold'
+                            colorClass = 'border-danger-text bg-danger-bg text-danger-text font-semibold'
                           }
                         }
                         return (
@@ -211,7 +211,7 @@ export default function RosterWidget({
           type="button"
           onClick={handleSave}
           disabled={isPending || markedCount === 0}
-          className="text-sm font-semibold text-white bg-primary hover:bg-primary-hover px-6 py-2.5 rounded-lg transition-colors disabled:opacity-50"
+          className="text-sm font-semibold text-white bg-primary hover:bg-primary-hover px-6 py-2.5 rounded-xl transition-colors disabled:opacity-50"
         >
           {isPending ? 'Saving…' : 'Save attendance'}
         </button>

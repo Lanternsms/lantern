@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { Shield, Key, Lock, ArrowUpRight } from 'lucide-react'
+import { Shield, Key, Lock, ArrowUpRight } from '@/components/icons'
 
 export async function RolesWidget() {
   const supabase = await createClient()
@@ -15,11 +15,11 @@ export async function RolesWidget() {
     .eq('school_id', profile.school_id)
 
   return (
-    <div className="bg-surface border border-border rounded-2xl p-6 shadow-xs h-full flex flex-col justify-between">
+    <div className="card p-6 h-full flex flex-col justify-between">
       <div>
         <div className="flex items-center justify-between pb-4 border-b border-border mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 border border-rose-200/60">
+            <div className="flex items-center justify-center shrink-0 text-text-secondary">
               <Shield size={20} />
             </div>
             <div>
@@ -44,25 +44,25 @@ export async function RolesWidget() {
               <span className="text-xs text-text-secondary ml-2 font-medium">configured roles</span>
             </div>
             <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-surface-muted text-text-secondary border border-border">
-              <Lock size={12} className="text-rose-500" />
+              <Lock size={12} className="text-danger-text" />
               RBAC Enabled
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs">
             <Link
               href="/dashboard/roles/new"
-              className="p-3 rounded-xl border border-border bg-surface-muted/40 hover:bg-surface-muted hover:border-primary/40 transition-colors flex items-center justify-between group"
+              className="p-3 rounded-lg border border-border bg-surface-muted/40 hover:bg-school-soft/40 hover:border-primary/40 transition-colors flex items-center justify-between group"
             >
               <div className="flex items-center gap-2">
-                <Key size={14} className="text-rose-600" />
+                <Key size={14} className="text-danger-text" />
                 <span className="font-semibold text-text-primary">Create Role</span>
               </div>
               <ArrowUpRight size={13} className="text-text-muted group-hover:text-primary transition-colors" />
             </Link>
             <Link
               href="/dashboard/roles"
-              className="p-3 rounded-xl border border-border bg-surface-muted/40 hover:bg-surface-muted hover:border-primary/40 transition-colors flex items-center justify-between group"
+              className="p-3 rounded-lg border border-border bg-surface-muted/40 hover:bg-school-soft/40 hover:border-primary/40 transition-colors flex items-center justify-between group"
             >
               <div className="flex items-center gap-2">
                 <Shield size={14} className="text-text-secondary" />

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, Trash2, Link2, UserPlus } from 'lucide-react'
+import { Plus, Trash2, Link2, UserPlus } from '@/components/icons'
 import { GuardianCustomFields } from '@/components/guardian-custom-fields'
 
 type FieldDefinition = {
@@ -192,7 +192,7 @@ export function GuardianRepeater({
           <button
             type="button"
             onClick={removeEntry}
-            className="flex items-center gap-2 text-sm text-danger-text hover:text-red-700"
+            className="flex items-center gap-2 text-sm text-danger-text hover:text-danger-text"
           >
             <Trash2 size={16} />
             Remove guardian

@@ -16,7 +16,7 @@ export default async function FeeStructuresPage() {
 
   return (
     <div className="p-6 space-y-4">
-      <h1 className="text-xl font-semibold text-text-primary">Fee Structures</h1>
+      <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">Fee Structures</h1>
       <p className="text-sm text-text-secondary">
         Define each fee component (Tuition, PTA, Feeding, etc.) per class and term. A student's total fee for a term is the sum of all matching components.
       </p>

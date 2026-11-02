@@ -8,7 +8,7 @@ import {
   RotateCcw,
   FileText,
   ArrowUpRight,
-} from 'lucide-react'
+} from '@/components/icons'
 
 export const metadata = {
   title: 'My Submissions | Lantern',
@@ -34,20 +34,20 @@ const statusConfig: Record<
   in_review: {
     label: 'In Review',
     icon: Clock,
-    className: 'text-secondary',
-    badgeClass: 'bg-secondary/10 text-secondary border border-secondary/20',
+    className: 'text-text-secondary',
+    badgeClass: 'bg-raised text-[#374151] border border-border',
   },
   returned: {
     label: 'Returned',
     icon: RotateCcw,
     className: 'text-danger-text',
-    badgeClass: 'bg-danger-bg text-danger-text border border-red-200',
+    badgeClass: 'bg-danger-bg text-danger-text border border-danger-bg',
   },
   published: {
     label: 'Published',
     icon: CheckCircle2,
     className: 'text-success-text',
-    badgeClass: 'bg-success-bg text-success-text border border-green-200',
+    badgeClass: 'bg-success-bg text-success-text border border-success-bg',
   },
 }
 
@@ -144,8 +144,8 @@ export default async function MySubmissionsPage({
   ]
 
   return (
-    <div className="px-8 py-8 max-w-5xl">
-      <h1 className="text-xl font-semibold text-text-primary mb-1">My Submissions</h1>
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-5xl">
+      <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mb-1">My Submissions</h1>
       <p className="text-sm text-text-secondary mb-6">
         All result batches you have submitted — track their progress through the approval workflow.
       </p>
@@ -178,14 +178,14 @@ export default async function MySubmissionsPage({
       </div>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">
           {error.message}
         </p>
       )}
 
       {/* ── Returned items alert ── */}
       {counts.returned > 0 && !filterStatus && (
-        <div className="flex items-start gap-3 bg-danger-bg border border-red-200 rounded-xl px-4 py-3 mb-6">
+        <div className="flex items-start gap-3 bg-danger-bg border border-danger-bg rounded-lg px-4 py-3 mb-6">
           <RotateCcw size={16} className="text-danger-text mt-0.5 shrink-0" />
           <div>
             <p className="text-sm font-medium text-danger-text">
@@ -202,7 +202,7 @@ export default async function MySubmissionsPage({
       )}
 
       {filtered.length === 0 && (
-        <div className="bg-surface border border-border rounded-xl p-12 text-center">
+        <div className="card p-12 text-center">
           <FileText size={36} className="mx-auto text-text-muted mb-3" />
           <p className="text-sm text-text-secondary">
             {filterStatus
@@ -219,23 +219,23 @@ export default async function MySubmissionsPage({
       )}
 
       {filtered.length > 0 && (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden">
+        <div className="card overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border bg-surface-muted/40">
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">
+              <tr className="border-b border-rule bg-surface-muted/40">
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">
                   Class / Subject
                 </th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">
                   Term
                 </th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">
                   Status
                 </th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">
                   Current Stage
                 </th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">
                   Submitted
                 </th>
                 <th className="px-4 py-3" />
@@ -275,11 +275,11 @@ export default async function MySubmissionsPage({
                 return (
                   <tr
                     key={b.id}
-                    className={`border-b border-border last:border-0 hover:bg-surface-muted/30 transition-colors ${
-                      b.status === 'returned' ? 'bg-red-50/30' : ''
+                    className={`border-b border-border last:border-0 hover:bg-school-soft/40 transition-colors ${
+                      b.status === 'returned' ? 'bg-danger-bg' : ''
                     }`}
                   >
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-3.5">
                       <span className="font-medium text-text-primary">
                         {subj?.name}
                       </span>
@@ -289,7 +289,7 @@ export default async function MySubmissionsPage({
                       </span>
                     </td>
 
-                    <td className="px-4 py-3 text-text-secondary">
+                    <td className="px-5 py-3.5 text-text-secondary">
                       {term?.name ?? '—'}
                       {term?.is_current && (
                         <span className="ml-1.5 text-xs bg-primary/10 text-primary rounded-full px-1.5 py-0.5">
@@ -298,11 +298,11 @@ export default async function MySubmissionsPage({
                       )}
                     </td>
 
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-3.5">
                       <StatusBadge status={b.status} />
                     </td>
 
-                    <td className="px-4 py-3 text-text-secondary text-xs">
+                    <td className="px-5 py-3.5 text-text-secondary text-xs">
                       {b.status === 'published' ? (
                         <span className="text-success-text font-medium">✓ Approved</span>
                       ) : b.status === 'returned' ? (
@@ -314,11 +314,11 @@ export default async function MySubmissionsPage({
                       )}
                     </td>
 
-                    <td className="px-4 py-3 text-text-secondary text-xs whitespace-nowrap">
+                    <td className="px-5 py-3.5 text-text-secondary text-xs whitespace-nowrap">
                       {submittedDate}
                     </td>
 
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-5 py-3.5 text-right">
                       {b.status === 'returned' && assignmentId ? (
                         <Link
                           href={`/dashboard/gradebook/${assignmentId}`}
@@ -355,7 +355,7 @@ export default async function MySubmissionsPage({
               )?.some((a) => a.action === 'return_to_teacher' && a.comment)
           ) && (
             <div className="border-t border-border px-5 py-4 space-y-3">
-              <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide">
+              <h3 className="text-xs font-semibold text-text-secondary ">
                 Reviewer Feedback
               </h3>
               {filtered
@@ -384,7 +384,7 @@ export default async function MySubmissionsPage({
                   return (
                     <div
                       key={b.id}
-                      className="bg-danger-bg/60 border border-red-200/60 rounded-lg px-4 py-3"
+                      className="bg-danger-bg/60 border border-danger-bg rounded-lg px-4 py-3"
                     >
                       <p className="text-xs font-medium text-text-primary mb-1">
                         {subj?.name} — {cls?.name}

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, ChangeEvent, DragEvent } from 'react'
-import { Camera, UploadCloud, X, RefreshCw } from 'lucide-react'
+import { Camera, UploadCloud, X, RefreshCw } from '@/components/icons'
 
 const MAX_SIZE_BYTES = 5 * 1024 * 1024 // 5MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
@@ -103,7 +103,7 @@ export function StudentPhotoUploader({
       )}
 
       {showPreview ? (
-        <div className="border border-border rounded-xl p-4 bg-surface flex items-center justify-between gap-4">
+        <div className="card p-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="relative w-16 h-16 rounded-full overflow-hidden border border-border shadow-xs bg-surface-muted shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -135,7 +135,7 @@ export function StudentPhotoUploader({
             <button
               type="button"
               onClick={handleRemove}
-              className="inline-flex items-center gap-1.5 text-xs text-danger-text border border-red-200 bg-danger-bg/40 rounded-lg px-3 py-1.5 hover:bg-danger-bg transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs text-danger-text border border-danger-bg bg-danger-bg/40 rounded-lg px-3 py-1.5 hover:bg-danger-bg transition-colors"
             >
               <X size={14} />
               Remove
@@ -148,13 +148,13 @@ export function StudentPhotoUploader({
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           onClick={handleChooseClick}
-          className={`border-2 border-dashed rounded-xl py-7 px-4 flex flex-col items-center gap-2 text-center cursor-pointer transition-colors ${
+          className={`border-2 border-dashed rounded-lg py-7 px-4 flex flex-col items-center gap-2 text-center cursor-pointer transition-colors ${
             isDragging
               ? 'border-primary bg-primary/5'
               : 'border-border hover:border-primary/50 hover:bg-surface-muted/30'
           }`}
         >
-          <div className="w-10 h-10 rounded-full bg-surface-muted flex items-center justify-center text-text-muted">
+          <div className="flex items-center justify-center shrink-0 text-text-secondary">
             <Camera size={20} />
           </div>
           <div>
@@ -169,7 +169,7 @@ export function StudentPhotoUploader({
               e.stopPropagation()
               handleChooseClick()
             }}
-            className="mt-1 inline-flex items-center gap-1.5 text-xs font-medium text-white bg-primary hover:bg-primary-hover rounded-lg px-3.5 py-1.5 transition-colors"
+            className="mt-1 inline-flex items-center gap-1.5 text-xs font-medium text-white bg-primary hover:bg-primary-hover rounded-xl px-3.5 py-1.5 transition-colors"
           >
             <UploadCloud size={14} />
             Choose photo

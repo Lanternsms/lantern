@@ -127,7 +127,7 @@ export function QuizPlayerClient({
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-border bg-surface p-12 text-center">
+      <div className="card p-12 text-center">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em]" />
         <p className="mt-3 text-xs text-text-secondary">Loading quiz questions...</p>
       </div>
@@ -136,7 +136,7 @@ export function QuizPlayerClient({
 
   if (error && !submission) {
     return (
-      <div className="rounded-2xl border border-border bg-surface p-8 text-center space-y-4">
+      <div className="card p-8 text-center space-y-4">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-danger-bg text-danger-text">
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -163,7 +163,7 @@ export function QuizPlayerClient({
 
     return (
       <div className="space-y-6">
-        <div className="rounded-2xl border border-border bg-surface p-8 shadow-sm text-center space-y-4">
+        <div className="card p-8 text-center space-y-4">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-success-bg text-success-text">
             <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
@@ -181,14 +181,14 @@ export function QuizPlayerClient({
             </div>
             <div className="text-xs font-medium text-text-secondary mt-1">
               Score: {percentage}%
-              {result.isLate && <span className="ml-2 text-amber-500 font-semibold">(Submitted Late)</span>}
+              {result.isLate && <span className="ml-2 text-warning-text font-semibold">(Submitted Late)</span>}
             </div>
           </div>
 
           <div className="flex justify-center gap-3 pt-2">
             <Link
               href={`/dashboard/lms/learn/${lessonId}?student=${studentId}`}
-              className="rounded-xl border border-border bg-surface px-4 py-2 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+              className="card px-4 py-2 text-xs font-medium text-text-primary hover:bg-school-soft/40 transition-colors"
             >
               &larr; Back to Activities
             </Link>
@@ -242,10 +242,10 @@ export function QuizPlayerClient({
                       let badge = ''
                       let borderClass = 'border-border bg-surface'
                       if (isCorrectOption) {
-                        borderClass = 'border-emerald-500 bg-emerald-500/10 text-emerald-800 dark:text-emerald-200'
+                        borderClass = 'border-success-text bg-success-text text-success-text dark:text-success-text'
                         badge = ' (Correct Answer)'
                       } else if (isStudentSelected && !isCorrectOption) {
-                        borderClass = 'border-red-500 bg-red-500/10 text-red-800 dark:text-red-200'
+                        borderClass = 'border-danger-text bg-danger-text text-danger-text dark:text-danger-text'
                         badge = ' (Your Answer)'
                       }
 
@@ -290,7 +290,7 @@ export function QuizPlayerClient({
   return (
     <div className="space-y-6">
       {/* Quiz Header Bar */}
-      <div className="sticky top-4 z-20 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-surface/95 p-4 backdrop-blur shadow-sm">
+      <div className="sticky top-4 z-20 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-surface/95 p-4 backdrop-blur ">
         <div>
           <h2 className="text-base font-bold text-text-primary">{activity?.title}</h2>
           <p className="text-xs text-text-secondary">
@@ -301,7 +301,7 @@ export function QuizPlayerClient({
         <div className="flex items-center gap-3">
           {secondsRemaining !== null && (
             <div
-              className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-bold ${
+              className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-bold ${
                 secondsRemaining < 60
                   ? 'border-danger-bg bg-danger-bg/20 text-danger-text animate-pulse'
                   : 'border-border bg-surface-muted text-text-primary'
@@ -326,7 +326,7 @@ export function QuizPlayerClient({
       </div>
 
       {error && (
-        <div className="rounded-xl border border-danger-bg bg-danger-bg/20 p-3 text-xs text-danger-text">
+        <div className="rounded-lg border border-danger-bg bg-danger-bg/20 p-3 text-xs text-danger-text">
           {error}
         </div>
       )}
@@ -336,14 +336,14 @@ export function QuizPlayerClient({
         {questions.map((q, qIdx) => (
           <div
             key={q.id}
-            className="rounded-2xl border border-border bg-surface p-6 shadow-sm space-y-4"
+            className="card p-6 space-y-4"
           >
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-center gap-2">
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
                   {qIdx + 1}
                 </span>
-                <span className="text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                <span className="text-xs font-semibold  text-text-secondary">
                   Question {qIdx + 1}
                 </span>
               </div>
@@ -362,10 +362,10 @@ export function QuizPlayerClient({
                 return (
                   <label
                     key={optIdx}
-                    className={`flex items-center gap-3 rounded-xl border p-3.5 text-sm cursor-pointer transition-all ${
+                    className={`flex items-center gap-3 rounded-lg border p-3.5 text-sm cursor-pointer transition-all ${
                       isSelected
                         ? 'border-primary bg-primary/5 text-primary font-medium ring-1 ring-primary'
-                        : 'border-border bg-surface hover:bg-surface-muted/50 text-text-primary'
+                        : 'border-border bg-surface hover:bg-school-soft/40 text-text-primary'
                     }`}
                   >
                     <input
@@ -387,7 +387,7 @@ export function QuizPlayerClient({
         ))}
       </div>
 
-      <div className="flex items-center justify-between rounded-2xl border border-border bg-surface p-5">
+      <div className="card flex items-center justify-between p-5">
         <span className="text-xs text-text-secondary">
           Completed {answeredCount} of {questions.length} questions
         </span>

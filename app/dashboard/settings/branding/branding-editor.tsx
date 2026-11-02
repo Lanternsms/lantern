@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useRef, useState, useTransition } from 'react'
-import { contrastRatio, darken, isValidHex, suggestTextColor } from '@/lib/theme/color-utils'
+import { contrastRatio, deriveSchoolLadder, isValidHex } from '@/lib/theme/color-utils'
 import { saveBranding, removeLogo } from './actions'
 
 type Theme = {
@@ -13,76 +13,10 @@ type Theme = {
   text_on_accent?: string
 }
 
-function ColorField({
-  label, value, onChange, suggestedText, textValue, onTextChange,
-}: {
-  label: string
-  value: string
-  onChange: (v: string) => void
-  suggestedText: { color: string; ratio: number }
-  textValue: string
-  onTextChange: (v: string) => void
-}) {
-  const [hexInput, setHexInput] = useState(value)
-
-  function commitHex(v: string) {
-    setHexInput(v)
-    if (isValidHex(v)) onChange(v)
-  }
-
-  const usingSuggestion = textValue.toLowerCase() === suggestedText.color.toLowerCase()
-  const currentRatio = contrastRatio(value, textValue)
-  const passesAA = currentRatio >= 4.5
-
-  return (
-    <div className="border border-border rounded-xl p-4 space-y-3">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-text-primary">{label}</h3>
-        <div className="flex items-center gap-2">
-          <input
-            type="color"
-            value={value}
-            onChange={(e) => { onChange(e.target.value); setHexInput(e.target.value) }}
-            className="w-9 h-9 rounded-lg border border-border cursor-pointer"
-          />
-          <input
-            type="text"
-            value={hexInput}
-            onChange={(e) => commitHex(e.target.value)}
-            className="w-24 rounded-lg border border-border px-2 py-1.5 text-xs font-mono bg-surface text-text-primary"
-          />
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between text-xs">
-        <span className="text-text-secondary">Text on this color</span>
-        <div className="flex items-center gap-1.5 bg-surface-muted p-1 rounded-lg border border-border">
-          <button
-            type="button"
-            onClick={() => onTextChange('#FFFFFF')}
-            className={`px-2.5 py-1 rounded-md font-medium transition-colors ${textValue.toUpperCase() === '#FFFFFF' ? 'bg-surface shadow-xs text-text-primary' : 'text-text-secondary'
-              }`}
-          >
-            White
-          </button>
-          <button
-            type="button"
-            onClick={() => onTextChange('#000000')}
-            className={`px-2.5 py-1 rounded-md font-medium transition-colors ${textValue.toUpperCase() === '#000000' ? 'bg-surface shadow-xs text-text-primary' : 'text-text-secondary'
-              }`}
-          >
-            Black
-          </button>
-        </div>
-      </div>
-
-      <p className={`text-[11px] ${passesAA ? 'text-emerald-600' : 'text-amber-600'}`}>
-        {usingSuggestion ? 'Using suggested' : 'Overriding suggestion'} — contrast {currentRatio.toFixed(1)}:1
-        {passesAA ? ' (passes WCAG AA)' : ' (low contrast — hard to read)'}
-      </p>
-    </div>
-  )
-}
+const SWATCHES = [
+  ['Lantern navy', '#182350'], ['Royal blue', '#1D4ED8'], ['Emerald', '#0E7C66'], ['Raspberry', '#B8336A'], ['Amber', '#B45309'],
+  ['Maroon', '#7F1D1D'], ['Navy', '#1E3A5F'], ['Forest', '#166534'], ['Gold', '#E0B100'],
+] as const
 
 export function BrandingEditor({
   schoolName,
@@ -96,11 +30,7 @@ export function BrandingEditor({
   defaultTheme: Required<Theme>
 }) {
   const [primary, setPrimary] = useState(initialTheme.primary || defaultTheme.primary)
-  const [sidebar, setSidebar] = useState(initialTheme.sidebar || defaultTheme.sidebar)
-  const [accent, setAccent] = useState(initialTheme.accent || defaultTheme.accent)
-  const [textOnPrimary, setTextOnPrimary] = useState(initialTheme.text_on_primary || defaultTheme.text_on_primary)
-  const [textOnSidebar, setTextOnSidebar] = useState(initialTheme.text_on_sidebar || defaultTheme.text_on_sidebar)
-  const [textOnAccent, setTextOnAccent] = useState(initialTheme.text_on_accent || defaultTheme.text_on_accent)
+  const [hexInput, setHexInput] = useState(initialTheme.primary || defaultTheme.primary)
 
   const [logoPreview, setLogoPreview] = useState<string | null>(initialLogoUrl)
   const [logoFile, setLogoFile] = useState<File | null>(null)
@@ -110,9 +40,14 @@ export function BrandingEditor({
   const [isRemovingLogo, startRemoveLogoTransition] = useTransition()
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
-  const suggestedOnPrimary = useMemo(() => suggestTextColor(primary), [primary])
-  const suggestedOnSidebar = useMemo(() => suggestTextColor(sidebar), [sidebar])
-  const suggestedOnAccent = useMemo(() => suggestTextColor(accent), [accent])
+  const ladder = useMemo(() => deriveSchoolLadder(primary), [primary])
+  const readable = contrastRatio(primary, '#FFFFFF') >= 4.5
+
+  function pick(hex: string) {
+    setPrimary(hex)
+    setHexInput(hex)
+    setMessage(null)
+  }
 
   function handleLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -150,24 +85,21 @@ export function BrandingEditor({
   }
 
   function handleReset() {
-    setPrimary(defaultTheme.primary)
-    setSidebar(defaultTheme.sidebar)
-    setAccent(defaultTheme.accent)
-    setTextOnPrimary(defaultTheme.text_on_primary)
-    setTextOnSidebar(defaultTheme.text_on_sidebar)
-    setTextOnAccent(defaultTheme.text_on_accent)
-    setMessage({ type: 'success', text: "Colors reset to Lantern's default — click Save Branding to apply." })
+    pick(defaultTheme.primary)
+    setMessage({ type: 'success', text: 'Back to the default colour. Save to apply it.' })
   }
 
   function handleSave() {
     setMessage(null)
+    // Lantern builds every shade from the one colour. The other theme keys are still
+    // written so older readers of schools.theme keep working.
     const formData = new FormData()
     formData.set('primary', primary)
-    formData.set('sidebar', sidebar)
-    formData.set('accent', accent)
-    formData.set('text_on_primary', textOnPrimary)
-    formData.set('text_on_sidebar', textOnSidebar)
-    formData.set('text_on_accent', textOnAccent)
+    formData.set('sidebar', initialTheme.sidebar || ladder.deep)
+    formData.set('accent', initialTheme.accent || primary)
+    formData.set('text_on_primary', '#ffffff')
+    formData.set('text_on_sidebar', '#111827')
+    formData.set('text_on_accent', '#ffffff')
     if (logoFile) formData.set('logo', logoFile)
 
     startTransition(async () => {
@@ -175,154 +107,124 @@ export function BrandingEditor({
       if (result?.error) {
         setMessage({ type: 'error', text: result.error })
       } else {
-        setMessage({ type: 'success', text: 'Branding saved. Changes are now live for everyone at your school.' })
+        setMessage({ type: 'success', text: 'Saved. Everyone at your school sees the new colour and crest on their next page.' })
         setLogoFile(null)
       }
     })
   }
 
-  const primaryHover = darken(primary, 0.15)
-  const sidebarActive = darken(sidebar, 0.15)
+  const crest = logoPreview ? (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={logoPreview} alt="" className="h-full w-full object-contain" />
+  ) : (
+    <svg aria-hidden viewBox="0 0 30 34" className="h-[70%]">
+      <path d="M15 1 28 5v11c0 8-5.5 13.5-13 17C7.5 29.5 2 24 2 16V5z" fill={primary} />
+      <path d="M15 8v15M9 13h12" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" />
+    </svg>
+  )
 
   return (
-    <div className="grid lg:grid-cols-2 gap-6">
-      {/* CONTROLS */}
-      <div className="space-y-4">
-        <div className="border border-border rounded-xl p-4 space-y-3">
-          <h3 className="text-sm font-semibold text-text-primary">Logo</h3>
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-lg border border-border bg-surface-muted flex items-center justify-center overflow-hidden">
-              {logoPreview ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={logoPreview} alt="School logo" className="w-full h-full object-contain" />
-              ) : (
-                <span className="text-xs text-text-secondary">No logo</span>
-              )}
-            </div>
-            <div className="flex flex-col items-start gap-1">
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isRemovingLogo}
-                className="text-sm font-medium text-primary hover:underline disabled:opacity-60"
-              >
-                Upload new logo
-              </button>
-              {logoPreview && (
+    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_420px]">
+      <div className="card flex flex-col gap-6 p-6">
+        <fieldset className="flex flex-col gap-3">
+          <legend className="mb-1 font-semibold">School colour</legend>
+          <div role="radiogroup" aria-label="School colour" className="flex flex-wrap gap-2.5">
+            {SWATCHES.map(([name, hex]) => {
+              const on = primary.toUpperCase() === hex
+              return (
                 <button
+                  key={hex}
                   type="button"
-                  onClick={handleRemoveLogo}
-                  disabled={isRemovingLogo || isPending}
-                  className="text-sm font-medium text-red-600 hover:underline disabled:opacity-60"
-                >
-                  {isRemovingLogo ? 'Removing…' : 'Remove logo'}
-                </button>
-              )}
-            </div>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/png,image/jpeg,image/svg+xml,image/webp"
-              className="hidden"
-              onChange={handleLogoChange}
-            />
+                  role="radio"
+                  aria-checked={on}
+                  aria-label={name}
+                  title={name}
+                  onClick={() => pick(hex)}
+                  className="h-10 w-10 rounded-full"
+                  style={{ backgroundColor: hex, boxShadow: on ? `0 0 0 3px #fff, 0 0 0 5px ${hex}` : undefined }}
+                />
+              )
+            })}
           </div>
-          <p className="text-[11px] text-text-secondary">PNG, JPG, SVG or WebP. Under 2MB.</p>
-        </div>
+          <label className="flex flex-wrap items-center gap-3 text-sm text-[#374151]">
+            Or a hex code
+            <input
+              value={hexInput}
+              onChange={(e) => { setHexInput(e.target.value); if (isValidHex(e.target.value)) pick(e.target.value) }}
+              aria-invalid={!isValidHex(hexInput)}
+              className="h-9 w-28 rounded-md border border-control px-2.5 text-sm tabular-nums focus:border-primary focus:outline-none"
+            />
+            <input type="color" value={primary} onChange={(e) => pick(e.target.value)} aria-label="Pick any colour" className="h-9 w-11 cursor-pointer rounded-md border border-control bg-surface p-1" />
+          </label>
+          <p className={`text-sm ${readable ? 'text-success-text' : 'text-warning-text'}`}>
+            {readable
+              ? 'Readable: white text on this colour passes the contrast check.'
+              : 'Too light for white text, so buttons will use a darker shade of it automatically.'}
+          </p>
+        </fieldset>
 
-        <ColorField label="Primary" value={primary} onChange={setPrimary} suggestedText={suggestedOnPrimary} textValue={textOnPrimary} onTextChange={setTextOnPrimary} />
-        <ColorField label="Sidebar" value={sidebar} onChange={setSidebar} suggestedText={suggestedOnSidebar} textValue={textOnSidebar} onTextChange={setTextOnSidebar} />
-        <ColorField label="Accent" value={accent} onChange={setAccent} suggestedText={suggestedOnAccent} textValue={textOnAccent} onTextChange={setTextOnAccent} />
+        <fieldset className="flex flex-col gap-2.5">
+          <legend className="mb-1 font-semibold">Crest</legend>
+          <div className="flex items-center gap-4">
+            <span className="card flex h-[72px] w-[72px] items-center justify-center overflow-hidden p-2">{crest}</span>
+            <div className="flex flex-col items-start gap-1.5">
+              <div className="flex gap-2">
+                <button type="button" onClick={() => fileInputRef.current?.click()} disabled={isRemovingLogo} className="h-9 rounded-md border border-control bg-surface px-3.5 text-sm font-medium hover:bg-raised disabled:opacity-60">
+                  {logoPreview ? 'Replace crest' : 'Upload crest'}
+                </button>
+                {logoPreview && (
+                  <button type="button" onClick={handleRemoveLogo} disabled={isRemovingLogo || isPending} className="h-9 rounded-md px-3 text-sm font-medium text-danger-text hover:bg-danger-bg disabled:opacity-60">
+                    {isRemovingLogo ? 'Removing…' : 'Remove'}
+                  </button>
+                )}
+              </div>
+              <span className="text-[13px] text-text-secondary">PNG, JPG, SVG or WebP, square, under 2 MB.</span>
+            </div>
+            <input ref={fileInputRef} type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp" className="hidden" onChange={handleLogoChange} />
+          </div>
+        </fieldset>
 
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            disabled={isPending}
-            onClick={handleSave}
-            className="inline-flex items-center text-sm font-medium text-white bg-primary hover:bg-primary-hover disabled:opacity-60 px-4 py-2 rounded-lg transition-colors shadow-xs"
-          >
-            {isPending ? 'Saving…' : 'Save'}
+        {message && (
+          <p role={message.type === 'error' ? 'alert' : 'status'} className={`rounded-lg px-3 py-2.5 text-sm ${message.type === 'success' ? 'bg-success-bg text-success-text' : 'bg-danger-bg text-danger-text'}`}>
+            {message.text}
+          </p>
+        )}
+
+        <div className="flex justify-end gap-2 border-t border-rule pt-4">
+          <button type="button" disabled={isPending} onClick={handleReset} className="h-10 rounded-md border border-control bg-surface px-4 text-sm font-medium hover:bg-raised disabled:opacity-60">
+            Use default
           </button>
-          <button
-            type="button"
-            disabled={isPending}
-            onClick={handleReset}
-            className="inline-flex items-center text-sm font-medium text-text-secondary hover:text-text-primary border border-border hover:border-text-secondary disabled:opacity-60 px-4 py-2 rounded-lg transition-colors"
-          >
-            Reset
+          <button type="button" disabled={isPending} onClick={handleSave} className="h-10 rounded-md px-5 text-sm font-semibold text-white disabled:opacity-60" style={{ backgroundColor: ladder.action }}>
+            {isPending ? 'Saving…' : 'Save branding'}
           </button>
-          {message && (
-            <p className={`text-xs ${message.type === 'success' ? 'text-emerald-600' : 'text-red-600'}`}>{message.text}</p>
-          )}
         </div>
       </div>
 
-      {/* LIVE PREVIEW */}
-      <div className="space-y-2">
-        <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wider">Live Preview</h3>
-        <div className="border border-border rounded-xl overflow-hidden shadow-xs">
-          <div className="flex h-72">
-            <div className="w-40 shrink-0 p-3 space-y-2" style={{ backgroundColor: sidebar }}>
-              <div className="flex flex-col items-center justify-center gap-1 mb-4">
-                {logoPreview ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={logoPreview} alt="Logo" className="h-6 max-w-[120px] w-auto object-contain" />
-                ) : (
-                  <span className="text-xs font-semibold" style={{ color: textOnSidebar }}>Lantern</span>
-                )}
-                <span
-                  className="text-[10px] font-medium text-center truncate max-w-[110px]"
-                  style={{ color: textOnSidebar, opacity: 0.8 }}
-                >
-                  {schoolName}
-                </span>
-              </div>
-              {['Dashboard', 'Students', 'Attendance', 'Fees'].map((item, i) => (
-                <div
-                  key={item}
-                  className="text-xs px-2.5 py-1.5 rounded-md"
-                  style={{ backgroundColor: i === 0 ? sidebarActive : 'transparent', color: textOnSidebar, opacity: i === 0 ? 1 : 0.75 }}
-                >
-                  {item}
-                </div>
-              ))}
-            </div>
-
-            <div className="flex-1 flex flex-col min-w-0">
-              <div className="h-9 bg-surface border-b border-border flex items-center gap-2 px-4 shrink-0">
-                {logoPreview && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={logoPreview} alt="" className="h-5 w-5 rounded object-contain shrink-0" />
-                )}
-                <span className="text-xs font-medium text-text-primary truncate">{schoolName}</span>
-              </div>
-              <div className="flex-1 bg-surface-muted/30 p-4 space-y-3 overflow-hidden">
-                <div className="bg-surface border border-border rounded-lg p-3 shadow-xs">
-                  <p className="text-xs text-text-secondary mb-2">Sample card</p>
-                  <div className="flex items-center gap-2">
-                    <button className="text-xs font-medium px-3 py-1.5 rounded-lg" style={{ backgroundColor: primary, color: textOnPrimary }}>
-                      Primary Button
-                    </button>
-                    <button className="text-xs font-medium px-3 py-1.5 rounded-lg" style={{ backgroundColor: primaryHover, color: textOnPrimary }}>
-                      Hover state
-                    </button>
-                    <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: accent, color: textOnAccent }}>
-                      Accent badge
-                    </span>
-                  </div>
-                </div>
-
-                <div className="bg-surface border border-border rounded-lg p-3 shadow-xs">
-                  <p className="text-xs text-text-secondary">Body text stays neutral — only brand elements change.</p>
-                  <p className="text-sm font-medium mt-1" style={{ color: primary }}>A link or heading in your primary color</p>
-                </div>
-              </div>
-            </div>
+      <div className="flex flex-col gap-2.5">
+        <span className="text-sm text-text-secondary">Preview: what a guardian sees</span>
+        <div className="flex flex-col gap-3.5 rounded-2xl border border-border p-5 transition-colors duration-200" style={{ backgroundColor: ladder.ground }}>
+          <span className="flex items-center gap-2 font-semibold">
+            <span className="flex h-7 w-7 items-center justify-center overflow-hidden">{crest}</span>
+            {schoolName}
+          </span>
+          <span className="text-[22px] font-semibold leading-tight">Chidera arrived at 7:48am today.</span>
+          <div className="grid grid-cols-5 gap-1">
+            {['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map((d, i) => (
+              <span key={d} className="flex h-10 items-center justify-center rounded-lg text-xs font-medium" style={i === 2 ? { backgroundColor: '#fffbeb', color: '#92400e' } : i === 4 ? { border: '1px dashed #d1d5db', color: '#6b7280' } : { backgroundColor: ladder.soft, color: ladder.ink }}>
+                {d}
+              </span>
+            ))}
+          </div>
+          <div className="card flex flex-col gap-2 p-3.5">
+            <span className="text-sm text-text-secondary">Fees for Kelechi</span>
+            <span className="text-[22px] font-semibold tabular-nums">₦35,000</span>
+            <span className="block h-1.5 overflow-hidden rounded" style={{ backgroundColor: ladder.track }}>
+              <span className="block h-full w-[83%]" style={{ backgroundColor: primary }} />
+            </span>
+            <span className="flex h-10 items-center justify-center rounded-lg text-sm font-semibold text-white" style={{ backgroundColor: ladder.action }}>Pay ₦35,000</span>
           </div>
         </div>
-        <p className="text-[11px] text-text-secondary">
-          Updates instantly as you pick colors. Nothing applies for other users until you save.
-        </p>
+        <p className="text-[13px] text-text-secondary">Nothing changes for anyone else until you save.</p>
       </div>
     </div>
   )

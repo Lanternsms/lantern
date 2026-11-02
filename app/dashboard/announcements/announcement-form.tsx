@@ -47,7 +47,7 @@ export default function AnnouncementForm({
           name="title"
           defaultValue={initial?.title}
           required
-          className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-surface"
+          className="bg-surface border border-control rounded-xl w-full px-3 py-2 text-sm"
         />
       </div>
 
@@ -58,7 +58,7 @@ export default function AnnouncementForm({
           defaultValue={initial?.body}
           required
           rows={6}
-          className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-surface"
+          className="bg-surface border border-control rounded-xl w-full px-3 py-2 text-sm"
         />
       </div>
 
@@ -89,7 +89,7 @@ export default function AnnouncementForm({
         <button
           type="submit"
           disabled={isPending || audience.length === 0}
-          className="bg-primary text-white rounded-lg px-4 py-2 text-sm font-medium disabled:opacity-50"
+          className="bg-primary text-white rounded-xl px-4 py-2 text-sm font-medium disabled:opacity-50"
         >
           {isPending ? 'Saving…' : initial ? 'Save changes' : 'Post announcement'}
         </button>

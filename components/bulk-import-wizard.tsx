@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Papa from 'papaparse'
 import Link from 'next/link'
 import { bulkImportStudents, type BulkImportRow, type BulkImportResult } from '@/app/dashboard/students/actions'
-import { Upload, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { Upload, AlertCircle, CheckCircle2 } from '@/components/icons'
 
 const TARGET_FIELDS: { key: keyof BulkImportRow; label: string; required: boolean }[] = [
   { key: 'first_name', label: 'First Name', required: true },
@@ -93,7 +93,7 @@ export function BulkImportWizard() {
   // ---------------- STEP 1: UPLOAD ----------------
   if (step === 'upload') {
     return (
-      <div className="bg-surface border border-border rounded-xl p-8">
+      <div className="card p-8">
         <div
           onDragOver={(e) => e.preventDefault()}
           onDrop={(e) => {
@@ -101,11 +101,11 @@ export function BulkImportWizard() {
             const file = e.dataTransfer.files[0]
             if (file) handleFile(file)
           }}
-          className="border border-dashed border-border rounded-xl py-12 flex flex-col items-center gap-3 text-center"
+          className="border border-dashed border-border rounded-lg py-12 flex flex-col items-center gap-3 text-center"
         >
           <Upload size={24} className="text-text-muted" />
           <p className="text-sm text-text-secondary">Drag and drop a CSV file, or click to browse</p>
-          <label className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 cursor-pointer transition-colors">
+          <label className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 cursor-pointer transition-colors">
             Choose File
             <input
               type="file"
@@ -117,7 +117,7 @@ export function BulkImportWizard() {
         </div>
 
         {parseError && (
-          <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mt-4">
+          <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mt-4">
             {parseError}
           </p>
         )}
@@ -132,7 +132,7 @@ export function BulkImportWizard() {
   // ---------------- STEP 2: COLUMN MAPPING ----------------
   if (step === 'map') {
     return (
-      <div className="bg-surface border border-border rounded-xl p-6">
+      <div className="card p-6">
         <h2 className="text-sm font-semibold text-text-primary mb-1">Map Your Columns</h2>
         <p className="text-sm text-text-secondary mb-5">
           Match each field Lantern needs to a column from your file. {csvRows.length} rows detected.
@@ -165,7 +165,7 @@ export function BulkImportWizard() {
           <button
             onClick={() => setStep('preview')}
             disabled={!requiredFieldsMapped}
-            className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Continue to Preview
           </button>
@@ -182,7 +182,7 @@ export function BulkImportWizard() {
     ).length
 
     return (
-      <div className="bg-surface border border-border rounded-xl p-6">
+      <div className="card p-6">
         <h2 className="text-sm font-semibold text-text-primary mb-1">Preview Import</h2>
         <p className="text-sm text-text-secondary mb-4">
           Showing {previewRows.length} of {mappedRows.length} rows. Class/arm names are matched at import time —
@@ -190,7 +190,7 @@ export function BulkImportWizard() {
         </p>
 
         {rowsMissingRequired > 0 && (
-          <div className="flex items-center gap-2 text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">
+          <div className="flex items-center gap-2 text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">
             <AlertCircle size={16} />
             {rowsMissingRequired} row(s) are missing a required field and will be skipped.
           </div>
@@ -201,7 +201,7 @@ export function BulkImportWizard() {
             <thead>
               <tr className="border-b border-border bg-surface-muted">
                 {TARGET_FIELDS.map((f) => (
-                  <th key={f.key} className="text-left font-medium text-text-secondary px-3 py-2 text-xs uppercase tracking-wide whitespace-nowrap">
+                  <th key={f.key} className="text-left font-medium text-text-secondary px-3 py-2 text-xs  whitespace-nowrap">
                     {f.label}
                   </th>
                 ))}
@@ -231,7 +231,7 @@ export function BulkImportWizard() {
           <button
             onClick={handleConfirm}
             disabled={importing}
-            className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors disabled:opacity-60"
+            className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors disabled:opacity-60"
           >
             {importing ? 'Importing…' : `Import ${mappedRows.length} Students`}
           </button>
@@ -242,7 +242,7 @@ export function BulkImportWizard() {
 
   // ---------------- STEP 4: RESULT ----------------
   return (
-    <div className="bg-surface border border-border rounded-xl p-8 text-center">
+    <div className="card p-8 text-center">
       <div className="w-14 h-14 rounded-full bg-success-bg flex items-center justify-center mx-auto mb-4">
         <CheckCircle2 size={28} className="text-success-text" />
       </div>
@@ -263,7 +263,7 @@ export function BulkImportWizard() {
         </div>
       )}
 
-      <Link href="/dashboard/students" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+      <Link href="/dashboard/students" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors">
         Go to Students
       </Link>
     </div>

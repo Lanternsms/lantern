@@ -128,7 +128,7 @@ export default async function AttendancePage({
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-text-primary">Attendance</h1>
+        <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">Attendance</h1>
         {canManageCategories && (
           <Link href="/dashboard/attendance/settings" className="text-sm text-primary hover:underline">
             Manage Categories

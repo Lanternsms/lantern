@@ -260,15 +260,15 @@ export function ActivityRosterClient({
     <div className="space-y-6">
       {/* Assignment Document Brief (if attached) */}
       {!isQuiz && currentBriefName && (
-        <div className="rounded-xl border border-border bg-surface p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+        <div className="card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/10 text-red-600 dark:text-red-400 shrink-0">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-danger-text text-danger-text dark:text-danger-text shrink-0">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
               </svg>
             </div>
             <div className="min-w-0">
-              <div className="text-xs font-semibold text-text-secondary uppercase tracking-wider">Assignment Document (PDF)</div>
+              <div className="text-xs font-semibold text-text-secondary ">Assignment Document (PDF)</div>
               <div className="text-sm font-medium text-text-primary truncate">{currentBriefName}</div>
             </div>
           </div>
@@ -276,7 +276,7 @@ export function ActivityRosterClient({
             type="button"
             onClick={handleDownloadBrief}
             disabled={downloadingBrief}
-            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-primary hover:bg-surface-muted transition-colors shrink-0 disabled:opacity-50"
+            className="bg-surface border border-control rounded-xl inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-primary hover:bg-school-soft/40 transition-colors shrink-0 disabled:opacity-50"
           >
             <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -287,20 +287,20 @@ export function ActivityRosterClient({
       )}
 
       {briefError && (
-        <div className="rounded-xl border border-danger-bg bg-danger-bg/20 p-3 text-xs text-danger-text">
+        <div className="rounded-lg border border-danger-bg bg-danger-bg/20 p-3 text-xs text-danger-text">
           {briefError}
         </div>
       )}
 
       {/* Top action bar / summary stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="rounded-xl border border-border bg-surface p-4">
+        <div className="card p-4">
           <div className="text-xs text-text-secondary">Enrolled Students</div>
           <div className="mt-1 text-2xl font-bold text-text-primary">{totalEnrolled}</div>
           <div className="text-[11px] text-text-secondary mt-0.5">{session?.name || 'Current Session'}</div>
         </div>
 
-        <div className="rounded-xl border border-border bg-surface p-4">
+        <div className="card p-4">
           <div className="text-xs text-text-secondary">Submissions</div>
           <div className="mt-1 text-2xl font-bold text-text-primary">
             {submittedCount} <span className="text-sm font-normal text-text-secondary">/ {totalEnrolled}</span>
@@ -310,7 +310,7 @@ export function ActivityRosterClient({
           </div>
         </div>
 
-        <div className="rounded-xl border border-border bg-surface p-4">
+        <div className="card p-4">
           <div className="text-xs text-text-secondary">{isQuiz ? 'Scored' : 'Marked'}</div>
           <div className="mt-1 text-2xl font-bold text-text-primary">
             {markedCount} <span className="text-sm font-normal text-text-secondary">/ {submittedCount}</span>
@@ -320,7 +320,7 @@ export function ActivityRosterClient({
           </div>
         </div>
 
-        <div className="rounded-xl border border-border bg-surface p-4">
+        <div className="card p-4">
           <div className="text-xs text-text-secondary">Average Score</div>
           <div className="mt-1 text-2xl font-bold text-text-primary">
             {avgScore} <span className="text-sm font-normal text-text-secondary">/ {activity.max_score}</span>
@@ -382,7 +382,7 @@ export function ActivityRosterClient({
               onClick={handleTogglePublish}
               className={`inline-flex items-center rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                 activity.status === 'published'
-                  ? 'border border-border bg-surface text-text-secondary hover:bg-surface-muted'
+                  ? 'border border-border bg-surface text-text-secondary hover:bg-school-soft/40'
                   : 'bg-success-text text-white hover:opacity-90'
               }`}
             >
@@ -394,10 +394,10 @@ export function ActivityRosterClient({
 
       {/* TAB 1: SUBMISSIONS ROSTER */}
       {activeTab === 'roster' && (
-        <div className="rounded-xl border border-border bg-surface overflow-hidden shadow-sm">
+        <div className="card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-border bg-surface-muted/50 text-xs font-semibold text-text-secondary uppercase tracking-wider">
+              <thead className="border-b border-border bg-surface-muted/50 text-xs font-semibold text-text-secondary ">
                 <tr>
                   <th className="px-4 py-3">Student</th>
                   <th className="px-4 py-3">Admission No</th>
@@ -431,16 +431,16 @@ export function ActivityRosterClient({
                     if (isQuiz) {
                       const hasAttempted = item.attemptsCount > 0
                       return (
-                        <tr key={st.id} className="hover:bg-surface-muted/30 transition-colors">
-                          <td className="px-4 py-3 font-medium text-text-primary">
+                        <tr key={st.id} className="hover:bg-school-soft/40 transition-colors">
+                          <td className="px-5 py-3.5 font-medium text-text-primary">
                             {fullName}
                           </td>
-                          <td className="px-4 py-3 text-xs text-text-secondary font-mono">
+                          <td className="px-5 py-3.5 text-xs text-text-secondary font-mono">
                             {st.admission_number || '—'}
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="px-5 py-3.5">
                             {item.hasInProgress ? (
-                              <span className="inline-flex items-center rounded-full bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium text-amber-600 dark:text-amber-400">
+                              <span className="inline-flex items-center rounded-full bg-warning-text px-2 py-0.5 text-[11px] font-medium text-warning-text dark:text-warning-text">
                                 In Progress
                               </span>
                             ) : hasAttempted ? (
@@ -453,10 +453,10 @@ export function ActivityRosterClient({
                               </span>
                             )}
                           </td>
-                          <td className="px-4 py-3 text-xs text-text-secondary">
+                          <td className="px-5 py-3.5 text-xs text-text-secondary">
                             {item.attemptsCount} / {activity.attempts_allowed || 1}
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="px-5 py-3.5">
                             {item.bestScore != null ? (
                               <span className="font-semibold text-text-primary">
                                 {item.bestScore} <span className="text-xs font-normal text-text-secondary">/ {activity.max_score}</span>
@@ -471,20 +471,20 @@ export function ActivityRosterClient({
                       const sub = item.submission
                       const status = sub?.status || 'not_submitted'
                       return (
-                        <tr key={st.id} className="hover:bg-surface-muted/30 transition-colors">
-                          <td className="px-4 py-3 font-medium text-text-primary">
+                        <tr key={st.id} className="hover:bg-school-soft/40 transition-colors">
+                          <td className="px-5 py-3.5 font-medium text-text-primary">
                             {fullName}
                           </td>
-                          <td className="px-4 py-3 text-xs text-text-secondary font-mono">
+                          <td className="px-5 py-3.5 text-xs text-text-secondary font-mono">
                             {st.admission_number || '—'}
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="px-5 py-3.5">
                             {status === 'marked' ? (
                               <span className="inline-flex items-center rounded-full bg-success-bg px-2 py-0.5 text-[11px] font-medium text-success-text">
                                 Marked {sub.is_late && '(Late)'}
                               </span>
                             ) : status === 'submitted' ? (
-                              <span className="inline-flex items-center rounded-full bg-blue-500/10 px-2 py-0.5 text-[11px] font-medium text-blue-600 dark:text-blue-400">
+                              <span className="inline-flex items-center rounded-full bg-primary px-2 py-0.5 text-[11px] font-medium text-school-ink dark:text-school">
                                 Submitted {sub.is_late && '(Late)'}
                               </span>
                             ) : (
@@ -493,12 +493,12 @@ export function ActivityRosterClient({
                               </span>
                             )}
                           </td>
-                          <td className="px-4 py-3 text-xs text-text-secondary">
+                          <td className="px-5 py-3.5 text-xs text-text-secondary">
                             {sub?.submitted_at ? new Date(sub.submitted_at).toLocaleDateString(undefined, {
                               month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
                             }) : '—'}
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="px-5 py-3.5">
                             {sub?.score != null ? (
                               <span className="font-semibold text-text-primary">
                                 {sub.score} <span className="text-xs font-normal text-text-secondary">/ {activity.max_score}</span>
@@ -507,12 +507,12 @@ export function ActivityRosterClient({
                               <span className="text-xs text-text-secondary">—</span>
                             )}
                           </td>
-                          <td className="px-4 py-3 text-right">
+                          <td className="px-5 py-3.5 text-right">
                             {sub ? (
                               <button
                                 type="button"
                                 onClick={() => handleOpenMarking(sub, st)}
-                                className="inline-flex items-center gap-1 rounded-lg border border-border bg-surface px-2.5 py-1 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+                                className="card inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-text-primary hover:bg-school-soft/40 transition-colors"
                               >
                                 {sub.status === 'marked' ? 'Review & Edit' : 'Review & Mark'}
                               </button>
@@ -543,7 +543,7 @@ export function ActivityRosterClient({
 
       {/* TAB 3: SETTINGS & RULES */}
       {canManage && activeTab === 'settings' && (
-        <section className="rounded-xl border border-border bg-surface p-6 shadow-sm space-y-5 max-w-2xl">
+        <section className="card p-6 space-y-5 max-w-2xl">
           <div>
             <h3 className="text-sm font-semibold text-text-primary">Activity Settings</h3>
             <p className="text-xs text-text-secondary mt-0.5">
@@ -641,7 +641,7 @@ export function ActivityRosterClient({
                 {currentBriefName ? (
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg border border-border bg-surface-muted/40 p-3 text-xs">
                     <div className="flex items-center gap-2 truncate">
-                      <svg className="w-4 h-4 text-red-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-4 h-4 text-danger-text shrink-0" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
                       </svg>
                       <span className="font-medium text-text-primary truncate">{currentBriefName}</span>
@@ -651,7 +651,7 @@ export function ActivityRosterClient({
                         type="button"
                         onClick={handleDownloadBrief}
                         disabled={downloadingBrief || uploadingBrief}
-                        className="rounded-md border border-border bg-surface px-2.5 py-1 text-xs font-medium text-text-primary hover:bg-surface-muted disabled:opacity-50"
+                        className="rounded-md border border-border bg-surface px-2.5 py-1 text-xs font-medium text-text-primary hover:bg-school-soft/40 disabled:opacity-50"
                       >
                         Download
                       </button>
@@ -659,7 +659,7 @@ export function ActivityRosterClient({
                         type="button"
                         onClick={() => briefInputRef.current?.click()}
                         disabled={uploadingBrief}
-                        className="rounded-md border border-border bg-surface px-2.5 py-1 text-xs font-medium text-text-primary hover:bg-surface-muted disabled:opacity-50"
+                        className="rounded-md border border-border bg-surface px-2.5 py-1 text-xs font-medium text-text-primary hover:bg-school-soft/40 disabled:opacity-50"
                       >
                         {uploadingBrief ? 'Uploading...' : 'Replace'}
                       </button>
@@ -679,7 +679,7 @@ export function ActivityRosterClient({
                       type="button"
                       onClick={() => briefInputRef.current?.click()}
                       disabled={uploadingBrief}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-dashed border-border bg-surface px-3 py-2 text-xs font-medium text-primary hover:bg-surface-muted transition-colors disabled:opacity-50"
+                      className="card inline-flex items-center gap-1.5 border-dashed px-3 py-2 text-xs font-medium text-primary hover:bg-school-soft/40 transition-colors disabled:opacity-50"
                     >
                       <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -724,7 +724,7 @@ export function ActivityRosterClient({
               <button
                 type="submit"
                 disabled={savingSettings}
-                className="rounded-lg bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
+                className="rounded-xl bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
               >
                 {savingSettings ? 'Saving...' : 'Update Settings'}
               </button>
@@ -736,7 +736,7 @@ export function ActivityRosterClient({
       {/* MARKING MODAL FOR ASSIGNMENTS */}
       {selectedSub && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-xl rounded-2xl border border-border bg-surface p-6 shadow-xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
+          <div className="card w-full max-w-xl p-6 shadow-xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-border pb-3">
               <div>
                 <h3 className="text-base font-semibold text-text-primary">
@@ -744,7 +744,7 @@ export function ActivityRosterClient({
                 </h3>
                 <p className="text-xs text-text-secondary">
                   Submitted on {new Date(selectedSub.submitted_at || selectedSub.started_at).toLocaleString()}
-                  {selectedSub.is_late && <span className="ml-2 font-semibold text-amber-500">(Late Submission)</span>}
+                  {selectedSub.is_late && <span className="ml-2 font-semibold text-warning-text">(Late Submission)</span>}
                 </p>
               </div>
               <button
@@ -787,7 +787,7 @@ export function ActivityRosterClient({
                       href={selectedSub.downloadUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-xs font-medium text-primary hover:bg-surface-muted transition-colors"
+                      className="card inline-flex items-center gap-2 px-3 py-2 text-xs font-medium text-primary hover:bg-school-soft/40 transition-colors"
                     >
                       <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -803,7 +803,7 @@ export function ActivityRosterClient({
 
             {/* Grading Form */}
             <form onSubmit={handleSaveMark} className="space-y-4 pt-3 border-t border-border">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-medium text-text-secondary mb-1">
                     Score (Out of {activity.max_score}) <span className="text-danger-text">*</span>
@@ -838,14 +838,14 @@ export function ActivityRosterClient({
                 <button
                   type="button"
                   onClick={() => setSelectedSub(null)}
-                  className="rounded-lg border border-border bg-surface px-4 py-2 text-xs font-medium text-text-secondary hover:bg-surface-muted transition-colors"
+                  className="card px-4 py-2 text-xs font-medium text-text-secondary hover:bg-school-soft/40 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={savingMark}
-                  className="rounded-lg bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
+                  className="rounded-xl bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
                 >
                   {savingMark ? 'Saving...' : 'Save & Record Mark'}
                 </button>

@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { updateRole, deleteRole, grantPermission, revokePermission } from '@/app/dashboard/roles/actions'
 import { groupPermissions } from '@/lib/permission-groups'
 import Link from 'next/link'
-import { Lock, Trash2, Check } from 'lucide-react'
+import { Lock, Trash2, Check } from '@/components/icons'
 
 export default async function RoleDetailPage({
   params,
@@ -38,16 +38,15 @@ export default async function RoleDetailPage({
   const updateRoleWithId = updateRole.bind(null, id)
 
   return (
-    <div className="px-8 py-8 max-w-3xl">
-      <Link href="/dashboard/roles" className="text-sm text-primary hover:text-primary-hover">
-        ← Back to roles
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-3xl">
+      <Link href="/dashboard/roles" className="inline-flex w-fit items-center gap-1 text-sm text-text-secondary hover:text-text-primary">← Back to roles
       </Link>
 
       <div className="flex items-center justify-between mt-4 mb-6">
         <div className="flex items-center gap-2">
-          <h1 className="text-xl font-semibold text-text-primary capitalize">{role.name.replace('_', ' ')}</h1>
+          <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] capitalize">{role.name.replace('_', ' ')}</h1>
           {role.is_system && (
-            <span className="flex items-center gap-1 text-xs font-medium bg-secondary/10 text-secondary rounded-full px-2.5 py-0.5">
+            <span className="flex items-center gap-1 text-xs font-medium bg-raised text-[#374151] rounded-full px-2.5 py-0.5">
               <Lock size={11} /> System Role
             </span>
           )}
@@ -55,7 +54,7 @@ export default async function RoleDetailPage({
         {!role.is_system && assignedUserCount === 0 && (
           <form action={deleteRole}>
             <input type="hidden" name="role_id" value={id} />
-            <button type="submit" className="flex items-center gap-1.5 text-sm text-danger-text border border-red-200 rounded-lg px-4 py-2 hover:bg-danger-bg transition-colors">
+            <button type="submit" className="flex items-center gap-1.5 text-sm text-danger-text border border-danger-bg rounded-lg px-4 py-2 hover:bg-danger-bg transition-colors">
               <Trash2 size={14} /> Delete Role
             </button>
           </form>
@@ -63,7 +62,7 @@ export default async function RoleDetailPage({
       </div>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">{error}</p>
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
 
       {assignedUserCount !== null && assignedUserCount > 0 && !role.is_system && (
@@ -73,8 +72,8 @@ export default async function RoleDetailPage({
       )}
 
       {!role.is_system ? (
-        <form action={updateRoleWithId} className="bg-surface border border-border rounded-xl p-5 mb-6 space-y-3">
-          <div className="grid grid-cols-2 gap-4 items-end">
+        <form action={updateRoleWithId} className="card p-5 mb-6 space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
             <div>
               <label className="block text-sm text-text-secondary mb-1.5">Role Name *</label>
               <input name="name" defaultValue={role.name} required className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
@@ -84,7 +83,7 @@ export default async function RoleDetailPage({
               <input name="description" defaultValue={role.description ?? ''} className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
             </div>
           </div>
-          <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+          <button type="submit" className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60">
             Save Details
           </button>
         </form>
@@ -96,7 +95,7 @@ export default async function RoleDetailPage({
 
       <div className="space-y-4">
         {grouped.map((group) => (
-          <section key={group.label} className="bg-surface border border-border rounded-xl p-5">
+          <section key={group.label} className="card p-5">
             <h3 className="text-sm font-medium text-text-primary mb-3">{group.label}</h3>
             <div className="space-y-2">
               {group.permissions.map((p) => {
@@ -117,7 +116,7 @@ export default async function RoleDetailPage({
                       <form action={revokePermission}>
                         <input type="hidden" name="role_id" value={id} />
                         <input type="hidden" name="permission_id" value={p.id} />
-                        <button type="submit" className="text-xs text-danger-text hover:text-red-700 font-medium">
+                        <button type="submit" className="text-xs text-danger-text hover:text-danger-text font-medium">
                           Revoke
                         </button>
                       </form>

@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from 'next/link'
-import { Award, Calendar, CreditCard, Bell, FileText, CheckCircle2, PlayCircle } from 'lucide-react'
+import { Award, Calendar, CreditCard, Bell, FileText, CheckCircle2, PlayCircle } from '@/components/icons'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { createClient } from '@/lib/supabase/server'
+import { getTodayInLagos } from '../lms/lagos-time'
 import { LessonPlayerModal } from '../lms/lesson-player-modal'
 import { NotesDownloadButton } from '../lms/notes-download-button'
 
@@ -93,144 +95,109 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
     }
   }
 
-  const hour = new Date().getHours()
+  // ---- Today's timetable for this student's class arm ----
+  const { dayOfWeek } = getTodayInLagos()
+  const nowHm = new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Lagos', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date())
+  type Slot = { id: string; time: string; subject: string; teacher: string; state: 'past' | 'now' | 'next' | 'later' }
+  let today: Slot[] = []
+  if (currentEnrolment?.class_id) {
+    const supabase = await createClient()
+    const { data: session } = await supabase.from('academic_sessions').select('id').eq('school_id', student.school_id).eq('is_current', true).maybeSingle()
+    if (session) {
+      const [{ data: periods }, { data: entries }] = await Promise.all([
+        (supabase as any).from('timetable_periods').select('id, name, start_time, end_time, is_break').order('sort_order'),
+        (() => {
+          let q = (supabase as any).from('timetable_entries').select('period_id, subjects(name), teacher:profiles(first_name, last_name)')
+            .eq('session_id', session.id).eq('class_id', currentEnrolment.class_id).eq('day_of_week', dayOfWeek)
+          q = currentEnrolment.arm_id ? q.eq('arm_id', currentEnrolment.arm_id) : q.is('arm_id', null)
+          return q
+        })(),
+      ])
+      const byPeriod = new Map((entries ?? []).map((e: any) => [e.period_id, e]))
+      let nextGiven = false
+      today = (periods ?? []).filter((p: any) => !p.is_break && byPeriod.has(p.id)).map((p: any) => {
+        const e: any = byPeriod.get(p.id)
+        const start = String(p.start_time).slice(0, 5), end = String(p.end_time).slice(0, 5)
+        let state: Slot['state'] = nowHm >= end ? 'past' : nowHm >= start ? 'now' : 'later'
+        if (state === 'later' && !nextGiven) { state = 'next'; nextGiven = true }
+        return { id: p.id, time: start, subject: e.subjects?.name ?? p.name, teacher: e.teacher ? `${e.teacher.first_name ?? ''} ${e.teacher.last_name ?? ''}`.trim() : '', state }
+      })
+    }
+  }
+  const nextSlot = today.find((t) => t.state === 'next')
+  const lessonTotal = lessonsBySubject.reduce((n, g) => n + g.lessons.length, 0)
+
+  const hour = Number(nowHm.slice(0, 2))
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-8 space-y-8">
-      {/* Student Hero Profile Card */}
-      <div className="bg-surface border border-border rounded-2xl p-6 sm:p-8 shadow-xs">
-        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-          {/* Student Photo */}
-          <div className="relative shrink-0">
-            {student.photo_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={student.photo_url}
-                alt={`${student.first_name} ${student.last_name}`}
-                className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover border-2 border-border shadow-sm ring-4 ring-primary/5"
-              />
-            ) : (
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-amber-100 text-amber-700 flex flex-col items-center justify-center font-bold text-2xl sm:text-3xl border-2 border-amber-200 ring-4 ring-amber-50">
-                {initials}
-                <span className="text-[10px] font-normal text-amber-600/80 mt-1">No photo</span>
-              </div>
-            )}
-            <span
-              className={`absolute -bottom-1.5 -right-1.5 w-6 h-6 rounded-full border-2 border-surface flex items-center justify-center ${
-                isActive ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'
-              }`}
-              title={isActive ? 'Active Student' : student.status}
-            >
-              <CheckCircle2 size={14} />
-            </span>
-          </div>
-
-          {/* Student Info */}
-          <div className="flex-1 text-center sm:text-left min-w-0">
-            <p className="text-xs font-medium text-text-muted mb-0.5">{greeting}</p>
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 mb-2">
-              <h1 className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight">
-                {student.first_name} {student.last_name}
-              </h1>
-              <span
-                className={`text-xs font-semibold rounded-full px-2.5 py-0.5 capitalize ${
-                  isActive ? 'bg-success-bg text-success-text' : 'bg-danger-bg text-danger-text'
-                }`}
-              >
-                {student.status}
-              </span>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-1.5 text-xs sm:text-sm text-text-secondary">
-              <span className="inline-flex items-center gap-1.5">
-                <span className="text-text-muted">Admission No:</span>
-                <strong className="text-text-primary font-semibold font-mono">{student.admission_no}</strong>
-              </span>
-              <span className="text-border hidden sm:inline">•</span>
-              <span className="inline-flex items-center gap-1.5">
-                <span className="text-text-muted">Class:</span>
-                <strong className="text-text-primary font-medium">{classLabel}</strong>
-              </span>
-              <span className="text-border hidden sm:inline">•</span>
-              <span className="inline-flex items-center gap-1.5">
-                <span className="text-text-muted">Session:</span>
-                <strong className="text-text-primary font-medium">{sessionName}</strong>
-              </span>
-            </div>
+    <div className="mx-auto flex max-w-[1120px] flex-col gap-7 px-5 pb-12 pt-7 sm:px-6 sm:pt-9">
+      <section aria-labelledby="hello" className="flex flex-col gap-6 rounded-[24px] bg-school-deep p-6 text-white shadow-raise sm:p-8">
+        <div className="flex items-start gap-4">
+          {student.photo_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={student.photo_url} alt="" className="h-14 w-14 shrink-0 rounded-full object-cover ring-2 ring-white/30" />
+          ) : (
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white text-lg font-semibold text-school-deep">{initials}</span>
+          )}
+          <div className="flex min-w-0 flex-col gap-1.5">
+            <h1 id="hello" className="text-[32px] font-semibold leading-[1.05] sm:text-[44px]">
+              {greeting.replace('Good ', '').replace(/^./, (c) => c.toUpperCase())}, {student.first_name}.
+            </h1>
+            <p className="text-base text-school-deep-muted sm:text-lg">
+              {nextSlot ? `${nextSlot.subject} is next, at ${nextSlot.time}.` : today.length ? 'That’s all your classes for today.' : `${classLabel} · ${sessionName}`}
+              {lessonTotal > 0 && ` ${lessonTotal} recorded lesson${lessonTotal === 1 ? '' : 's'} for your class.`}
+            </p>
           </div>
         </div>
-      </div>
-
-      {/* Main Action Hub */}
-      <div>
-        <h2 className="text-base font-semibold text-text-primary mb-4">Your Portal Dashboard</h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {/* Card: My Results */}
-          <div className="bg-surface border border-border rounded-xl p-6 flex flex-col justify-between hover:border-primary/50 transition-all hover:shadow-xs group">
-            <div>
-              <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
-                <Award size={24} />
-              </div>
-              <h3 className="text-base font-semibold text-text-primary mb-1">My Results</h3>
-              <p className="text-xs text-text-secondary leading-relaxed">
-                Check published term grades, test scores, subject totals, class position, and full report cards.
-              </p>
-            </div>
-            <div className="mt-6 pt-4 border-t border-border">
-              <Link
-                href="/dashboard/my-results"
-                className="text-xs font-semibold text-primary hover:text-primary-hover inline-flex items-center gap-1"
-              >
-                View Academic Results →
-              </Link>
-            </div>
+        <div className="flex flex-col gap-2.5">
+          <div className="flex items-baseline justify-between text-sm">
+            <span className="font-medium">Today</span>
+            <Link href="/dashboard/my-timetable" className="text-school-deep-muted underline-offset-4 hover:text-white hover:underline">Full timetable</Link>
           </div>
-
-          {/* Card: My Timetable */}
-          <div className="bg-surface border border-border rounded-xl p-6 flex flex-col justify-between hover:border-primary/50 transition-all hover:shadow-xs group">
-            <div>
-              <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
-                <Calendar size={24} />
-              </div>
-              <h3 className="text-base font-semibold text-text-primary mb-1">My Timetable</h3>
-              <p className="text-xs text-text-secondary leading-relaxed">
-                Access your weekly class schedule, subject period times, and daily classroom routines.
-              </p>
-            </div>
-            <div className="mt-6 pt-4 border-t border-border">
-              <Link
-                href="/dashboard/my-timetable"
-                className="text-xs font-semibold text-primary hover:text-primary-hover inline-flex items-center gap-1"
-              >
-                View Class Timetable →
-              </Link>
-            </div>
-          </div>
-
-          {/* Card: My Payments */}
-          <div className="bg-surface border border-border rounded-xl p-6 flex flex-col justify-between hover:border-primary/50 transition-all hover:shadow-xs group">
-            <div>
-              <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
-                <CreditCard size={24} />
-              </div>
-              <h3 className="text-base font-semibold text-text-primary mb-1">My Payments</h3>
-              <p className="text-xs text-text-secondary leading-relaxed">
-                Review fee payment history, term bills, settled invoices, and download transaction receipts.
-              </p>
-            </div>
-            <div className="mt-6 pt-4 border-t border-border">
-              <Link
-                href="/dashboard/payments"
-                className="text-xs font-semibold text-primary hover:text-primary-hover inline-flex items-center gap-1"
-              >
-                View Fee Payments →
-              </Link>
-            </div>
-          </div>
+          {today.length === 0 ? (
+            <p className="text-school-deep-muted">No classes on your timetable today.</p>
+          ) : (
+            <ol className="grid grid-cols-[repeat(auto-fill,minmax(132px,1fr))] gap-2">
+              {today.map((t) => (
+                <li
+                  key={t.id}
+                  aria-current={t.state === 'now' ? 'time' : undefined}
+                  className={`flex min-h-[64px] flex-col gap-0.5 rounded-xl px-3 py-2.5 ${
+                    t.state === 'now' ? 'bg-white text-school-deep'
+                    : t.state === 'next' ? 'bg-white/20 text-white'
+                    : t.state === 'past' ? 'bg-white/[0.06] text-white/55'
+                    : 'border border-white/20 text-white/85'
+                  }`}
+                >
+                  <span className="text-xs tabular-nums opacity-80">{t.state === 'now' ? `Now · ${t.time}` : t.time}</span>
+                  <span className="font-semibold leading-tight">{t.subject}</span>
+                  {t.teacher && <span className="truncate text-xs opacity-75">{t.teacher}</span>}
+                </li>
+              ))}
+            </ol>
+          )}
         </div>
-      </div>
+      </section>
+
+      {!isActive && (
+        <p role="status" className="rounded-xl bg-warning-bg px-4 py-3 text-sm text-warning-text">
+          Your account is marked “{student.status}”. Ask the school office if this is a mistake.
+        </p>
+      )}
+
+      <nav aria-label="Your pages" className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+        {[
+          { href: '/dashboard/my-results', label: 'Results', note: 'Term scores and report cards', Icon: Award },
+          { href: '/dashboard/my-timetable', label: 'Timetable', note: 'Your week, period by period', Icon: Calendar },
+          { href: '/dashboard/payments', label: 'Fees', note: 'Bills, payments and receipts', Icon: CreditCard },
+        ].map(({ href, label, note, Icon }) => (
+          <Link key={href} href={href} className="card flex items-center gap-3 px-4 py-4 transition-transform hover:-translate-y-px">
+            <Icon aria-hidden size={18} strokeWidth={1.6} className="shrink-0 text-text-secondary" />
+            <span className="flex min-w-0 flex-col"><span className="font-semibold">{label}</span><span className="truncate text-sm text-text-secondary">{note}</span></span>
+          </Link>
+        ))}
+      </nav>
 
       {/* Recorded Lessons Library */}
       <div>
@@ -245,15 +212,15 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
         </div>
 
         {lessonsBySubject.length === 0 ? (
-          <div className="bg-surface border border-border rounded-xl p-8 text-center text-sm text-text-secondary">
+          <div className="card p-8 text-center text-sm text-text-secondary">
             No lessons have been published for your class yet.
           </div>
         ) : (
           <div className="space-y-4">
             {lessonsBySubject.map((group) => (
-              <div key={group.subjectName} className="bg-surface border border-border rounded-xl overflow-hidden">
+              <div key={group.subjectName} className="card overflow-hidden">
                 <div className="px-5 py-3 border-b border-border bg-surface-muted">
-                  <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide">
+                  <h3 className="text-xs font-semibold text-text-secondary ">
                     {group.subjectName}
                   </h3>
                 </div>
@@ -261,7 +228,7 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
                   {group.lessons.map((lesson: any) => (
                     <div
                       key={lesson.id}
-                      className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-surface-muted transition-colors"
+                      className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-school-soft/40 transition-colors"
                     >
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
@@ -280,7 +247,7 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
                       <div className="shrink-0 flex items-center gap-2 flex-wrap justify-end">
                         <Link
                           href={`/dashboard/lms/learn/${lesson.id}?student=${student.id}`}
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors min-h-[44px]"
+                          className="card inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-school-soft/40 transition-colors min-h-[44px]"
                         >
                           Activities
                           {(activityCountByLesson.get(lesson.id) ?? 0) > 0 && (
@@ -319,10 +286,10 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Link
           href="/dashboard/announcements"
-          className="bg-surface border border-border rounded-xl p-5 flex items-center justify-between hover:border-primary/50 transition-colors group"
+          className="bg-surface border border-border rounded-lg p-5 flex items-center justify-between hover:border-primary/50 transition-colors group"
         >
           <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-lg bg-surface-muted text-text-secondary flex items-center justify-center shrink-0 group-hover:text-primary transition-colors">
+            <div className="flex items-center justify-center shrink-0 text-text-secondary">
               <Bell size={20} />
             </div>
             <div>
@@ -335,10 +302,10 @@ export async function StudentDashboard({ student }: StudentDashboardProps) {
 
         <Link
           href="/dashboard/documents"
-          className="bg-surface border border-border rounded-xl p-5 flex items-center justify-between hover:border-primary/50 transition-colors group"
+          className="bg-surface border border-border rounded-lg p-5 flex items-center justify-between hover:border-primary/50 transition-colors group"
         >
           <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-lg bg-surface-muted text-text-secondary flex items-center justify-center shrink-0 group-hover:text-primary transition-colors">
+            <div className="flex items-center justify-center shrink-0 text-text-secondary">
               <FileText size={20} />
             </div>
             <div>

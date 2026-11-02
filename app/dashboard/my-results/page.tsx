@@ -27,7 +27,7 @@ export default async function MyResultsPage({
 
   if (!studentRow) {
     return (
-      <div className="px-8 py-8">
+      <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
         <p className="text-sm text-text-secondary">
           No student record is linked to your account yet. Contact your school admin.
         </p>
@@ -46,7 +46,7 @@ export default async function MyResultsPage({
 
   if (!selectedTermId) {
     return (
-      <div className="px-8 py-8">
+      <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
         <p className="text-sm text-text-secondary">No academic terms have been set up yet.</p>
       </div>
     )
@@ -105,15 +105,15 @@ export default async function MyResultsPage({
   const currentTerm = terms?.find((t) => t.id === selectedTermId)
 
   return (
-    <div className="px-8 py-8 max-w-4xl">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-4xl">
       <div className="mb-6 flex items-start justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-text-primary mb-1">My Results</h1>
+          <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mb-1">My Results</h1>
           <p className="text-sm text-text-secondary">
             {studentRow.first_name} {studentRow.last_name} &middot; {studentRow.admission_no}
           </p>
           {rank && (
-            <p className="text-sm text-text-secondary mt-1">
+            <p className="mt-1 text-[15px] text-text-secondary">
               Position: <span className="font-semibold text-text-primary">{rank.rank}</span> of {rank.out_of}
             </p>
           )}
@@ -122,7 +122,7 @@ export default async function MyResultsPage({
           <TermSelect terms={terms ?? []} selectedTermId={selectedTermId} />
           <Link
             href={`/dashboard/students/${studentRow.id}/report-card${selectedTermId ? `?term_id=${selectedTermId}` : ''}`}
-            className="inline-flex items-center text-sm font-medium text-white bg-primary hover:bg-primary-hover px-4 py-1.5 rounded-lg transition-colors"
+            className="inline-flex items-center text-sm font-medium text-white bg-primary hover:bg-primary-hover px-4 py-1.5 rounded-xl transition-colors"
           >
             View Full Report Card
           </Link>
@@ -130,11 +130,11 @@ export default async function MyResultsPage({
       </div>
 
       {subjectRows.length === 0 ? (
-        <div className="bg-surface border border-border rounded-xl p-6 text-sm text-text-secondary">
+        <div className="card p-6 text-sm text-text-secondary">
           No published results for {currentTerm?.name ?? 'this term'} yet.
         </div>
       ) : (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden mb-6">
+        <div className="card overflow-hidden mb-6">
           <table className="w-full text-sm">
             <thead className="bg-surface-muted text-text-secondary text-xs">
               <tr>
@@ -163,7 +163,7 @@ export default async function MyResultsPage({
       )}
 
       {remark && (remark.class_teacher_remark || remark.principal_remark) && (
-        <div className="bg-surface border border-border rounded-xl p-5 space-y-3">
+        <div className="card p-5 space-y-3">
           <h2 className="text-sm font-semibold text-text-primary">Report Card Remarks</h2>
           {remark.class_teacher_remark && (
             <p className="text-sm text-text-secondary">

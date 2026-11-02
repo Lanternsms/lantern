@@ -36,15 +36,15 @@ function StatusChip({ status }: { status: 'open' | 'answered' | 'closed' }) {
   switch (status) {
     case 'open':
       return (
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-          <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-warning-bg text-warning-text border border-warning-bg">
+          <span className="w-1.5 h-1.5 rounded-full bg-warning-text" />
           Open
         </span>
       )
     case 'answered':
       return (
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-success-bg text-success-text border border-success-bg">
+          <span className="w-1.5 h-1.5 rounded-full bg-success-text" />
           Answered
         </span>
       )
@@ -154,13 +154,13 @@ export function ThreadClient({ root, replies, canManage, rootId }: ThreadClientP
       </div>
 
       {error && (
-        <div className="p-3 bg-danger-bg text-danger-text border border-red-200 rounded-lg text-sm">
+        <div className="p-3 bg-danger-bg text-danger-text border border-danger-bg rounded-lg text-sm">
           {error}
         </div>
       )}
 
       {/* Lesson Details & Preview Banner */}
-      <div className="bg-surface border border-border rounded-xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap text-xs">
             {classSubject && (
@@ -196,8 +196,8 @@ export function ThreadClient({ root, replies, canManage, rootId }: ThreadClientP
             disabled={isPending}
             className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border transition-colors disabled:opacity-50 ${
               root.status === 'closed'
-                ? 'bg-surface text-text-primary border-border hover:bg-surface-muted'
-                : 'bg-surface text-text-secondary border-border hover:text-text-primary hover:bg-surface-muted'
+                ? 'bg-surface text-text-primary border-border hover:bg-school-soft/40'
+                : 'bg-surface text-text-secondary border-border hover:text-text-primary hover:bg-school-soft/40'
             }`}
           >
             {root.status === 'closed' ? (
@@ -232,7 +232,7 @@ export function ThreadClient({ root, replies, canManage, rootId }: ThreadClientP
       </div>
 
       {/* Root Question Card */}
-      <div className="bg-surface border border-border rounded-xl p-6 shadow-xs space-y-4">
+      <div className="card p-6 space-y-4">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm shrink-0">
@@ -253,7 +253,7 @@ export function ThreadClient({ root, replies, canManage, rootId }: ThreadClientP
               type="button"
               onClick={() => handleDeleteMessage(root.id, true)}
               disabled={isPending || deletingId === root.id}
-              className="text-xs text-danger-text hover:underline border border-red-200 px-2.5 py-1 rounded-md bg-danger-bg/30 hover:bg-danger-bg transition-colors disabled:opacity-50"
+              className="text-xs text-danger-text hover:underline border border-danger-bg px-2.5 py-1 rounded-md bg-danger-bg/30 hover:bg-danger-bg transition-colors disabled:opacity-50"
             >
               {deletingId === root.id ? 'Deleting…' : 'Delete Question'}
             </button>
@@ -268,13 +268,13 @@ export function ThreadClient({ root, replies, canManage, rootId }: ThreadClientP
       {/* Replies Section */}
       <div className="space-y-4 pt-2">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold text-text-primary uppercase tracking-wide">
+          <h2 className="text-sm font-bold text-text-primary ">
             Replies ({replies.length})
           </h2>
         </div>
 
         {replies.length === 0 ? (
-          <div className="bg-surface border border-border rounded-xl p-8 text-center text-xs text-text-secondary">
+          <div className="card p-8 text-center text-xs text-text-secondary">
             No replies yet. Type an answer below to respond.
           </div>
         ) : (
@@ -284,7 +284,7 @@ export function ThreadClient({ root, replies, canManage, rootId }: ThreadClientP
               return (
                 <div
                   key={reply.id}
-                  className={`border rounded-xl p-5 shadow-xs space-y-3 transition-colors ${
+                  className={`border rounded-lg p-5 shadow-xs space-y-3 transition-colors ${
                     isStaff
                       ? 'bg-surface border-primary/30'
                       : 'bg-surface border-border'
@@ -331,7 +331,7 @@ export function ThreadClient({ root, replies, canManage, rootId }: ThreadClientP
                         type="button"
                         onClick={() => handleDeleteMessage(reply.id, false)}
                         disabled={isPending || deletingId === reply.id}
-                        className="text-[11px] text-danger-text hover:underline border border-red-200 px-2 py-0.5 rounded bg-danger-bg/30 hover:bg-danger-bg transition-colors disabled:opacity-50"
+                        className="text-[11px] text-danger-text hover:underline border border-danger-bg px-2 py-0.5 rounded bg-danger-bg/30 hover:bg-danger-bg transition-colors disabled:opacity-50"
                       >
                         {deletingId === reply.id ? 'Deleting…' : 'Delete'}
                       </button>
@@ -349,7 +349,7 @@ export function ThreadClient({ root, replies, canManage, rootId }: ThreadClientP
       </div>
 
       {/* Reply Form */}
-      <div className="bg-surface border border-border rounded-xl p-6 shadow-xs space-y-3">
+      <div className="card p-6 space-y-3">
         <h3 className="text-sm font-semibold text-text-primary">Reply to Thread</h3>
         <form onSubmit={handleSendReply} className="space-y-3">
           <textarea
@@ -359,7 +359,7 @@ export function ThreadClient({ root, replies, canManage, rootId }: ThreadClientP
             rows={4}
             maxLength={2000}
             placeholder="Write a clear, helpful reply for the student..."
-            className="w-full border border-border rounded-lg p-3 text-sm text-text-primary bg-background focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-text-muted disabled:opacity-60"
+            className="w-full border border-border rounded-lg p-3 text-sm text-text-primary bg-surface focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-text-muted disabled:opacity-60"
           />
 
           <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -373,7 +373,7 @@ export function ThreadClient({ root, replies, canManage, rootId }: ThreadClientP
             <button
               type="submit"
               disabled={isPending || replyBody.trim().length === 0}
-              className="bg-primary text-white text-xs font-semibold rounded-lg px-4 py-2 hover:bg-primary-hover transition-colors disabled:opacity-50"
+              className="bg-primary text-white text-xs font-semibold rounded-xl px-4 py-2 hover:bg-primary-hover transition-colors disabled:opacity-50"
             >
               {isPending ? 'Sending reply…' : 'Send Reply'}
             </button>

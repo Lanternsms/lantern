@@ -93,7 +93,7 @@ export default async function LmsAiAdminPage({
           >
             <span
               className={`w-2 h-2 rounded-full ${
-                settings.enabled && configured ? 'bg-success' : 'bg-text-secondary'
+                settings.enabled && configured ? 'bg-success-text' : 'bg-text-secondary'
               }`}
             />
             {settings.enabled && configured ? 'AI Tutor Active' : 'AI Tutor Inactive'}
@@ -102,19 +102,19 @@ export default async function LmsAiAdminPage({
       </div>
 
       {success && (
-        <div className="rounded-xl border border-success/30 bg-success-bg p-4 text-xs text-success-text font-medium">
+        <div className="rounded-lg border border-success-bg bg-success-bg p-4 text-xs text-success-text font-medium">
           {success}
         </div>
       )}
 
       {error && (
-        <div className="rounded-xl border border-red-300 bg-red-50 dark:bg-red-950/30 p-4 text-xs text-red-700 dark:text-red-300 font-medium">
+        <div className="rounded-lg border border-danger-bg bg-danger-bg dark:bg-danger-text p-4 text-xs text-danger-text dark:text-danger-text font-medium">
           {error}
         </div>
       )}
 
       {/* ── System Status Banner ── */}
-      <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+      <div className="card p-5 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
         <div>
           <span className="text-text-secondary block">Provider & Model</span>
           <span className="font-semibold text-text-primary uppercase">
@@ -136,7 +136,7 @@ export default async function LmsAiAdminPage({
       </div>
 
       {/* ── Test Connection ── */}
-      <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm space-y-3">
+      <div className="card p-5 space-y-3">
         <div>
           <h2 className="text-sm font-semibold text-text-primary">Test AI Connection</h2>
           <p className="text-xs text-text-secondary mt-0.5">
@@ -147,12 +147,12 @@ export default async function LmsAiAdminPage({
       </div>
 
       {/* ── Settings Form ── */}
-      <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm space-y-5">
+      <div className="card p-6 space-y-5">
         <h2 className="text-base font-semibold text-text-primary">School AI Configuration</h2>
 
         <form action={handleSaveSettings} className="space-y-6">
           <div className="space-y-4">
-            <label className="flex items-start gap-3 p-3.5 rounded-xl border border-border bg-background/50 hover:bg-background cursor-pointer transition-colors">
+            <label className="flex items-start gap-3 p-3.5 rounded-lg border border-border bg-surface hover:bg-surface cursor-pointer transition-colors">
               <input
                 type="checkbox"
                 name="enabled"
@@ -170,7 +170,7 @@ export default async function LmsAiAdminPage({
             </label>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <label className="flex items-start gap-3 p-3.5 rounded-xl border border-border bg-background/50 hover:bg-background cursor-pointer transition-colors">
+              <label className="flex items-start gap-3 p-3.5 rounded-lg border border-border bg-surface hover:bg-surface cursor-pointer transition-colors">
                 <input
                   type="checkbox"
                   name="voice_enabled"
@@ -185,7 +185,7 @@ export default async function LmsAiAdminPage({
                 </div>
               </label>
 
-              <label className="flex items-start gap-3 p-3.5 rounded-xl border border-border bg-background/50 hover:bg-background cursor-pointer transition-colors">
+              <label className="flex items-start gap-3 p-3.5 rounded-lg border border-border bg-surface hover:bg-surface cursor-pointer transition-colors">
                 <input
                   type="checkbox"
                   name="read_aloud_enabled"
@@ -203,7 +203,7 @@ export default async function LmsAiAdminPage({
           </div>
 
           <div className="border-t border-border pt-4">
-            <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-4">
+            <h3 className="text-xs font-bold text-text-secondary  mb-4">
               Rate Limits & Safety Budget
             </h3>
 
@@ -218,7 +218,7 @@ export default async function LmsAiAdminPage({
                   min={1}
                   max={500}
                   defaultValue={settings.daily_limit_per_student}
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-xs text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 <span className="text-[10px] text-text-secondary mt-1 block">Default: 20 questions/day</span>
               </div>
@@ -233,7 +233,7 @@ export default async function LmsAiAdminPage({
                   min={1}
                   max={2000}
                   defaultValue={settings.daily_limit_per_class}
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-xs text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 <span className="text-[10px] text-text-secondary mt-1 block">Default: 150 questions/day</span>
               </div>
@@ -248,7 +248,7 @@ export default async function LmsAiAdminPage({
                   min={10}
                   max={100000}
                   defaultValue={settings.monthly_limit_school}
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-xs text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 <span className="text-[10px] text-text-secondary mt-1 block">Default: 3,000 questions/month</span>
               </div>
@@ -258,7 +258,7 @@ export default async function LmsAiAdminPage({
           <div className="pt-2">
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-xl bg-primary text-white font-medium text-xs hover:bg-primary-hover shadow-sm transition-colors"
+              className="px-5 py-2.5 rounded-xl bg-primary text-white font-medium text-xs hover:bg-primary-hover transition-colors"
             >
               Save AI Settings
             </button>
@@ -267,7 +267,7 @@ export default async function LmsAiAdminPage({
       </div>
 
       {/* ── Audit Logs ── */}
-      <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm space-y-4">
+      <div className="card p-6 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 className="text-base font-semibold text-text-primary">Inquiry Audit Log</h2>
@@ -281,7 +281,7 @@ export default async function LmsAiAdminPage({
               href={flaggedOnly ? '/dashboard/lms/ai' : '/dashboard/lms/ai?flagged=true'}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
                 flaggedOnly
-                  ? 'border-amber-400 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold'
+                  ? 'border-warning-text bg-warning-text text-warning-text dark:text-warning-text font-bold'
                   : 'border-border text-text-secondary hover:text-text-primary'
               }`}
             >
@@ -291,13 +291,13 @@ export default async function LmsAiAdminPage({
         </div>
 
         {auditData.logs.length === 0 ? (
-          <div className="py-12 text-center text-xs text-text-secondary border border-dashed border-border rounded-xl">
+          <div className="py-12 text-center text-xs text-text-secondary border border-dashed border-border rounded-lg">
             No inquiry records found.
           </div>
         ) : (
-          <div className="overflow-x-auto border border-border rounded-xl">
+          <div className="overflow-x-auto border border-border rounded-lg">
             <table className="w-full text-left text-xs">
-              <thead className="bg-surface-muted border-b border-border text-[11px] uppercase tracking-wider text-text-secondary">
+              <thead className="bg-surface-muted border-b border-border text-[11px]  text-text-secondary">
                 <tr>
                   <th className="py-3 px-4">Time</th>
                   <th className="py-3 px-4">Asker & Mode</th>
@@ -313,7 +313,7 @@ export default async function LmsAiAdminPage({
                 {auditData.logs.map((log: any) => {
                   const isUser = log.role === 'user'
                   return (
-                    <tr key={log.id} className="hover:bg-background/40 transition-colors">
+                    <tr key={log.id} className="hover:bg-surface transition-colors">
                       <td className="py-3 px-4 text-text-secondary whitespace-nowrap">
                         {new Date(log.created_at).toLocaleString([], {
                           month: 'short',
@@ -342,8 +342,8 @@ export default async function LmsAiAdminPage({
                         <span
                           className={`inline-block px-1.5 py-0.5 rounded text-[10px] uppercase font-bold ${
                             isUser
-                              ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                              : 'bg-purple-500/10 text-purple-600 dark:text-purple-400'
+                              ? 'bg-primary text-school-ink dark:text-school'
+                              : 'bg-primary text-school-ink dark:text-school'
                           }`}
                         >
                           {log.role}
@@ -358,7 +358,7 @@ export default async function LmsAiAdminPage({
                             className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold ${
                               log.grounded
                                 ? 'bg-success-bg text-success-text'
-                                : 'bg-red-500/10 text-red-600 dark:text-red-400'
+                                : 'bg-danger-text text-danger-text dark:text-danger-text'
                             }`}
                           >
                             {log.grounded ? '✓ Grounded' : '⚠ Ungrounded'}
@@ -383,7 +383,7 @@ export default async function LmsAiAdminPage({
                             type="submit"
                             className={`px-2 py-1 rounded text-[11px] font-medium transition-colors ${
                               log.flagged
-                                ? 'bg-red-500/10 text-red-600 font-bold hover:bg-red-500/20'
+                                ? 'bg-danger-text text-danger-text font-bold hover:bg-danger-text'
                                 : 'text-text-secondary hover:text-text-primary'
                             }`}
                             title={log.flagged ? 'Click to unflag' : 'Click to flag for review'}

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { CalendarCheck, ArrowRight, UserCheck, AlertCircle } from 'lucide-react'
+import { CalendarCheck, ArrowRight, UserCheck, AlertCircle } from '@/components/icons'
 
 export async function AttendanceWidget() {
   const supabase = await createClient()
@@ -22,11 +22,11 @@ export async function AttendanceWidget() {
   const rate = total > 0 ? (present / total) * 100 : null
 
   return (
-    <div className="bg-surface border border-border rounded-2xl p-6 shadow-xs h-full flex flex-col justify-between">
+    <div className="card p-6 h-full flex flex-col justify-between">
       <div>
         <div className="flex items-center justify-between pb-4 border-b border-border mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-200/60">
+            <div className="flex items-center justify-center shrink-0 text-text-secondary">
               <CalendarCheck size={20} />
             </div>
             <div>
@@ -43,7 +43,7 @@ export async function AttendanceWidget() {
         </div>
 
         {rate === null ? (
-          <div className="rounded-xl border border-dashed border-border p-6 text-center space-y-2 bg-surface-muted/30">
+          <div className="rounded-lg border border-dashed border-border p-6 text-center space-y-2 bg-surface-muted/30">
             <p className="text-xs font-medium text-text-secondary">No attendance sessions recorded yet today.</p>
             <Link
               href="/dashboard/attendance"
@@ -64,10 +64,10 @@ export async function AttendanceWidget() {
               <span
                 className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
                   rate >= 90
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    ? 'bg-success-bg text-success-text border-success-bg'
                     : rate >= 75
-                    ? 'bg-amber-50 text-amber-700 border-amber-200'
-                    : 'bg-red-50 text-red-700 border-red-200'
+                    ? 'bg-warning-bg text-warning-text border-warning-bg'
+                    : 'bg-danger-bg text-danger-text border-danger-bg'
                 }`}
               >
                 {rate >= 90 ? <UserCheck size={12} /> : <AlertCircle size={12} />}
@@ -79,18 +79,18 @@ export async function AttendanceWidget() {
             <div className="w-full bg-border/60 rounded-full h-2.5 overflow-hidden">
               <div
                 className={`h-full rounded-full transition-all duration-500 ${
-                  rate >= 90 ? 'bg-emerald-500' : rate >= 75 ? 'bg-amber-500' : 'bg-red-500'
+                  rate >= 90 ? 'bg-success-text' : rate >= 75 ? 'bg-warning-text' : 'bg-danger-text'
                 }`}
                 style={{ width: `${Math.min(100, Math.max(0, rate))}%` }}
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3 pt-1">
-              <div className="p-3 rounded-xl bg-surface-muted/50 border border-border/80">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <div className="p-3 rounded-lg bg-surface-muted/50 border border-border/80">
                 <span className="text-xs text-text-secondary block mb-0.5">Present Today</span>
-                <span className="text-base font-bold text-emerald-600">{present}</span>
+                <span className="text-base font-bold text-success-text">{present}</span>
               </div>
-              <div className="p-3 rounded-xl bg-surface-muted/50 border border-border/80">
+              <div className="p-3 rounded-lg bg-surface-muted/50 border border-border/80">
                 <span className="text-xs text-text-secondary block mb-0.5">Total Records</span>
                 <span className="text-base font-bold text-text-primary">{total}</span>
               </div>

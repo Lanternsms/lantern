@@ -6,11 +6,11 @@ import { PlatformAdminNav } from '../_components/platform-admin-nav'
 import { lockPlatformAdmin } from '../actions'
 
 const STATUS_STYLES: Record<string, string> = {
-  trialing: 'bg-blue-50 text-blue-700 border-blue-200',
-  active: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-  past_due: 'bg-amber-50 text-amber-700 border-amber-200',
-  suspended: 'bg-red-50 text-red-700 border-red-200',
-  cancelled: 'bg-gray-100 text-gray-500 border-gray-200',
+  trialing: 'bg-school-soft text-school-ink border-school-track',
+  active: 'bg-success-bg text-success-text border-success-bg',
+  past_due: 'bg-warning-bg text-warning-text border-warning-bg',
+  suspended: 'bg-danger-bg text-danger-text border-danger-bg',
+  cancelled: 'bg-raised text-text-secondary border-border',
 }
 
 type SchoolRow = {
@@ -43,16 +43,16 @@ export default async function BillingPage() {
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
       <div className="flex items-center justify-between mb-2">
-        <h1 className="text-xl font-semibold text-gray-900">Subscription & Billing</h1>
+        <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">Subscription & Billing</h1>
         <form action={lockPlatformAdmin}>
-          <button type="submit" className="text-sm text-gray-500 hover:text-gray-800">Lock</button>
+          <button type="submit" className="text-sm text-text-secondary hover:text-text-primary">Lock</button>
         </form>
       </div>
       <PlatformAdminNav active="billing" />
 
-      <div className="border border-gray-200 rounded-xl overflow-hidden">
+      <div className="border border-border rounded-lg overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
+          <thead className="bg-raised text-text-secondary text-xs ">
             <tr>
               <th className="text-left px-4 py-3 font-medium">School</th>
               <th className="text-left px-4 py-3 font-medium">Plan</th>
@@ -62,32 +62,32 @@ export default async function BillingPage() {
               <th className="text-right px-4 py-3 font-medium" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-border">
             {rows.map((school) => {
               const sub = school.platform_subscriptions
               const status = sub?.status ?? 'trialing'
               return (
                 <tr key={school.id}>
-                  <td className="px-4 py-3">
-                    <p className="font-medium text-gray-900">{school.name}</p>
-                    <p className="text-xs text-gray-400">{school.slug}</p>
+                  <td className="px-5 py-3.5">
+                    <p className="font-medium text-text-primary">{school.name}</p>
+                    <p className="text-xs text-text-muted">{school.slug}</p>
                   </td>
-                  <td className="px-4 py-3 capitalize text-gray-700">{sub?.plan ?? 'trial'}</td>
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-3.5 capitalize text-text-primary">{sub?.plan ?? 'trial'}</td>
+                  <td className="px-5 py-3.5">
                     <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium border ${STATUS_STYLES[status] ?? STATUS_STYLES.trialing}`}>
                       {status.replace('_', ' ')}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-gray-700">
+                  <td className="px-5 py-3.5 text-text-primary">
                     {sub?.amount ? `${sub.currency} ${Number(sub.amount).toLocaleString()} / ${sub.billing_cycle}` : '—'}
                   </td>
-                  <td className="px-4 py-3 text-gray-700">
+                  <td className="px-5 py-3.5 text-text-primary">
                     {status === 'trialing'
                       ? sub?.trial_ends_at ? `Trial ends ${sub.trial_ends_at}` : '—'
                       : sub?.current_period_end ?? '—'}
                   </td>
-                  <td className="px-4 py-3 text-right">
-                    <Link href={`/platform-admin/billing/${school.id}`} className="text-sm font-medium text-blue-600 hover:underline">
+                  <td className="px-5 py-3.5 text-right">
+                    <Link href={`/platform-admin/billing/${school.id}`} className="text-sm font-medium text-school-ink hover:underline">
                       Manage
                     </Link>
                   </td>
@@ -96,7 +96,7 @@ export default async function BillingPage() {
             })}
             {rows.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-gray-400">No schools yet.</td>
+                <td colSpan={6} className="px-4 py-8 text-center text-text-muted">No schools yet.</td>
               </tr>
             )}
           </tbody>

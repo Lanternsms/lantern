@@ -9,17 +9,16 @@ export default async function NewWorkflowPage({
   const { error } = await searchParams
 
   return (
-    <div className="px-8 py-8 max-w-lg">
-      <Link href="/dashboard/academics/workflow" className="text-sm text-primary hover:text-primary-hover">
-        ← Back to workflows
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-lg">
+      <Link href="/dashboard/academics/workflow" className="inline-flex w-fit items-center gap-1 text-sm text-text-secondary hover:text-text-primary">← Back to workflows
       </Link>
-      <h1 className="text-xl font-semibold text-text-primary mt-4 mb-6">New Approval Workflow</h1>
+      <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mt-4 mb-6">New Approval Workflow</h1>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">{error}</p>
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
 
-      <form action={createTemplate} className="bg-surface border border-border rounded-xl p-6 space-y-4">
+      <form action={createTemplate} className="card p-6 space-y-4">
         <div>
           <label className="block text-sm text-text-secondary mb-1.5">Workflow Name *</label>
           <input
@@ -32,7 +31,7 @@ export default async function NewWorkflowPage({
         <p className="text-xs text-text-muted">
           You&apos;ll add approval stages next. A new workflow stays inactive until you make it the active one.
         </p>
-        <button type="submit" className="w-full bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-lg py-2.5 transition-colors">
+        <button type="submit" className="w-full bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-xl py-2.5 transition-colors">
           Create Workflow
         </button>
       </form>

@@ -148,13 +148,13 @@ export default async function LessonDetailPage({
   const isRecorder = lesson.recorded_by === access.userId
   if (!access.isManager && isRecorder) {
     return (
-      <div className="px-8 py-8 max-w-4xl space-y-8">
+      <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-4xl space-y-8">
         <div>
           <p className="text-sm text-text-secondary mb-1">
             <Link href="/dashboard/lms/my-lessons" className="hover:text-primary">My Lessons</Link> / {lesson.title}
           </p>
           <div className="flex items-start justify-between gap-4 flex-wrap">
-            <h1 className="text-xl font-semibold text-text-primary">{lesson.title}</h1>
+            <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">{lesson.title}</h1>
             <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${
               lesson.status === 'published'
                 ? 'bg-success-bg text-success-text'
@@ -169,7 +169,7 @@ export default async function LessonDetailPage({
         </div>
 
         {errorMsg && (
-          <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2">
+          <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2">
             {errorMsg}
           </p>
         )}
@@ -180,7 +180,7 @@ export default async function LessonDetailPage({
         )}
 
         {lesson.notes_path && (
-          <section className="bg-surface border border-border rounded-xl p-6">
+          <section className="card p-6">
             <h2 className="text-sm font-semibold text-text-primary mb-3">Lesson Notes</h2>
             <NotesDownloadButton
               lessonId={lessonId}
@@ -234,7 +234,7 @@ export default async function LessonDetailPage({
   }
 
   return (
-    <div className="px-8 py-8 max-w-4xl space-y-8">
+    <div className="px-5 py-7 sm:px-8 sm:py-8 max-w-4xl space-y-8">
       {/* Breadcrumb + title */}
       <div>
         <p className="text-sm text-text-secondary mb-1">
@@ -247,7 +247,7 @@ export default async function LessonDetailPage({
           )} / {lesson.title}
         </p>
         <div className="flex items-start justify-between gap-4 flex-wrap">
-          <h1 className="text-xl font-semibold text-text-primary">{lesson.title}</h1>
+          <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">{lesson.title}</h1>
           <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${
             lesson.status === 'published'
               ? 'bg-success-bg text-success-text'
@@ -259,7 +259,7 @@ export default async function LessonDetailPage({
       </div>
 
       {errorMsg && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2">
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2">
           {errorMsg}
         </p>
       )}
@@ -270,10 +270,10 @@ export default async function LessonDetailPage({
       )}
 
       {/* ── Video section ── */}
-      <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
+      <section className="card p-6 space-y-4">
         <h2 className="text-sm font-semibold text-text-primary">Video</h2>
 
-        <div className="grid grid-cols-2 gap-4 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div>
             <p className="text-text-secondary text-xs mb-0.5">Status</p>
             <p className="text-text-primary">
@@ -328,7 +328,7 @@ export default async function LessonDetailPage({
       </section>
 
       {/* ── Lesson Notes section ── */}
-      <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
+      <section className="card p-6 space-y-4">
         <h2 className="text-sm font-semibold text-text-primary">Lesson Notes (PDF)</h2>
         <LessonNotesUpload
           lessonId={lessonId}
@@ -354,12 +354,12 @@ export default async function LessonDetailPage({
 
       {/* ── Attendance section ── */}
       {attendanceSummary.ok && (
-        <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
+        <section className="card p-6 space-y-4">
           <h2 className="text-sm font-semibold text-text-primary">Attendance</h2>
           {attendanceSummary.rows.length === 0 ? (
             <p className="text-sm text-text-secondary">No period attendance has been recorded for this lesson yet.</p>
           ) : (
-            <div className="border border-border rounded-xl overflow-x-auto">
+            <div className="border border-border rounded-lg overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-surface-muted/40 text-text-secondary text-xs border-b border-border">
                   <tr>
@@ -375,18 +375,18 @@ export default async function LessonDetailPage({
                 </thead>
                 <tbody className="divide-y divide-border">
                   {attendanceSummary.rows.map((row) => (
-                    <tr key={row.date} className="hover:bg-surface-muted/20 transition-colors">
-                      <td className="px-4 py-3 font-medium text-text-primary whitespace-nowrap">
+                    <tr key={row.date} className="hover:bg-school-soft/40 transition-colors">
+                      <td className="px-5 py-3.5 font-medium text-text-primary whitespace-nowrap">
                         {new Date(row.date + 'T12:00:00').toLocaleDateString(undefined, {
                           weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
                         })}
                       </td>
-                      <td className="px-4 py-3 text-right text-emerald-600 font-semibold">{row.present}</td>
-                      <td className="px-4 py-3 text-right text-amber-600">{row.late}</td>
-                      <td className="px-4 py-3 text-right text-red-600">{row.absent}</td>
-                      <td className="px-4 py-3 text-right text-text-secondary">{row.total}</td>
+                      <td className="px-5 py-3.5 text-right text-success-text font-semibold">{row.present}</td>
+                      <td className="px-5 py-3.5 text-right text-warning-text">{row.late}</td>
+                      <td className="px-5 py-3.5 text-right text-danger-text">{row.absent}</td>
+                      <td className="px-5 py-3.5 text-right text-text-secondary">{row.total}</td>
                       {attendanceSummary.canManage && primaryLmsEntryId && (
-                        <td className="px-4 py-3 text-right">
+                        <td className="px-5 py-3.5 text-right">
                           <Link
                             href={`/dashboard/lms/today/attendance/${primaryLmsEntryId}?date=${row.date}`}
                             className="text-xs text-primary hover:underline font-medium"
@@ -423,7 +423,7 @@ export default async function LessonDetailPage({
 
       {/* ── Edit metadata form (canManage only) ── */}
       {canManage && (
-        <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
+        <section className="card p-6 space-y-4">
           <h2 className="text-sm font-semibold text-text-primary">Lesson details</h2>
 
           <form action={updateWithId} className="space-y-4">
@@ -534,7 +534,7 @@ export default async function LessonDetailPage({
             <div className="pt-2">
               <button
                 type="submit"
-                className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
               >
                 Save changes
               </button>
@@ -545,7 +545,7 @@ export default async function LessonDetailPage({
 
       {/* ── Status & delete ── */}
       {canManage && (
-        <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
+        <section className="card p-6 space-y-4">
           <h2 className="text-sm font-semibold text-text-primary">Actions</h2>
           <div className="flex flex-wrap gap-3">
             {lesson.status === 'draft' ? (
@@ -562,7 +562,7 @@ export default async function LessonDetailPage({
               <form action={setDraft}>
                 <button
                   type="submit"
-                  className="text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-surface-muted transition-colors"
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-surface px-4 text-sm font-semibold text-text-primary shadow-card ring-1 ring-black/[0.06] hover:bg-raised"
                 >
                   Unpublish
                 </button>

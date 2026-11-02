@@ -1,6 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
-import { darken, deriveNeutralRamp } from '@/lib/theme/color-utils'
+import { contrastRatio, deriveSchoolLadder, isValidHex, mixHex } from '@/lib/theme/color-utils'
 
+/**
+ * Writes the school's colour ladder into CSS variables. A school picks one colour
+ * (schools.theme.primary); everything else is derived so contrast holds for any choice.
+ */
 export async function ThemeStyle() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -20,29 +24,27 @@ export async function ThemeStyle() {
     .single()
 
   const theme = (school?.theme ?? {}) as Record<string, string>
-  const primary = theme.primary || '#182350'
-  const sidebar = theme.sidebar || '#131c40'
-  const accent = theme.accent || '#b9915e'
-
-  const neutrals = deriveNeutralRamp(primary)
+  const l = deriveSchoolLadder(theme.primary || '#182350')
+  // A school that chose its own sidebar colour keeps it; it is darkened only if white
+  // text on it would fail 7:1, so the menu stays readable.
+  const chosenSidebar = isValidHex(theme.sidebar ?? '') ? theme.sidebar : null
+  let deep = chosenSidebar ?? l.deep
+  for (let w = 0.05; contrastRatio(deep, '#FFFFFF') < 7 && w <= 0.9; w += 0.05) {
+    deep = mixHex(chosenSidebar ?? l.deep, '#000000', w)
+  }
+  const accent = isValidHex(theme.accent ?? '') ? theme.accent : null
 
   const css = `:root {
-    --color-primary: ${primary};
-    --color-primary-hover: ${darken(primary, 0.15)};
-    --color-sidebar: ${sidebar};
-    --color-sidebar-active: ${darken(sidebar, 0.15)};
-    --color-accent: ${accent};
-    --color-accent-hover: ${darken(accent, 0.15)};
-    --color-text-on-primary: ${theme.text_on_primary || '#ffffff'};
-    --color-text-on-sidebar: ${theme.text_on_sidebar || '#ffffff'};
-    --color-text-on-accent: ${theme.text_on_accent || '#182350'};
-
-    --color-surface: ${neutrals.surface};
-    --color-surface-muted: ${neutrals.surfaceMuted};
-    --color-border: ${neutrals.border};
-    --color-text-primary: ${neutrals.textPrimary};
-    --color-text-secondary: ${neutrals.textSecondary};
-    --color-text-muted: ${neutrals.textMuted};
+    --color-school: ${l.accent};
+    --color-primary: ${l.action};
+    --color-primary-hover: ${l.actionHover};
+    --color-school-soft: ${l.soft};
+    --color-school-track: ${l.track};
+    --color-school-ink: ${l.ink};
+    --color-ground: ${l.ground};
+    --color-school-deep: ${deep};
+    --color-school-deep-raised: ${mixHex(deep, '#FFFFFF', 0.12)};
+    --color-school-deep-muted: ${mixHex(deep, '#FFFFFF', 0.68)};${accent ? `\n    --color-accent: ${accent};` : ''}
   }`
 
   return <style dangerouslySetInnerHTML={{ __html: css }} />

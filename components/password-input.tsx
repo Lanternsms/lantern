@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, forwardRef } from 'react'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff } from '@/components/icons'
 
 export interface PasswordInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   wrapperClassName?: string
@@ -28,7 +28,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(fu
         name={name}
         type={isVisible ? 'text' : 'password'}
         placeholder={placeholder}
-        className={`w-full rounded-lg border border-border px-3 py-2.5 pr-10 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background ${className ?? ''}`.trim()}
+        className={`h-11 w-full rounded-lg border border-control bg-white px-3 pr-11 text-[15px] text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15 ${className ?? ''}`.trim()}
         {...props}
       />
       <button

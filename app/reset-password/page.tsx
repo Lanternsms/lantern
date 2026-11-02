@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { PasswordInput } from '@/components/password-input'
+import { AuthLayout, authButton, authError, authLabel } from '@/components/auth/auth-layout'
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('')
@@ -110,60 +111,25 @@ export default function ResetPasswordPage() {
   }
 
   if (done) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background px-4">
-        <div className="max-w-md w-full bg-surface border border-border rounded-xl p-6 text-center">
-          <h1 className="text-lg font-semibold text-text-primary mb-2">Password updated</h1>
-          <p className="text-sm text-text-secondary">Redirecting you to login…</p>
-        </div>
-      </div>
-    )
+    return <AuthLayout title="Password updated" subtitle="Taking you to sign in…"><span /></AuthLayout>
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="max-w-md w-full bg-surface border border-border rounded-xl p-6">
-        <h1 className="text-lg font-semibold text-text-primary mb-1">Set a new password</h1>
-        <p className="text-sm text-text-secondary mb-5">Choose a new password for your account.</p>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs text-text-secondary mb-1">New password</label>
-            <PasswordInput
-              id="password"
-              name="password"
-              required
-              minLength={8}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="At least 8 characters"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs text-text-secondary mb-1">Confirm password</label>
-            <PasswordInput
-              id="confirmPassword"
-              name="confirmPassword"
-              required
-              minLength={8}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Confirm your new password"
-            />
-          </div>
-
-          {error && <p className="text-sm text-danger-text bg-danger-bg rounded-lg px-3 py-2">{error}</p>}
-
-          <button
-            type="submit"
-            disabled={!ready || submitting}
-            className="w-full bg-primary text-white rounded-lg py-2 text-sm font-medium disabled:opacity-50 hover:bg-primary-hover transition-colors"
-          >
-            {submitting ? 'Updating…' : !ready && !error ? 'Verifying link…' : 'Update password'}
-          </button>
-        </form>
-      </div>
-    </div>
+    <AuthLayout title="Set a new password" subtitle="Choose a new password for your account.">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4.5">
+        <label htmlFor="password" className={authLabel}>
+          New password
+          <PasswordInput id="password" name="password" required minLength={8} autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 8 characters" />
+        </label>
+        <label htmlFor="confirmPassword" className={authLabel}>
+          Type it again
+          <PasswordInput id="confirmPassword" name="confirmPassword" required minLength={8} autoComplete="new-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="" />
+        </label>
+        {error && <p role="alert" className={authError}>{error}</p>}
+        <button type="submit" disabled={!ready || submitting} className={authButton}>
+          {submitting ? 'Updating…' : !ready && !error ? 'Checking your link…' : 'Update password'}
+        </button>
+      </form>
+    </AuthLayout>
   )
 }

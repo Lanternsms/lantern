@@ -47,9 +47,9 @@ export default function StructuresManager({
 
   return (
     <div className="space-y-4">
-      <table className="w-full text-sm bg-surface border border-border rounded-xl overflow-hidden">
+      <table className="card w-full text-sm overflow-hidden">
         <thead>
-          <tr className="border-b border-border text-left text-xs text-text-secondary">
+          <tr className="border-b border-rule text-left text-xs text-text-secondary">
             <th className="p-3">Name</th>
             <th className="p-3">Amount</th>
             <th className="p-3">Session</th>
@@ -77,7 +77,7 @@ export default function StructuresManager({
                   Edit
                 </button>
                 <button
-                  className="text-xs text-danger hover:underline"
+                  className="text-xs text-danger-text hover:underline"
                   onClick={() => startTransition(async () => {
                     const result = await deleteFeeStructure(s.id)
                     if (result?.error) setError(result.error)
@@ -94,34 +94,34 @@ export default function StructuresManager({
       <form onSubmit={submit} className="flex flex-wrap items-end gap-3 border-t border-border pt-4">
         <div>
           <label className="block text-xs text-text-secondary mb-1">Component name</label>
-          <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Tuition" className="border border-border rounded-lg px-3 py-2 text-sm bg-background" required />
+          <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Tuition" className="border border-border rounded-lg px-3 py-2 text-sm bg-surface" required />
         </div>
         <div>
           <label className="block text-xs text-text-secondary mb-1">Amount (₦)</label>
-          <input type="number" min="0" step="0.01" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} className="border border-border rounded-lg px-3 py-2 text-sm bg-background w-32" required />
+          <input type="number" min="0" step="0.01" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} className="border border-border rounded-lg px-3 py-2 text-sm bg-surface w-32" required />
         </div>
         <div>
           <label className="block text-xs text-text-secondary mb-1">Session</label>
-          <select value={form.session_id} onChange={(e) => setForm({ ...form, session_id: e.target.value, term_id: '' })} className="border border-border rounded-lg px-3 py-2 text-sm bg-background" required>
+          <select value={form.session_id} onChange={(e) => setForm({ ...form, session_id: e.target.value, term_id: '' })} className="border border-border rounded-lg px-3 py-2 text-sm bg-surface" required>
             <option value="">Select…</option>
             {sessions.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
           </select>
         </div>
         <div>
           <label className="block text-xs text-text-secondary mb-1">Term (optional)</label>
-          <select value={form.term_id} onChange={(e) => setForm({ ...form, term_id: e.target.value })} className="border border-border rounded-lg px-3 py-2 text-sm bg-background">
+          <select value={form.term_id} onChange={(e) => setForm({ ...form, term_id: e.target.value })} className="border border-border rounded-lg px-3 py-2 text-sm bg-surface">
             <option value="">All terms this session</option>
             {availableTerms.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
           </select>
         </div>
         <div>
           <label className="block text-xs text-text-secondary mb-1">Class (optional)</label>
-          <select value={form.class_id} onChange={(e) => setForm({ ...form, class_id: e.target.value })} className="border border-border rounded-lg px-3 py-2 text-sm bg-background">
+          <select value={form.class_id} onChange={(e) => setForm({ ...form, class_id: e.target.value })} className="border border-border rounded-lg px-3 py-2 text-sm bg-surface">
             <option value="">All classes</option>
             {classes.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
         </div>
-        <button type="submit" disabled={isPending} className="bg-primary text-white rounded-lg px-4 py-2 text-sm font-medium disabled:opacity-50">
+        <button type="submit" disabled={isPending} className="bg-primary text-white rounded-xl px-4 py-2 text-sm font-medium disabled:opacity-50">
           {form.id ? 'Update' : 'Add'}
         </button>
         {form.id && <button type="button" className="text-xs text-text-secondary hover:underline" onClick={resetForm}>Cancel edit</button>}

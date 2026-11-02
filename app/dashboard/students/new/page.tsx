@@ -44,15 +44,15 @@ export default async function NewStudentPage({
     .order('first_name')
 
   return (
-    <div className="px-8 py-8 max-w-3xl">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-3xl">
       <p className="text-sm text-text-secondary mb-1">
         <Link href={backHref} className="hover:text-primary">{backLabel}</Link> / Add Student
       </p>
-      <h1 className="text-xl font-semibold text-text-primary mb-1">Add Student</h1>
+      <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mb-1">Add Student</h1>
       <p className="text-sm text-text-secondary mb-6">Create a new student record and add them to your school.</p>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">
           {error}
         </p>
       )}
@@ -61,12 +61,12 @@ export default async function NewStudentPage({
         {session && <input type="hidden" name="session_id" value={session.id} />}
         <input type="hidden" name="from" value={cameFromMyClass ? 'my-class' : ''} />
 
-        <section className="bg-surface border border-border rounded-xl p-6">
+        <section className="card p-6">
           <h2 className="text-sm font-semibold text-text-primary mb-4">Personal Information</h2>
 
           <StudentPhotoUploader />
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm text-text-secondary mb-1.5">First Name <span className="text-danger-text">*</span></label>
               <input name="first_name" required placeholder="e.g. Chidinma" className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
@@ -98,7 +98,7 @@ export default async function NewStudentPage({
           </div>
         </section>
 
-        <section className="bg-surface border border-border rounded-xl p-6">
+        <section className="card p-6">
           <h2 className="text-sm font-semibold text-text-primary">Guardian Information</h2>
           <p className="text-xs text-text-secondary mb-4">At least one guardian is required.</p>
           <GuardianRepeater
@@ -107,9 +107,9 @@ export default async function NewStudentPage({
           />
         </section>
 
-        <section className="bg-surface border border-border rounded-xl p-6">
+        <section className="card p-6">
           <h2 className="text-sm font-semibold text-text-primary mb-4">Enrolment Information</h2>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm text-text-secondary mb-1.5">Academic Session <span className="text-danger-text">*</span></label>
               <input
@@ -165,10 +165,10 @@ export default async function NewStudentPage({
         </section>
 
         {customFields && customFields.length > 0 && (
-          <section className="bg-surface border border-border rounded-xl p-6">
+          <section className="card p-6">
             <h2 className="text-sm font-semibold text-text-primary">Additional Information</h2>
             <p className="text-xs text-text-secondary mb-4">School-configured fields. These can be customised in your school settings.</p>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <CustomFieldInputs definitions={customFields} />
             </div>
           </section>
@@ -177,10 +177,10 @@ export default async function NewStudentPage({
         <div className="flex items-center justify-between">
           <p className="text-xs text-text-muted">Fields marked * are required</p>
           <div className="flex gap-3">
-            <Link href={backHref} className="text-sm text-text-primary border border-border rounded-lg px-4 py-2 hover:bg-surface-muted transition-colors">
+            <Link href={backHref} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-surface px-4 text-sm font-semibold text-text-primary shadow-card ring-1 ring-black/[0.06] hover:bg-raised">
               Cancel
             </Link>
-            <button type="submit" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
+            <button type="submit" className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60">
               Save Student
             </button>
           </div>

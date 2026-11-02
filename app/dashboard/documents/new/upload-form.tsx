@@ -46,12 +46,12 @@ export default function UploadForm({ classes }: { classes: ClassRow[] }) {
     <form onSubmit={handleSubmit} className="space-y-4 max-w-xl">
       <div>
         <label className="block text-xs text-text-secondary mb-1">Title</label>
-        <input name="title" required className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-surface" />
+        <input name="title" required className="bg-surface border border-control rounded-xl w-full px-3 py-2 text-sm" />
       </div>
 
       <div>
         <label className="block text-xs text-text-secondary mb-1">Description (optional)</label>
-        <textarea name="description" rows={3} className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-surface" />
+        <textarea name="description" rows={3} className="bg-surface border border-control rounded-xl w-full px-3 py-2 text-sm" />
       </div>
 
       <div>
@@ -83,7 +83,7 @@ export default function UploadForm({ classes }: { classes: ClassRow[] }) {
           <select
             value={classId}
             onChange={(e) => { setClassId(e.target.value); setArmId('') }}
-            className="border border-border rounded-lg px-3 py-2 text-sm bg-surface"
+            className="card px-3 py-2 text-sm"
           >
             <option value="">All classes</option>
             {classes.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -92,7 +92,7 @@ export default function UploadForm({ classes }: { classes: ClassRow[] }) {
         {classId && arms.length > 0 && (
           <div>
             <label className="block text-xs text-text-secondary mb-1">Limit to an arm (optional)</label>
-            <select value={armId} onChange={(e) => setArmId(e.target.value)} className="border border-border rounded-lg px-3 py-2 text-sm bg-surface">
+            <select value={armId} onChange={(e) => setArmId(e.target.value)} className="card px-3 py-2 text-sm">
               <option value="">All arms</option>
               {arms.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
             </select>
@@ -103,7 +103,7 @@ export default function UploadForm({ classes }: { classes: ClassRow[] }) {
       {error && <p className="text-sm text-danger-text bg-danger-bg rounded-lg px-3 py-2">{error}</p>}
 
       <div className="flex gap-3">
-        <button type="submit" disabled={isPending || audience.length === 0} className="bg-primary text-white rounded-lg px-4 py-2 text-sm font-medium disabled:opacity-50">
+        <button type="submit" disabled={isPending || audience.length === 0} className="bg-primary text-white rounded-xl px-4 py-2 text-sm font-medium disabled:opacity-50">
           {isPending ? 'Uploading…' : 'Upload'}
         </button>
         <button type="button" onClick={() => router.push('/dashboard/documents')} className="text-sm text-text-secondary hover:underline">

@@ -47,7 +47,7 @@ export function DeleteLessonButton({ lessonId }: { lessonId: string }) {
   return (
     <button
       onClick={() => setConfirming(true)}
-      className="text-sm text-danger-text border border-red-200 bg-danger-bg/40 rounded-lg px-4 py-2 hover:bg-danger-bg transition-colors"
+      className="text-sm text-danger-text border border-danger-bg bg-danger-bg/40 rounded-lg px-4 py-2 hover:bg-danger-bg transition-colors"
     >
       Delete lesson
     </button>

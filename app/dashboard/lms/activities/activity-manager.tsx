@@ -192,7 +192,7 @@ export function ActivityManager({
   }
 
   return (
-    <section className="bg-surface border border-border rounded-xl p-6 space-y-6">
+    <section className="card p-6 space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 className="text-base font-semibold text-text-primary">Activities & Assessments</h2>
@@ -206,7 +206,7 @@ export function ActivityManager({
             <button
               type="button"
               onClick={() => handleOpenCreate('quiz')}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+              className="card inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-school-soft/40 transition-colors"
             >
               <svg className="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -216,7 +216,7 @@ export function ActivityManager({
             <button
               type="button"
               onClick={() => handleOpenCreate('assignment')}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-white hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-1.5 text-xs font-medium text-white hover:bg-primary/90 transition-colors"
             >
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -228,26 +228,26 @@ export function ActivityManager({
       </div>
 
       {activities.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border p-8 text-center">
+        <div className="rounded-lg border border-dashed border-border p-8 text-center">
           <p className="text-sm font-medium text-text-secondary">No activities added yet</p>
           <p className="text-xs text-text-secondary/80 mt-1">
             Create a quiz or assignment to assess student learning on this lesson.
           </p>
         </div>
       ) : (
-        <div className="divide-y divide-border rounded-xl border border-border overflow-hidden">
+        <div className="divide-y divide-border rounded-lg border border-border overflow-hidden">
           {activities.map(act => (
             <div
               key={act.id}
-              className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 hover:bg-surface-muted/40 transition-colors"
+              className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 hover:bg-school-soft/40 transition-colors"
             >
               <div className="space-y-1.5 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span
-                    className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider ${
+                    className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold  ${
                       act.kind === 'quiz'
-                        ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                        : 'bg-purple-500/10 text-purple-600 dark:text-purple-400'
+                        ? 'bg-primary text-school-ink dark:text-school'
+                        : 'bg-primary text-school-ink dark:text-school'
                     }`}
                   >
                     {act.kind}
@@ -268,7 +268,7 @@ export function ActivityManager({
                     {act.status}
                   </span>
                   {act.attachment_name && (
-                    <span className="inline-flex items-center gap-1 rounded-md bg-red-500/10 px-1.5 py-0.5 text-[11px] font-medium text-red-600 dark:text-red-400" title={act.attachment_name}>
+                    <span className="inline-flex items-center gap-1 rounded-md bg-danger-text px-1.5 py-0.5 text-[11px] font-medium text-danger-text dark:text-danger-text" title={act.attachment_name}>
                       <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
                       </svg>
@@ -303,7 +303,7 @@ export function ActivityManager({
                 {canViewResults && (
                   <Link
                     href={`/dashboard/lms/activities/${act.id}`}
-                    className="inline-flex items-center rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors"
+                    className="card inline-flex items-center px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-school-soft/40 transition-colors"
                   >
                     {act.kind === 'quiz' ? 'Questions & Submissions' : 'Submissions & Marking'}
                   </Link>
@@ -313,7 +313,7 @@ export function ActivityManager({
                   <button
                     type="button"
                     onClick={() => handleToggleStatus(act)}
-                    className="inline-flex items-center rounded-lg border border-border bg-surface px-2.5 py-1.5 text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-muted transition-colors"
+                    className="card inline-flex items-center px-2.5 py-1.5 text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-school-soft/40 transition-colors"
                   >
                     {act.status === 'published' ? 'Unpublish' : 'Publish'}
                   </button>
@@ -323,7 +323,7 @@ export function ActivityManager({
                   <button
                     type="button"
                     onClick={() => handleDelete(act)}
-                    className="inline-flex items-center rounded-lg border border-border bg-surface p-1.5 text-xs text-danger-text hover:bg-danger-bg/20 transition-colors"
+                    className="card inline-flex items-center p-1.5 text-xs text-danger-text hover:bg-danger-bg/20 transition-colors"
                     title="Delete activity"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -340,7 +340,7 @@ export function ActivityManager({
       {/* Modal for creating a new activity */}
       {showCreateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-lg rounded-2xl border border-border bg-surface p-6 shadow-xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
+          <div className="card w-full max-w-lg p-6 shadow-xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-border pb-3">
               <h3 className="text-base font-semibold text-text-primary">
                 New {createKind === 'quiz' ? 'Multiple Choice Quiz' : 'Assignment'}
@@ -446,12 +446,12 @@ export function ActivityManager({
                       type="file"
                       accept="application/pdf,.pdf"
                       onChange={handleBriefChange}
-                      className="w-full rounded-lg border border-border bg-surface px-3 py-1.5 text-xs text-text-primary file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-2.5 file:py-1 file:text-xs file:font-medium file:text-white hover:file:bg-primary/90"
+                      className="bg-surface border border-control rounded-xl w-full px-3 py-1.5 text-xs text-text-primary file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-2.5 file:py-1 file:text-xs file:font-medium file:text-white hover:file:bg-primary/90"
                     />
                   ) : (
                     <div className="flex items-center justify-between rounded-lg border border-border bg-surface-muted/50 px-3 py-2 text-xs">
                       <div className="flex items-center gap-2 truncate">
-                        <svg className="w-4 h-4 text-red-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-4 h-4 text-danger-text shrink-0" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
                         </svg>
                         <span className="font-medium text-text-primary truncate">{briefFile.name}</span>
@@ -474,7 +474,7 @@ export function ActivityManager({
 
               {createKind === 'quiz' && (
                 <div className="space-y-3 pt-2 border-t border-border">
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="block text-xs font-medium text-text-secondary mb-1">
                         Allowed Attempts
@@ -508,14 +508,14 @@ export function ActivityManager({
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="rounded-lg border border-border bg-surface px-4 py-2 text-xs font-medium text-text-secondary hover:bg-surface-muted transition-colors"
+                  className="card px-4 py-2 text-xs font-medium text-text-secondary hover:bg-school-soft/40 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="rounded-lg bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
+                  className="rounded-xl bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
                 >
                   {loading ? 'Creating...' : createKind === 'quiz' ? 'Create & Add Questions' : 'Create Assignment'}
                 </button>

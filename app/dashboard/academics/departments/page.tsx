@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { deleteDepartment } from '@/app/dashboard/academics/departments/actions'
 import Link from 'next/link'
-import { Pencil, Trash2 } from 'lucide-react'
+import { Pencil, Trash2 } from '@/components/icons'
 
 export default async function DepartmentsPage({
   searchParams,
@@ -17,22 +17,21 @@ export default async function DepartmentsPage({
     .order('name')
 
   return (
-    <div className="px-8 py-8">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
       <p className="text-sm text-text-secondary mb-1">
         <Link href="/dashboard/academics" className="hover:text-primary">Academics</Link> / Departments
       </p>
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold text-text-primary">Departments</h1>
-          <p className="text-sm text-text-secondary mt-1">Used to organize classes and staff.</p>
+          <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">Departments</h1>
+          <p className="mt-1 text-[15px] text-text-secondary">Used to organize classes and staff.</p>
         </div>
-        <Link href="/dashboard/academics/departments/new" className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors">
-          + Add Department
+        <Link href="/dashboard/academics/departments/new" className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60">Add Department
         </Link>
       </div>
 
       {(error || fetchError) && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">
           {error ?? fetchError?.message}
         </p>
       )}
@@ -40,23 +39,23 @@ export default async function DepartmentsPage({
       {!fetchError && departments?.length === 0 && <p className="text-sm text-text-secondary">No departments added yet.</p>}
 
       {departments && departments.length > 0 && (
-        <div className="bg-surface border border-border rounded-xl overflow-hidden">
+        <div className="card overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border">
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Department</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Classes</th>
-                <th className="text-left font-medium text-text-secondary px-4 py-3 text-xs uppercase tracking-wide">Staff</th>
+              <tr className="border-b border-rule">
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Department</th>
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Classes</th>
+                <th className="text-left font-medium text-text-secondary px-5 py-3.5 text-[13px]">Staff</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
             <tbody>
               {departments.map((d) => (
-                <tr key={d.id} className="border-b border-border last:border-0 hover:bg-surface-muted">
-                  <td className="px-4 py-3 text-text-primary font-medium">{d.name}</td>
-                  <td className="px-4 py-3 text-text-secondary">{d.classes?.length ?? 0}</td>
-                  <td className="px-4 py-3 text-text-secondary">{d.staff?.length ?? 0}</td>
-                  <td className="px-4 py-3 text-right">
+                <tr key={d.id} className="border-b border-border last:border-0 hover:bg-school-soft/40">
+                  <td className="px-5 py-3.5 text-text-primary font-medium">{d.name}</td>
+                  <td className="px-5 py-3.5 text-text-secondary">{d.classes?.length ?? 0}</td>
+                  <td className="px-5 py-3.5 text-text-secondary">{d.staff?.length ?? 0}</td>
+                  <td className="px-5 py-3.5 text-right">
                     <div className="flex items-center justify-end gap-3">
                       <Link href={`/dashboard/academics/departments/${d.id}/edit`} className="text-text-secondary hover:text-primary inline-flex">
                         <Pencil size={14} />

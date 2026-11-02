@@ -20,7 +20,7 @@ export function OfflineBanner() {
   if (!isOffline) return null
 
   return (
-    <div className="fixed top-0 inset-x-0 z-50 bg-amber-50 border-b border-amber-200 text-amber-800 text-sm text-center py-2 px-4">
+    <div className="fixed top-0 inset-x-0 z-50 bg-warning-bg border-b border-warning-bg text-warning-text text-sm text-center py-2 px-4">
       You&apos;re offline. Changes won&apos;t save until your connection comes back.
     </div>
   )

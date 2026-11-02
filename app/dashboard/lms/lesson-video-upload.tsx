@@ -374,7 +374,7 @@ export function LessonVideoUpload({
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="text-sm border border-border rounded-lg px-4 py-2 text-text-primary hover:bg-surface-muted transition-colors disabled:opacity-50"
+          className="text-sm border border-border rounded-lg px-4 py-2 text-text-primary hover:bg-school-soft/40 transition-colors disabled:opacity-50"
         >
           {file ? 'Change file' : 'Choose video'}
         </button>
@@ -406,9 +406,9 @@ export function LessonVideoUpload({
 
           {/* Blocking error banner */}
           {inspection.blockingError && (
-            <div className="bg-red-50 border border-red-200 rounded-xl p-3.5 space-y-2">
-              <div className="flex items-start gap-2 text-xs text-red-800">
-                <svg className="w-4 h-4 text-red-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-danger-bg border border-danger-bg rounded-lg p-3.5 space-y-2">
+              <div className="flex items-start gap-2 text-xs text-danger-text">
+                <svg className="w-4 h-4 text-danger-text shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
                 <div className="space-y-1">
@@ -418,13 +418,13 @@ export function LessonVideoUpload({
 
               {/* Override checkbox for hevc/prores/av1 */}
               {inspection.canOverride && (
-                <label className="flex items-center gap-2 pt-1 text-xs text-red-900 font-medium cursor-pointer">
+                <label className="flex items-center gap-2 pt-1 text-xs text-danger-text font-medium cursor-pointer">
                   <input
                     type="checkbox"
                     checked={overrideCodecWarning}
                     onChange={(e) => setOverrideCodecWarning(e.target.checked)}
                     disabled={uploading}
-                    className="rounded border-red-300 text-primary focus:ring-primary/20"
+                    className="rounded border-danger-bg text-primary focus:ring-primary/20"
                   />
                   <span>Upload anyway (I know this may not play for everyone)</span>
                 </label>
@@ -434,8 +434,8 @@ export function LessonVideoUpload({
 
           {/* Audio warning banner */}
           {inspection.warning && (
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800 flex items-start gap-2">
-              <svg className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-warning-bg border border-warning-bg rounded-lg p-3 text-xs text-warning-text flex items-start gap-2">
+              <svg className="w-4 h-4 text-warning-text shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
               <span>{inspection.warning}</span>
@@ -446,7 +446,7 @@ export function LessonVideoUpload({
 
       {/* Error banner */}
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2">
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2">
           {error}
         </p>
       )}
@@ -460,13 +460,13 @@ export function LessonVideoUpload({
 
       {/* Resumable Uploading Progress & Controls */}
       {uploading && (
-        <div className="bg-surface border border-border rounded-xl p-4 space-y-3">
+        <div className="card p-4 space-y-3">
           <div className="flex items-center justify-between text-xs text-text-secondary">
             <span>
               {isPaused ? (
-                <span className="font-semibold text-amber-600">Paused</span>
+                <span className="font-semibold text-warning-text">Paused</span>
               ) : retryMessage ? (
-                <span className="font-semibold text-amber-600">{retryMessage}</span>
+                <span className="font-semibold text-warning-text">{retryMessage}</span>
               ) : (
                 'Uploading…'
               )}
@@ -478,7 +478,7 @@ export function LessonVideoUpload({
           <div className="w-full bg-surface-muted rounded-full h-2 overflow-hidden">
             <div
               className={`h-full transition-all duration-300 rounded-full ${
-                isPaused ? 'bg-amber-500' : 'bg-primary'
+                isPaused ? 'bg-warning-text' : 'bg-primary'
               }`}
               style={{ width: `${progress}%` }}
             />
@@ -502,7 +502,7 @@ export function LessonVideoUpload({
               <button
                 type="button"
                 onClick={pauseUpload}
-                className="text-xs px-3 py-1.5 rounded-lg border border-border bg-surface hover:bg-surface-muted text-text-secondary transition-colors"
+                className="bg-surface border border-control rounded-xl text-xs px-3 py-1.5 hover:bg-school-soft/40 text-text-secondary transition-colors"
               >
                 Pause
               </button>
@@ -510,7 +510,7 @@ export function LessonVideoUpload({
               <button
                 type="button"
                 onClick={resumeUpload}
-                className="text-xs px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary-hover font-medium transition-colors"
+                className="text-xs px-3 py-1.5 rounded-xl bg-primary text-white hover:bg-primary-hover font-medium transition-colors"
               >
                 Resume
               </button>
@@ -519,7 +519,7 @@ export function LessonVideoUpload({
             <button
               type="button"
               onClick={cancelUpload}
-              className="text-xs px-3 py-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition-colors"
+              className="text-xs px-3 py-1.5 rounded-lg border border-danger-bg text-danger-text hover:bg-danger-bg transition-colors"
             >
               Cancel
             </button>
@@ -534,7 +534,7 @@ export function LessonVideoUpload({
             type="button"
             onClick={startUpload}
             disabled={isBlocked}
-            className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-5 py-2 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-5 py-2 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Upload video
           </button>

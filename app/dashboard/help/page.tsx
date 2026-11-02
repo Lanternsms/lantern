@@ -25,11 +25,11 @@ export default function HelpPage() {
   return (
     <div className="max-w-3xl mx-auto px-6 py-10 space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-text-primary">Help & Support</h1>
-        <p className="text-sm text-text-secondary mt-1">Answers to common questions, and how to reach us if you&apos;re stuck.</p>
+        <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">Help & Support</h1>
+        <p className="mt-1 text-[15px] text-text-secondary">Answers to common questions, and how to reach us if you&apos;re stuck.</p>
       </div>
 
-      <div className="border border-border rounded-xl divide-y divide-border">
+      <div className="border border-border rounded-lg divide-y divide-border">
         {FAQS.map((item) => (
           <details key={item.q} className="px-4 py-3 group">
             <summary className="cursor-pointer list-none font-medium text-sm text-text-primary flex items-center justify-between">
@@ -41,7 +41,7 @@ export default function HelpPage() {
         ))}
       </div>
 
-      <div className="border border-border rounded-xl p-5 space-y-2">
+      <div className="border border-border rounded-lg p-5 space-y-2">
         <h2 className="text-sm font-semibold text-text-primary">Still need help?</h2>
         <p className="text-sm text-text-secondary">
           Reach out to your school&apos;s admin for account-specific issues, or contact Lantern support directly for anything else.

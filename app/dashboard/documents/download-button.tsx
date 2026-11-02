@@ -34,7 +34,7 @@ export default function DownloadButton({ documentId }: { documentId: string }) {
         type="button"
         onClick={handleClick}
         disabled={isPending}
-        className="bg-primary hover:bg-primary-hover text-white rounded-lg px-3 py-1.5 text-xs font-medium disabled:opacity-50 transition-colors cursor-pointer"
+        className="bg-primary hover:bg-primary-hover text-white rounded-xl px-3 py-1.5 text-xs font-medium disabled:opacity-50 transition-colors cursor-pointer"
       >
         {isPending ? 'Preparing…' : 'Download'}
       </button>

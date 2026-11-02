@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { PlayCircle, BookOpen } from 'lucide-react'
+import { PlayCircle, BookOpen } from '@/components/icons'
 import { LessonPlayerModal } from '../lms/lesson-player-modal'
 import { NotesDownloadButton } from '../lms/notes-download-button'
 import GuardianAskButton from '../_components/guardian-ask-button'
@@ -42,7 +42,7 @@ export default async function ClassLessonsPage() {
 
   if (!studentRow) {
     return (
-      <div className="px-8 py-8 max-w-4xl">
+      <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-4xl">
         <p className="text-sm text-text-secondary">
           No student profile is linked to your account. If you believe this is an error, please contact your school administrator.
         </p>
@@ -133,8 +133,8 @@ export default async function ClassLessonsPage() {
 
       {/* Content */}
       {lessonsBySubject.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border bg-surface p-12 text-center space-y-3">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-surface-muted text-text-secondary">
+        <div className="card border-dashed p-12 text-center space-y-3">
+          <div className="mx-auto flex items-center justify-center shrink-0 text-text-secondary">
             <BookOpen className="w-6 h-6" />
           </div>
           <h2 className="text-base font-semibold text-text-primary">No lessons published yet</h2>
@@ -145,9 +145,9 @@ export default async function ClassLessonsPage() {
       ) : (
         <div className="space-y-6">
           {lessonsBySubject.map((group) => (
-            <div key={group.subjectName} className="rounded-2xl border border-border bg-surface overflow-hidden shadow-sm">
+            <div key={group.subjectName} className="card overflow-hidden">
               <div className="px-5 py-3.5 border-b border-border bg-surface-muted flex items-center justify-between">
-                <h2 className="text-xs font-bold text-text-secondary uppercase tracking-wider">
+                <h2 className="text-xs font-bold text-text-secondary ">
                   {group.subjectName}
                 </h2>
                 <span className="text-xs text-text-secondary font-medium">
@@ -162,7 +162,7 @@ export default async function ClassLessonsPage() {
                   return (
                     <div
                       key={lesson.id}
-                      className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-5 py-4 hover:bg-surface-muted/40 transition-colors"
+                      className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-5 py-4 hover:bg-school-soft/40 transition-colors"
                     >
                       <div className="min-w-0 space-y-1">
                         <div className="flex items-center gap-2 flex-wrap">
@@ -183,7 +183,7 @@ export default async function ClassLessonsPage() {
                       <div className="shrink-0 flex items-center gap-2 self-end sm:self-auto flex-wrap justify-end">
                         <Link
                           href={`/dashboard/lms/learn/${lesson.id}?student=${studentRow.id}`}
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-muted transition-colors min-h-[44px]"
+                          className="card inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-school-soft/40 transition-colors min-h-[44px]"
                         >
                           Activities
                           {actCount > 0 && (

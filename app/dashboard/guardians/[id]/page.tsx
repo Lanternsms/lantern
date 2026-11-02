@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { User, Users, FileText, Pencil } from 'lucide-react'
+import { User, Users, FileText, Pencil } from '@/components/icons'
 import {
   inviteGuardianPortalAccess,
   linkGuardianProfile,
@@ -68,7 +68,7 @@ export default async function GuardianDetailPage({
         .order('name')
 
   const portalAccessContent = (
-    <div className="bg-surface border border-border rounded-xl p-5">
+    <div className="card p-5">
       <h3 className="text-sm font-medium text-text-primary mb-3">Portal Access</h3>
 
       {linkedProfile ? (
@@ -81,7 +81,7 @@ export default async function GuardianDetailPage({
             's login.
           </p>
           <form action={revokeGuardianPortalAccess.bind(null, guardian.id)}>
-            <button type="submit" className="text-xs text-red-600 hover:text-red-700">
+            <button type="submit" className="text-xs text-danger-text hover:text-danger-text">
               Revoke
             </button>
           </form>
@@ -108,7 +108,7 @@ export default async function GuardianDetailPage({
               </select>
               <button
                 type="submit"
-                className="px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-primary-hover"
+                className="px-4 py-2 bg-primary text-white rounded-xl text-sm hover:bg-primary-hover"
               >
                 Invite
               </button>
@@ -131,7 +131,7 @@ export default async function GuardianDetailPage({
               </select>
               <button
                 type="submit"
-                className="px-4 py-2 border border-border rounded-lg text-sm hover:bg-background"
+                className="px-4 py-2 border border-border rounded-lg text-sm hover:bg-surface"
               >
                 Link
               </button>
@@ -143,36 +143,35 @@ export default async function GuardianDetailPage({
   )
 
   return (
-    <div className="px-8 py-8 max-w-2xl">
-      <Link href="/dashboard/guardians" className="text-sm text-primary hover:text-primary-hover">
-        ← Back to guardians
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-2xl">
+      <Link href="/dashboard/guardians" className="inline-flex w-fit items-center gap-1 text-sm text-text-secondary hover:text-text-primary">← Back to guardians
       </Link>
 
       <div className="flex items-center justify-between mt-4 mb-6">
         <div className="flex items-center gap-3">
-          <span className="w-11 h-11 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm font-medium">
+          <span className="w-11 h-11 rounded-full bg-school-soft text-school-ink flex items-center justify-center text-sm font-medium">
             {initials}
           </span>
           <div>
-            <h1 className="text-lg font-semibold text-text-primary">{guardian.first_name} {guardian.last_name}</h1>
+            <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">{guardian.first_name} {guardian.last_name}</h1>
             <p className="text-xs text-text-secondary mt-0.5 capitalize">{guardian.relationship ?? 'Guardian'}</p>
           </div>
         </div>
         <Link
           href={`/dashboard/guardians/${id}/edit`}
-          className="flex items-center gap-1.5 text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors"
+          className="flex items-center gap-1.5 text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors"
         >
           <Pencil size={14} /> Edit Guardian
         </Link>
       </div>
 
       <div className="space-y-4">
-        <section className="bg-surface border border-border rounded-xl p-5">
+        <section className="card p-5">
           <div className="flex items-center gap-2 mb-4">
             <User size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Contact Information</h3>
           </div>
-          <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 text-sm">
             <div>
               <p className="text-text-secondary text-xs mb-0.5">Phone Number</p>
               <p className={guardian.phone ? 'text-text-primary' : 'text-text-muted'}>{guardian.phone ?? 'Not provided'}</p>
@@ -189,12 +188,12 @@ export default async function GuardianDetailPage({
         </section>
 
         {fieldDefs && fieldDefs.length > 0 && (
-          <section className="bg-surface border border-border rounded-xl p-5">
+          <section className="card p-5">
             <div className="flex items-center gap-2 mb-4">
               <FileText size={16} className="text-text-secondary" />
               <h3 className="text-sm font-medium text-text-primary">Custom Fields</h3>
             </div>
-            <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 text-sm">
               {fieldDefs.map((def) => {
                 const value = valueByDefId.get(def.id) as string | boolean | undefined
                 const displayValue =
@@ -212,7 +211,7 @@ export default async function GuardianDetailPage({
           </section>
         )}
 
-        <section className="bg-surface border border-border rounded-xl p-5">
+        <section className="card p-5">
           <div className="flex items-center gap-2 mb-4">
             <Users size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Linked Students</h3>
@@ -223,7 +222,7 @@ export default async function GuardianDetailPage({
                 <Link
                   key={i}
                   href={`/dashboard/students/${link.students?.id}?from=guardian&guardianId=${id}`}
-                  className="flex items-center justify-between py-2 px-2 -mx-2 rounded-lg hover:bg-surface-muted transition-colors"
+                  className="flex items-center justify-between py-2 px-2 -mx-2 rounded-lg hover:bg-school-soft/40 transition-colors"
                 >
                   <div>
                     <p className="text-sm text-text-primary">{link.students?.first_name} {link.students?.last_name}</p>

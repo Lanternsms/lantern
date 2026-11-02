@@ -3,7 +3,7 @@
 
 import { useState, useTransition } from 'react'
 import { assignRole, removeRole } from './actions'
-import { Lock, Shield, X, Loader2, Plus } from 'lucide-react'
+import { Lock, Shield, X, Loader2, Plus } from '@/components/icons'
 
 export type RoleItem = {
   id: string
@@ -87,7 +87,7 @@ export default function StaffRolesManager({
   }
 
   return (
-    <section className="bg-surface border border-border rounded-xl p-5 space-y-4">
+    <section className="card p-5 space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Shield size={16} className="text-text-secondary" />
@@ -99,12 +99,12 @@ export default function StaffRolesManager({
       </div>
 
       {error && (
-        <div className="flex items-start justify-between bg-danger-bg border border-red-200 rounded-lg p-3 text-xs text-danger-text">
+        <div className="flex items-start justify-between bg-danger-bg border border-danger-bg rounded-lg p-3 text-xs text-danger-text">
           <span>{error}</span>
           <button
             type="button"
             onClick={() => setError(null)}
-            className="text-danger-text hover:text-red-800 ml-2 font-medium"
+            className="text-danger-text hover:text-danger-text ml-2 font-medium"
             aria-label="Dismiss error"
           >
             ×
@@ -126,13 +126,13 @@ export default function StaffRolesManager({
                   key={role.id}
                   className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border transition-colors ${
                     role.is_system
-                      ? 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-800'
+                      ? 'bg-school-soft text-school-ink border-school-track dark:bg-school-ink dark:text-school dark:border-primary'
                       : 'bg-surface-muted text-text-primary border-border'
                   }`}
                 >
                   {role.is_system && (
                     <span title="System Role">
-                      <Lock size={11} className="text-purple-600 dark:text-purple-400 shrink-0" />
+                      <Lock size={11} className="text-school-ink dark:text-school shrink-0" />
                     </span>
                   )}
                   <span className="capitalize">{role.name.replace('_', ' ')}</span>
@@ -141,7 +141,7 @@ export default function StaffRolesManager({
                     onClick={() => handleRemove(role.id, role.name)}
                     disabled={isPending}
                     title={`Remove ${role.name.replace('_', ' ')}`}
-                    className="ml-0.5 rounded-full p-0.5 text-text-muted hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950 transition-colors disabled:opacity-50"
+                    className="ml-0.5 rounded-full p-0.5 text-text-muted hover:text-danger-text hover:bg-danger-bg dark:hover:bg-danger-text transition-colors disabled:opacity-50"
                   >
                     {isRolePending ? (
                       <Loader2 size={12} className="animate-spin text-text-secondary" />
@@ -164,7 +164,7 @@ export default function StaffRolesManager({
               value={selectedRoleId}
               onChange={(e) => setSelectedRoleId(e.target.value)}
               disabled={isPending}
-              className="w-full rounded-lg border border-border px-3 py-2 text-xs bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
+              className="card w-full px-3 py-2 text-xs text-text-primary focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-60"
             >
               <option value="">Select a role to assign…</option>
               {unassignedRoles.map((r) => (
@@ -178,7 +178,7 @@ export default function StaffRolesManager({
           <button
             type="submit"
             disabled={!selectedRoleId || isPending}
-            className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-primary text-white rounded-lg text-xs font-medium hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+            className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-primary text-white rounded-xl text-xs font-medium hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
           >
             {isPending && activeActionRoleId === selectedRoleId ? (
               <Loader2 size={13} className="animate-spin" />

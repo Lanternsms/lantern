@@ -40,18 +40,17 @@ export default async function EditStaffPage({
   const updateStaffWithId = updateStaff.bind(null, id)
 
   return (
-    <div className="px-8 py-8 max-w-2xl">
-      <Link href={`/dashboard/staff/${id}`} className="text-sm text-primary hover:text-primary-hover">
-        ← Back to staff member
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-2xl">
+      <Link href={`/dashboard/staff/${id}`} className="inline-flex w-fit items-center gap-1 text-sm text-text-secondary hover:text-text-primary">← Back to staff member
       </Link>
-      <h1 className="text-xl font-semibold text-text-primary mt-4 mb-6">Edit Staff</h1>
+      <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px] mt-4 mb-6">Edit Staff</h1>
 
       {error && (
-        <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2 mb-4">{error}</p>
+        <p className="text-sm text-danger-text bg-danger-bg border border-danger-bg rounded-lg px-3 py-2 mb-4">{error}</p>
       )}
 
-      <form action={updateStaffWithId} className="bg-surface border border-border rounded-xl p-6 space-y-5">
-        <div className="grid grid-cols-2 gap-4">
+      <form action={updateStaffWithId} className="card p-6 space-y-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm text-text-secondary mb-1.5">First Name *</label>
             <input name="first_name" defaultValue={staff.first_name ?? ''} required className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
@@ -72,7 +71,7 @@ export default async function EditStaffPage({
           <p className="text-xs text-text-muted mt-1">Staff number cannot be changed after creation.</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm text-text-secondary mb-1.5">Phone Number</label>
             <input name="phone" type="tel" defaultValue={staff.phone ?? ''} className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
@@ -83,7 +82,7 @@ export default async function EditStaffPage({
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm text-text-secondary mb-1.5">Department</label>
             <select name="department_id" defaultValue={staff.department_id ?? ''} className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
@@ -116,7 +115,7 @@ export default async function EditStaffPage({
           <CustomFieldInputs definitions={customFields} initialValues={valuesByKey} />
         )}
 
-        <button type="submit" className="w-full bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-lg py-2.5 transition-colors">
+        <button type="submit" className="w-full bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-xl py-2.5 transition-colors">
           Save Changes
         </button>
       </form>

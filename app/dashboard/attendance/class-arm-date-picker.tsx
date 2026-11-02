@@ -38,7 +38,7 @@ export default function ClassArmDatePicker({
     <div className="flex flex-wrap gap-3">
       <div>
         <label className="block text-xs text-text-secondary mb-1">Class</label>
-        <select value={selectedClassId} onChange={(e) => navigate({ classId: e.target.value, armId: '' })} className="border border-border rounded-lg px-3 py-2 text-sm bg-surface">
+        <select value={selectedClassId} onChange={(e) => navigate({ classId: e.target.value, armId: '' })} className="card px-3 py-2 text-sm">
           <option value="">Select a class…</option>
           {classes.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
@@ -46,7 +46,7 @@ export default function ClassArmDatePicker({
       {selectedClassId && arms.length > 0 && (
         <div>
           <label className="block text-xs text-text-secondary mb-1">Arm</label>
-          <select value={selectedArmId} onChange={(e) => navigate({ armId: e.target.value })} className="border border-border rounded-lg px-3 py-2 text-sm bg-surface">
+          <select value={selectedArmId} onChange={(e) => navigate({ armId: e.target.value })} className="card px-3 py-2 text-sm">
             <option value="">All arms</option>
             {arms.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
           </select>
@@ -55,7 +55,7 @@ export default function ClassArmDatePicker({
       {showDate && (
         <div>
           <label className="block text-xs text-text-secondary mb-1">Date</label>
-          <input type="date" value={selectedDate} onChange={(e) => navigate({ date: e.target.value })} className="border border-border rounded-lg px-3 py-2 text-sm bg-surface" />
+          <input type="date" value={selectedDate} onChange={(e) => navigate({ date: e.target.value })} className="card px-3 py-2 text-sm" />
         </div>
       )}
     </div>

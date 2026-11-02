@@ -62,14 +62,14 @@ export default async function PeriodAttendancePage({
             <h1 className="text-xl font-bold text-text-primary">
               {subjectName} — Period Attendance
             </h1>
-            <p className="text-sm text-text-secondary mt-1">
+            <p className="mt-1 text-[15px] text-text-secondary">
               {className}
               {armName ? ` · ${armName}` : ''} &bull;{' '}
               <span className="font-medium">{formattedDate}</span>
             </p>
           </div>
           {access.isManager && (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-school-soft text-school-ink border border-school-track">
               Admin view
             </span>
           )}
@@ -77,7 +77,7 @@ export default async function PeriodAttendancePage({
       </div>
 
       {statuses.length === 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
+        <div className="bg-warning-bg border border-warning-bg rounded-lg p-4 text-sm text-warning-text">
           No attendance statuses have been configured for this school. Please ask an administrator to set them up under{' '}
           <Link href="/dashboard/attendance/settings" className="underline font-medium">
             Attendance Settings

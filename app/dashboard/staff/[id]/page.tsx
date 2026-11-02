@@ -2,7 +2,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { User, Briefcase, BookOpen, Pencil } from 'lucide-react'
+import { User, Briefcase, BookOpen, Pencil } from '@/components/icons'
 import { linkStaffProfile, unlinkStaffProfile } from './actions'
 import { getLinkableProfiles } from '@/lib/staff'
 import StaffRolesManager, { RoleItem } from './staff-roles-manager'
@@ -80,7 +80,7 @@ export default async function StaffDetailPage({
   const isActive = staff.status === 'active'
 
   const portalAccessContent = (
-    <div className="bg-surface border border-border rounded-xl p-5">
+    <div className="card p-5">
       <h3 className="text-sm font-medium text-text-primary mb-3">Portal Access</h3>
 
       {linkedProfile ? (
@@ -95,7 +95,7 @@ export default async function StaffDetailPage({
           <form action={unlinkStaffProfile.bind(null, staff.id)}>
             <button
               type="submit"
-              className="text-xs text-red-600 hover:text-red-700 font-medium"
+              className="text-xs text-danger-text hover:text-danger-text font-medium"
             >
               Unlink
             </button>
@@ -117,7 +117,7 @@ export default async function StaffDetailPage({
               <select
                 name="profileId"
                 required
-                className="flex-1 rounded-lg border border-border px-3 py-2 text-sm bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                className="bg-surface border border-control rounded-xl flex-1 px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="">Select a login to link…</option>
                 {linkableProfiles.map((p) => (
@@ -128,7 +128,7 @@ export default async function StaffDetailPage({
               </select>
               <button
                 type="submit"
-                className="px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-primary-hover font-medium transition-colors"
+                className="px-4 py-2 bg-primary text-white rounded-xl text-sm hover:bg-primary-hover font-medium transition-colors"
               >
                 Link
               </button>
@@ -140,20 +140,19 @@ export default async function StaffDetailPage({
   )
 
   return (
-    <div className="px-8 py-8 max-w-2xl">
-      <Link href="/dashboard/staff" className="text-sm text-primary hover:text-primary-hover">
-        ← Back to staff
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8 max-w-2xl">
+      <Link href="/dashboard/staff" className="inline-flex w-fit items-center gap-1 text-sm text-text-secondary hover:text-text-primary">← Back to staff
       </Link>
 
       <div className="flex items-center justify-between mt-4 mb-6">
         <div className="flex items-center gap-3">
-          <span className="w-11 h-11 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-sm font-medium">
+          <span className="w-11 h-11 rounded-full bg-school-soft text-school-ink flex items-center justify-center text-sm font-medium">
             {initials}
           </span>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-lg font-semibold text-text-primary">{staff.first_name} {staff.last_name}</h1>
-              <span className={`text-xs font-medium rounded-full px-2.5 py-0.5 ${isActive ? 'bg-success-bg text-success-text' : 'bg-secondary/10 text-secondary'}`}>
+              <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">{staff.first_name} {staff.last_name}</h1>
+              <span className={`text-xs font-medium rounded-full px-2.5 py-0.5 ${isActive ? 'bg-success-bg text-success-text' : 'bg-raised text-[#374151]'}`}>
                 {isActive ? 'Active' : staff.status}
               </span>
             </div>
@@ -164,19 +163,19 @@ export default async function StaffDetailPage({
         </div>
         <Link
           href={`/dashboard/staff/${id}/edit`}
-          className="flex items-center gap-1.5 text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors"
+          className="flex items-center gap-1.5 text-sm text-white bg-primary hover:bg-primary-hover rounded-xl px-4 py-2 transition-colors"
         >
           <Pencil size={14} /> Edit Staff
         </Link>
       </div>
 
       <div className="space-y-4">
-        <section className="bg-surface border border-border rounded-xl p-5">
+        <section className="card p-5">
           <div className="flex items-center gap-2 mb-4">
             <User size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Contact Information</h3>
           </div>
-          <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 text-sm">
             <div>
               <p className="text-text-secondary text-xs mb-0.5">Phone Number</p>
               <p className={staff.phone ? 'text-text-primary' : 'text-text-muted'}>{staff.phone ?? 'Not provided'}</p>
@@ -188,12 +187,12 @@ export default async function StaffDetailPage({
           </div>
         </section>
 
-        <section className="bg-surface border border-border rounded-xl p-5">
+        <section className="card p-5">
           <div className="flex items-center gap-2 mb-4">
             <Briefcase size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Employment Information</h3>
           </div>
-          <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 text-sm">
             <div>
               <p className="text-text-secondary text-xs mb-0.5">Department</p>
               <p className={staff.departments?.name ? 'text-text-primary' : 'text-text-muted'}>{staff.departments?.name ?? 'Not assigned'}</p>
@@ -221,7 +220,7 @@ export default async function StaffDetailPage({
           />
         )}
 
-        <section className="bg-surface border border-border rounded-xl p-5">
+        <section className="card p-5">
           <div className="flex items-center gap-2 mb-4">
             <BookOpen size={16} className="text-text-secondary" />
             <h3 className="text-sm font-medium text-text-primary">Classes &amp; Subjects Taught</h3>

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { signIn } from '@/app/auth/actions'
 import { PasswordInput } from '@/components/password-input'
 import { LoadingOverlay } from '@/components/loading-overlay'
+import { AuthLayout, authButton, authError, authInput, authLabel } from '@/components/auth/auth-layout'
 
 export default function LoginPage({
   searchParams,
@@ -27,53 +28,34 @@ export default function LoginPage({
     <>
       {isPending && <LoadingOverlay message="Signing you in…" />}
 
-      <div className="min-h-screen bg-white flex items-center justify-center px-4 relative">
-        <div className="w-full max-w-sm">
-          <h1 className="text-2xl font-questrial text-primary mb-8">Log in to your account</h1>
+      <AuthLayout title="Sign in" subtitle="Staff, students and guardians all sign in here.">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4.5">
+          <label htmlFor="email" className={authLabel}>
+            Email
+            <input id="email" name="email" type="email" autoComplete="username" required className={authInput} />
+          </label>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm text-text-secondary mb-1.5">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="Your email address"
-                required
-                className="w-full rounded-lg border border-border px-3 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-              />
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center justify-between">
+              <label htmlFor="password" className="text-sm font-medium">Password</label>
+              <Link href="/forgot-password" className="text-sm text-text-secondary hover:text-text-primary">
+                Forgot it?
+              </Link>
             </div>
+            <PasswordInput autoComplete="current-password" placeholder="" required />
+          </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label htmlFor="password" className="block text-sm text-text-secondary">
-                  Password
-                </label>
-                <Link href="/forgot-password" className="text-xs text-text-secondary hover:text-primary">
-                  Forgot Password?
-                </Link>
-              </div>
-              <PasswordInput />
-            </div>
+          {error && <p role="alert" className={authError}>{error}</p>}
 
-            {error && (
-              <p className="text-sm text-danger-text bg-danger-bg border border-red-200 rounded-lg px-3 py-2">
-                {error}
-              </p>
-            )}
+          <button type="submit" disabled={isPending} className={authButton}>
+            {isPending ? 'Signing in…' : 'Sign in'}
+          </button>
+        </form>
 
-            <button
-              type="submit"
-              disabled={isPending}
-              className="w-full bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-lg py-2.5 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
-            >
-              {isPending ? 'Signing in…' : 'Log in'}
-            </button>
-          </form>
-        </div>
-      </div>
+        <p className="text-sm text-text-secondary">
+          First time here? Open the invite your school sent to your email.
+        </p>
+      </AuthLayout>
     </>
   )
 }

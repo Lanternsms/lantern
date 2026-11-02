@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { PasswordInput } from '@/components/password-input'
+import { AuthLayout, authButton, authError, authLabel } from '@/components/auth/auth-layout'
 
 export default function AcceptInvitePage() {
   const [password, setPassword] = useState('')
@@ -75,33 +76,18 @@ export default function AcceptInvitePage() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-questrial text-primary mb-2">Set your password</h1>
-        <p className="text-sm text-text-secondary mb-8">Welcome to Lantern. Choose a password to finish setting up your account.</p>
-
-        {!ready && !error && (
-          <p className="text-sm text-text-secondary mb-4">Verifying your invite link…</p>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <PasswordInput
-            required
-            minLength={8}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="New password"
-          />
-          {error && <p className="text-sm text-danger-text bg-danger-bg rounded-lg px-3 py-2">{error}</p>}
-          <button
-            type="submit"
-            disabled={!ready || submitting}
-            className="w-full bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-lg py-2.5 transition-colors disabled:opacity-50"
-          >
-            {submitting ? 'Setting password…' : 'Set Password & Continue'}
-          </button>
-        </form>
-      </div>
-    </div>
+    <AuthLayout title="Set your password" subtitle="Welcome to Lantern. Choose a password to finish setting up your account.">
+      {!ready && !error && <p className="text-sm text-text-secondary">Checking your invite link…</p>}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4.5">
+        <label htmlFor="password" className={authLabel}>
+          Password
+          <PasswordInput required minLength={8} autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 8 characters" />
+        </label>
+        {error && <p role="alert" className={authError}>{error}</p>}
+        <button type="submit" disabled={!ready || submitting} className={authButton}>
+          {submitting ? 'Setting your password…' : 'Set password and continue'}
+        </button>
+      </form>
+    </AuthLayout>
   )
 }

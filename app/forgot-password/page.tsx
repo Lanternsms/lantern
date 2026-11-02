@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { createPasswordResetClient } from '@/lib/supabase/password-reset-client'
 import { LoadingOverlay } from '@/components/loading-overlay'
+import { AuthLayout, authButton, authError, authInput, authLabel, authLink } from '@/components/auth/auth-layout'
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
@@ -37,64 +38,31 @@ export default function ForgotPasswordPage() {
 
   if (sent) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background px-4">
-        <div className="max-w-md w-full bg-surface border border-border rounded-xl p-6 text-center">
-          <h1 className="text-lg font-semibold text-text-primary mb-2">Check your email</h1>
-          <p className="text-sm text-text-secondary">
-            If an account exists for <span className="font-medium">{email}</span>, we&apos;ve sent a
-            link to reset your password. The link expires after a short while, so use it soon.
-          </p>
-          <Link
-            href="/login"
-            className="inline-block mt-4 text-sm text-primary hover:underline"
-          >
-            Back to login
-          </Link>
-        </div>
-      </div>
+      <AuthLayout
+        title="Check your email"
+        subtitle={<>If an account exists for <strong className="font-medium text-text-primary">{email}</strong>, we’ve sent a link to set a new password. It expires soon, so use it today.</>}
+      >
+        <Link href="/login" className={authLink}>Back to sign in</Link>
+      </AuthLayout>
     )
   }
 
   return (
     <>
       {submitting && <LoadingOverlay message="Sending reset link…" />}
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="max-w-md w-full bg-surface border border-border rounded-xl p-6">
-        <h1 className="text-lg font-semibold text-text-primary mb-1">Reset your password</h1>
-        <p className="text-sm text-text-secondary mb-5">
-          Enter the email address linked to your account and we&apos;ll send you a link to set a new
-          password.
-        </p>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs text-text-secondary mb-1">Email</label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background text-text-primary"
-              placeholder="you@example.com"
-            />
-          </div>
-
-          {error && <p className="text-sm text-danger-text bg-danger-bg rounded-lg px-3 py-2">{error}</p>}
-
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full bg-primary text-white rounded-lg py-2 text-sm font-medium disabled:opacity-50 hover:bg-primary-hover transition-colors"
-          >
+      <AuthLayout title="Reset your password" subtitle="Enter the email on your account and we’ll send you a link to set a new password.">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4.5">
+          <label className={authLabel}>
+            Email
+            <input type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className={authInput} />
+          </label>
+          {error && <p role="alert" className={authError}>{error}</p>}
+          <button type="submit" disabled={submitting} className={authButton}>
             {submitting ? 'Sending…' : 'Send reset link'}
           </button>
         </form>
-
-        <Link href="/login" className="block mt-4 text-sm text-primary hover:underline text-center">
-          Back to login
-        </Link>
-      </div>
-    </div>
+        <Link href="/login" className={`${authLink} self-start text-sm`}>Back to sign in</Link>
+      </AuthLayout>
     </>
   )
 }

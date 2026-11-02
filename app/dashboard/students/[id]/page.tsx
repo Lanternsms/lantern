@@ -88,7 +88,7 @@ export default async function StudentDetailPage({
       .order('name')
 
   const portalAccessContent = (
-    <div className="bg-surface border border-border rounded-xl p-5">
+    <div className="card p-5">
       <h3 className="text-sm font-medium text-text-primary mb-3">Portal Access</h3>
 
       {linkedProfile ? (
@@ -101,7 +101,7 @@ export default async function StudentDetailPage({
             &apos;s login.
           </p>
           <form action={revokeStudentPortalAccess.bind(null, student.id)}>
-            <button type="submit" className="text-xs text-red-600 hover:text-red-700">
+            <button type="submit" className="text-xs text-danger-text hover:text-danger-text">
               Revoke
             </button>
           </form>
@@ -127,7 +127,7 @@ export default async function StudentDetailPage({
               </select>
               <button
                 type="submit"
-                className="px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-primary-hover"
+                className="px-4 py-2 bg-primary text-white rounded-xl text-sm hover:bg-primary-hover"
               >
                 Invite
               </button>
@@ -150,7 +150,7 @@ export default async function StudentDetailPage({
               </select>
               <button
                 type="submit"
-                className="px-4 py-2 border border-border rounded-lg text-sm hover:bg-background"
+                className="px-4 py-2 border border-border rounded-lg text-sm hover:bg-surface"
               >
                 Link
               </button>
@@ -163,9 +163,9 @@ export default async function StudentDetailPage({
 
   const overviewContent = (
     <div className="space-y-6">
-      <section className="bg-surface border border-border rounded-xl p-5">
+      <section className="card p-5">
         <h3 className="text-sm font-medium text-text-primary mb-4">Personal Information</h3>
-        <div className="grid grid-cols-2 gap-y-3 gap-x-6 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm">
           <div>
             <p className="text-text-secondary text-xs mb-0.5">Full Name</p>
             <p className="text-text-primary">{student.first_name} {student.last_name}</p>
@@ -181,11 +181,10 @@ export default async function StudentDetailPage({
         </div>
       </section>
 
-      <section className="bg-surface border border-border rounded-xl p-5">
+      <section className="card p-5">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-medium text-text-primary">Guardian Information</h3>
-          <Link href={`/dashboard/guardians/new?student_id=${id}`} className="text-xs text-primary hover:text-primary-hover">
-            + Add guardian
+          <Link href={`/dashboard/guardians/new?student_id=${id}`} className="text-xs text-primary hover:text-primary-hover">Add guardian
           </Link>
         </div>
         {guardianLinks && guardianLinks.length > 0 ? (
@@ -220,12 +219,12 @@ export default async function StudentDetailPage({
         )}
       </section>
 
-      <section className="bg-surface border border-border rounded-xl p-5">
+      <section className="card p-5">
         <h3 className="text-sm font-medium text-text-primary mb-4">Enrolment History</h3>
         {sortedEnrolments.length > 0 ? (
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-text-secondary text-xs uppercase tracking-wide">
+              <tr className="text-left text-text-secondary text-xs ">
                 <th className="pb-2 font-medium">Academic Session</th>
                 <th className="pb-2 font-medium">Class</th>
                 <th className="pb-2 font-medium">Arm</th>
@@ -247,9 +246,9 @@ export default async function StudentDetailPage({
       </section>
 
       {fieldDefs && fieldDefs.length > 0 && (
-        <section className="bg-surface border border-border rounded-xl p-5">
+        <section className="card p-5">
           <h3 className="text-sm font-medium text-text-primary mb-4">Custom Fields</h3>
-          <div className="grid grid-cols-2 gap-y-3 gap-x-6 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm">
             {fieldDefs.map((def) => (
               <div key={def.id}>
                 <p className="text-text-secondary text-xs mb-0.5">{def.label}</p>
@@ -289,14 +288,14 @@ export default async function StudentDetailPage({
       resultsContent = !card || card.subjects.length === 0 ? (
         <p className="text-sm text-text-secondary">No published results for the current term yet.</p>
       ) : (
-        <div className="bg-surface border border-border rounded-xl p-5">
+        <div className="card p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-medium text-text-primary">{card.term.name} Summary</h3>
             <Link href={`/dashboard/students/${id}/report-card`} className="text-xs text-primary hover:text-primary-hover">
               View full report card →
             </Link>
           </div>
-          <div className="grid grid-cols-3 gap-y-3 text-sm">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-y-3 text-sm">
             <div>
               <p className="text-text-secondary text-xs mb-0.5">Overall Average</p>
               <p className="text-text-primary font-medium">{card.overallAverage}</p>
@@ -343,16 +342,16 @@ export default async function StudentDetailPage({
 
   function getAttendanceStatusBadge(label: string) {
     const l = (label || '').toLowerCase()
-    if (l.includes('present')) return 'bg-emerald-50 text-emerald-700 border-emerald-200'
-    if (l.includes('absent')) return 'bg-red-50 text-red-700 border-red-200'
-    if (l.includes('late')) return 'bg-amber-50 text-amber-700 border-amber-200'
-    return 'bg-blue-50 text-blue-700 border-blue-200'
+    if (l.includes('present')) return 'bg-success-bg text-success-text border-success-bg'
+    if (l.includes('absent')) return 'bg-danger-bg text-danger-text border-danger-bg'
+    if (l.includes('late')) return 'bg-warning-bg text-warning-text border-warning-bg'
+    return 'bg-school-soft text-school-ink border-school-track'
   }
 
   // Attendance Tab
   const attendanceContent = (
     <div className="space-y-6">
-      <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
+      <div className="card p-5 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h3 className="text-sm font-medium text-text-primary flex items-center gap-2">
@@ -368,7 +367,7 @@ export default async function StudentDetailPage({
           {currentEnrolment?.class_id && (
             <Link
               href={`/dashboard/attendance?classId=${currentEnrolment.class_id}${currentEnrolment.arm_id ? `&armId=${currentEnrolment.arm_id}` : ''}`}
-              className="text-xs bg-primary text-white hover:bg-primary-hover px-3 py-1.5 rounded-lg transition-colors font-medium shadow-xs"
+              className="text-xs bg-primary text-white hover:bg-primary-hover px-3 py-1.5 rounded-xl transition-colors font-medium shadow-xs"
             >
               Mark Class Attendance →
             </Link>
@@ -376,14 +375,14 @@ export default async function StudentDetailPage({
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="border border-border rounded-xl p-3.5 bg-surface-muted/30">
+          <div className="border border-border rounded-lg p-3.5 bg-surface-muted/30">
             <div className="text-xs text-text-secondary font-medium">Attendance Rate</div>
             <div className="text-xl font-bold text-text-primary mt-1 flex items-baseline gap-2">
               {attendanceRate !== null ? `${attendanceRate}%` : '—'}
               {attendanceRate !== null && (
-                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${attendanceRate >= 90 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                    attendanceRate >= 75 ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                      'bg-red-50 text-red-700 border-red-200'
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${attendanceRate >= 90 ? 'bg-success-bg text-success-text border-success-bg' :
+                    attendanceRate >= 75 ? 'bg-warning-bg text-warning-text border-warning-bg' :
+                      'bg-danger-bg text-danger-text border-danger-bg'
                   }`}>
                   {attendanceRate >= 90 ? 'Excellent' : attendanceRate >= 75 ? 'Good' : 'Low'}
                 </span>
@@ -394,31 +393,31 @@ export default async function StudentDetailPage({
             </div>
           </div>
 
-          <div className="border border-border rounded-xl p-3.5 bg-surface-muted/30">
+          <div className="border border-border rounded-lg p-3.5 bg-surface-muted/30">
             <div className="text-xs text-text-secondary font-medium">Present</div>
-            <div className="text-xl font-bold text-emerald-600 mt-1">{presentCount}</div>
+            <div className="text-xl font-bold text-success-text mt-1">{presentCount}</div>
             <div className="text-[11px] text-text-secondary mt-1">Sessions attended</div>
           </div>
 
-          <div className="border border-border rounded-xl p-3.5 bg-surface-muted/30">
+          <div className="border border-border rounded-lg p-3.5 bg-surface-muted/30">
             <div className="text-xs text-text-secondary font-medium">Late</div>
-            <div className="text-xl font-bold text-amber-600 mt-1">{lateCount}</div>
+            <div className="text-xl font-bold text-warning-text mt-1">{lateCount}</div>
             <div className="text-[11px] text-text-secondary mt-1">Late arrivals</div>
           </div>
 
-          <div className="border border-border rounded-xl p-3.5 bg-surface-muted/30">
+          <div className="border border-border rounded-lg p-3.5 bg-surface-muted/30">
             <div className="text-xs text-text-secondary font-medium">Absent</div>
-            <div className="text-xl font-bold text-red-600 mt-1">{absentCount}</div>
+            <div className="text-xl font-bold text-danger-text mt-1">{absentCount}</div>
             <div className="text-[11px] text-text-secondary mt-1">Sessions missed</div>
           </div>
         </div>
 
         {attRecords.length === 0 ? (
-          <div className="text-center py-8 text-sm text-text-secondary border border-dashed border-border rounded-xl">
+          <div className="text-center py-8 text-sm text-text-secondary border border-dashed border-border rounded-lg">
             No attendance records recorded for this student yet.
           </div>
         ) : (
-          <div className="border border-border rounded-xl overflow-x-auto">
+          <div className="border border-border rounded-lg overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-surface-muted/40 text-text-secondary text-xs">
                 <tr>
@@ -439,8 +438,8 @@ export default async function StudentDetailPage({
                   const statusLabel = row.attendance_statuses?.label ?? 'Marked'
 
                   return (
-                    <tr key={row.id} className="border-t border-border hover:bg-surface-muted/20 transition-colors">
-                      <td className="px-4 py-3 font-medium text-text-primary whitespace-nowrap">
+                    <tr key={row.id} className="border-t border-border hover:bg-school-soft/40 transition-colors">
+                      <td className="px-5 py-3.5 font-medium text-text-primary whitespace-nowrap">
                         {new Date(row.date + 'T00:00:00').toLocaleDateString(undefined, {
                           weekday: 'short',
                           year: 'numeric',
@@ -448,21 +447,21 @@ export default async function StudentDetailPage({
                           day: 'numeric',
                         })}
                       </td>
-                      <td className="px-4 py-3 text-text-secondary font-mono text-xs whitespace-nowrap">
+                      <td className="px-5 py-3.5 text-text-secondary font-mono text-xs whitespace-nowrap">
                         {time}
                       </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
+                      <td className="px-5 py-3.5 whitespace-nowrap">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium ${row.subjects ? 'bg-primary/10 text-primary border border-primary/20' : 'text-text-secondary bg-surface-muted border border-border'
                           }`}>
                           {subjectName}
                         </span>
                       </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
+                      <td className="px-5 py-3.5 whitespace-nowrap">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getAttendanceStatusBadge(statusLabel)}`}>
                           {statusLabel}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-text-secondary whitespace-nowrap text-xs">
+                      <td className="px-5 py-3.5 text-text-secondary whitespace-nowrap text-xs">
                         {markerName}
                       </td>
                     </tr>
@@ -543,7 +542,7 @@ export default async function StudentDetailPage({
   // Fees Tab
   const feesContent = (
     <div className="space-y-6">
-      <div className="bg-surface border border-border rounded-xl p-5 space-y-5">
+      <div className="card p-5 space-y-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h3 className="text-sm font-medium text-text-primary flex items-center gap-2">
@@ -558,7 +557,7 @@ export default async function StudentDetailPage({
           </div>
           <Link
             href={`/dashboard/fees/record?studentId=${id}`}
-            className="text-xs bg-primary text-white hover:bg-primary-hover px-3 py-1.5 rounded-lg transition-colors font-medium shadow-xs"
+            className="text-xs bg-primary text-white hover:bg-primary-hover px-3 py-1.5 rounded-xl transition-colors font-medium shadow-xs"
           >
             + Record Payment
           </Link>
@@ -566,7 +565,7 @@ export default async function StudentDetailPage({
 
         {/* Financial KPI Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="border border-border rounded-xl p-3.5 bg-surface-muted/30">
+          <div className="border border-border rounded-lg p-3.5 bg-surface-muted/30">
             <div className="text-xs text-text-secondary font-medium">Term Fee Total</div>
             <div className="text-xl font-bold text-text-primary mt-1">
               ₦{totalTermDue.toLocaleString()}
@@ -576,9 +575,9 @@ export default async function StudentDetailPage({
             </div>
           </div>
 
-          <div className="border border-border rounded-xl p-3.5 bg-surface-muted/30">
+          <div className="border border-border rounded-lg p-3.5 bg-surface-muted/30">
             <div className="text-xs text-text-secondary font-medium">Amount Paid (This Term)</div>
-            <div className="text-xl font-bold text-emerald-600 mt-1">
+            <div className="text-xl font-bold text-success-text mt-1">
               ₦{termPaidAmount.toLocaleString()}
             </div>
             <div className="text-[11px] text-text-secondary mt-1">
@@ -586,13 +585,13 @@ export default async function StudentDetailPage({
             </div>
           </div>
 
-          <div className="border border-border rounded-xl p-3.5 bg-surface-muted/30">
+          <div className="border border-border rounded-lg p-3.5 bg-surface-muted/30">
             <div className="text-xs text-text-secondary font-medium">Outstanding Balance</div>
             <div className="text-xl font-bold text-text-primary mt-1 flex items-baseline gap-2">
-              <span className={outstandingBalance > 0 ? 'text-amber-600' : 'text-emerald-600'}>
+              <span className={outstandingBalance > 0 ? 'text-warning-text' : 'text-success-text'}>
                 ₦{outstandingBalance.toLocaleString()}
               </span>
-              <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${outstandingBalance === 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'
+              <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${outstandingBalance === 0 ? 'bg-success-bg text-success-text border-success-bg' : 'bg-warning-bg text-warning-text border-warning-bg'
                 }`}>
                 {outstandingBalance === 0 ? 'Cleared ✓' : 'Pending'}
               </span>
@@ -605,7 +604,7 @@ export default async function StudentDetailPage({
 
         {/* Term Fee Components Breakdown */}
         <div className="space-y-2">
-          <h4 className="text-xs font-semibold text-text-secondary uppercase tracking-wider">
+          <h4 className="text-xs font-semibold text-text-secondary ">
             Fee Components ({currentTerm?.name ?? 'Current Term'})
           </h4>
           {currentTermFees.length === 0 ? (
@@ -613,11 +612,11 @@ export default async function StudentDetailPage({
               No fee structure configured for this student&apos;s class and term yet.
             </p>
           ) : (
-            <div className="border border-border rounded-xl overflow-hidden divide-y divide-border">
+            <div className="border border-border rounded-lg overflow-hidden divide-y divide-border">
               {currentTermFees.map((f) => {
                 const isPaid = paidFeeSet.has(f.id)
                 return (
-                  <div key={f.id} className="p-3.5 flex items-center justify-between text-sm hover:bg-surface-muted/20 transition-colors">
+                  <div key={f.id} className="p-3.5 flex items-center justify-between text-sm hover:bg-school-soft/40 transition-colors">
                     <div>
                       <p className="font-medium text-text-primary">{f.name}</p>
                       <p className="text-xs text-text-secondary mt-0.5">
@@ -627,13 +626,13 @@ export default async function StudentDetailPage({
                     <div className="flex items-center gap-3">
                       <span className="font-semibold text-text-primary">₦{Number(f.amount).toLocaleString()}</span>
                       {isPaid ? (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-bg text-success-text border border-success-bg">
                           Paid ✓
                         </span>
                       ) : (
                         <Link
                           href={`/dashboard/fees/record?studentId=${id}`}
-                          className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 transition-colors"
+                          className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-warning-bg text-warning-text border border-warning-bg hover:bg-warning-bg transition-colors"
                         >
                           Unpaid (Pay)
                         </Link>
@@ -648,15 +647,15 @@ export default async function StudentDetailPage({
 
         {/* Payment History Table */}
         <div className="space-y-2 pt-2">
-          <h4 className="text-xs font-semibold text-text-secondary uppercase tracking-wider">
+          <h4 className="text-xs font-semibold text-text-secondary ">
             Payment History & Receipts
           </h4>
           {paymentsList.length === 0 ? (
-            <div className="text-center py-6 text-sm text-text-secondary border border-dashed border-border rounded-xl">
+            <div className="text-center py-6 text-sm text-text-secondary border border-dashed border-border rounded-lg">
               No payments recorded for this student yet.
             </div>
           ) : (
-            <div className="border border-border rounded-xl overflow-x-auto">
+            <div className="border border-border rounded-lg overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-surface-muted/40 text-text-secondary text-xs">
                   <tr>
@@ -676,26 +675,26 @@ export default async function StudentDetailPage({
                     const methodLabel = METHOD_LABELS[p.payment_method ?? ''] ?? p.payment_method ?? '—'
 
                     return (
-                      <tr key={p.id} className="border-t border-border hover:bg-surface-muted/20 transition-colors">
-                        <td className="px-4 py-3 font-mono text-xs text-text-secondary whitespace-nowrap">
+                      <tr key={p.id} className="border-t border-border hover:bg-school-soft/40 transition-colors">
+                        <td className="px-5 py-3.5 font-mono text-xs text-text-secondary whitespace-nowrap">
                           #{p.id.slice(0, 8).toUpperCase()}
                         </td>
-                        <td className="px-4 py-3 font-medium text-text-primary whitespace-nowrap">
+                        <td className="px-5 py-3.5 font-medium text-text-primary whitespace-nowrap">
                           {feeName}
                         </td>
-                        <td className="px-4 py-3 font-semibold text-emerald-600 whitespace-nowrap">
+                        <td className="px-5 py-3.5 font-semibold text-success-text whitespace-nowrap">
                           ₦{Number(p.amount_paid).toLocaleString()}
                         </td>
-                        <td className="px-4 py-3 text-text-secondary text-xs whitespace-nowrap">
+                        <td className="px-5 py-3.5 text-text-secondary text-xs whitespace-nowrap">
                           {methodLabel}
                         </td>
-                        <td className="px-4 py-3 text-text-secondary font-mono text-xs whitespace-nowrap">
+                        <td className="px-5 py-3.5 text-text-secondary font-mono text-xs whitespace-nowrap">
                           {p.reference || '—'}
                         </td>
-                        <td className="px-4 py-3 text-text-secondary text-xs whitespace-nowrap">
+                        <td className="px-5 py-3.5 text-text-secondary text-xs whitespace-nowrap">
                           {dateStr}
                         </td>
-                        <td className="px-4 py-3 text-right whitespace-nowrap">
+                        <td className="px-5 py-3.5 text-right whitespace-nowrap">
                           <Link
                             href={`/dashboard/fees/receipt/${p.id}`}
                             className="text-xs text-primary hover:underline font-medium"
@@ -716,7 +715,7 @@ export default async function StudentDetailPage({
   )
 
   return (
-    <div className="px-8 py-8">
+    <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
       <Link
         href={
           from === 'my-class'
@@ -744,13 +743,13 @@ export default async function StudentDetailPage({
               className="w-11 h-11 rounded-full object-cover border border-border shrink-0"
             />
           ) : (
-            <span className="w-11 h-11 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-sm font-medium shrink-0">
+            <span className="w-11 h-11 rounded-full bg-warning-bg text-warning-text flex items-center justify-center text-sm font-medium shrink-0">
               {initials}
             </span>
           )}
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-lg font-semibold text-text-primary">
+              <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">
                 {student.first_name} {student.last_name}
               </h1>
               <span className={`text-xs font-medium rounded-full px-2.5 py-0.5 ${isActive ? 'bg-success-bg text-success-text' : 'bg-danger-bg text-danger-text'}`}>
@@ -765,7 +764,7 @@ export default async function StudentDetailPage({
         </div>
         <Link
           href={`/dashboard/students/${id}/edit${from ? `?from=${from}` : ''}`}
-          className="text-sm text-white bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-colors"
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
         >
           Edit Student
         </Link>
