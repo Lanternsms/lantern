@@ -7,6 +7,8 @@ import { Icon } from '@/components/icon'
 export type BoardCell = { arm: string; cls: string; label: string; pct: number | null; present: number; size: number }
 export type AdminTodayData = {
   dateLabel: string
+  totalStudents: number
+  classRoll: { id: string; name: string; count: number }[]
   today: string
   termLabel: string
   board: { level: string; cells: BoardCell[] }[]
@@ -28,6 +30,7 @@ const nairaM = (n: number) => (n >= 1_000_000 ? `₦${(n / 1_000_000).toFixed(2)
  * fixes it); everything else is the next question down.
  */
 export function AdminTodayView(d: AdminTodayData) {
+  const rollMax = Math.max(1, ...d.classRoll.map((c) => c.count))
   const cells = d.board.flatMap((r) => r.cells)
   const open = cells.filter((c) => c.pct === null)
   const saved = cells.length - open.length
@@ -202,6 +205,38 @@ export function AdminTodayView(d: AdminTodayData) {
                 </li>
               ))}
             </ul>
+          )}
+        </section>
+        <section aria-labelledby="students-h" className="card flex flex-col gap-3 p-5 sm:p-6 xl:col-span-4">
+          <div className="flex items-center justify-between">
+            <h2 id="students-h" className="text-[15px] font-semibold">Students</h2>
+            <Link href="/dashboard/students" className="text-sm font-medium text-primary hover:underline">View all</Link>
+          </div>
+          <p className="font-display text-[44px] font-semibold leading-none tracking-[-0.03em] tabular-nums">{d.totalStudents.toLocaleString('en-NG')}</p>
+          <p className="text-sm text-text-secondary">
+            Enrolled this session across {d.classRoll.filter((c) => c.count > 0).length} {d.classRoll.filter((c) => c.count > 0).length === 1 ? 'class' : 'classes'}
+          </p>
+        </section>
+
+        <section aria-labelledby="classes-h" className="card flex flex-col gap-4 p-5 sm:p-6 xl:col-span-8">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <h2 id="classes-h" className="text-[17px] font-semibold">Students per class</h2>
+            <span className="text-sm text-text-secondary">This session</span>
+          </div>
+          {d.classRoll.length === 0 ? (
+            <p className="py-8 text-text-secondary">No classes set up yet.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <div className="flex h-[200px] min-w-max items-end gap-2.5 sm:min-w-0 sm:gap-3.5" role="list">
+                {d.classRoll.map((c) => (
+                  <div key={c.id} role="listitem" aria-label={`${c.name}: ${c.count} students`} className="flex h-full min-w-11 flex-1 flex-col items-center justify-end gap-2">
+                    <span className="text-xs font-semibold tabular-nums text-school-ink">{c.count}</span>
+                    <span className="block w-full max-w-14 rounded-t-[10px] rounded-b-[4px] bg-school" style={{ height: `${Math.max(4, Math.round((c.count / rollMax) * 140))}px` }} />
+                    <span className="max-w-16 truncate text-xs text-text-secondary">{c.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
         </section>
       </div>
