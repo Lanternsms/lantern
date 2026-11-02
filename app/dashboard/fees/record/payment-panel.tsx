@@ -76,7 +76,7 @@ export default function PaymentPanel({
 
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-2 text-sm font-semibold">How they paid</legend>
-        <div role="radiogroup" aria-label="Payment method" className="flex w-fit flex-wrap gap-1 rounded-xl bg-raised p-1">
+        <div role="radiogroup" aria-label="Payment method" className="grid grid-cols-2 gap-1 rounded-xl bg-raised p-1 sm:flex sm:w-fit sm:flex-wrap">
           {METHODS.map((m) => (
             <button
               key={m.value}
@@ -84,7 +84,7 @@ export default function PaymentPanel({
               role="radio"
               aria-checked={method === m.value}
               onClick={() => setMethod(m.value)}
-              className={`h-9 rounded-lg px-4 text-sm font-medium ${method === m.value ? 'bg-surface text-text-primary shadow-card' : 'text-text-secondary hover:text-text-primary'}`}
+              className={`h-11 rounded-lg px-4 text-sm font-medium sm:h-9 ${method === m.value ? 'bg-surface text-text-primary shadow-card' : 'text-text-secondary hover:text-text-primary'}`}
             >
               {m.label}
             </button>
@@ -102,7 +102,7 @@ export default function PaymentPanel({
 
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-rule pt-5">
         <span className="text-sm text-text-secondary">Balance after this payment: <strong className="font-semibold tabular-nums text-text-primary">{naira(after)}</strong></span>
-        <button type="button" onClick={pay} disabled={isPending || !chosen} className="h-11 rounded-xl bg-primary px-5 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60">
+        <button type="button" onClick={pay} disabled={isPending || !chosen} className="h-12 w-full rounded-xl bg-primary px-5 text-[15px] font-semibold text-white sm:h-11 sm:w-auto sm:text-sm hover:bg-primary-hover disabled:opacity-60">
           {isPending ? 'Recording…' : `Record ${chosen ? naira(Number(chosen.amount)) : ''} and send receipt`}
         </button>
       </div>

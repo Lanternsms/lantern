@@ -535,13 +535,13 @@ export async function GuardianDashboard({
       {/* OVERVIEW: quick-glance cards + announcements */}
       {activeTab === 'all' && (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             <Link href={buildUrl({ tab: 'attendance' })} className="card p-4 hover:bg-school-soft/40 transition-colors">
               <div className="text-xs text-text-secondary font-medium">Attendance this term</div>
               <div className="text-xl font-bold text-text-primary mt-1">
                 {attendanceRate !== null ? `${attendanceRate}%` : '—'}
               </div>
-              <div className="text-[11px] text-text-secondary mt-1">{currentTerm?.name ?? 'This term'}</div>
+              <div className="text-xs text-text-secondary mt-1">{currentTerm?.name ?? 'This term'}</div>
             </Link>
 
             <Link href={buildUrl({ tab: 'fees' })} className="card p-4 hover:bg-school-soft/40 transition-colors">
@@ -549,7 +549,7 @@ export async function GuardianDashboard({
               <div className={`text-xl font-bold mt-1 ${totalBalance > 0 ? 'text-danger-text' : 'text-success-text'}`}>
                 {formatCurrency(totalBalance)}
               </div>
-              <div className="text-[11px] text-text-secondary mt-1">
+              <div className="text-xs text-text-secondary mt-1">
                 {totalBalance > 0 ? 'Outstanding' : 'Fully paid'}
               </div>
             </Link>
@@ -557,7 +557,7 @@ export async function GuardianDashboard({
             <Link href={buildUrl({ tab: 'timetable' })} className="card p-4 hover:bg-school-soft/40 transition-colors">
               <div className="text-xs text-text-secondary font-medium">Classes today</div>
               <div className="text-xl font-bold text-text-primary mt-1">{todayRows.length}</div>
-              <div className="text-[11px] text-text-secondary mt-1">
+              <div className="text-xs text-text-secondary mt-1">
                 {todayRows[0]?.subject_name ? `Starts with ${todayRows[0].subject_name}` : 'No classes today'}
               </div>
             </Link>
@@ -567,7 +567,7 @@ export async function GuardianDashboard({
               <div className="text-xl font-bold text-text-primary mt-1">
                 {rank ? `${rank.rank} / ${rank.out_of}` : '—'}
               </div>
-              <div className="text-[11px] text-text-secondary mt-1">{currentTerm?.name ?? 'This term'}</div>
+              <div className="text-xs text-text-secondary mt-1">{currentTerm?.name ?? 'This term'}</div>
             </Link>
           </div>
 
@@ -666,7 +666,7 @@ export async function GuardianDashboard({
                   </span>
                 )}
               </div>
-              <div className="text-[11px] text-text-secondary mt-1">
+              <div className="text-xs text-text-secondary mt-1">
                 {attendedCount} of {totalMarked} marked present
               </div>
             </div>
@@ -674,19 +674,19 @@ export async function GuardianDashboard({
             <div className="border border-border rounded-lg p-3.5 bg-surface-muted/30">
               <div className="text-xs text-text-secondary font-medium">Present</div>
               <div className="text-xl font-bold text-success-text mt-1">{presentCount}</div>
-              <div className="text-[11px] text-text-secondary mt-1">Sessions attended</div>
+              <div className="text-xs text-text-secondary mt-1">Sessions attended</div>
             </div>
 
             <div className="border border-border rounded-lg p-3.5 bg-surface-muted/30">
               <div className="text-xs text-text-secondary font-medium">Late</div>
               <div className="text-xl font-bold text-warning-text mt-1">{lateCount}</div>
-              <div className="text-[11px] text-text-secondary mt-1">Late arrivals</div>
+              <div className="text-xs text-text-secondary mt-1">Late arrivals</div>
             </div>
 
             <div className="border border-border rounded-lg p-3.5 bg-surface-muted/30">
               <div className="text-xs text-text-secondary font-medium">Absent</div>
               <div className="text-xl font-bold text-danger-text mt-1">{absentCount}</div>
-              <div className="text-[11px] text-text-secondary mt-1">Sessions missed</div>
+              <div className="text-xs text-text-secondary mt-1">Sessions missed</div>
             </div>
           </div>
 
