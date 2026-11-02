@@ -29,6 +29,13 @@ Next.js 16 App Router, React 19, Tailwind v4, Supabase (auth, Postgres with RLS,
 ## Brand Commitments
 Name: Lantern. AI tutor name: LUMI. The school's chosen colour must drive the app UI dynamically; Lantern's own colours apply only before sign-in and on the website.
 
+**Locked brand colours (approved by the owner; do not change):**
+- Navy `#182350`: primary, buttons, headings, text on light surfaces.
+- Deep navy `#131c40`: sidebar and bold panels.
+- Gold `#b9915e`: accent only (rules, highlights), never body text.
+
+These match the original code (`app/globals.css` on `main` before the redesign). Do not swap them for the logo's royal blue/yellow or any other shade. Use navy sparingly on the website: light sections, with navy on buttons and headings.
+
 ## Evidence on Hand
 No customer testimonials, logos, pricing or case studies exist yet — do not invent them. Classroom photographs from Wikimedia Commons with credits in public/landing/CREDITS.md.
 
