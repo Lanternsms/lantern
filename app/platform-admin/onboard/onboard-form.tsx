@@ -7,9 +7,11 @@ function slugify(input: string) {
   return input.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
 }
 
-export function OnboardForm() {
-  const [schoolName, setSchoolName] = useState('')
-  const [slug, setSlug] = useState('')
+export type OnboardPrefill = { demoId: string; schoolName: string; firstName: string; lastName: string; email: string }
+
+export function OnboardForm({ prefill }: { prefill?: OnboardPrefill | null } = {}) {
+  const [schoolName, setSchoolName] = useState(prefill?.schoolName ?? '')
+  const [slug, setSlug] = useState(prefill ? slugify(prefill.schoolName) : '')
   const [slugTouched, setSlugTouched] = useState(false)
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
@@ -52,6 +54,8 @@ export function OnboardForm() {
 
   return (
     <form action={handleSubmit} className="card p-6 space-y-6">
+      {prefill && <input type="hidden" name="demoId" value={prefill.demoId} />}
+      {prefill && <p className="rounded-lg bg-school-soft px-3 py-2 text-sm text-school-ink">Filled in from {prefill.schoolName}’s demo request. When you create the school, the request is marked Won.</p>}
       {error && <div className="bg-danger-bg border border-danger-bg text-danger-text text-sm rounded-lg px-3 py-2">{error}</div>}
 
       <section className="space-y-3">
@@ -73,15 +77,15 @@ export function OnboardForm() {
         <div className="grid sm:grid-cols-2 gap-3">
           <label className="text-xs text-text-secondary space-y-1 block">
             First name
-            <input name="adminFirstName" required className="w-full rounded-lg border border-border px-3 py-2 text-sm text-text-primary" />
+            <input name="adminFirstName" required defaultValue={prefill?.firstName} className="w-full rounded-lg border border-border px-3 py-2 text-sm text-text-primary" />
           </label>
           <label className="text-xs text-text-secondary space-y-1 block">
             Last name
-            <input name="adminLastName" required className="w-full rounded-lg border border-border px-3 py-2 text-sm text-text-primary" />
+            <input name="adminLastName" required defaultValue={prefill?.lastName} className="w-full rounded-lg border border-border px-3 py-2 text-sm text-text-primary" />
           </label>
           <label className="text-xs text-text-secondary space-y-1 block sm:col-span-2">
             Email
-            <input name="adminEmail" type="email" required className="w-full rounded-lg border border-border px-3 py-2 text-sm text-text-primary" />
+            <input name="adminEmail" type="email" required defaultValue={prefill?.email} className="w-full rounded-lg border border-border px-3 py-2 text-sm text-text-primary" />
           </label>
         </div>
         <p className="text-[11px] text-text-secondary">They'll get an email to set their own password — nothing is shown here in plain text.</p>

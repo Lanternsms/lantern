@@ -3,12 +3,25 @@ export const dynamic = 'force-dynamic'
 import { redirect } from 'next/navigation'
 import { hasValidPlatformAdminSession } from '@/lib/platform-admin/auth'
 import { lockPlatformAdmin } from '../actions'
-import { OnboardForm } from './onboard-form'
+import { OnboardForm, type OnboardPrefill } from './onboard-form'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { PlatformAdminNav } from '../_components/platform-admin-nav'
 
-export default async function OnboardPage() {
+export default async function OnboardPage({ searchParams }: { searchParams: Promise<{ demo?: string }> }) {
   if (!(await hasValidPlatformAdminSession())) {
     redirect('/platform-admin')
+  }
+
+  // Coming from a won demo request: prefill the school and its first admin.
+  const { demo } = await searchParams
+  let prefill: OnboardPrefill | null = null
+  if (demo) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data } = await (createAdminClient() as any).from('demo_requests').select('id, name, school, email').eq('id', demo).maybeSingle()
+    if (data) {
+      const parts = String(data.name).replace(/^(mr|mrs|ms|miss|dr|prof|chief|alhaji|alhaja)\.?\s+/i, '').trim().split(/\s+/)
+      prefill = { demoId: data.id, schoolName: data.school, firstName: parts[0] ?? '', lastName: parts.slice(1).join(' '), email: data.email ?? '' }
+    }
   }
 
   return (
@@ -24,7 +37,7 @@ export default async function OnboardPage() {
           </form>
         </div>
         <PlatformAdminNav active="onboard" />
-        <OnboardForm />
+        <OnboardForm prefill={prefill} />
       </div>
     </div>
   )

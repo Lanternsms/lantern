@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { IconSvgElement } from '@hugeicons/react'
 import {
-  BookOpen01Icon, Cancel01Icon, Certificate01Icon, CheckmarkBadge01Icon, Coins01Icon, Comment01Icon, DashboardSquare01Icon, File01Icon, Folder01Icon, HardDriveIcon, HelpCircleIcon, Logout01Icon, Megaphone01Icon, Menu01Icon, Message01Icon, Money03Icon, NoteEditIcon, PlayCircleIcon, RankingIcon, School01Icon, Settings01Icon, ShieldUserIcon, StudentsIcon, Tag01Icon, TaskDone01Icon, TeacherIcon, TimeScheduleIcon, UserAccountIcon, UserCheck01Icon, UserGroupIcon, UserMultipleIcon, Wallet01Icon,
+  Notification01Icon, BookOpen01Icon, Cancel01Icon, Certificate01Icon, CheckmarkBadge01Icon, Coins01Icon, Comment01Icon, DashboardSquare01Icon, File01Icon, Folder01Icon, HardDriveIcon, HelpCircleIcon, Logout01Icon, Megaphone01Icon, Menu01Icon, Message01Icon, Money03Icon, NoteEditIcon, PlayCircleIcon, RankingIcon, School01Icon, Settings01Icon, ShieldUserIcon, StudentsIcon, Tag01Icon, TaskDone01Icon, TeacherIcon, TimeScheduleIcon, UserAccountIcon, UserCheck01Icon, UserGroupIcon, UserMultipleIcon, Wallet01Icon,
 } from '@hugeicons/core-free-icons'
 import { signOut } from '@/app/auth/actions'
 import { removeSubscription } from '@/app/dashboard/notifications/actions'
@@ -222,6 +222,10 @@ export function DashboardShell({
       </nav>
 
       <div className="mt-3 flex flex-col gap-1 border-t border-white/10 pt-3">
+        <Link href="/dashboard/notifications/settings" aria-current={pathname.startsWith('/dashboard/notifications/settings') ? 'page' : undefined} className="flex h-10 items-center gap-3 rounded-xl px-3 text-[14px] text-school-deep-muted hover:bg-school-deep-raised hover:text-white aria-[current=page]:bg-white aria-[current=page]:font-semibold aria-[current=page]:text-school-deep">
+          <Icon icon={Notification01Icon} size={19} />
+          Notifications and email
+        </Link>
         <Link href="/dashboard/help" className="flex h-10 items-center gap-3 rounded-xl px-3 text-[14px] text-school-deep-muted hover:bg-school-deep-raised hover:text-white">
           <Icon icon={HelpCircleIcon} size={19} />
           Help and support

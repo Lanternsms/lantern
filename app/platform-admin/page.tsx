@@ -10,7 +10,7 @@ export default async function PlatformAdminGatePage({
   searchParams: Promise<{ error?: string }>
 }) {
   if (await hasValidPlatformAdminSession()) {
-    redirect('/platform-admin/onboard')
+    redirect('/platform-admin/demos')
   }
 
   const { error } = await searchParams

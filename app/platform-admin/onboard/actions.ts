@@ -144,5 +144,14 @@ export async function createSchool(formData: FormData) {
         metadata: { schoolName, slug: school.slug, adminEmail, adminFirstName, adminLastName, sessionName },
     })
 
+    // Onboarded from a demo request: close the loop on the pipeline.
+    const demoId = String(formData.get('demoId') || '')
+    if (demoId) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (admin as any).from('demo_requests')
+            .update({ status: 'won', onboarded_school_id: school.id, updated_at: new Date().toISOString() })
+            .eq('id', demoId)
+    }
+
     return { success: true, schoolId: school.id, slug: school.slug, adminEmail }
 }

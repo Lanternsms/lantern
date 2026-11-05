@@ -9,7 +9,7 @@ export async function unlockPlatformAdmin(formData: FormData) {
     redirect('/platform-admin?error=1')
   }
   await createPlatformAdminSession()
-  redirect('/platform-admin/onboard')
+  redirect('/platform-admin/demos')
 }
 
 export async function lockPlatformAdmin() {
