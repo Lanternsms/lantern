@@ -42,7 +42,6 @@ export default function Home() {
           </Link>
           <nav aria-label="Main" className="hidden flex-1 gap-6 text-[15px] text-[#3d434d] md:flex">
             <a href="#product" className="hover:text-[#182350]">Product</a>
-            <a href="#pricing" className="hover:text-[#182350]">Pricing</a>
             <a href="#faq" className="hover:text-[#182350]">FAQ</a>
           </nav>
           <div className="ml-auto flex items-center gap-4">
@@ -55,7 +54,7 @@ export default function Home() {
       </header>
 
       <main>
-        <section className="mx-auto flex max-w-[1200px] flex-wrap items-center gap-14 px-5 pb-22 pt-14 sm:px-6 sm:pt-18">
+        <section className="mx-auto flex max-w-[1200px] flex-wrap items-center gap-10 px-5 pb-14 pt-10 sm:gap-14 sm:px-6 sm:pb-22 sm:pt-18">
           <div className="flex min-w-0 flex-[1_1_500px] flex-col gap-6">
             <h1 className="text-[clamp(40px,4.4vw,58px)] font-bold leading-[1.04] tracking-[-0.03em] text-balance">
               Your whole school, in one place.
@@ -66,13 +65,20 @@ export default function Home() {
             </p>
             <div className="flex flex-wrap gap-3">
               <a href="/book-demo" className="press flex h-[50px] items-center rounded-[10px] bg-[#182350] px-5.5 font-semibold text-white">
-                Book a 30-minute demo
+                Book a free demo
               </a>
               <a href="#product" className="press flex h-[50px] items-center rounded-[10px] border border-[#d4d4d4] bg-white px-5 font-medium">
                 See how it works
               </a>
             </div>
-            <p className="text-sm text-[#5c626c]">Works on any phone — no app download for parents.</p>
+            <ul className="flex flex-wrap gap-x-5 gap-y-2 text-[15px] text-[#3d434d]">
+              {['Free 30-minute demo', 'Live in a week', 'No app download for parents'].map((t) => (
+                <li key={t} className="flex items-center gap-2">
+                  <svg aria-hidden width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#182350" /><path d="m7.5 12.2 3 3 6-6.4" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  {t}
+                </li>
+              ))}
+            </ul>
           </div>
           <div className="min-w-0 flex-[1_1_520px]">
             <RegisterDemo />
@@ -90,8 +96,8 @@ export default function Home() {
           </ul>
         </section>
 
-        <section id="product" className="mx-auto flex max-w-[1200px] flex-col gap-28 px-5 pb-10 pt-28 sm:px-6">
-          <div className="flex flex-wrap items-center gap-14">
+        <section id="product" className="mx-auto flex max-w-[1200px] flex-col gap-16 px-5 pb-10 pt-16 sm:gap-28 sm:px-6 sm:pt-28">
+          <div className="flex flex-wrap items-center gap-8 sm:gap-14">
             <div className="flex min-w-0 flex-[1_1_380px] flex-col gap-4">
               <h2 className={h2}>The whole morning at a glance.</h2>
               <p className="max-w-[44ch] text-[#3d434d]">
@@ -121,7 +127,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex flex-wrap-reverse items-center gap-14">
+          <div className="flex flex-wrap-reverse items-center gap-8 sm:gap-14">
             <div data-ui className={`${panel} flex min-w-0 flex-[1_1_560px] flex-col gap-3.5 p-5`}>
               <div className="flex flex-wrap justify-between gap-2">
                 <span className="font-semibold">Mathematics · JSS 2B</span>
@@ -149,7 +155,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-14">
+          <div className="flex flex-wrap items-center gap-8 sm:gap-14">
             <div className="flex min-w-0 flex-[1_1_380px] flex-col gap-4">
               <h2 className={h2}>Fees in, receipts out.</h2>
               <p className="max-w-[44ch] text-[#3d434d]">
@@ -175,13 +181,20 @@ export default function Home() {
         </section>
 
 
-        <section aria-label="Classrooms" className="grid grid-cols-1 sm:grid-cols-3">
-          <Image src="/landing/library-study.jpg" alt="A student working on his laptop in a bright, modern school library" width={1920} height={1280} sizes="(min-width: 640px) 33vw, 100vw" className="h-[300px] w-full object-cover sm:h-[380px]" />
-          <Image src="/landing/teacher-laptops.jpg" alt="A teacher guiding students working on laptops in a modern classroom" width={1920} height={1280} sizes="(min-width: 640px) 33vw, 100vw" className="h-[300px] w-full object-cover sm:h-[380px]" />
-          <Image src="/landing/pupils-laptop.jpg" alt="Two pupils sharing a laptop on the school stairs" width={1920} height={1280} sizes="(min-width: 640px) 33vw, 100vw" className="h-[300px] w-full object-cover sm:h-[380px]" />
+        <section aria-label="Book a demo" className="mx-auto max-w-[1200px] px-5 pb-12 pt-4 sm:px-6 sm:pb-16">
+          <div className="flex flex-col items-start gap-4 rounded-2xl bg-[#182350] p-6 text-white sm:flex-row sm:items-center sm:justify-between sm:p-8">
+            <p className="max-w-[40ch] text-[19px] font-semibold leading-snug sm:text-[22px]">See your own classes in Lantern, set up while you watch.</p>
+            <Link href="/book-demo" className="press flex h-12 w-full shrink-0 items-center justify-center rounded-[10px] bg-white px-6 font-semibold text-[#182350] sm:w-auto">Book a free demo</Link>
+          </div>
         </section>
 
-        <section className="mx-auto flex max-w-[1200px] flex-col gap-10 px-5 py-28 sm:px-6">
+        <section aria-label="Classrooms" className="mx-auto grid max-w-[1200px] grid-cols-2 gap-2 px-5 sm:grid-cols-3 sm:gap-3 sm:px-6">
+          <Image src="/landing/library-study.jpg" alt="A student working on his laptop in a bright, modern school library" width={1920} height={1280} sizes="(min-width: 640px) 33vw, 50vw" className="col-span-2 h-[220px] w-full rounded-2xl object-cover sm:col-span-1 sm:h-[360px]" />
+          <Image src="/landing/teacher-laptops.jpg" alt="A teacher guiding students working on laptops in a modern classroom" width={1920} height={1280} sizes="(min-width: 640px) 33vw, 50vw" className="h-[150px] w-full rounded-2xl object-cover sm:h-[360px]" />
+          <Image src="/landing/pupils-laptop.jpg" alt="Two pupils sharing a laptop on the school stairs" width={1920} height={1280} sizes="(min-width: 640px) 33vw, 50vw" className="h-[150px] w-full rounded-2xl object-cover sm:h-[360px]" />
+        </section>
+
+        <section className="mx-auto flex max-w-[1200px] flex-col gap-8 px-5 py-16 sm:gap-10 sm:px-6 sm:py-28">
           <h2 className={`${h2} max-w-[18ch]`}>Live in a week.</h2>
           <ol className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-8">
             {[
@@ -198,31 +211,7 @@ export default function Home() {
           </ol>
         </section>
 
-        <section id="pricing" className="border-y border-[#e7e7e7] bg-white">
-          <div className="mx-auto flex max-w-[1200px] flex-wrap items-start gap-14 px-5 py-26 sm:px-6">
-            <div className="flex min-w-0 flex-[1_1_360px] flex-col gap-3.5">
-              <h2 className={h2}>One simple price.</h2>
-              <p className="max-w-[40ch] text-[#3d434d]">No charge for staff or parent accounts. Everything is included, and you can start with a single class to see how it fits.</p>
-            </div>
-            <div className="flex min-w-0 flex-[1_1_460px] flex-col gap-4.5 rounded-2xl border border-[#e7e7e7] bg-[#fafafa] p-7">
-              <div className="flex flex-wrap items-baseline gap-2">
-                {/* TODO(pricing): replace with the real price once it's set. */}
-                <span className="text-[56px] font-bold tracking-[-0.03em] tabular-nums">₦[1,500]</span>
-                <span className="text-[#5c626c]">per student, per term</span>
-              </div>
-              <ul className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-x-5 gap-y-2.5 text-base">
-                <li>Attendance and instant alerts</li><li>Scores, approval and report cards</li>
-                <li>Fees, receipts and balances</li><li>Timetables and announcements</li>
-                <li>Unlimited staff and parents</li><li>Setup and import done with you</li>
-              </ul>
-              <a href="/book-demo" className="press flex h-[50px] items-center justify-center rounded-[10px] bg-[#182350] font-semibold text-white">
-                Get a quote for your school
-              </a>
-            </div>
-          </div>
-        </section>
-
-        <section id="faq" className="mx-auto grid max-w-[1200px] grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] gap-x-16 gap-y-10 px-5 py-26 sm:px-6">
+        <section id="faq" className="mx-auto grid max-w-[1200px] grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] gap-x-16 gap-y-8 px-5 py-16 sm:gap-y-10 sm:px-6 sm:py-26">
           <h2 className={`${h2} col-span-full`}>Questions schools ask</h2>
           {FAQ.map((f) => (
             <div key={f.q} className="flex flex-col gap-2">
@@ -232,7 +221,7 @@ export default function Home() {
           ))}
         </section>
 
-        <section id="demo" className="mx-auto mb-26 max-w-[1200px] px-5 sm:px-6">
+        <section id="demo" className="mx-auto mb-16 sm:mb-26 max-w-[1200px] px-5 sm:px-6">
           <div className="flex flex-wrap items-center justify-between gap-8 rounded-[20px] border border-[#e2e5ee] bg-white px-7 py-12 text-[#182350] sm:px-10 sm:py-14">
             <div className="flex max-w-[560px] flex-col gap-2.5">
               <h2 className={h2}>See it with your own data.</h2>
@@ -246,12 +235,16 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="border-t border-[#e7e7e7]">
+      {/* Phones: the next step is always one thumb away. */}
+      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-[#e7e7e7] bg-white/95 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 backdrop-blur sm:hidden">
+        <Link href="/book-demo" className="press flex h-12 items-center justify-center rounded-[10px] bg-[#182350] font-semibold text-white">Book a free demo</Link>
+      </div>
+
+      <footer className="border-t border-[#e7e7e7] pb-20 sm:pb-0">
         <div className="mx-auto flex max-w-[1200px] flex-wrap justify-between gap-x-12 gap-y-6 px-5 py-10 text-[15px] text-[#5c626c] sm:px-6">
           <span className="flex flex-col gap-1"><strong className="text-[#182350]">Lantern</strong>Lagos, Nigeria</span>
           <nav aria-label="Footer" className="flex flex-wrap gap-5">
             <a href="#product" className="hover:text-[#182350]">Product</a>
-            <a href="#pricing" className="hover:text-[#182350]">Pricing</a>
             <Link href="/login" className="hover:text-[#182350]">Sign in</Link>
             <Link href="/privacy" className="hover:text-[#182350]">Privacy</Link>
             <Link href="/terms" className="hover:text-[#182350]">Terms</Link>
