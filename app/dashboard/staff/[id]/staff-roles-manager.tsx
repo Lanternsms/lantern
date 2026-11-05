@@ -2,7 +2,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { assignRole, removeRole } from './actions'
+import { assignStaffRole, removeStaffRole } from './actions'
 import { Lock, Shield, X, Loader2, Plus } from '@/components/icons'
 
 export type RoleItem = {
@@ -13,7 +13,8 @@ export type RoleItem = {
 }
 
 export type StaffRolesManagerProps = {
-  userId: string
+  staffId: string
+  userId?: string | null
   currentRoles: RoleItem[]
   assignableRoles: RoleItem[]
   canManageRoles: boolean
@@ -21,6 +22,7 @@ export type StaffRolesManagerProps = {
 }
 
 export default function StaffRolesManager({
+  staffId,
   userId,
   currentRoles,
   assignableRoles,
@@ -48,7 +50,7 @@ export default function StaffRolesManager({
     startTransition(async () => {
       setActiveActionRoleId(roleIdToAssign)
       try {
-        const res = await assignRole(userId, roleIdToAssign)
+        const res = await assignStaffRole(staffId, roleIdToAssign)
         if (res?.error) {
           setError(res.error)
         } else {
@@ -66,7 +68,7 @@ export default function StaffRolesManager({
     if (isPending) return
     setError(null)
 
-    if (userId === currentUserId && roleName.toLowerCase() === 'admin') {
+    if (userId && userId === currentUserId && roleName.toLowerCase() === 'admin') {
       setError('You cannot remove your own admin role.')
       return
     }
@@ -74,7 +76,7 @@ export default function StaffRolesManager({
     startTransition(async () => {
       setActiveActionRoleId(roleId)
       try {
-        const res = await removeRole(userId, roleId)
+        const res = await removeStaffRole(staffId, roleId)
         if (res?.error) {
           setError(res.error)
         }

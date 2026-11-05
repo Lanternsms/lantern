@@ -2,8 +2,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { User, Briefcase, BookOpen, Pencil } from '@/components/icons'
-import { linkStaffProfile, unlinkStaffProfile } from './actions'
+import { User, Briefcase, BookOpen, Pencil, Shield } from '@/components/icons'
+import { linkStaffProfile, unlinkStaffProfile, inviteStaffPortalAccess } from './actions'
 import { getLinkableProfiles } from '@/lib/staff'
 import StaffRolesManager, { RoleItem } from './staff-roles-manager'
 
@@ -51,30 +51,26 @@ export default async function StaffDetailPage({
         .eq('teacher_id', staff.profile_id)
     : { data: null }
 
-  let currentRoles: RoleItem[] = []
-  let assignableRoles: RoleItem[] = []
-
-  if (canManageRoles) {
-    const { data: assignableData } = await (supabase as any)
+  const [{ data: assignableData }, { data: userRolesData }] = await Promise.all([
+    (supabase as any)
       .from('roles')
       .select('id, name, description, is_system')
       .or(`school_id.eq.${staff.school_id},and(school_id.is.null,is_system.eq.true)`)
       .order('is_system', { ascending: false })
-      .order('name')
-    assignableRoles = assignableData ?? []
+      .order('name'),
+    staff.profile_id
+      ? (supabase as any)
+          .from('user_roles')
+          .select('role_id, roles(id, name, description, is_system)')
+          .eq('user_id', staff.profile_id)
+          .eq('school_id', staff.school_id)
+      : Promise.resolve({ data: [] }),
+  ])
 
-    if (staff.profile_id) {
-      const { data: userRolesData } = await (supabase as any)
-        .from('user_roles')
-        .select('role_id, roles(id, name, description, is_system)')
-        .eq('user_id', staff.profile_id)
-        .eq('school_id', staff.school_id)
-
-      currentRoles = (userRolesData ?? [])
-        .map((ur: any) => ur.roles)
-        .filter(Boolean)
-    }
-  }
+  const assignableRoles: RoleItem[] = assignableData ?? []
+  const currentRoles: RoleItem[] = (userRolesData ?? [])
+    .map((ur: any) => ur.roles)
+    .filter(Boolean)
 
   const initials = `${staff.first_name?.[0] ?? ''}${staff.last_name?.[0] ?? ''}`
   const isActive = staff.status === 'active'
@@ -102,37 +98,41 @@ export default async function StaffDetailPage({
           </form>
         </div>
       ) : (
-        <div>
-          <p className="text-sm text-text-secondary mb-3">
-            Not linked to a login yet. This staff member won&apos;t appear in
-            teacher/assignment dropdowns until linked.
+        <div className="space-y-4">
+          <p className="text-sm text-text-secondary">
+            Not linked to a login yet. This staff member won&apos;t appear in teacher/assignment dropdowns until linked.
           </p>
-          {linkableProfiles.length === 0 ? (
-            <p className="text-xs text-text-secondary">
-              No unlinked logins found. Invite one from Users &amp; Invites first,
-              then come back here to link it.
-            </p>
-          ) : (
-            <form action={linkStaffProfile.bind(null, staff.id)} className="flex gap-2">
-              <select
-                name="profileId"
-                required
-                className="bg-surface border border-control rounded-xl flex-1 px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
-              >
-                <option value="">Select a login to link…</option>
-                {linkableProfiles.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.first_name} {p.last_name}
-                  </option>
-                ))}
-              </select>
-              <button
-                type="submit"
-                className="px-4 py-2 bg-primary text-white rounded-xl text-sm hover:bg-primary-hover font-medium transition-colors"
-              >
-                Link
-              </button>
+
+          {linkableProfiles.length > 0 ? (
+            <form action={linkStaffProfile.bind(null, staff.id)} className="space-y-2">
+              <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                Link an existing login
+              </label>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <select
+                  name="profileId"
+                  required
+                  className="bg-surface border border-control rounded-xl flex-1 px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="">Select a login to link…</option>
+                  {linkableProfiles.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.first_name} {p.last_name}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-primary text-white rounded-xl text-sm hover:bg-primary-hover font-medium transition-colors shrink-0"
+                >
+                  Link
+                </button>
+              </div>
             </form>
+          ) : (
+            <p className="text-xs text-text-muted">
+              No unlinked portal logins available.
+            </p>
           )}
         </div>
       )}
@@ -150,11 +150,16 @@ export default async function StaffDetailPage({
             {initials}
           </span>
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">{staff.first_name} {staff.last_name}</h1>
               <span className={`text-xs font-medium rounded-full px-2.5 py-0.5 ${isActive ? 'bg-success-bg text-success-text' : 'bg-raised text-[#374151]'}`}>
                 {isActive ? 'Active' : staff.status}
               </span>
+              {currentRoles.map((r) => (
+                <span key={r.id} className="text-xs font-medium rounded-full px-2.5 py-0.5 bg-school-soft text-school-ink capitalize">
+                  {r.name.replace('_', ' ')}
+                </span>
+              ))}
             </div>
             <p className="text-xs text-text-secondary mt-0.5">
               {staff.staff_no} · {staff.departments?.name ?? 'No department'}
@@ -210,14 +215,34 @@ export default async function StaffDetailPage({
 
         {portalAccessContent}
 
-        {canManageRoles && staff.profile_id && (
+        {canManageRoles && (
           <StaffRolesManager
+            staffId={staff.id}
             userId={staff.profile_id}
             currentRoles={currentRoles}
             assignableRoles={assignableRoles}
             canManageRoles={!!canManageRoles}
             currentUserId={user?.id ?? ''}
           />
+        )}
+
+        {!canManageRoles && currentRoles.length > 0 && (
+          <section className="card p-5 space-y-3">
+            <div className="flex items-center gap-2">
+              <Shield size={16} className="text-text-secondary" />
+              <h3 className="text-sm font-medium text-text-primary">Roles &amp; Permissions</h3>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {currentRoles.map((r) => (
+                <span
+                  key={r.id}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border bg-school-soft text-school-ink border-school-track"
+                >
+                  <span className="capitalize">{r.name.replace('_', ' ')}</span>
+                </span>
+              ))}
+            </div>
+          </section>
         )}
 
         <section className="card p-5">
