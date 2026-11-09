@@ -62,7 +62,7 @@ export default async function DashboardLayout({
   }
 
   const [profile, school, ctx, lmsAccess] = await Promise.all([
-    supabase.from('profiles').select('first_name, last_name').eq('id', user.id).single(),
+    supabase.from('profiles').select('first_name, last_name, is_admin').eq('id', user.id).single(),
     supabase.from('schools').select('name, logo_url').single(),
     getMyAccessContext(supabase),
     LMS_ENABLED
@@ -128,6 +128,7 @@ export default async function DashboardLayout({
       logoUrl={school.data?.logo_url ?? null}
       navItems={visibleItems}
       notificationBell={<NotificationBellServer />}
+      isAdmin={!!profile.data?.is_admin}
     >
       <PushSync />
       <ThemeStyle />
