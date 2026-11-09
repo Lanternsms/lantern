@@ -41,7 +41,7 @@ export default function TimetableGridView({
           <tr>
             <th className="text-left text-xs text-text-secondary p-2 border border-border">Period</th>
             {DAYS.map((d) => (
-              <th key={d.value} className="text-left text-xs text-text-secondary p-2 border border-border">
+              <th key={d.value} className="text-center text-xs text-text-secondary p-2 border border-border min-w-[60px] max-w-[80px] truncate">
                 {d.label}
               </th>
             ))}

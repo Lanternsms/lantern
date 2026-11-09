@@ -70,7 +70,7 @@ export default async function ReportCardPage({
         <PrintButton />
       </div>
 
-      <div className="card p-8 print:border-0 print:shadow-none">
+      <div id="receipt" className="card p-8 print:border-0 print:shadow-none">
         <div className="text-center mb-6 pb-6 border-b border-border">
           <h1 className="font-display text-[28px] font-semibold leading-tight text-text-primary sm:text-[32px]">{school?.name}</h1>
           <p className="mt-1 text-[15px] text-text-secondary">Report Card — {card.term.name}, {card.session.name}</p>
@@ -91,19 +91,19 @@ export default async function ReportCardPage({
           <div className="overflow-x-auto"><table className="w-full text-sm mb-6">
             <thead>
               <tr className="border-b border-rule text-left text-text-secondary text-xs ">
-                <th className="py-2">Subject</th>
+                <th className="py-2 min-w-[80px] whitespace-nowrap overflow-hidden truncate">Subject</th>
                 {(card.assessmentNames?.length ? card.assessmentNames : Object.keys(card.subjects[0]?.scores ?? {})).map((name) => (
-                  <th key={name} className="py-2">{name}</th>
+                  <th key={name} className="py-2 min-w-[80px] whitespace-nowrap overflow-hidden truncate">{name}</th>
                 ))}
-                <th className="py-2">Total</th>
-                <th className="py-2">Grade</th>
-                <th className="py-2">Remark</th>
+                <th className="py-2 min-w-[80px] whitespace-nowrap overflow-hidden truncate">Total</th>
+                <th className="py-2 min-w-[80px] whitespace-nowrap overflow-hidden truncate">Grade</th>
+                <th className="py-2 min-w-[80px] whitespace-nowrap overflow-hidden truncate">Remark</th>
               </tr>
             </thead>
             <tbody>
               {card.subjects.map((s) => (
                 <tr key={s.subjectId} className="border-b border-border last:border-0">
-                  <td className="py-2 text-text-primary font-medium">{s.subjectName}</td>
+                  <td className="py-2 min-w-[80px] whitespace-nowrap overflow-hidden truncate text-text-primary font-medium">{s.subjectName}</td>
                   {(card.assessmentNames?.length ? card.assessmentNames : Object.keys(card.subjects[0]?.scores ?? {})).map((name) => (
                     <td key={name} className="py-2 text-text-primary">{s.scores[name] ?? '—'}</td>
                   ))}

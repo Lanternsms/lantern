@@ -445,7 +445,7 @@ export async function GuardianDashboard({
             <span className="font-medium">This week at school</span>
             {attendanceRate !== null && <span className="text-school-deep-muted">{attendanceRate}% present this term</span>}
           </div>
-          <ol className="grid grid-cols-5 gap-1.5 sm:gap-2">
+          <ol className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-1.5 sm:gap-2">
             {week.map((d) => (
               <li
                 key={d.date}
