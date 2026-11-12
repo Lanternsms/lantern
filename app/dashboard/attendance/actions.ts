@@ -8,12 +8,16 @@ import { emit } from '@/lib/notifications/service'
 export async function saveAttendance(params: {
   classId: string
   date: string
-  subjectId: string | null
+  subjectId: string
   marks: { studentId: string; armId: string | null; statusId: string }[]
 }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
+
+  if (!params.subjectId) {
+    return { error: 'Subject is required' }
+  }
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -21,6 +25,38 @@ export async function saveAttendance(params: {
     .eq('id', user.id)
     .single()
   if (!profile) return { error: 'Profile not found' }
+
+  const { data: session } = await supabase
+    .from('academic_sessions')
+    .select('id')
+    .eq('school_id', profile.school_id)
+    .eq('is_current', true)
+    .maybeSingle()
+  if (!session) return { error: 'No active academic session' }
+
+  // Teacher subject assignment check:
+  // Must verify that the teacher is assigned this subject for this class in current session
+  const { data: assignments } = await supabase
+    .from('class_subjects')
+    .select('id, arm_id')
+    .eq('teacher_id', user.id)
+    .eq('class_id', params.classId)
+    .eq('subject_id', params.subjectId)
+    .eq('session_id', session.id)
+
+  if (!assignments || assignments.length === 0) {
+    return { error: 'Insufficient permission' }
+  }
+
+  // If the assignment is for specific arms, check that all marks are for allowed arms
+  const hasWholeClass = assignments.some((a) => a.arm_id === null)
+  if (!hasWholeClass) {
+    const allowedArmIds = new Set(assignments.map((a) => a.arm_id))
+    const isMarkAllowed = params.marks.every((m) => !m.armId || allowedArmIds.has(m.armId))
+    if (!isMarkAllowed) {
+      return { error: 'Insufficient permission' }
+    }
+  }
 
   const markedAt = new Date().toISOString()
 
@@ -38,7 +74,7 @@ export async function saveAttendance(params: {
 
   const { error } = await supabase
     .from('attendance')
-    .upsert(rows, { onConflict: 'student_id,date' })
+    .upsert(rows, { onConflict: 'student_id,date,subject_id' })
 
   if (error) return { error: error.message }
 
@@ -50,14 +86,37 @@ export async function saveAttendance(params: {
       studentCount: params.marks.length,
     },
   })
-  // Emit notification to guardians of each student
+
+  // Notifications: coalesce absent alerts to guardians
+  const { data: statuses } = await supabase
+    .from('attendance_statuses')
+    .select('id, code, label, counts_as_present')
+    .eq('school_id', profile.school_id)
+  const statusMap = new Map((statuses ?? []).map((s) => [s.id, s]))
+
+  const { data: subjectData } = await supabase
+    .from('subjects')
+    .select('name')
+    .eq('id', params.subjectId)
+    .maybeSingle()
+  const subjectName = subjectData?.name ?? 'Subject'
+
+  const absentMarks = params.marks.filter((m) => {
+    const st = statusMap.get(m.statusId)
+    if (!st) return false
+    const code = (st.code || '').toLowerCase()
+    const label = (st.label || '').toLowerCase()
+    return code === 'absent' || (!st.counts_as_present && label.includes('absent'))
+  })
+
   await Promise.all(
-    params.marks.map(async (m) => {
+    absentMarks.map(async (m) => {
       await emit('attendance_marked', {
         schoolId: profile.school_id,
         studentId: m.studentId,
         recordedBy: user.id,
-        // optional: studentName could be fetched elsewhere
+        date: params.date,
+        subjectName,
       })
     })
   )

@@ -3,8 +3,8 @@ import {
   ArrowRight01Icon, Invoice01Icon, Megaphone01Icon, Money03Icon, UserCheck01Icon,
 } from '@hugeicons/core-free-icons'
 import { Icon } from '@/components/icon'
+import { AttendanceTrendChart, type DailyPoint } from './attendance-trend-chart'
 
-export type BoardCell = { arm: string; cls: string; label: string; pct: number | null; present: number; size: number }
 export type AdminTodayData = {
   dateLabel: string
   greeting?: string
@@ -12,9 +12,20 @@ export type AdminTodayData = {
   classRoll: { id: string; name: string; count: number }[]
   today: string
   termLabel: string
-  board: { level: string; cells: BoardCell[] }[]
-  presentToday: number
-  markedToday: number
+  attendance: {
+    termName: string
+    sessionName: string
+    termAvg: number | null
+    today: { date: string; pct: number | null } | null
+    daily: DailyPoint[]
+    classes: {
+      id: string
+      name: string
+      pct: number | null
+      recent: { date: string; pct: number | null }[]
+    }[]
+    lowest: { id: string; name: string; pct: number } | null
+  }
   billed: number
   collected: number
   weekBars: { label: string; amount: number }[]
@@ -25,21 +36,62 @@ export type AdminTodayData = {
 const naira = (n: number) => `₦${Math.round(n).toLocaleString('en-NG')}`
 const nairaM = (n: number) => (n >= 1_000_000 ? `₦${(n / 1_000_000).toFixed(2)}m` : naira(n))
 
-/**
- * The principal's morning. One question first: is school running normally today?
- * The deep panel answers it (who is present, which registers are still open, the button that
- * fixes it); everything else is the next question down.
- */
+function ClassSparkline({ recent }: { recent: { date: string; pct: number | null }[] }) {
+  const width = 130
+  const height = 26
+  const valid = recent.filter((r) => r.pct !== null)
+  if (valid.length === 0) {
+    return <div className="w-[130px] h-[26px] flex items-center justify-center text-[11px] text-text-muted">—</div>
+  }
+
+  const pcts = valid.map((r) => r.pct as number)
+  const avg = pcts.reduce((a, b) => a + b, 0) / pcts.length
+  const color = avg < 90 ? '#FDB104' : '#023879'
+
+  const padY = 4
+  const plotH = height - padY * 2
+  const minVal = Math.min(...pcts, 80)
+  const maxVal = Math.max(...pcts, 100)
+  const range = maxVal - minVal || 1
+
+  const points = valid.map((r, i) => {
+    const x = valid.length === 1 ? width / 2 : (i / (valid.length - 1)) * (width - 10) + 5
+    const y = padY + plotH * (1 - (r.pct! - minVal) / range)
+    return { x, y }
+  })
+
+  const pathD = points.reduce((acc, p, i) => (i === 0 ? `M ${p.x.toFixed(1)} ${p.y.toFixed(1)}` : `${acc} L ${p.x.toFixed(1)} ${p.y.toFixed(1)}`), '')
+  const lastPt = points[points.length - 1]
+
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="overflow-visible" aria-hidden="true">
+      {points.length > 1 && (
+        <path
+          d={pathD}
+          fill="none"
+          stroke={color}
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      )}
+      <circle cx={lastPt.x} cy={lastPt.y} r="2.5" fill={color} />
+    </svg>
+  )
+}
+
 export function AdminTodayView(d: AdminTodayData) {
   const rollMax = Math.max(1, ...d.classRoll.map((c) => c.count))
-  const cells = d.board.flatMap((r) => r.cells)
-  const open = cells.filter((c) => c.pct === null)
-  const saved = cells.length - open.length
-  const maxArms = Math.max(1, ...d.board.map((r) => r.cells.length))
-  const pct = d.markedToday ? (d.presentToday / d.markedToday) * 100 : null
   const feePct = d.billed ? Math.round((d.collected / d.billed) * 100) : 0
   const weekMax = Math.max(1, ...d.weekBars.map((w) => w.amount))
   const paidToday = d.payments.reduce((s, p) => s + p.amount, 0)
+
+  const sortedClasses = [...d.attendance.classes].sort((a, b) => {
+    if (a.pct === null && b.pct === null) return a.name.localeCompare(b.name)
+    if (a.pct === null) return 1
+    if (b.pct === null) return -1
+    return a.pct - b.pct
+  })
 
   return (
     <div className="flex flex-col gap-6 px-5 pb-12 pt-7 sm:px-8 sm:pt-8">
@@ -69,68 +121,116 @@ export function AdminTodayView(d: AdminTodayData) {
       </nav>
 
       <div className="grid gap-5 xl:grid-cols-12">
-        {/* The deep panel: today, at the size it deserves. */}
-        <section aria-labelledby="today-h" className="relative flex flex-col overflow-hidden rounded-[24px] bg-school-deep p-6 text-white shadow-raise sm:p-7 xl:col-span-8">
-          <div className="flex flex-wrap items-start justify-between gap-6">
-            <div className="flex flex-col gap-2">
-              <h2 id="today-h" className="text-[15px] font-medium text-school-deep-muted">Present today</h2>
-              <p className="font-display text-[64px] font-semibold leading-none tracking-[-0.04em] tabular-nums sm:text-[80px]">
-                {pct === null ? '—' : `${pct.toFixed(1)}%`}
-              </p>
-              <p className="text-[15px] text-school-deep-muted">
-                {d.markedToday
-                  ? `${d.presentToday.toLocaleString('en-NG')} of ${d.markedToday.toLocaleString('en-NG')} students, across ${saved} ${saved === 1 ? "class" : "classes"}`
-                  : 'No attendance taken yet today'}
+        {/* Attendance card */}
+        <section aria-labelledby="attendance-h" className="card flex flex-col gap-6 p-6 sm:p-7 xl:col-span-8">
+          {/* 1. Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 id="attendance-h" className="text-lg sm:text-xl font-semibold text-text-primary">
+                Attendance
+              </h2>
+              <p className="text-sm text-text-secondary">
+                {d.attendance.termName} · {d.attendance.sessionName}
               </p>
             </div>
-            <div className="flex flex-col items-start gap-3 sm:items-end">
-              {open.length > 0 ? (
-                <p className="max-w-[260px] text-[15px] leading-snug sm:text-right">
-                  <strong className="font-semibold">{open.length} {open.length === 1 ? 'class' : 'classes'} still to take attendance</strong>
-                  <span className="text-school-deep-muted"> — {open.slice(0, 3).map((c) => c.label).join(', ')}{open.length > 3 ? ` and ${open.length - 3} more` : ''}</span>
-                </p>
-              ) : (
-                <p className="text-[15px] font-semibold">Every class has taken attendance.</p>
-              )}
-              <Link href="/dashboard/attendance" className="flex h-11 items-center gap-2 rounded-xl bg-white px-4.5 text-sm font-semibold text-school-deep transition-transform hover:-translate-y-px">
-                <Icon icon={UserCheck01Icon} size={18} className="text-school" />
-                Open attendance
-              </Link>
-            </div>
+            <Link
+              href="/dashboard/attendance"
+              className="flex h-11 w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-primary px-4.5 text-sm font-semibold text-white transition-transform hover:-translate-y-px shrink-0"
+            >
+              <Icon icon={UserCheck01Icon} size={18} />
+              View attendance
+            </Link>
           </div>
 
-          {d.board.length > 0 && (
-            <div className="mt-auto pt-7">
-              <div className="grid items-center gap-1 sm:gap-1.5" style={{ gridTemplateColumns: `minmax(36px, 56px) repeat(${maxArms}, minmax(0, 1fr))` }}>
-                {d.board.map((row) => [
-                  <span key={row.level} className="text-[11px] font-medium text-school-deep-muted sm:text-[13px]">{row.level}</span>,
-                  ...Array.from({ length: maxArms }, (_, i) => {
-                    const c = row.cells[i]
-                    if (!c) return <span key={`${row.level}-${i}`} />
-                    const low = c.pct !== null && c.pct < 90
-                    return (
-                      <Link
-                        key={c.arm}
-                        href={`/dashboard/attendance?classId=${c.cls}&armId=${c.arm}&date=${d.today}`}
-                        aria-label={c.pct === null ? `${c.label} attendance not taken` : `${c.label}: ${c.present} of ${c.size} present`}
-                        title={c.label}
-                        className={`flex h-9 items-center justify-center rounded-md text-[11px] font-semibold tabular-nums transition-transform hover:-translate-y-px sm:h-10 sm:rounded-lg sm:text-[13px] ${
-                          c.pct === null
-                            ? 'border border-dashed border-white/35 text-white/70'
-                            : low
-                              ? 'bg-white text-school-deep'
-                              : 'bg-white/[0.09] text-white/90'
-                        }`}
-                      >
-                        {c.pct === null ? 'Open' : `${c.pct}%`}
-                      </Link>
-                    )
-                  }),
-                ])}
+          {/* 2. Stat tiles or empty state */}
+          {d.attendance.termAvg === null && !d.attendance.lowest ? (
+            <p className="text-sm text-text-secondary py-1">No attendance recorded this term yet.</p>
+          ) : (
+            <div className="grid grid-cols-3 gap-2.5 sm:gap-4">
+              <div className="rounded-xl bg-ground/60 p-3 sm:p-4 flex flex-col justify-between">
+                <span className="text-[11px] sm:text-xs text-text-secondary font-medium">Term average</span>
+                <span className="mt-1 font-display text-lg sm:text-2xl font-bold tabular-nums text-text-primary">
+                  {d.attendance.termAvg !== null ? `${d.attendance.termAvg.toFixed(1)}%` : '—'}
+                </span>
               </div>
-              <p className="mt-3 text-xs text-school-deep-muted">White cells are below 90% present. Tap a class to open its attendance.</p>
+
+              <div className="rounded-xl bg-ground/60 p-3 sm:p-4 flex flex-col justify-between">
+                <span className="text-[11px] sm:text-xs text-text-secondary font-medium">Today</span>
+                <span className="mt-1 font-display text-lg sm:text-2xl font-bold tabular-nums text-text-primary">
+                  {d.attendance.today?.pct !== null && d.attendance.today?.pct !== undefined ? (
+                    `${d.attendance.today.pct.toFixed(1)}%`
+                  ) : (
+                    <span className="text-xs sm:text-sm font-normal text-text-muted">Not taken yet</span>
+                  )}
+                </span>
+              </div>
+
+              <div className="rounded-xl bg-ground/60 p-3 sm:p-4 flex flex-col justify-between">
+                <span
+                  className="text-[11px] sm:text-xs text-text-secondary font-medium truncate"
+                  title={d.attendance.lowest ? `Lowest: ${d.attendance.lowest.name}` : 'Lowest'}
+                >
+                  {d.attendance.lowest ? `Lowest: ${d.attendance.lowest.name}` : 'Lowest'}
+                </span>
+                <span className={`mt-1 font-display text-lg sm:text-2xl font-bold tabular-nums ${
+                  d.attendance.lowest && d.attendance.lowest.pct < 90 ? 'text-warning-text' : 'text-text-primary'
+                }`}>
+                  {d.attendance.lowest ? `${d.attendance.lowest.pct.toFixed(1)}%` : '—'}
+                </span>
+              </div>
             </div>
           )}
+
+          {/* 3. Trend chart */}
+          <AttendanceTrendChart daily={d.attendance.daily} termAvg={d.attendance.termAvg} />
+
+          {/* 4. Classes, lowest first */}
+          <div className="pt-2">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-text-secondary mb-3">
+              Classes, lowest first
+            </h3>
+
+            {sortedClasses.length === 0 ? (
+              <p className="text-sm text-text-secondary">No classes with enrolled students.</p>
+            ) : (
+              <div className="flex flex-col divide-y divide-border/60">
+                {sortedClasses.map((c) => {
+                  const isWarning = c.pct !== null && c.pct < 90
+                  return (
+                    <Link
+                      key={c.id}
+                      href={`/dashboard/attendance?classId=${c.id}`}
+                      className="flex min-h-[44px] items-center gap-3 sm:gap-4 py-2 px-1 rounded-lg hover:bg-school-soft/50 transition-colors"
+                    >
+                      <span className="w-20 sm:w-28 shrink-0 truncate text-sm font-medium text-text-primary" title={c.name}>
+                        {c.name}
+                      </span>
+
+                      <div className="flex-1 h-2 rounded-full bg-school-soft overflow-hidden relative">
+                        <div
+                          className={`h-full rounded-full ${isWarning ? 'bg-[#FDB104]' : 'bg-[#023879]'}`}
+                          style={{ width: `${Math.min(100, Math.max(0, c.pct ?? 0))}%` }}
+                        />
+                      </div>
+
+                      <span className={`w-12 sm:w-14 shrink-0 text-right text-sm font-semibold tabular-nums ${isWarning ? 'text-warning-text' : 'text-text-primary'}`}>
+                        {c.pct === null ? '—' : `${c.pct.toFixed(1)}%`}
+                      </span>
+
+                      <div className="hidden sm:block shrink-0 w-[130px]">
+                        <ClassSparkline recent={c.recent} />
+                      </div>
+                    </Link>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* 5. Footer line */}
+          <p className="text-xs text-text-secondary -mt-2">
+            Tap a class to see its day-by-day record. Gold means below 90%.
+          </p>
         </section>
 
         <div className="grid gap-5 sm:grid-cols-2 xl:col-span-4 xl:grid-cols-1">

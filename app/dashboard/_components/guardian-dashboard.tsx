@@ -362,35 +362,76 @@ export async function GuardianDashboard({
     return str ? `/dashboard?${str}` : '/dashboard'
   }
 
-  // ---- Today and this week, from the daily register (rows without a subject) ----
+  // ---- Today and this week, from attendance records ----
   const lagosDate = (d: Date) => new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Lagos' }).format(d)
   const todayStr = lagosDate(new Date())
-  const daily = rawAttendance.filter((r) => !r.subjects)
-  const todayRecord = daily.find((r) => r.date === todayStr)
+
+  const recordsByDate = new Map<string, any[]>()
+  for (const r of rawAttendance) {
+    const list = recordsByDate.get(r.date) ?? []
+    list.push(r)
+    recordsByDate.set(r.date, list)
+  }
+
+  const todayRecords = recordsByDate.get(todayStr) ?? []
   const firstName = selectedChild?.first_name ?? 'Your child'
-  const markedTime = todayRecord?.marked_at
-    ? new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Lagos', hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(todayRecord.marked_at)).replace(' ', '')
+  const latestMark = todayRecords[0]
+  const markedTime = latestMark?.marked_at
+    ? new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Lagos', hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(latestMark.marked_at)).replace(' ', '')
     : null
-  const todayCode = (todayRecord?.attendance_statuses?.code ?? '').toLowerCase()
-  const markerName = todayRecord?.marker ? `${todayRecord.marker.first_name ?? ''} ${todayRecord.marker.last_name ?? ''}`.trim() : null
-  const headline = !todayRecord
-    ? `${firstName}’s attendance hasn’t been taken yet today.`
-    : todayCode === 'absent'
-      ? `${firstName} was marked absent today.`
-      : todayCode === 'late'
-        ? `${firstName} arrived late today${markedTime ? `, at ${markedTime}` : ''}.`
-        : todayRecord.attendance_statuses?.counts_as_present
-          ? `${firstName} is at school today${markedTime ? ` — marked at ${markedTime}` : ''}.`
-          : `${firstName}: ${todayRecord.attendance_statuses?.label ?? 'marked'} today.`
+  const markerName = latestMark?.marker ? `${latestMark.marker.first_name ?? ''} ${latestMark.marker.last_name ?? ''}`.trim() : null
+
+  const absentToday = todayRecords.filter((r) => {
+    const c = (r.attendance_statuses?.code ?? '').toLowerCase()
+    const l = (r.attendance_statuses?.label ?? '').toLowerCase()
+    return c === 'absent' || (!r.attendance_statuses?.counts_as_present && l.includes('absent'))
+  })
+  const lateToday = todayRecords.filter((r) => {
+    const c = (r.attendance_statuses?.code ?? '').toLowerCase()
+    const l = (r.attendance_statuses?.label ?? '').toLowerCase()
+    return c === 'late' || l.includes('late')
+  })
+  const presentToday = todayRecords.filter((r) => r.attendance_statuses?.counts_as_present)
+
+  let headline = `${firstName}’s attendance hasn’t been taken yet today.`
+  if (todayRecords.length > 0) {
+    if (absentToday.length > 0) {
+      const subjList = absentToday.map((r) => r.subjects?.name ?? 'Daily (older record)')
+      headline = `${firstName} was marked absent today in ${subjList.join(', ')}.`
+    } else if (lateToday.length > 0) {
+      headline = `${firstName} arrived late today${markedTime ? `, at ${markedTime}` : ''}.`
+    } else if (presentToday.length > 0) {
+      headline = `${firstName} is at school today${markedTime ? ` — marked at ${markedTime}` : ''}.`
+    } else {
+      headline = `${firstName}: marked today.`
+    }
+  }
+
   const monday = new Date(`${todayStr}T12:00:00Z`)
   monday.setUTCDate(monday.getUTCDate() - ((monday.getUTCDay() + 6) % 7))
   const week = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map((day, i) => {
     const d = new Date(monday); d.setUTCDate(monday.getUTCDate() + i)
     const date = d.toISOString().slice(0, 10)
-    const rec = daily.find((r) => r.date === date)
-    const code = (rec?.attendance_statuses?.code ?? '').toLowerCase()
-    const state = !rec ? (date > todayStr ? 'upcoming' : 'unmarked') : code === 'absent' ? 'absent' : code === 'late' ? 'late' : rec.attendance_statuses?.counts_as_present ? 'present' : 'other'
-    return { day, date, state, label: rec?.attendance_statuses?.label ?? (date > todayStr ? '' : 'Not marked') }
+    const dayRecs = recordsByDate.get(date) ?? []
+    let state: 'upcoming' | 'unmarked' | 'present' | 'late' | 'absent' | 'other'
+    let label: string
+    if (dayRecs.length === 0) {
+      state = date > todayStr ? 'upcoming' : 'unmarked'
+      label = date > todayStr ? '' : 'Not marked'
+    } else if (dayRecs.some((r) => (r.attendance_statuses?.code ?? '').toLowerCase() === 'absent' || (!r.attendance_statuses?.counts_as_present && (r.attendance_statuses?.label || '').toLowerCase().includes('absent')))) {
+      state = 'absent'
+      label = 'Absent'
+    } else if (dayRecs.some((r) => (r.attendance_statuses?.code ?? '').toLowerCase() === 'late' || (r.attendance_statuses?.label || '').toLowerCase().includes('late'))) {
+      state = 'late'
+      label = 'Late'
+    } else if (dayRecs.every((r) => r.attendance_statuses?.counts_as_present)) {
+      state = 'present'
+      label = 'Present'
+    } else {
+      state = 'other'
+      label = dayRecs[0]?.attendance_statuses?.label ?? 'Marked'
+    }
+    return { day, date, state, label }
   })
 
   if (myChildren.length === 0) {
@@ -436,7 +477,7 @@ export async function GuardianDashboard({
             <h1 id="child-today" className="text-[28px] font-semibold leading-[1.1] sm:text-[40px]">{headline}</h1>
             <p className="text-[15px] text-school-deep-muted sm:text-base">
               {selectedChild?.first_name} {selectedChild?.last_name} · {selectedChild?.admission_no}
-              {markerName && todayRecord ? ` · marked by ${markerName}` : ''}
+              {markerName && todayRecords.length > 0 ? ` · marked by ${markerName}` : ''}
             </p>
           </div>
         </div>
@@ -729,7 +770,7 @@ export async function GuardianDashboard({
                       ? new Date(row.marked_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                       : '—'
                     const markerName = row.marker ? `${row.marker.first_name} ${row.marker.last_name}` : '—'
-                    const subjectName = row.subjects?.name ?? 'General'
+                    const subjectName = row.subjects?.name ?? 'Daily (older record)'
                     const statusLabel = row.attendance_statuses?.label ?? 'Marked'
 
                     return (

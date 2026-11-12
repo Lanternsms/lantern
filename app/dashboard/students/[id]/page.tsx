@@ -434,7 +434,7 @@ export default async function StudentDetailPage({
                     ? new Date(row.marked_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                     : '—'
                   const markerName = row.marker ? `${row.marker.first_name} ${row.marker.last_name}` : '—'
-                  const subjectName = row.subjects?.name ?? 'General'
+                  const subjectName = row.subjects?.name ?? 'Daily (older record)'
                   const statusLabel = row.attendance_statuses?.label ?? 'Marked'
 
                   return (

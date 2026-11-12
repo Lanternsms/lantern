@@ -72,7 +72,7 @@ export default function Home() {
               </a>
             </div>
             <ul className="flex flex-wrap gap-x-5 gap-y-2 text-[15px] text-[#3d434d]">
-              {['Free 30-minute demo', 'Live in a week', 'No app download for parents'].map((t) => (
+              {['Free demo', 'Live in a week'].map((t) => (
                 <li key={t} className="flex items-center gap-2">
                   <svg aria-hidden width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#182350" /><path d="m7.5 12.2 3 3 6-6.4" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
                   {t}
@@ -87,11 +87,11 @@ export default function Home() {
 
         <section aria-label="What Lantern covers" className="border-y border-[#e7e7e7] bg-white">
           <ul className="mx-auto grid max-w-[1200px] grid-cols-2 gap-x-6 gap-y-3 px-5 py-5.5 text-[15px] text-[#3d434d] sm:grid-cols-3 sm:px-6 xl:grid-cols-6">
-            <li><strong className="text-[#182350]">Attendance</strong> by 8am</li>
+            <li><strong className="text-[#182350]">Attendance</strong> with instant notification</li>
             <li><strong className="text-[#182350]">Results</strong> with approval</li>
             <li><strong className="text-[#182350]">Report cards</strong> in one click</li>
+            <li><strong className="text-[#182350]">Guardians</strong> tracks their ward's academic activity in realtime </li>
             <li><strong className="text-[#182350]">Fees</strong> and receipts</li>
-            <li><strong className="text-[#182350]">Parents</strong> told instantly</li>
             <li><strong className="text-[#182350]">Your</strong> colours and crest</li>
           </ul>
         </section>
@@ -225,7 +225,7 @@ export default function Home() {
           <div className="flex flex-wrap items-center justify-between gap-8 rounded-[20px] border border-[#e2e5ee] bg-white px-7 py-12 text-[#182350] sm:px-10 sm:py-14">
             <div className="flex max-w-[560px] flex-col gap-2.5">
               <h2 className={h2}>See it with your own data.</h2>
-              <p className="text-[#5c626c]">A 30-minute call. Bring a class list and we’ll set it up while you watch.</p>
+              <p className="text-[#5c626c]">Bring a class list and we’ll set it up while you watch.</p>
             </div>
             <div className="flex flex-wrap gap-3">
               <Link href="/book-demo" className="press flex h-[52px] items-center rounded-[10px] bg-[#182350] px-6 font-bold text-white">Book a demo</Link>

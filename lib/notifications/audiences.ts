@@ -36,22 +36,66 @@ const audienceMap: Record<string, Resolver[]> = {
     async (payload) => {
       const studentId = payload.studentId as string | undefined
       const schoolId = payload.schoolId as string
-      const studentName = (payload.studentName as string) || 'Your student'
+      let studentName = payload.studentName as string | undefined
       const recordedBy = payload.recordedBy as string | undefined
+      const date = (payload.date as string) || new Date().toISOString().slice(0, 10)
+      const subjectName = (payload.subjectName as string) || ''
       if (!studentId || !schoolId) return []
 
+      const admin = createAdminClient()
+      if (!studentName) {
+        const { data: st } = await admin
+          .from('students')
+          .select('first_name, last_name')
+          .eq('id', studentId)
+          .maybeSingle()
+        if (st) {
+          studentName = `${st.first_name} ${st.last_name}`.trim()
+        }
+      }
+      studentName = studentName || 'Your student'
+
+      const dedupeKey = `attendance_absent:${studentId}:${date}`
       const guardianProfileIds = await getGuardianProfileIds(studentId)
-      return guardianProfileIds.map((guardianId) => ({
-        schoolId,
-        recipientId: guardianId,
-        type: 'attendance_marked',
-        category: 'attendance',
-        title: 'Attendance recorded',
-        body: `Attendance for ${studentName} has been recorded.`,
-        url: notificationUrl('attendance_marked', { studentId }, 'guardian'),
-        studentId,
-        actorId: recordedBy,
-      }))
+
+      const { data: existingRows } = await (admin as any)
+        .from('user_notifications')
+        .select('recipient_id, body')
+        .in('recipient_id', guardianProfileIds)
+        .eq('dedupe_key', dedupeKey)
+
+      const existingByRecipient = new Map<string, string | null>(
+        ((existingRows ?? []) as { recipient_id: string; body: string | null }[]).map((r) => [r.recipient_id, r.body])
+      )
+
+      return guardianProfileIds.map((guardianId) => {
+        const existingBody = existingByRecipient.get(guardianId)
+        let body = subjectName
+          ? `${studentName} was marked absent today in ${subjectName}.`
+          : `${studentName} was marked absent today.`
+
+        if (existingBody && subjectName) {
+          if (!existingBody.includes(subjectName)) {
+            body = existingBody.replace(/\.$/, `, ${subjectName}.`)
+          } else {
+            body = existingBody
+          }
+        }
+
+        return {
+          schoolId,
+          recipientId: guardianId,
+          type: 'attendance_marked',
+          category: 'attendance',
+          title: 'Absent today',
+          body,
+          url: notificationUrl('attendance_marked', { studentId }, 'guardian'),
+          studentId,
+          actorId: recordedBy,
+          dedupeKey,
+          onDuplicate: 'refresh',
+        }
+      })
     },
   ],
   lms_period_attendance_saved: [

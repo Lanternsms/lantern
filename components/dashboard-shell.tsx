@@ -9,7 +9,7 @@ import {
 } from '@hugeicons/core-free-icons'
 import { signOut } from '@/app/auth/actions'
 import { removeSubscription } from '@/app/dashboard/notifications/actions'
-import { GlobalSearch } from '@/components/global-search'
+
 import { LoadingOverlay } from '@/components/loading-overlay'
 import { Icon } from '@/components/icon'
 
@@ -20,7 +20,7 @@ type DashboardShellProps = {
   logoUrl: string | null;
   navItems: NavItem[];
   notificationBell?: React.ReactNode;
-  isAdmin: boolean;
+
   children: React.ReactNode;
 };
 
@@ -213,7 +213,7 @@ export function DashboardShell({
           <span className="text-xs text-school-deep-muted">on Lantern</span>
         </span>
       </div>
-      {mobile && <div className="mt-5 px-0.5">{isAdmin && <GlobalSearch />}</div>}
+      {mobile && <div className="mt-5 px-0.5"></div>}
 
       <nav aria-label="Main" className="sidebar-scrollbar mt-7 min-h-0 flex-1 overflow-y-auto pr-0.5">
         <div className="flex flex-col gap-1">{daily.map(navLink)}</div>
@@ -260,8 +260,8 @@ export function DashboardShell({
       <header className="sticky top-0 z-20 hidden h-16 items-center gap-4 border-b border-black/[0.05] bg-ground/85 px-8 backdrop-blur-md lg:ml-[264px] lg:flex">
         <span className="font-display text-[15px] font-semibold text-text-secondary">{currentLabel}</span>
         <div className="ml-auto flex items-center gap-3">
-          <div className="w-72">{isAdmin && <GlobalSearch />}</div>
-          {notificationBell}<span className="ml-2 text-xs text-white">{isAdmin ? 'ADMIN' : 'NOT ADMIN'}</span>
+          <div className="w-72"></div>
+          {notificationBell}
         </div>
       </header>
 

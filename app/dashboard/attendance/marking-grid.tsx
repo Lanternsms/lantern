@@ -5,7 +5,6 @@ import { saveAttendance } from './actions'
 
 type Status = { id: string; label: string }
 type Student = { id: string; first_name: string; last_name: string; admission_no: string; arm_id: string | null }
-type Subject = { id: string; name: string }
 
 type Tone = 'present' | 'late' | 'absent' | 'other'
 function tone(label: string): Tone {
@@ -25,17 +24,19 @@ const SELECTED: Record<Tone, string> = {
 export default function MarkingGrid({
   classId,
   date,
+  subjectId,
+  subjectName,
   students,
   statuses,
   existingMarks,
-  teachableSubjects,
 }: {
   classId: string
   date: string
+  subjectId: string
+  subjectName: string
   students: Student[]
   statuses: Status[]
   existingMarks: { student_id: string; status_id: string; subject_id: string | null; marked_at: string }[]
-  teachableSubjects: Subject[]
 }) {
   const [isPending, startTransition] = useTransition()
   const [marks, setMarks] = useState<Record<string, string>>(() => {
@@ -43,9 +44,6 @@ export default function MarkingGrid({
     existingMarks.forEach((m) => { initial[m.student_id] = m.status_id })
     return initial
   })
-  const [subjectId, setSubjectId] = useState<string>(
-    existingMarks[0]?.subject_id ?? teachableSubjects[0]?.id ?? ''
-  )
   const [savedMessage, setSavedMessage] = useState('')
   const [error, setError] = useState('')
 
@@ -80,7 +78,7 @@ export default function MarkingGrid({
       const result = await saveAttendance({
         classId,
         date,
-        subjectId: subjectId || null,
+        subjectId,
         marks: payload,
       })
       if (result.error) {
@@ -116,15 +114,9 @@ export default function MarkingGrid({
           </span>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          {teachableSubjects.length > 0 && (
-            <label className="flex h-9 items-center gap-2 rounded-md border border-control bg-surface px-2.5 text-sm text-text-secondary">
-              Subject
-              <select value={subjectId} onChange={(e) => setSubjectId(e.target.value)} className="bg-transparent font-medium text-text-primary focus:outline-none">
-                <option value="">Daily attendance</option>
-                {teachableSubjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-              </select>
-            </label>
-          )}
+          <span className="flex h-9 items-center gap-1.5 rounded-md border border-control bg-surface px-3 text-sm font-medium text-text-primary">
+            <span className="text-text-secondary text-xs">Subject:</span> {subjectName}
+          </span>
           {presentStatus && left > 0 && (
             <button type="button" onClick={() => markRestAs(presentStatus.id)} className="h-9 rounded-md border border-control bg-surface px-3.5 text-sm font-medium hover:bg-raised">
               Mark the rest {presentStatus.label.toLowerCase()}

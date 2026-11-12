@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const classId = searchParams.get('classId')
   const armId = searchParams.get('armId')
+  const subjectId = searchParams.get('subjectId')
   const from = searchParams.get('from')
   const to = searchParams.get('to')
 
@@ -34,6 +35,11 @@ export async function GET(request: NextRequest) {
     .order('date', { ascending: true })
 
   if (armId) query = query.eq('arm_id', armId)
+  if (subjectId === 'daily_older') {
+    query = query.is('subject_id', null)
+  } else if (subjectId) {
+    query = query.eq('subject_id', subjectId)
+  }
 
   const { data, error } = await query
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
@@ -44,7 +50,7 @@ export async function GET(request: NextRequest) {
     const markedBy = r.marker ? `${r.marker.first_name} ${r.marker.last_name}` : ''
     const time = r.marked_at ? new Date(r.marked_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''
     lines.push(
-      [r.date, time, r.students?.admission_no ?? '', studentName, r.subjects?.name ?? 'General', r.attendance_statuses?.label ?? '', markedBy]
+      [r.date, time, r.students?.admission_no ?? '', studentName, r.subjects?.name ?? 'Daily (older record)', r.attendance_statuses?.label ?? '', markedBy]
         .map((v) => csvEscape(String(v)))
         .join(',')
     )

@@ -2028,6 +2028,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      attendance_class_summary: {
+        Args: { p_from: string; p_to: string; p_recent?: number }
+        Returns: {
+          class_id: string
+          marked: number | string
+          present: number | string
+          recent?: Json
+          days?: Json
+        }[]
+      }
+      attendance_school_daily: {
+        Args: { p_from: string; p_to: string }
+        Returns: {
+          day: string
+          marked: number | string
+          present: number | string
+        }[]
+      }
       auth_school_id: { Args: never; Returns: string }
       get_my_rank: {
         Args: { p_term_id: string }

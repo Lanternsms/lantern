@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/api/attendance/history/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
@@ -12,6 +13,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const classId = searchParams.get('classId')
   const armId = searchParams.get('armId')
+  const subjectId = searchParams.get('subjectId')
   const from = searchParams.get('from')
   const to = searchParams.get('to')
 
@@ -23,13 +25,18 @@ export async function GET(request: NextRequest) {
   const admin = createAdminClient()
   let query = admin
     .from('attendance')
-    .select('id, date, marked_at, students(first_name, last_name, admission_no), attendance_statuses(label), subjects(name), marker:profiles!marked_by(first_name, last_name)')
+    .select('id, date, subject_id, marked_at, students(first_name, last_name, admission_no), attendance_statuses(label, counts_as_present), subjects(name), marker:profiles!marked_by(first_name, last_name)')
     .eq('class_id', classId)
     .gte('date', from)
     .lte('date', to)
     .order('date', { ascending: false })
 
   if (armId) query = query.eq('arm_id', armId)
+  if (subjectId === 'daily_older') {
+    query = query.is('subject_id', null)
+  } else if (subjectId) {
+    query = query.eq('subject_id', subjectId)
+  }
 
   const { data, error } = await query
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
@@ -41,7 +48,9 @@ export async function GET(request: NextRequest) {
     admission_no: r.students?.admission_no ?? '',
     student_name: `${r.students?.first_name ?? ''} ${r.students?.last_name ?? ''}`.trim(),
     status_label: r.attendance_statuses?.label ?? '',
-    subject_name: r.subjects?.name ?? 'General',
+    counts_as_present: !!r.attendance_statuses?.counts_as_present,
+    subject_id: r.subject_id ?? null,
+    subject_name: r.subjects?.name ?? 'Daily (older record)',
     marked_by_name: r.marker ? `${r.marker.first_name} ${r.marker.last_name}` : null,
   }))
 

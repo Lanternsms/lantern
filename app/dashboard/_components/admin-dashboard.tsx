@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { getTodayInLagos } from '../lms/lagos-time'
 import { SetupChecklist } from './setup-checklist'
-import { AdminTodayView, type BoardCell } from './admin-today-view'
+import { AdminTodayView } from './admin-today-view'
 
 
 function daysAgo(iso: string | null, todayStr: string) {
@@ -11,11 +11,9 @@ function daysAgo(iso: string | null, todayStr: string) {
   return d <= 0 ? 'Today' : d === 1 ? '1 day' : `${d} days`
 }
 
-type Cell = BoardCell
-
 /**
  * The principal's first screen answers one question: is school running normally today?
- * Biggest block: every class arm's register this morning. The line under the title names
+ * Biggest block: every class's register this morning. The line under the title names
  * the one thing to act on (registers still open), next to the action that fixes it.
  */
 export async function AdminDashboard() {
@@ -57,48 +55,11 @@ export async function AdminDashboard() {
 
   const { dateStr: today } = getTodayInLagos()
 
-  const [{ data: currentTerm }, { data: classes }, { data: arms }, { data: enrolments }, { data: statuses }] = await Promise.all([
+  const [{ data: currentTerm }, { data: classes }, { data: enrolments }] = await Promise.all([
     supabase.from('terms').select('id, name, start_date').eq('school_id', schoolId).eq('session_id', currentSession.id).eq('is_current', true).maybeSingle(),
     supabase.from('classes').select('id, name, level').eq('school_id', schoolId).order('level'),
-    supabase.from('arms').select('id, name, class_id').eq('school_id', schoolId).order('name'),
     supabase.from('enrolments').select('arm_id, class_id').eq('school_id', schoolId).eq('session_id', currentSession.id),
-    supabase.from('attendance_statuses').select('id, counts_as_present').eq('school_id', schoolId),
   ])
-
-  // ---- Registers this morning: one cell per arm, from today's daily register ----
-  const { data: todayRows } = await supabase
-    .from('attendance')
-    .select('arm_id, status_id')
-    .eq('school_id', schoolId)
-    .eq('date', today)
-    .is('subject_id', null)
-
-  const presentStatus = new Set((statuses ?? []).filter((s) => s.counts_as_present).map((s) => s.id))
-  const rollByArm = new Map<string, number>()
-  for (const e of enrolments ?? []) if (e.arm_id) rollByArm.set(e.arm_id, (rollByArm.get(e.arm_id) ?? 0) + 1)
-  const markedByArm = new Map<string, { marked: number; present: number }>()
-  for (const r of todayRows ?? []) {
-    if (!r.arm_id) continue
-    const m = markedByArm.get(r.arm_id) ?? { marked: 0, present: 0 }
-    m.marked += 1
-    if (presentStatus.has(r.status_id)) m.present += 1
-    markedByArm.set(r.arm_id, m)
-  }
-
-  const board = (classes ?? []).map((c) => ({
-    level: c.name,
-    cells: (arms ?? [])
-      .filter((a) => a.class_id === c.id && (rollByArm.get(a.id) ?? 0) > 0)
-      .map<Cell>((a) => {
-        const m = markedByArm.get(a.id)
-        const size = rollByArm.get(a.id) ?? 0
-        return { arm: a.id, cls: c.id, label: `${c.name}${a.name}`, size, present: m?.present ?? 0, pct: m ? Math.round((m.present / m.marked) * 100) : null }
-      }),
-  })).filter((row) => row.cells.length > 0)
-  const allCells = board.flatMap((r) => r.cells)
-  const savedCells = allCells.filter((c) => c.pct !== null)
-  const presentToday = savedCells.reduce((s, c) => s + c.present, 0)
-  const markedToday = (todayRows ?? []).filter((r) => r.arm_id).length
 
   // ---- Fees this term ----
   const { data: feeStructures } = currentTerm
@@ -106,6 +67,109 @@ export async function AdminDashboard() {
     : { data: [] as { id: string; class_id: string | null; amount: number }[] }
   const rollByClass = new Map<string, number>()
   for (const e of enrolments ?? []) rollByClass.set(e.class_id, (rollByClass.get(e.class_id) ?? 0) + 1)
+
+  const fromDate = currentTerm?.start_date ?? currentSession.start_date
+  const [
+    initialSummaryRes,
+    { data: dailyRows, error: dailyError },
+  ] = await Promise.all([
+    supabase.rpc('attendance_class_summary', { p_from: fromDate, p_to: today }),
+    supabase.rpc('attendance_school_daily', { p_from: fromDate, p_to: today }),
+  ])
+
+  let summaryRes = initialSummaryRes
+  if (summaryRes.error && summaryRes.error.message.includes('p_recent')) {
+    summaryRes = await supabase.rpc('attendance_class_summary', {
+      p_from: fromDate,
+      p_to: today,
+      p_recent: 12,
+    })
+  }
+
+  const { data: summaryRows, error: summaryError } = summaryRes
+  if (summaryError) console.error('attendance_class_summary failed:', summaryError.message)
+  if (dailyError) console.error('attendance_school_daily failed:', dailyError.message)
+
+  const summaryByClass = new Map(
+    ((summaryRows ?? []) as {
+      class_id: string
+      marked: number | string
+      present: number | string
+      recent?: { d: string; m: number | string; p: number | string }[] | null
+      days?: { d: string; m: number | string; p: number | string }[] | null
+    }[]).map((r) => {
+      const rawList = r.recent ?? r.days ?? []
+      return [
+        r.class_id,
+        {
+          marked: Number(r.marked),
+          present: Number(r.present),
+          recent: rawList.slice(-12).map((x) => ({
+            d: x.d,
+            m: Number(x.m),
+            p: Number(x.p),
+          })),
+        },
+      ]
+    }),
+  )
+
+  let totalMarked = 0
+  let totalPresent = 0
+  for (const row of summaryByClass.values()) {
+    totalMarked += row.marked
+    totalPresent += row.present
+  }
+  const termAvg = totalMarked > 0 ? Math.round((totalPresent / totalMarked) * 1000) / 10 : null
+
+  const daily = ((dailyRows ?? []) as {
+    day: string
+    marked: number | string
+    present: number | string
+  }[]).map((r) => {
+    const m = Number(r.marked)
+    const p = Number(r.present)
+    return {
+      date: r.day,
+      pct: m > 0 ? Math.round((p / m) * 1000) / 10 : null,
+    }
+  })
+
+  const todayDaily = daily.find((d) => d.date === today) ?? null
+
+  const enrolledClasses = (classes ?? [])
+    .filter((c) => (rollByClass.get(c.id) ?? 0) > 0)
+    .map((c) => {
+      const s = summaryByClass.get(c.id)
+      const m = s?.marked ?? 0
+      const p = s?.present ?? 0
+      const pct = m > 0 ? Math.round((p / m) * 1000) / 10 : null
+      const recent = (s?.recent ?? []).map((x) => ({
+        date: x.d,
+        pct: x.m > 0 ? Math.round((x.p / x.m) * 1000) / 10 : null,
+      }))
+      return {
+        id: c.id,
+        name: c.name,
+        pct,
+        recent,
+      }
+    })
+
+  const classesWithRecords = enrolledClasses.filter((c) => c.pct !== null)
+  const lowest = classesWithRecords.length > 0
+    ? classesWithRecords.reduce((min, c) => (c.pct! < min.pct! ? c : min), classesWithRecords[0])
+    : null
+
+  const attendance = {
+    termName: currentTerm?.name ?? 'Current term',
+    sessionName: currentSession.name,
+    termAvg,
+    today: todayDaily,
+    daily,
+    classes: enrolledClasses,
+    lowest: lowest ? { id: lowest.id, name: lowest.name, pct: lowest.pct! } : null,
+  }
   const billed = (feeStructures ?? []).reduce(
     (s, fs) => s + Number(fs.amount) * (fs.class_id ? rollByClass.get(fs.class_id) ?? 0 : enrolments?.length ?? 0),
     0,
@@ -155,9 +219,7 @@ export async function AdminDashboard() {
         classRoll={(classes ?? []).map((c) => ({ id: c.id, name: c.name, count: rollByClass.get(c.id) ?? 0 }))}
         today={today}
         termLabel={`${currentTerm?.name ?? 'No current term'} · ${currentSession.name}`}
-        board={board}
-        presentToday={presentToday}
-        markedToday={markedToday}
+        attendance={attendance}
         billed={billed}
         collected={collected}
         weekBars={weekBars.map((amount, i) => ({ label: `Wk ${firstWeek + i + 1}`, amount }))}

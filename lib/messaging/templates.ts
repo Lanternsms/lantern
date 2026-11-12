@@ -139,7 +139,7 @@ export function renderNotificationTemplate(
       emailSubject = child ? `Attendance update for ${child}` : 'Attendance update'
       emailLead = child
         ? `Attendance has been recorded for ${child}. Log in to view details and status.`
-        : 'Daily attendance has been recorded for your student. Log in to view status.'
+        : 'Attendance has been recorded for your student. Log in to view status.'
       break
 
     case 'lms_period_attendance_saved':
